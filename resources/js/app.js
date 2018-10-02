@@ -6,7 +6,8 @@ window.Vue = Vue;
 
 Vue.use(SuiVue);
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('main-menu', require('./components/MainMenu.vue'));
+Vue.component('stats-bar', require('./components/StatsBar.vue'));
 
 const app = new Vue({
     el: '#app'
