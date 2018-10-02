@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('dashboard');
 });
+
+Route::get('apps', function () {
+    return view('sites');
+});
