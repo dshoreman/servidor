@@ -38,6 +38,28 @@ class SiteController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \App\Site  $site
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Site $site)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Site  $site
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Site $site)
+    {
+        //
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -55,5 +77,18 @@ class SiteController extends Controller
         $site->update($data);
 
         return response($site, Response::HTTP_OK);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Site  $site
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Site $site)
+    {
+        $site->delete();
+
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
