@@ -36,6 +36,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('system-info', 'SystemInformationController');
 });
 
+Route::resource('sites', 'SiteController', [
+    'only' => ['index', 'store']
+]);
+
 Route::any('/{all?}', function () {
     abort(404);
 })->where('all', '.*');
