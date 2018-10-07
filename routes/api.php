@@ -37,7 +37,7 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::resource('sites', 'SiteController', [
-    'only' => ['index', 'store']
+    'only' => ['index', 'store', 'update']
 ]);
 
 Route::any('/{all?}', function () {

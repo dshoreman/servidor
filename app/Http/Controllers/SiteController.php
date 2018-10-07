@@ -36,4 +36,24 @@ class SiteController extends Controller
 
         return response($site, Response::HTTP_CREATED);
     }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Site  $site
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Site $site)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|unique:sites,name',
+            'primary_domain' => 'url',
+            'is_enabled' => 'boolean',
+        ]);
+
+        $site->update($data);
+
+        return response($site, Response::HTTP_OK);
+    }
 }
