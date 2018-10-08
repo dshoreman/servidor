@@ -1,5 +1,11 @@
 <template>
-    <div>
+    <sui-container class="grid">
+        <sui-grid-row>
+            <sui-grid-column>
+                <sui-input placeholder="Type a name for your Application..."
+                        icon="plus" class="fluid massive"></sui-input>
+            </sui-grid-column>
+        </sui-grid-row>
         <sui-card-group>
             <sui-card v-for="site in sites" :key="site.id">
                 <sui-card-content>
@@ -11,7 +17,7 @@
                 </sui-button>
             </sui-card>
         </sui-card-group>
-    </div>
+    </sui-container>
 </template>
 
 <script>
