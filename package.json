@@ -21,6 +21,6 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
-        "semantic-ui-vue": "^0.4.1"
+        "semantic-ui-vue": "^0.4.2"
     }
 }
