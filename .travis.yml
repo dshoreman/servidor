@@ -5,10 +5,13 @@ php:
 
 before_install:
   - composer self-update
+  - composer validate
 
 install:
   - composer install --no-interaction
+  - npm run dev
 
 before_script:
   - mysql -e 'CREATE DATABASE servidor_test;'
   - cp .env.travis .env
+  - php artisan migrate
