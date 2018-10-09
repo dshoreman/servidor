@@ -20,7 +20,7 @@
             </sui-menu>
 
             <sui-container class="main">
-                <stats-bar></stats-bar>
+                <stats-bar hostname="{{ request()->getHost() }}"></stats-bar>
                 <main-menu></main-menu>
 
                 @yield('content')
