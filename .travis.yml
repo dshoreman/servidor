@@ -15,4 +15,5 @@ install:
 before_script:
   - mysql -e 'CREATE DATABASE servidor_test;'
   - cp .env.travis .env
+  - php artisan key:generate
   - php artisan migrate
