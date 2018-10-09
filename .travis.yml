@@ -1,0 +1,19 @@
+language: php
+
+php:
+  - '7.2'
+
+before_install:
+  - composer self-update
+  - composer validate
+
+install:
+  - composer install --no-interaction
+  - npm install
+  - npm run dev
+
+before_script:
+  - mysql -e 'CREATE DATABASE servidor_test;'
+  - cp .env.travis .env
+  - php artisan key:generate
+  - php artisan migrate
