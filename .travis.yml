@@ -1,13 +1,14 @@
 language: php
 
 php:
-  - 7.2
+  - '7.2'
 
-before_script:
-  - cp .env.travis .env
-  - mysql -e 'CREATE DATABASE servidor_test;'
+before_install:
   - composer self-update
+
+install:
   - composer install --no-interaction
 
-script:
-  - vendor/bin/phpunit
+before_script:
+  - mysql -e 'CREATE DATABASE servidor_test;'
+  - cp .env.travis .env
