@@ -3,7 +3,8 @@
         <sui-grid-row>
             <sui-grid-column>
                 <sui-input placeholder="Type a name for your Application..."
-                        icon="plus" class="fluid massive"></sui-input>
+                        icon="plus" class="fluid massive"
+                        v-model="newSite" @keyup.enter="addSite"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
         <sui-card-group>
@@ -22,8 +23,14 @@
 
 <script>
 export default {
+    computed: {
+        nextSiteId() {
+            return this.sites.length + 1;
+        }
+    },
     data () {
         return {
+            newSite: '',
             sites: [{
                 'id': 1,
                 'name': 'Test 1',
@@ -33,6 +40,14 @@ export default {
                 'name': 'Test 2',
             }],
         };
+    },
+    methods: {
+        addSite () {
+            this.sites.push({
+                id: this.nextSiteId,
+                name: this.newSite,
+            });
+        }
     }
 }
 </script>
