@@ -21,4 +21,8 @@ Route::name('system')->prefix('/system')->namespace('System')->group(function ()
     Route::resource('groups', 'GroupsController', [
         'only' => ['index'],
     ]);
+
+    Route::resource('users', 'UsersController', [
+        'only' => ['index'],
+    ]);
 });
