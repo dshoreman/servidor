@@ -16,14 +16,13 @@ class GroupsController extends Controller
     {
         exec('cat /etc/group', $lines);
 
+        $keys = ['name', 'password', 'id', 'users'];
         $groups = collect();
 
         foreach ($lines as $line) {
-            list($name, $password, $id, $users) = explode(':', $line);
-
-            $groups->push(compact('name', 'password', 'id', 'users'));
+            $groups->push(array_combine($keys, explode(':', $line)));
         }
 
-        return $groups;
+        return $groups->keyBy('id');
     }
 }
