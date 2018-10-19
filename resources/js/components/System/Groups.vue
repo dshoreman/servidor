@@ -4,6 +4,14 @@
             <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
             <sui-list-content>
                 <a is="sui-list-header">{{ group.name }}</a>
+                <sui-list-description>
+                    <sui-list bulleted horizontal>
+                        <span v-for="(user, id) in group.users.split(',')"
+                            :key="id" is="sui-list-item">
+                            {{ user }}
+                        </span>
+                    </sui-list>
+                </sui-list-description>
             </sui-list-content>
         </sui-list-item>
     </sui-list>
