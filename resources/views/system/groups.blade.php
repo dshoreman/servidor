@@ -1,7 +1,5 @@
-@extends ('layouts.app')
+@extends ('layouts.system')
 
-@section ('content')
-    @parent
-
+@section ('system-content')
     <system-groups></system-groups>
 @endsection
