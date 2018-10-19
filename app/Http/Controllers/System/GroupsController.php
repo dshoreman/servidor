@@ -25,4 +25,14 @@ class GroupsController extends Controller
 
         return $groups->keyBy('id');
     }
+
+    /**
+     * Render the groups list page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
+    {
+        return view('system.groups');
+    }
 }
