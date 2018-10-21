@@ -23,7 +23,7 @@ class GroupsController extends Controller
             $groups->push(array_combine($keys, explode(':', $line)));
         }
 
-        return $groups->keyBy('id');
+        return $groups;
     }
 
     /**

@@ -30,4 +30,16 @@ class ListSystemUsersTest extends TestCase
             'username' => 'root'
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function listIsAnArray()
+    {
+        $response = $this->getJson('/api/system/users');
+
+        $responseJson = json_decode($response->getContent());
+
+        $this->assertEquals('array', gettype($responseJson));
+    }
 }

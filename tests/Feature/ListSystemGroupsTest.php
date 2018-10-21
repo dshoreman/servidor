@@ -19,4 +19,14 @@ class ListSystemGroupsTest extends TestCase
             'name' => 'root',
         ]);
     }
+
+    /** @test */
+    public function listIsAnArray()
+    {
+        $response = $this->getJson('/api/system/groups');
+
+        $responseJson = json_decode($response->getContent());
+
+        $this->assertEquals('array', gettype($responseJson));
+    }
 }

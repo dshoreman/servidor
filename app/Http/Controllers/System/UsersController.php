@@ -23,6 +23,6 @@ class UsersController extends Controller
             $users->push(array_combine($keys, explode(':', $line)));
         }
 
-        return $users->keyBy('id');
+        return $users;
     }
 }

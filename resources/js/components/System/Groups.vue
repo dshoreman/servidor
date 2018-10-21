@@ -1,6 +1,10 @@
 <template>
+<div>
+    <sui-input placeholder="Search Groups..." class="huge fluid" v-model="search" />
+
     <sui-list divided relaxed>
-        <sui-list-item v-for="group in groups" :key="group.id">
+        <sui-list-item v-for="group in filteredGroups" :key="group.id"
+            v-if="group.name.includes(search)">
             <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
             <sui-list-content>
                 <a is="sui-list-header">{{ group.name }}</a>
@@ -15,6 +19,7 @@
             </sui-list-content>
         </sui-list-item>
     </sui-list>
+</div>
 </template>
 
 <script>
@@ -22,10 +27,16 @@ export default {
     data () {
         return {
             groups: [],
+            search: '',
         };
     },
     mounted () {
         this.fetchGroups();
+    },
+    computed: {
+        filteredGroups() {
+            return this.groups.filter(group => group.name.includes(this.search));
+        },
     },
     methods: {
         fetchGroups() {
