@@ -1,7 +1,29 @@
 <template lang="html">
-    <sui-menu :widths="3">
-        <a is="sui-menu-item" href="/apps">Applications</a>
-        <a is="sui-menu-item" href="/databases">Databases</a>
-        <a is="sui-menu-item" href="/files">Filesystem</a>
+    <sui-menu :widths="menu.length">
+        <sui-menu-item link :href="item.href" v-for="(item, id) in menu" :key="id">
+            {{ item.name }}
+        </sui-menu-item>
     </sui-menu>
 </template>
+
+<script>
+export default {
+    data () {
+        return {
+            menu: [{
+                name: 'Applications',
+                href: '/apps'
+            }, {
+                name: 'Databases',
+                href: '/databases'
+            }, {
+                name: 'Files',
+                href: '/files'
+            }, {
+                name: 'System',
+                href: '/system/groups'
+            }],
+        };
+    }
+}
+</script>
