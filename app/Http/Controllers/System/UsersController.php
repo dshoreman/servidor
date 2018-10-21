@@ -25,4 +25,14 @@ class UsersController extends Controller
 
         return $users;
     }
+
+    /**
+     * Render the System Users page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
+    {
+        return view('system.users');
+    }
 }

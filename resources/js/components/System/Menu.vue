@@ -14,6 +14,9 @@ export default {
             menu: [{
                 name: 'Groups',
                 href: '/system/groups'
+            }, {
+                name: 'Users',
+                href: '/system/users'
             }],
         };
     }

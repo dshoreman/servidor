@@ -27,7 +27,7 @@ class GroupsController extends Controller
     }
 
     /**
-     * Render the groups list page
+     * Render the System Groups page
      *
      * @return \Illuminate\Http\Response
      */

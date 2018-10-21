@@ -21,4 +21,5 @@ Route::get('apps', function () {
 
 Route::prefix('system/')->group(function () {
     Route::get('groups', 'System\GroupsController@list');
+    Route::get('users', 'System\UsersController@list');
 });
