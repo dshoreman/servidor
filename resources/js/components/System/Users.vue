@@ -1,17 +1,17 @@
 <template>
-<div>
-    <sui-input placeholder="Search Users..." class="huge fluid" v-model="search" />
+    <sui-segment>
+        <sui-input placeholder="Search Users..." class="huge fluid" v-model="search" />
 
-    <sui-list divided relaxed>
-        <sui-list-item v-for="user in filteredUsers" :key="user.id"
-            v-if="user.username.includes(search)">
-            <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
-            <sui-list-content>
-                <a is="sui-list-header">{{ user.username }}</a>
-            </sui-list-content>
-        </sui-list-item>
-    </sui-list>
-</div>
+        <sui-list divided relaxed>
+            <sui-list-item v-for="user in filteredUsers" :key="user.id"
+                v-if="user.username.includes(search)">
+                <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
+                <sui-list-content>
+                    <a is="sui-list-header">{{ user.username }}</a>
+                </sui-list-content>
+            </sui-list-item>
+        </sui-list>
+    </sui-segment>
 </template>
 
 <script>

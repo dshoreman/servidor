@@ -6,10 +6,8 @@
             <system-menu></system-menu>
         </sui-grid-column>
 
-        <sui-grid-column stretched :width="12">
-            <sui-segment>
-                @yield('system-content')
-            </sui-segment>
+        <sui-grid-column :width="12">
+            @yield('system-content')
         </sui-grid-column>
     </sui-grid>
 @stop
