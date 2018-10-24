@@ -45,11 +45,30 @@ class GroupsController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->input();
+        $data = $request->validate([
+            'name' => [
+                'required', 'max:32', 'bail',
+                function ($attribute, $value, $fail) {
+                    if (str_contains($value, ':')) {
+                        $fail("The {$attribute} cannot contain a colon.");
+                    }
+
+                    if (str_contains($value, ',')) {
+                        $fail("The {$attribute} cannot contain a comma.");
+                    }
+
+                    if (str_contains($value, ["\t", "\n", ' '])) {
+                        $fail("The {$attribute} cannot contain whitespace or newlines.");
+                    }
+                },
+                'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
+            ],
+            'users' => 'string|nullable',
+        ]);
 
         exec('sudo groupadd '.$data['name'], $output, $retval);
 
-        if ($data['users'] === null) {
+        if ($data['users'] ?? null === null) {
             $data['users'] = '';
         }
 
