@@ -2,11 +2,22 @@
     <sui-grid>
         <sui-grid-column stretched :width="10">
             <sui-segment>
-                <sui-input placeholder="Search Groups..." class="huge fluid" v-model="search" />
+                <sui-form>
+                    <sui-form-field>
+                        <sui-input placeholder="Search Groups..." class="huge fluid"
+                            v-model="search" />
+                    </sui-form-field>
+                    <sui-form-field>
+                        <sui-checkbox toggle label="Show system groups"
+                            v-model="showSysGroups" />
+                    </sui-form-field>
+                </sui-form>
+
+                <sui-divider></sui-divider>
 
                 <sui-list divided relaxed>
                     <sui-list-item v-for="group in filteredGroups" :key="group.id"
-                        v-if="group.name.includes(search)">
+                        v-if="group.name.includes(search) && (showSysGroups || group.id >= 1000)">
                         <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
                         <sui-list-content>
                             <a is="sui-list-header">{{ group.name }}</a>
@@ -42,6 +53,7 @@ export default {
         return {
             groups: [],
             search: '',
+            showSysGroups: true,
             tmpGroup: {
                 name: '',
                 users: '',
