@@ -81,6 +81,9 @@ export default {
 
             axios.post('/api/system/groups', this.tmpGroup).then(response => {
                 this.groups.push(response.data);
+
+                this.tmpGroup.name = '';
+                this.tmpGroup.users = '';
             });
         },
     },
