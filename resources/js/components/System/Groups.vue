@@ -81,6 +81,7 @@ export default {
             }
 
             axios.post('/api/system/groups', this.tmpGroup).then(response => {
+                response.data.id = 9001;
                 this.groups.push(response.data);
 
                 this.showForm = false;
