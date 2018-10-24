@@ -1,6 +1,6 @@
 <template>
     <sui-grid>
-        <sui-grid-column stretched :width="10">
+        <sui-grid-column stretched :width="showForm ? 10 : 16">
             <sui-segment>
                 <sui-form>
                     <sui-form-field>
@@ -35,7 +35,7 @@
             </sui-segment>
         </sui-grid-column>
 
-        <sui-grid-column :width="6">
+        <sui-grid-column :width="6" v-show="showForm">
             <sui-form @submit.prevent="addGroup">
                 <sui-form-field>
                     <label>Name</label>
@@ -54,6 +54,7 @@ export default {
             groups: [],
             search: '',
             showSysGroups: false,
+            showForm: true,
             tmpGroup: {
                 name: '',
                 users: '',
@@ -82,6 +83,7 @@ export default {
             axios.post('/api/system/groups', this.tmpGroup).then(response => {
                 this.groups.push(response.data);
 
+                this.showForm = false;
                 this.tmpGroup.name = '';
                 this.tmpGroup.users = '';
             });
