@@ -1,10 +1,20 @@
 <template>
     <sui-segment>
-        <sui-input placeholder="Search Users..." class="huge fluid" v-model="search" />
+        <sui-form>
+            <sui-form-field>
+                <sui-input placeholder="Search Users..." class="huge fluid" v-model="search" />
+            </sui-form-field>
+            <sui-form-field>
+                <sui-checkbox toggle label="Show system users"
+                    v-model="showSysUsers" />
+            </sui-form-field>
+        </sui-form>
+
+        <sui-divider />
 
         <sui-list divided relaxed>
             <sui-list-item v-for="user in filteredUsers" :key="user.id"
-                v-if="user.username.includes(search)">
+                v-if="user.username.includes(search) && (showSysUsers || user.id >= 1000)">
                 <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
                 <sui-list-content>
                     <a is="sui-list-header">{{ user.username }}</a>
@@ -20,6 +30,7 @@ export default {
         return {
             users: [],
             search: '',
+            showSysUsers: true,
         };
     },
     mounted () {
