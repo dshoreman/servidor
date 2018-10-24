@@ -41,7 +41,11 @@
                     <label>Name</label>
                     <input v-model="tmpGroup.name" placeholder="group-name">
                 </sui-form-field>
-                <sui-button positive>Create</sui-button>
+                <sui-button-group fluid>
+                    <sui-button @click="cancelEdit()">Cancel</sui-button>
+                    <sui-button-or></sui-button-or>
+                    <sui-button positive>Create</sui-button>
+                </sui-button-group>
             </sui-form>
         </sui-grid-column>
     </sui-grid>
@@ -84,11 +88,14 @@ export default {
                 response.data.id = 9001;
                 this.groups.push(response.data);
 
-                this.showForm = false;
-                this.tmpGroup.name = '';
-                this.tmpGroup.users = '';
+                cancelEdit();
             });
         },
+        cancelEdit () {
+            this.showForm = false;
+            this.tmpGroup.name = '';
+            this.tmpGroup.users = '';
+        }
     },
 }
 </script>
