@@ -19,7 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::name('system')->prefix('/system')->namespace('System')->group(function () {
     Route::resource('groups', 'GroupsController', [
-        'only' => ['index'],
+        'only' => ['index', 'store'],
     ]);
 
     Route::resource('users', 'UsersController', [

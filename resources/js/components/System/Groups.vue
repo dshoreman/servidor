@@ -28,7 +28,7 @@
             <sui-form @submit.prevent="addGroup">
                 <sui-form-field>
                     <label>Name</label>
-                    <input placeholder="group-name">
+                    <input v-model="tmpGroup.name" placeholder="group-name">
                 </sui-form-field>
                 <sui-button positive>Create</sui-button>
             </sui-form>
@@ -42,6 +42,10 @@ export default {
         return {
             groups: [],
             search: '',
+            tmpGroup: {
+                name: '',
+                users: '',
+            },
         };
     },
     mounted () {
@@ -56,6 +60,15 @@ export default {
         fetchGroups() {
             axios.get('/api/system/groups').then(response => {
                 this.groups = response.data;
+            });
+        },
+        addGroup () {
+            if (this.tmpGroup.name.trim().length == 0) {
+                return;
+            }
+
+            axios.post('/api/system/groups', this.tmpGroup).then(response => {
+                this.groups.push(response.data);
             });
         },
     },

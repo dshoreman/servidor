@@ -9,6 +9,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateSystemGroupTest extends TestCase
 {
+    public function canCreateWithMinimumData()
+    {
+        $response = $this->postJson('/api/system/groups', [
+            'name' => 'newtestgroup',
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
     /** @test */
     public function nameCannotStartWithDash()
     {
