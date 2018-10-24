@@ -30,7 +30,7 @@ export default {
         return {
             users: [],
             search: '',
-            showSysUsers: true,
+            showSysUsers: false,
         };
     },
     mounted () {

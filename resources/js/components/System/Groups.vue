@@ -53,7 +53,7 @@ export default {
         return {
             groups: [],
             search: '',
-            showSysGroups: true,
+            showSysGroups: false,
             tmpGroup: {
                 name: '',
                 users: '',
