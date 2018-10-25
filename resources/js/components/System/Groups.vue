@@ -38,6 +38,10 @@
                     <sui-icon name="search" />
                     We couldn't find any groups matching your search
                 </sui-header>
+                <div class="inline">
+                    <sui-button @click="search = ''">Clear Search</sui-button>
+                    <sui-button primary @click="showForm = true">Add Group</sui-button>
+                </div>
             </sui-segment>
         </sui-grid-column>
 
@@ -64,7 +68,7 @@ export default {
             groups: [],
             search: '',
             showSysGroups: false,
-            showForm: true,
+            showForm: false,
             tmpGroup: {
                 name: '',
                 users: '',
