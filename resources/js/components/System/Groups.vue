@@ -2,7 +2,7 @@
     <sui-grid>
         <sui-grid-column stretched :width="showForm ? 10 : 16">
             <sui-segment attached>
-                <sui-form>
+                <sui-form @submit.prevent="createFromSearch()">
                     <sui-form-field>
                         <sui-input placeholder="Search Groups..." class="huge fluid"
                             v-model="search" />
@@ -97,6 +97,14 @@ export default {
             axios.get('/api/system/groups').then(response => {
                 this.groups = response.data;
             });
+        },
+        createFromSearch () {
+            if (this.tmpGroup.name.trim().length) {
+                return;
+            }
+
+            this.tmpGroup.name = this.search;
+            this.showForm = true;
         },
         addGroup () {
             if (this.tmpGroup.name.trim().length == 0) {
