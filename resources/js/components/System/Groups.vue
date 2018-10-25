@@ -37,6 +37,9 @@
                 <sui-header icon>
                     <sui-icon name="search" />
                     We couldn't find any groups matching your search
+                    <sui-header-subheader v-if="!showSysGroups">
+                        Are you looking for a system group?
+                    </sui-header-subheader>
                 </sui-header>
                 <div class="inline">
                     <sui-button @click="search = ''">Clear Search</sui-button>
