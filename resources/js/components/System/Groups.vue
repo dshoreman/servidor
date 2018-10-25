@@ -16,8 +16,7 @@
                 <sui-divider></sui-divider>
 
                 <sui-list divided relaxed>
-                    <sui-list-item v-for="group in filteredGroups" :key="group.id"
-                        v-if="group.name.includes(search) && (showSysGroups || group.id >= 1000)">
+                    <sui-list-item v-for="group in filteredGroups" :key="group.id">
                         <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
                         <sui-list-content>
                             <a is="sui-list-header">{{ group.name }}</a>
@@ -70,7 +69,13 @@ export default {
     },
     computed: {
         filteredGroups() {
-            return this.groups.filter(group => group.name.includes(this.search));
+            return this.groups.filter(function (group) {
+                if (!this.showSysGroups && group.id < 1000) {
+                    return false;
+                }
+
+                return group.name.includes(this.search);
+            }, this);
         },
     },
     methods: {
