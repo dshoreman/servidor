@@ -1,7 +1,7 @@
 <template>
     <sui-grid>
         <sui-grid-column stretched :width="showForm ? 10 : 16">
-            <sui-segment>
+            <sui-segment attached>
                 <sui-form>
                     <sui-form-field>
                         <sui-input placeholder="Search Groups..." class="huge fluid"
@@ -12,9 +12,9 @@
                             v-model="showSysGroups" />
                     </sui-form-field>
                 </sui-form>
+            </sui-segment>
 
-                <sui-divider></sui-divider>
-
+            <sui-segment attached v-if="filteredGroups.length">
                 <sui-list divided relaxed>
                     <sui-list-item v-for="group in filteredGroups" :key="group.id">
                         <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
@@ -31,6 +31,13 @@
                         </sui-list-content>
                     </sui-list-item>
                 </sui-list>
+            </sui-segment>
+
+            <sui-segment attached class="placeholder" v-else>
+                <sui-header icon>
+                    <sui-icon name="search" />
+                    We couldn't find any groups matching your search
+                </sui-header>
             </sui-segment>
         </sui-grid-column>
 
