@@ -52,7 +52,7 @@
             <sui-form @submit.prevent="addGroup">
                 <sui-form-field>
                     <label>Name</label>
-                    <input v-model="tmpGroup.name" placeholder="group-name">
+                    <input v-model="tmpGroup.name" ref="name" placeholder="group-name">
                 </sui-form-field>
                 <sui-button-group fluid>
                     <sui-button @click="cancelEdit()">Cancel</sui-button>
@@ -105,6 +105,8 @@ export default {
 
             this.tmpGroup.name = this.search;
             this.showForm = true;
+
+            this.$nextTick(() => this.$refs.name.focus());
         },
         addGroup () {
             if (this.tmpGroup.name.trim().length == 0) {
