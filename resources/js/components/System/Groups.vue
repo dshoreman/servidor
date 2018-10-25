@@ -55,9 +55,9 @@
                     <input v-model="tmpGroup.name" ref="name" placeholder="group-name">
                 </sui-form-field>
                 <sui-button-group fluid>
-                    <sui-button @click="cancelEdit()">Cancel</sui-button>
+                    <sui-button type="button" @click="cancelEdit()">Cancel</sui-button>
                     <sui-button-or></sui-button-or>
-                    <sui-button positive>Create</sui-button>
+                    <sui-button type="submit" positive>Create</sui-button>
                 </sui-button-group>
             </sui-form>
         </sui-grid-column>
