@@ -18,6 +18,21 @@ class CreateSystemGroupTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestgroup']);
+
+        return $response;
+    }
+
+    /**
+     * @test
+     * @depends canCreateWithMinimumData
+     */
+    public function createResponseContainsAllKeys($response)
+    {
+        $response->assertJsonStructure([
+            'id',
+            'name',
+            'users',
+        ]);
     }
 
     /** @test */

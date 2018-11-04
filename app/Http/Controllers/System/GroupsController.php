@@ -74,7 +74,15 @@ class GroupsController extends Controller
 
         switch ($retval) {
             case 0:
-                return response($data, Response::HTTP_CREATED);
+                $group = posix_getgrnam($data['name']);
+
+                $data = [
+                    'id' => $group['gid'],
+                    'name' => $group['name'],
+                    'users' => $group['members'],
+                ];
+
+                break;
             case 2: $data['error'] = 'Invalid command syntax.'; break;
             case 3: $data['error'] = 'Invalid argument to option'; break;
             case 4: $data['error'] = 'GID not unique (when -o not used)'; break;
@@ -82,8 +90,9 @@ class GroupsController extends Controller
             case 10: $data['error'] = "Can't update group file"; break;
         }
 
-        $data['exit_code'] = $retval;
-
-        return response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
+        return response($data, 0 === $retval
+            ? Response::HTTP_CREATED
+            : Response::HTTP_UNPROCESSABLE_ENTITY
+        );
     }
 }
