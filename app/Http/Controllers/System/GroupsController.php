@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
 
 class GroupsController extends Controller
 {
@@ -45,26 +46,7 @@ class GroupsController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => [
-                'required', 'max:32', 'bail',
-                function ($attribute, $value, $fail) {
-                    if (str_contains($value, ':')) {
-                        $fail("The {$attribute} cannot contain a colon.");
-                    }
-
-                    if (str_contains($value, ',')) {
-                        $fail("The {$attribute} cannot contain a comma.");
-                    }
-
-                    if (str_contains($value, ["\t", "\n", ' '])) {
-                        $fail("The {$attribute} cannot contain whitespace or newlines.");
-                    }
-                },
-                'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
-            ],
-            'users' => 'string|nullable',
-        ]);
+        $data = $request->validate($this->validationRules());
 
         exec('sudo groupadd '.$data['name'], $output, $retval);
 
@@ -94,5 +76,81 @@ class GroupsController extends Controller
             ? Response::HTTP_CREATED
             : Response::HTTP_UNPROCESSABLE_ENTITY
         );
+    }
+
+    /**
+     * Update the specified group on the system.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $data = $request->validate($this->validationRules());
+
+        if (!$original = posix_getgrgid($id)) {
+            throw $this->failed("No group found matching the given criteria.");
+        }
+
+        if ($data['name'] != $original['name']) {
+            $options[] = '-n '.$data['name'];
+        }
+
+        if (empty($options ?? null)) {
+            throw $this->failed("Nothing to update!");
+        }
+
+        $options[] = $original['name'];
+
+        exec('sudo groupmod '.implode(' ', $options), $output, $retval);
+
+        if (0 !== $retval) {
+            throw new ValidationException("Something went wrong. Exit code: ".$retval);
+        }
+
+        $updated = posix_getgrgid($id);
+
+        return response([
+            'id' => $updated['gid'],
+            'name' => $updated['name'],
+            'users' => $updated['members'],
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Get the validation rules for system groups
+     *
+     * @return array
+     */
+    protected function validationRules()
+    {
+        return [
+            'name' => [
+                'required', 'max:32', 'bail',
+                function ($attribute, $value, $fail) {
+                    if (str_contains($value, ':')) {
+                        $fail("The {$attribute} cannot contain a colon.");
+                    }
+
+                    if (str_contains($value, ',')) {
+                        $fail("The {$attribute} cannot contain a comma.");
+                    }
+
+                    if (str_contains($value, ["\t", "\n", ' '])) {
+                        $fail("The {$attribute} cannot contain whitespace or newlines.");
+                    }
+                },
+                'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
+            ],
+            'users' => 'string|nullable',
+        ];
+    }
+
+    protected function failed($message, $key = 'id')
+    {
+        return ValidationException::withMessages([
+            $key => $message,
+        ]);
     }
 }

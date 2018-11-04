@@ -19,7 +19,7 @@
                     <sui-list-item v-for="group in filteredGroups" :key="group.id">
                         <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
                         <sui-list-content>
-                            <a is="sui-list-header">{{ group.name }}</a>
+                            <a is="sui-list-header" @click="openEditor(group)">{{ group.name }}</a>
                             <sui-list-description>
                                 <sui-list bulleted horizontal>
                                     <span v-for="(user, id) in group.users.split(',')"
@@ -49,7 +49,7 @@
         </sui-grid-column>
 
         <sui-grid-column :width="6" v-show="showForm">
-            <sui-form @submit.prevent="addGroup">
+            <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id) : addGroup">
                 <sui-form-field>
                     <label>Name</label>
                     <input v-model="tmpGroup.name" ref="name" placeholder="group-name">
@@ -57,7 +57,7 @@
                 <sui-button-group fluid>
                     <sui-button type="button" @click="cancelEdit()">Cancel</sui-button>
                     <sui-button-or></sui-button-or>
-                    <sui-button type="submit" positive>Create</sui-button>
+                    <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
                 </sui-button-group>
             </sui-form>
         </sui-grid-column>
@@ -72,6 +72,7 @@ export default {
             search: '',
             showSysGroups: false,
             showForm: false,
+            editMode: false,
             tmpGroup: {
                 name: '',
                 users: '',
@@ -104,6 +105,7 @@ export default {
             }
 
             this.tmpGroup.name = this.search;
+            this.editMode = false;
             this.showForm = true;
 
             this.$nextTick(() => this.$refs.name.focus());
@@ -120,8 +122,21 @@ export default {
                 cancelEdit();
             });
         },
+        updateGroup (id) {
+            axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
+                cancelEdit();
+            });
+        },
+        openEditor (group) {
+            this.tmpGroup = group;
+            this.editMode = true;
+            this.showForm = true;
+        },
         cancelEdit () {
             this.showForm = false;
+            this.editMode = false;
+
+            this.tmpGroup.id = 0;
             this.tmpGroup.name = '';
             this.tmpGroup.users = '';
         }
