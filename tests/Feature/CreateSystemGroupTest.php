@@ -109,6 +109,17 @@ class CreateSystemGroupTest extends TestCase
     }
 
     /** @test */
+    public function nameEndingWithWhitespaceGetsTrimmed()
+    {
+        $response = $this->postJson('/api/system/groups', [
+            'name' => 'testgroup ',
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonFragment(['name' => 'testgroup']);
+    }
+
+    /** @test */
     public function nameCannotBeTooLong()
     {
         $response = $this->postJson('/api/system/groups', [
