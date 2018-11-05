@@ -49,7 +49,7 @@
         </sui-grid-column>
 
         <sui-grid-column :width="6" v-show="showForm">
-            <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id) : addGroup">
+            <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id) : addGroup()">
                 <sui-form-field>
                     <label>Name</label>
                     <input v-model="tmpGroup.name" ref="name" placeholder="group-name">
@@ -59,6 +59,12 @@
                     <sui-button-or></sui-button-or>
                     <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
                 </sui-button-group>
+
+                <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
+                <sui-segment class="red" v-show="editMode">
+                    <sui-button negative icon="trash" type="button"
+                        content="Delete Group" @click="deleteGroup(tmpGroup.id)" />
+                </sui-segment>
             </sui-form>
         </sui-grid-column>
     </sui-grid>
@@ -124,6 +130,14 @@ export default {
         },
         updateGroup (id) {
             axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
+                cancelEdit();
+            });
+        },
+        deleteGroup (id) {
+            axios.delete('/api/system/groups/'+id).then(response => {
+                let index = this.groups.indexOf(this.tmpGroup);
+                this.groups.splice(index, 1);
+
                 cancelEdit();
             });
         },

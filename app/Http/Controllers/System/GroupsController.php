@@ -119,6 +119,21 @@ class GroupsController extends Controller
     }
 
     /**
+     * Remove the specified group from the system.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        if ($group = posix_getgrgid($id)) {
+            exec('sudo groupdel '.$group['name']);
+        }
+
+        return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Get the validation rules for system groups
      *
      * @return array
