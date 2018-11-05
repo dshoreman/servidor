@@ -125,12 +125,12 @@ export default {
                 response.data.id = 9001;
                 this.groups.push(response.data);
 
-                cancelEdit();
+                this.cancelEdit();
             });
         },
         updateGroup (id) {
             axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
-                cancelEdit();
+                this.cancelEdit();
             });
         },
         deleteGroup (id) {
@@ -138,7 +138,7 @@ export default {
                 let index = this.groups.indexOf(this.tmpGroup);
                 this.groups.splice(index, 1);
 
-                cancelEdit();
+                this.cancelEdit();
             });
         },
         openEditor (group) {
