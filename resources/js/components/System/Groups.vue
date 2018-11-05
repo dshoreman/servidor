@@ -22,7 +22,7 @@
                             <a is="sui-list-header" @click="openEditor(group)">{{ group.name }}</a>
                             <sui-list-description>
                                 <sui-list bulleted horizontal>
-                                    <span v-for="(user, id) in group.users.split(',')"
+                                    <span v-for="(user, id) in group.users"
                                         :key="id" is="sui-list-item">
                                         {{ user }}
                                     </span>

@@ -22,7 +22,10 @@ class GroupsController extends Controller
         $groups = collect();
 
         foreach ($lines as $line) {
-            $groups->push(array_combine($keys, explode(':', $line)));
+            $group = array_combine($keys, explode(':', $line));
+            $group['users'] = explode(',', $group['users']);
+
+            $groups->push($group);
         }
 
         return $groups;
