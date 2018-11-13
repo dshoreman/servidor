@@ -51,7 +51,13 @@ class GroupsController extends Controller
     {
         $data = $request->validate($this->validationRules());
 
-        exec('sudo groupadd '.$data['name'], $output, $retval);
+        if ((int) ($data['id'] ?? null) > 0) {
+            $options[] = '-g '.(int) $data['id'];
+        }
+
+        $options[] = $data['name'];
+
+        exec('sudo groupadd '.implode(' ', $options), $output, $retval);
 
         if ($data['users'] ?? null === null) {
             $data['users'] = '';
@@ -90,6 +96,7 @@ class GroupsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $new_id = $id;
         $data = $request->validate($this->validationRules());
 
         if (!$original = posix_getgrgid($id)) {
@@ -98,6 +105,11 @@ class GroupsController extends Controller
 
         if ($data['name'] != $original['name']) {
             $options[] = '-n '.$data['name'];
+        }
+
+        if ($data['id'] != $id && (int) $data['id'] > 0) {
+            $new_id = (int) $data['id'];
+            $options[] = '-g '.$new_id;
         }
 
         if (empty($options ?? null)) {
@@ -112,7 +124,7 @@ class GroupsController extends Controller
             throw new ValidationException("Something went wrong. Exit code: ".$retval);
         }
 
-        $updated = posix_getgrgid($id);
+        $updated = posix_getgrgid($new_id);
 
         return response([
             'id' => $updated['gid'],
@@ -161,7 +173,8 @@ class GroupsController extends Controller
                 },
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
-            'users' => 'string|nullable',
+            'id' => 'integer|nullable',
+            'users' => 'array|nullable',
         ];
     }
 

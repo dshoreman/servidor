@@ -49,11 +49,17 @@
         </sui-grid-column>
 
         <sui-grid-column :width="6" v-show="showForm">
-            <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id) : addGroup()">
-                <sui-form-field>
-                    <label>Name</label>
-                    <input v-model="tmpGroup.name" ref="name" placeholder="group-name">
-                </sui-form-field>
+            <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id_original) : addGroup()">
+                <sui-form-fields>
+                    <sui-form-field width="ten">
+                        <label>Name</label>
+                        <input v-model="tmpGroup.name" ref="name" placeholder="group-name">
+                    </sui-form-field>
+                    <sui-form-field width="six">
+                        <label>GID</label>
+                        <input v-model="tmpGroup.id" type="number">
+                    </sui-form-field>
+                </sui-form-fields>
                 <sui-button-group fluid>
                     <sui-button type="button" @click="cancelEdit()">Cancel</sui-button>
                     <sui-button-or></sui-button-or>
@@ -93,7 +99,7 @@ export default {
             editMode: false,
             tmpGroup: {
                 name: '',
-                users: '',
+                users: [],
             },
         };
     },
@@ -134,7 +140,6 @@ export default {
             }
 
             axios.post('/api/system/groups', this.tmpGroup).then(response => {
-                response.data.id = 9001;
                 this.groups.push(response.data);
 
                 this.cancelEdit();
@@ -142,6 +147,12 @@ export default {
         },
         updateGroup (id) {
             axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
+                let index = this.groups.findIndex(
+                    group => group.id === this.tmpGroup.id_original
+                );
+
+                Vue.set(this.groups, index, response.data);
+
                 this.cancelEdit();
             });
         },
@@ -154,7 +165,8 @@ export default {
             });
         },
         openEditor (group) {
-            this.tmpGroup = group;
+            this.tmpGroup = Object.assign({}, group);
+            this.tmpGroup.id_original = group.id;
             this.editMode = true;
             this.showForm = true;
         },
@@ -162,9 +174,10 @@ export default {
             this.showForm = false;
             this.editMode = false;
 
-            this.tmpGroup.id = 0;
+            this.tmpGroup.id = null;
+            this.tmpGroup.id_original = null;
             this.tmpGroup.name = '';
-            this.tmpGroup.users = '';
+            this.tmpGroup.users = [];
         }
     },
 }
