@@ -23,7 +23,7 @@ class GroupsController extends Controller
 
         foreach ($lines as $line) {
             $group = array_combine($keys, explode(':', $line));
-            $group['users'] = explode(',', $group['users']);
+            $group['users'] = $group['users'] == '' ? [] : explode(',', $group['users']);
 
             $groups->push($group);
         }
