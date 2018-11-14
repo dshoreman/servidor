@@ -16,20 +16,9 @@
 
             <sui-segment attached v-if="filteredGroups.length">
                 <sui-list divided relaxed>
-                    <sui-list-item v-for="group in filteredGroups" :key="group.id">
-                        <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
-                        <sui-list-content>
-                            <a is="sui-list-header" @click="openEditor(group)">{{ group.name }}</a>
-                            <sui-list-description>
-                                <sui-list bulleted horizontal>
-                                    <span v-for="(user, id) in group.users"
-                                        :key="id" is="sui-list-item">
-                                        {{ user }}
-                                    </span>
-                                </sui-list>
-                            </sui-list-description>
-                        </sui-list-content>
-                    </sui-list-item>
+                    <system-group-item v-for="group in filteredGroups"
+                        :group="group" :key="group.id"
+                        @edit="openEditor" />
                 </sui-list>
             </sui-segment>
 
@@ -89,7 +78,12 @@
 </template>
 
 <script>
+import SystemGroupItem from './GroupItem';
+
 export default {
+    components: {
+        SystemGroupItem,
+    },
     data () {
         return {
             groups: [],
