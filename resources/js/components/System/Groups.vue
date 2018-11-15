@@ -37,52 +37,19 @@
             </sui-segment>
         </sui-grid-column>
 
-        <sui-grid-column :width="6" v-show="showForm">
-            <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id_original) : addGroup()">
-                <sui-form-fields>
-                    <sui-form-field width="ten">
-                        <label>Name</label>
-                        <input v-model="tmpGroup.name" ref="name" placeholder="group-name">
-                    </sui-form-field>
-                    <sui-form-field width="six">
-                        <label>GID</label>
-                        <input v-model="tmpGroup.id" type="number">
-                    </sui-form-field>
-                </sui-form-fields>
-                <sui-button-group fluid>
-                    <sui-button type="button" @click="cancelEdit()">Cancel</sui-button>
-                    <sui-button-or></sui-button-or>
-                    <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
-                </sui-button-group>
-
-                <div v-if="tmpGroup.users.length">
-                    <sui-header size="small" v-show="editMode">Group Members</sui-header>
-                    <sui-list divided relaxed>
-                        <sui-list-item v-for="user in tmpGroup.users" :key="user">
-                            <sui-list-icon name="user" size="large" vertical-align="middle" />
-                            <sui-list-content>
-                                <sui-list-header>{{ user }}</sui-list-header>
-                            </sui-list-content>
-                        </sui-list-item>
-                    </sui-list>
-                </div>
-
-                <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
-                <sui-segment class="red" v-show="editMode">
-                    <sui-button negative icon="trash" type="button"
-                        content="Delete Group" @click="deleteGroup(tmpGroup.id)" />
-                </sui-segment>
-            </sui-form>
-        </sui-grid-column>
+        <system-group-editor :showForm="showForm" :tmpGroup="tmpGroup"
+            @created="addGroup" @updated="updated" @close="cancelEdit" />
     </sui-grid>
 </template>
 
 <script>
 import SystemGroupItem from './GroupItem';
+import SystemGroupEditor from './GroupEditor';
 
 export default {
     components: {
         SystemGroupItem,
+        SystemGroupEditor,
     },
     data () {
         return {
@@ -90,7 +57,6 @@ export default {
             search: '',
             showSysGroups: false,
             showForm: false,
-            editMode: false,
             tmpGroup: {
                 name: '',
                 users: [],
@@ -123,50 +89,33 @@ export default {
             }
 
             this.tmpGroup.name = this.search;
-            this.editMode = false;
             this.showForm = true;
 
-            this.$nextTick(() => this.$refs.name.focus());
+            this.$nextTick(() => this.$root.$emit('load-group-editor', false));
         },
-        addGroup () {
-            if (this.tmpGroup.name.trim().length == 0) {
-                return;
-            }
+        addGroup (group) {
+            this.groups.push(group);
 
-            axios.post('/api/system/groups', this.tmpGroup).then(response => {
-                this.groups.push(response.data);
-
-                this.cancelEdit();
-            });
+            this.cancelEdit();
         },
-        updateGroup (id) {
-            axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
-                let index = this.groups.findIndex(
-                    group => group.id === this.tmpGroup.id_original
-                );
+        updated (group, old_id) {
+            let index = this.groups.findIndex(
+                g => g.id === old_id
+            );
 
-                Vue.set(this.groups, index, response.data);
+            Vue.set(this.groups, index, group);
 
-                this.cancelEdit();
-            });
-        },
-        deleteGroup (id) {
-            axios.delete('/api/system/groups/'+id).then(response => {
-                let index = this.groups.indexOf(this.tmpGroup);
-                this.groups.splice(index, 1);
-
-                this.cancelEdit();
-            });
+            this.cancelEdit();
         },
         openEditor (group) {
             this.tmpGroup = Object.assign({}, group);
             this.tmpGroup.id_original = group.id;
-            this.editMode = true;
+
+            this.$root.$emit('load-group-editor', true);
             this.showForm = true;
         },
         cancelEdit () {
             this.showForm = false;
-            this.editMode = false;
 
             this.tmpGroup.id = null;
             this.tmpGroup.id_original = null;
