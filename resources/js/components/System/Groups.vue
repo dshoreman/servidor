@@ -99,12 +99,10 @@ export default {
 
             this.cancelEdit();
         },
-        updated (group, old_id) {
-            let index = this.groups.findIndex(
-                g => g.id === old_id
-            );
+        updated (gid, new_group) {
+            let index = this.groups.findIndex(g => g.id === gid);
 
-            Vue.set(this.groups, index, group);
+            Vue.set(this.groups, index, new_group);
 
             this.cancelEdit();
         },

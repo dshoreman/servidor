@@ -72,7 +72,9 @@ export default {
         },
         updateGroup (id) {
             axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
-                this.$emit('updated', reponse.data, this.tmpGroup.id_original);
+                this.$nextTick(() =>
+                    this.$emit('updated', this.tmpGroup.id_original, response.data)
+                );
             });
         },
         deleteGroup (id) {
