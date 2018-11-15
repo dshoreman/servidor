@@ -77,10 +77,7 @@ export default {
         },
         deleteGroup (id) {
             axios.delete('/api/system/groups/'+id).then(response => {
-                let index = this.groups.indexOf(this.tmpGroup);
-                this.groups.splice(index, 1);
-
-                this.closeEditor();
+                this.$emit('deleted', this.tmpGroup.id_original);
             });
         },
     }

@@ -38,7 +38,8 @@
         </sui-grid-column>
 
         <system-group-editor :showForm="showForm" :tmpGroup="tmpGroup"
-            @created="addGroup" @updated="updated" @close="cancelEdit" />
+            @created="addGroup" @updated="updated" @deleted="deleted"
+            @close="cancelEdit" />
     </sui-grid>
 </template>
 
@@ -104,6 +105,13 @@ export default {
             );
 
             Vue.set(this.groups, index, group);
+
+            this.cancelEdit();
+        },
+        deleted (gid) {
+            let index = this.groups.findIndex(g => g.id === gid);
+
+            this.groups.splice(index, 1);
 
             this.cancelEdit();
         },
