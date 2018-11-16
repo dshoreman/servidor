@@ -1,5 +1,4 @@
 <template>
-    <sui-grid-column :width="6" v-show="showForm">
         <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id_original) : addGroup()">
             <sui-form-fields>
                 <sui-form-field width="ten">
@@ -12,7 +11,7 @@
                 </sui-form-field>
             </sui-form-fields>
             <sui-button-group fluid>
-                <sui-button type="button" @click="closeEditor()">Cancel</sui-button>
+                <sui-button type="button" @click="reset()">Cancel</sui-button>
                 <sui-button-or></sui-button-or>
                 <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
             </sui-button-group>
@@ -35,32 +34,39 @@
                     content="Delete Group" @click="deleteGroup(tmpGroup.id)" />
             </sui-segment>
         </sui-form>
-    </sui-grid-column>
 </template>
 
 <script>
 export default {
-    props: {
-        showForm: Boolean,
-        tmpGroup: Object,
-    },
     data () {
         return {
             editMode: false,
+            tmpGroup: {
+                name: '',
+                users: [],
+            },
         };
     },
     created () {
-        this.$root.$on('load-group-editor', (editing) => {
-            this.editMode = editing;
-            this.$refs.name.focus();
+        this.$root.$on('change-editor-group', (group) => {
+            this.editMode = typeof group == 'object';
+
+            if (!this.editMode) {
+                group = {
+                    id: null,
+                    name: group,
+                };
+            }
+
+            this.tmpGroup = Object.assign({}, group);
+            this.tmpGroup.id_original = group.id;
+            this.tmpGroup.users = [];
+
+            this.$emit('open');
+            this.$nextTick(() => this.$refs.name.focus());
         });
     },
     methods: {
-        closeEditor () {
-            this.editMode = false;
-
-            this.$emit('close');
-        },
         addGroup () {
             if (this.tmpGroup.name.trim().length == 0) {
                 return;
@@ -68,19 +74,36 @@ export default {
 
             axios.post('/api/system/groups', this.tmpGroup).then(response => {
                 this.$nextTick(() => this.$emit('created', response.data));
+
+                this.reset();
             });
         },
         updateGroup (id) {
             axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
-                this.$nextTick(() =>
-                    this.$emit('updated', this.tmpGroup.id_original, response.data)
-                );
+                let gid = this.tmpGroup.id_original;
+
+                this.$nextTick(() => this.$emit('updated', gid, response.data));
+
+                this.reset();
             });
         },
         deleteGroup (id) {
             axios.delete('/api/system/groups/'+id).then(response => {
                 this.$emit('deleted', this.tmpGroup.id_original);
+
+                this.reset();
             });
+        },
+        reset () {
+            this.$emit('close');
+            this.editMode = false;
+
+            this.tmpGroup = {
+                id: null,
+                id_original: null,
+                name: '',
+                users: [],
+            };
         },
     }
 }

@@ -1,8 +1,8 @@
 <template>
     <sui-grid>
-        <sui-grid-column stretched :width="showForm ? 10 : 16">
+        <sui-grid-column stretched :width="listWidth">
             <sui-segment attached>
-                <sui-form @submit.prevent="createFromSearch()">
+                <sui-form @submit.prevent="edit(search)">
                     <sui-form-field>
                         <sui-input placeholder="Search Groups..." class="huge fluid"
                             v-model="search" />
@@ -17,8 +17,7 @@
             <sui-segment attached v-if="filteredGroups.length">
                 <sui-list divided relaxed>
                     <system-group-item v-for="group in filteredGroups"
-                        :group="group" :key="group.id"
-                        @edit="openEditor" />
+                        :group="group" :key="group.id" @edit="edit" />
                 </sui-list>
             </sui-segment>
 
@@ -32,14 +31,15 @@
                 </sui-header>
                 <div class="inline">
                     <sui-button @click="search = ''">Clear Search</sui-button>
-                    <sui-button primary @click="showForm = true">Add Group</sui-button>
+                    <sui-button primary @click="edit">Add Group</sui-button>
                 </div>
             </sui-segment>
         </sui-grid-column>
 
-        <system-group-editor :showForm="showForm" :tmpGroup="tmpGroup"
-            @created="addGroup" @updated="updated" @deleted="deleted"
-            @close="cancelEdit" />
+        <sui-grid-column :width="6" v-show="editing">
+            <system-group-editor @open="expand" @close="collapse"
+                @created="created" @updated="updated" @deleted="deleted" />
+        </sui-grid-column>
     </sui-grid>
 </template>
 
@@ -56,16 +56,12 @@ export default {
         return {
             groups: [],
             search: '',
+            editing: false,
             showSysGroups: false,
-            showForm: false,
-            tmpGroup: {
-                name: '',
-                users: [],
-            },
         };
     },
     mounted () {
-        this.fetchGroups();
+        this.fetch();
     },
     computed: {
         filteredGroups() {
@@ -77,57 +73,42 @@ export default {
                 return group.name.includes(this.search);
             }, this);
         },
+        listWidth() {
+            return this.editing ? 10 : 16;
+        },
     },
     methods: {
-        fetchGroups() {
+        fetch() {
             axios.get('/api/system/groups').then(response => {
                 this.groups = response.data;
             });
         },
-        createFromSearch () {
-            if (this.tmpGroup.name.trim().length) {
+        expand () {
+            this.editing = true;
+        },
+        collapse () {
+            this.editing = false;
+        },
+        edit (group) {
+            if (this.editing) {
                 return;
             }
 
-            this.tmpGroup.name = this.search;
-            this.showForm = true;
-
-            this.$nextTick(() => this.$root.$emit('load-group-editor', false));
+            this.$root.$emit('change-editor-group', group);
         },
-        addGroup (group) {
+        created (group) {
             this.groups.push(group);
-
-            this.cancelEdit();
         },
         updated (gid, new_group) {
             let index = this.groups.findIndex(g => g.id === gid);
 
             Vue.set(this.groups, index, new_group);
-
-            this.cancelEdit();
         },
         deleted (gid) {
             let index = this.groups.findIndex(g => g.id === gid);
 
             this.groups.splice(index, 1);
-
-            this.cancelEdit();
         },
-        openEditor (group) {
-            this.tmpGroup = Object.assign({}, group);
-            this.tmpGroup.id_original = group.id;
-
-            this.$root.$emit('load-group-editor', true);
-            this.showForm = true;
-        },
-        cancelEdit () {
-            this.showForm = false;
-
-            this.tmpGroup.id = null;
-            this.tmpGroup.id_original = null;
-            this.tmpGroup.name = '';
-            this.tmpGroup.users = [];
-        }
     },
 }
 </script>
