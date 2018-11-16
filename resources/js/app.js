@@ -1,6 +1,7 @@
 import './bootstrap';
 import Vue from 'vue';
 import SuiVue from 'semantic-ui-vue';
+import store from './store'
 
 window.Vue = Vue;
 
@@ -14,5 +15,6 @@ Vue.component('system-groups', require('./components/System/Groups.vue'));
 Vue.component('system-users', require('./components/System/Users.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store
 });

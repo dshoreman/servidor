@@ -73,23 +73,24 @@ export default {
             }
 
             axios.post('/api/system/groups', this.tmpGroup).then(response => {
-                this.$nextTick(() => this.$emit('created', response.data));
+                this.$store.commit('createGroup', response.data)
 
                 this.reset();
             });
         },
         updateGroup (id) {
             axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
-                let gid = this.tmpGroup.id_original;
-
-                this.$nextTick(() => this.$emit('updated', gid, response.data));
+                this.$store.commit('updateGroup', {
+                    gid: this.tmpGroup.id_original,
+                    group: response.data
+                });
 
                 this.reset();
             });
         },
         deleteGroup (id) {
             axios.delete('/api/system/groups/'+id).then(response => {
-                this.$emit('deleted', this.tmpGroup.id_original);
+                this.$store.commit('removeGroup', this.tmpGroup.id_original);
 
                 this.reset();
             });

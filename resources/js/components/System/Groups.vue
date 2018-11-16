@@ -37,8 +37,7 @@
         </sui-grid-column>
 
         <sui-grid-column :width="6" v-show="editing">
-            <system-group-editor @open="expand" @close="collapse"
-                @created="created" @updated="updated" @deleted="deleted" />
+            <system-group-editor @open="expand" @close="collapse" />
         </sui-grid-column>
     </sui-grid>
 </template>
@@ -54,16 +53,18 @@ export default {
     },
     data () {
         return {
-            groups: [],
             search: '',
             editing: false,
             showSysGroups: false,
         };
     },
     mounted () {
-        this.fetch();
+        this.$store.dispatch('loadGroups');
     },
     computed: {
+        groups() {
+            return this.$store.getters.groups;
+        },
         filteredGroups() {
             return this.groups.filter(function (group) {
                 if (!this.showSysGroups && group.id < 1000) {
@@ -78,11 +79,6 @@ export default {
         },
     },
     methods: {
-        fetch() {
-            axios.get('/api/system/groups').then(response => {
-                this.groups = response.data;
-            });
-        },
         expand () {
             this.editing = true;
         },
@@ -95,19 +91,6 @@ export default {
             }
 
             this.$root.$emit('change-editor-group', group);
-        },
-        created (group) {
-            this.groups.push(group);
-        },
-        updated (gid, new_group) {
-            let index = this.groups.findIndex(g => g.id === gid);
-
-            Vue.set(this.groups, index, new_group);
-        },
-        deleted (gid) {
-            let index = this.groups.findIndex(g => g.id === gid);
-
-            this.groups.splice(index, 1);
         },
     },
 }
