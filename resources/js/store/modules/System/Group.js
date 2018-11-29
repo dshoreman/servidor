@@ -1,11 +1,47 @@
 export default {
     state: {
         groups: [],
+        group: {
+            name: '',
+            users: [],
+        },
         editing: false,
+        editMode: false,
     },
     mutations: {
         setGroups: (state, groups) => {
             state.groups = groups;
+        },
+        setEditorGroup: (state, group) => {
+            if (state.editing) {
+                return;
+            }
+
+            state.editMode = typeof group == 'object';
+
+            if (!state.editMode) {
+                group = {
+                    id: null,
+                    name: group,
+                };
+            }
+
+            state.group = Object.assign({}, group);
+            state.group.id_original = group.id;
+            state.group.users = [];
+
+            state.editing = true;
+        },
+        unsetEditorGroup: (state) => {
+            state.editing = false;
+            state.editMode = false;
+
+            state.group = {
+                id: null,
+                name: '',
+                users: [],
+                id_original: null,
+            };
         },
         createGroup: (state, group) => {
             state.groups.push(group);

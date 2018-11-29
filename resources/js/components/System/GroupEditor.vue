@@ -37,34 +37,20 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
+
 export default {
-    data () {
-        return {
-            editMode: false,
-            tmpGroup: {
-                name: '',
-                users: [],
-            },
-        };
+    computed: {
+        ...mapState({
+            editing: state => state.Group.editing,
+            editMode: state => state.Group.editMode,
+            tmpGroup: state => state.Group.group,
+        }),
     },
-    created () {
-        this.$root.$on('change-editor-group', (group) => {
-            this.editMode = typeof group == 'object';
-
-            if (!this.editMode) {
-                group = {
-                    id: null,
-                    name: group,
-                };
-            }
-
-            this.tmpGroup = Object.assign({}, group);
-            this.tmpGroup.id_original = group.id;
-            this.tmpGroup.users = [];
-
-            this.$store.state.Group.editing = true;
-            this.$nextTick(() => this.$refs.name.focus());
-        });
+    watch: {
+        editing (editing) {
+            (!editing) || this.$nextTick(() => this.$refs.name.focus());
+        },
     },
     methods: {
         addGroup () {
@@ -96,15 +82,7 @@ export default {
             });
         },
         reset () {
-            this.$store.state.Group.editing = false;
-            this.editMode = false;
-
-            this.tmpGroup = {
-                id: null,
-                id_original: null,
-                name: '',
-                users: [],
-            };
+            this.$store.commit('unsetEditorGroup');
         },
     }
 }

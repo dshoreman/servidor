@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
 import SystemGroupItem from './GroupItem';
 import SystemGroupEditor from './GroupEditor';
 
@@ -61,12 +62,12 @@ export default {
         this.$store.dispatch('loadGroups');
     },
     computed: {
-        editing () {
-            return this.$store.state.Group.editing;
-        },
-        groups() {
-            return this.$store.getters.groups;
-        },
+        ...mapState({
+            editing: state => state.Group.editing,
+        }),
+        ...mapGetters([
+            'groups',
+        ]),
         filteredGroups() {
             return this.groups.filter(function (group) {
                 if (!this.showSysGroups && group.id < 1000) {
@@ -82,11 +83,7 @@ export default {
     },
     methods: {
         edit (group) {
-            if (this.editing) {
-                return;
-            }
-
-            this.$root.$emit('change-editor-group', group);
+            this.$store.commit('setEditorGroup', group);
         },
     },
 }
