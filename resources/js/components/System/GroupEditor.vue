@@ -62,7 +62,7 @@ export default {
             this.tmpGroup.id_original = group.id;
             this.tmpGroup.users = [];
 
-            this.$emit('open');
+            this.$store.state.Group.editing = true;
             this.$nextTick(() => this.$refs.name.focus());
         });
     },
@@ -96,7 +96,7 @@ export default {
             });
         },
         reset () {
-            this.$emit('close');
+            this.$store.state.Group.editing = false;
             this.editMode = false;
 
             this.tmpGroup = {

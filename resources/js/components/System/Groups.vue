@@ -37,7 +37,7 @@
         </sui-grid-column>
 
         <sui-grid-column :width="6" v-show="editing">
-            <system-group-editor @open="expand" @close="collapse" />
+            <system-group-editor />
         </sui-grid-column>
     </sui-grid>
 </template>
@@ -54,7 +54,6 @@ export default {
     data () {
         return {
             search: '',
-            editing: false,
             showSysGroups: false,
         };
     },
@@ -62,6 +61,9 @@ export default {
         this.$store.dispatch('loadGroups');
     },
     computed: {
+        editing () {
+            return this.$store.state.Group.editing;
+        },
         groups() {
             return this.$store.getters.groups;
         },
@@ -79,12 +81,6 @@ export default {
         },
     },
     methods: {
-        expand () {
-            this.editing = true;
-        },
-        collapse () {
-            this.editing = false;
-        },
         edit (group) {
             if (this.editing) {
                 return;

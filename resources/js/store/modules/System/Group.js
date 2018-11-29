@@ -1,6 +1,7 @@
 export default {
     state: {
         groups: [],
+        editing: false,
     },
     mutations: {
         setGroups: (state, groups) => {
