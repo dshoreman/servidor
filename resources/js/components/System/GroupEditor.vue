@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id_original) : addGroup()">
+    <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id_original) : createGroup()">
         <sui-form-fields>
             <sui-form-field width="ten">
                 <label>Name</label>
@@ -53,37 +53,22 @@ export default {
         },
     },
     methods: {
-        addGroup () {
+        createGroup () {
             if (this.tmpGroup.name.trim().length == 0) {
                 return;
             }
 
-            axios.post('/api/system/groups', this.tmpGroup).then(response => {
-                this.$store.commit('createGroup', response.data)
-
-                this.reset();
-            });
+            this.$store.dispatch('createGroup', this.tmpGroup);
         },
         updateGroup (id) {
-            axios.put('/api/system/groups/'+id, this.tmpGroup).then(response => {
-                this.$store.commit('updateGroup', {
-                    gid: this.tmpGroup.id_original,
-                    group: response.data
-                });
-
-                this.reset();
-            });
+            this.$store.dispatch('updateGroup', {id, data: this.tmpGroup});
         },
         deleteGroup (id) {
-            axios.delete('/api/system/groups/'+id).then(response => {
-                this.$store.commit('removeGroup', this.tmpGroup.id_original);
-
-                this.reset();
-            });
+            this.$store.dispatch('deleteGroup', id);
         },
         reset () {
             this.$store.commit('unsetEditorGroup');
         },
-    }
-}
+    },
+};
 </script>

@@ -43,7 +43,7 @@ export default {
                 id_original: null,
             };
         },
-        createGroup: (state, group) => {
+        addGroup: (state, group) => {
             state.groups.push(group);
         },
         updateGroup: (state, {gid, group}) => {
@@ -61,6 +61,27 @@ export default {
         loadGroups: ({commit}) => {
             axios.get('/api/system/groups').then(response => {
                 commit('setGroups', response.data);
+            });
+        },
+        createGroup: ({commit, state}) => {
+            axios.post('/api/system/groups', state.group).then(response => {
+                commit('addGroup', response.data);
+                commit('unsetEditorGroup');
+            });
+        },
+        updateGroup: ({commit}, group) => {
+            axios.put('/api/system/groups/'+group.id, group.data).then(response => {
+                commit('updateGroup', {
+                    gid: group.id,
+                    group: response.data
+                });
+                commit('unsetEditorGroup');
+            });
+        },
+        deleteGroup: ({commit, state}, id) => {
+            axios.delete('/api/system/groups/'+id).then(response => {
+                commit('removeGroup', state.group.id_original);
+                commit('unsetEditorGroup');
             });
         },
     },
