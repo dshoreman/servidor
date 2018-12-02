@@ -16,17 +16,15 @@
             <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
         </sui-button-group>
 
-        <div v-if="tmpGroup.users.length">
-            <sui-header size="small" v-show="editMode">Group Members</sui-header>
-            <sui-list divided relaxed>
-                <sui-list-item v-for="user in tmpGroup.users" :key="user">
-                    <sui-list-icon name="user" size="large" vertical-align="middle" />
-                    <sui-list-content>
-                        <sui-list-header>{{ user }}</sui-list-header>
-                    </sui-list-content>
-                </sui-list-item>
-            </sui-list>
-        </div>
+        <sui-header size="small" v-show="editMode">Group Members</sui-header>
+        <sui-list divided relaxed v-show="editMode">
+            <sui-list-item v-for="user in tmpGroup.users" :key="user">
+                <sui-list-icon name="user" size="large" vertical-align="middle" />
+                <sui-list-content>
+                    <sui-list-header>{{ user }}</sui-list-header>
+                </sui-list-content>
+            </sui-list-item>
+        </sui-list>
 
         <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
         <sui-segment class="red" v-show="editMode">

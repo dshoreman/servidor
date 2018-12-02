@@ -23,12 +23,12 @@ export default {
                 group = {
                     id: null,
                     name: group,
+                    users: [],
                 };
             }
 
             state.group = Object.assign({}, group);
             state.group.id_original = group.id;
-            state.group.users = [];
 
             state.editing = true;
         },
