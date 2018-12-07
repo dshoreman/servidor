@@ -5,7 +5,7 @@
                  {{ hostname }}
             </sui-statistic-value>
             <sui-statistic-label>
-                <i class="circular inverted orange linux icon" /> Ubuntu 18.04
+                <i class="circular inverted orange linux icon" /> {{ distro }} {{ version }}
             </sui-statistic-label>
         </sui-statistic in-group>
         <!-- todo: add cpu, mem, hdd minigraphs floated on the right -->
@@ -14,6 +14,6 @@
 
 <script>
 export default {
-  props: ['hostname']
+  props: ['hostname', 'distro', 'version']
 }
 </script>
