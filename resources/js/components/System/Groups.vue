@@ -1,48 +1,89 @@
 <template>
-<div>
-    <sui-input placeholder="Search Groups..." class="huge fluid" v-model="search" />
+    <sui-grid>
+        <sui-grid-column stretched :width="listWidth">
+            <sui-segment attached>
+                <sui-form @submit.prevent="edit(search)">
+                    <sui-form-field>
+                        <sui-input placeholder="Search Groups..." class="huge fluid"
+                            v-model="search" />
+                    </sui-form-field>
+                    <sui-form-field>
+                        <sui-checkbox toggle label="Show system groups"
+                            v-model="showSysGroups" />
+                    </sui-form-field>
+                </sui-form>
+            </sui-segment>
 
-    <sui-list divided relaxed>
-        <sui-list-item v-for="group in filteredGroups" :key="group.id"
-            v-if="group.name.includes(search)">
-            <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
-            <sui-list-content>
-                <a is="sui-list-header">{{ group.name }}</a>
-                <sui-list-description>
-                    <sui-list bulleted horizontal>
-                        <span v-for="(user, id) in group.users.split(',')"
-                            :key="id" is="sui-list-item">
-                            {{ user }}
-                        </span>
-                    </sui-list>
-                </sui-list-description>
-            </sui-list-content>
-        </sui-list-item>
-    </sui-list>
-</div>
+            <sui-segment attached v-if="filteredGroups.length">
+                <sui-list divided relaxed>
+                    <system-group-item v-for="group in filteredGroups"
+                        :group="group" :key="group.id" @edit="edit" />
+                </sui-list>
+            </sui-segment>
+
+            <sui-segment attached class="placeholder" v-else>
+                <sui-header icon>
+                    <sui-icon name="search" />
+                    We couldn't find any groups matching your search
+                    <sui-header-subheader v-if="!showSysGroups">
+                        Are you looking for a system group?
+                    </sui-header-subheader>
+                </sui-header>
+                <div class="inline">
+                    <sui-button @click="search = ''">Clear Search</sui-button>
+                    <sui-button primary @click="edit">Add Group</sui-button>
+                </div>
+            </sui-segment>
+        </sui-grid-column>
+
+        <sui-grid-column :width="6" v-show="editing">
+            <system-group-editor />
+        </sui-grid-column>
+    </sui-grid>
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
+import SystemGroupItem from './GroupItem';
+import SystemGroupEditor from './GroupEditor';
+
 export default {
+    components: {
+        SystemGroupItem,
+        SystemGroupEditor,
+    },
     data () {
         return {
-            groups: [],
             search: '',
+            showSysGroups: false,
         };
     },
     mounted () {
-        this.fetchGroups();
+        this.$store.dispatch('loadGroups');
     },
     computed: {
+        ...mapState({
+            editing: state => state.Group.editing,
+        }),
+        ...mapGetters([
+            'groups',
+        ]),
         filteredGroups() {
-            return this.groups.filter(group => group.name.includes(this.search));
+            return this.groups.filter(function (group) {
+                if (!this.showSysGroups && group.id < 1000) {
+                    return false;
+                }
+
+                return group.name.includes(this.search);
+            }, this);
+        },
+        listWidth() {
+            return this.editing ? 10 : 16;
         },
     },
     methods: {
-        fetchGroups() {
-            axios.get('/api/system/groups').then(response => {
-                this.groups = response.data;
-            });
+        edit (group) {
+            this.$store.commit('setEditorGroup', group);
         },
     },
 }
