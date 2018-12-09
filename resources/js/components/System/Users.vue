@@ -13,19 +13,19 @@
         <sui-divider />
 
         <sui-list divided relaxed>
-            <sui-list-item v-for="user in filteredUsers" :key="user.id"
-                v-if="user.username.includes(search) && (showSysUsers || user.id >= 1000)">
-                <sui-list-icon name="users" size="large" vertical-align="middle"></sui-list-icon>
-                <sui-list-content>
-                    <a is="sui-list-header">{{ user.username }}</a>
-                </sui-list-content>
-            </sui-list-item>
+            <system-user-item v-for="user in filteredUsers" :key="user.id" :user="user"
+                v-if="user.username.includes(search) && (showSysUsers || user.id >= 1000)" />
         </sui-list>
     </sui-segment>
 </template>
 
 <script>
+import SystemUserItem from './UserItem';
+
 export default {
+    components: {
+        SystemUserItem,
+    },
     data () {
         return {
             users: [],
