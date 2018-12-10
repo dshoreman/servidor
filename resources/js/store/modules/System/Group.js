@@ -1,5 +1,6 @@
 export default {
     state: {
+        currentFilter: '',
         groups: [],
         group: {
             name: '',
@@ -7,10 +8,17 @@ export default {
         },
         editing: false,
         editMode: false,
+        showSystem: false,
     },
     mutations: {
         setGroups: (state, groups) => {
             state.groups = groups;
+        },
+        setFilter: (state, value) => {
+            state.currentFilter = value;
+        },
+        toggleSystemGroups: (state, value) => {
+            state.showSystem = value;
         },
         setEditorGroup: (state, group) => {
             if (state.editing) {
@@ -89,5 +97,14 @@ export default {
         groups: state => {
             return state.groups;
         },
+        filteredGroups: state => {
+            return state.groups.filter(group => {
+                if (!state.showSystem && group.id < 1000) {
+                    return false;
+                }
+
+                return group.name.includes(state.currentFilter);
+            });
+        }
     },
 };
