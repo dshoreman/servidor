@@ -28,25 +28,20 @@ export default {
     },
     data () {
         return {
-            users: [],
             search: '',
             showSysUsers: false,
         };
     },
     mounted () {
-        this.fetchUsers();
+        this.$store.dispatch('loadUsers');
     },
     computed: {
+        ...mapGetters([
+            'users',
+        ]),
         filteredUsers () {
             return this.users.filter(user => user.username.includes(this.search));
         },
     },
-    methods: {
-        fetchUsers () {
-            axios.get('/api/system/users').then(response => {
-                this.users = response.data;
-            });
-        },
-    },
-}
+};
 </script>
