@@ -18,7 +18,7 @@ class UsersController extends Controller
     {
         exec('cat /etc/passwd', $lines);
 
-        $keys = ['name', 'password', 'uid', 'gid', 'full_name', 'home_directory', 'shell'];
+        $keys = ['name', 'passwd', 'uid', 'gid', 'gecos', 'dir', 'shell'];
         $users = collect();
 
         foreach ($lines as $line) {
