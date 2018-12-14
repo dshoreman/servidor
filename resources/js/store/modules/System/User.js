@@ -28,13 +28,13 @@ export default {
 
             if (!state.editMode) {
                 user = {
-                    id: null,
+                    uid: null,
                     name: user,
                 };
             }
 
             state.user = Object.assign({}, user);
-            state.user.id_original = user.id;
+            state.user.uid_original = user.uid;
 
             state.editing = true;
         },
@@ -43,8 +43,8 @@ export default {
             state.editMode = false;
 
             state.user = {
-                id: null,
-                id_original: null,
+                uid: null,
+                uid_original: null,
                 name: '',
             };
         },
@@ -52,12 +52,12 @@ export default {
             state.users.push(user);
         },
         updateUser: (state, {uid, user}) => {
-            let index = state.users.findIndex(u => u.id === uid);
+            let index = state.users.findIndex(u => u.uid === uid);
 
             Vue.set(state.users, index, user);
         },
         removeUser: (state, uid) => {
-            let index = state.users.findIndex(u => u.id === uid);
+            let index = state.users.findIndex(u => u.uid === uid);
 
             state.users.splice(index, 1);
         },
@@ -75,17 +75,17 @@ export default {
             });
         },
         updateUser: ({commit}, user) => {
-            axios.put('/api/system/users/'+user.id, user.data).then(response => {
+            axios.put('/api/system/users/'+user.uid, user.data).then(response => {
                 commit('updateUser', {
-                    uid: user.id,
+                    uid: user.uid,
                     user: response.data,
                 });
                 commit('unsetEditorUser');
             });
         },
-        deleteUser: ({commit, state}, id) => {
-            axios.delete('/api/system/users/'+id).then(response => {
-                commit('removeUser', state.user.id_original);
+        deleteUser: ({commit, state}, uid) => {
+            axios.delete('/api/system/users/'+uid).then(response => {
+                commit('removeUser', state.user.uid_original);
                 commit('unsetEditorUser');
             });
         },
@@ -96,7 +96,7 @@ export default {
         },
         filteredUsers: state => {
             return state.users.filter(user => {
-                if (!state.showSystem && user.id < 1000) {
+                if (!state.showSystem && user.uid < 1000) {
                     return false;
                 }
 

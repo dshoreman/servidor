@@ -17,7 +17,7 @@
             <sui-segment attached v-if="filteredGroups.length">
                 <sui-list divided relaxed>
                     <system-group-item v-for="group in filteredGroups"
-                        :group="group" :key="group.id" @edit="edit" />
+                        :group="group" :key="group.gid" @edit="edit" />
                 </sui-list>
             </sui-segment>
 

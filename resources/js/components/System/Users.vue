@@ -17,7 +17,7 @@
             <sui-segment attached v-if="filteredUsers.length">
                 <sui-list divided relaxed>
                     <system-user-item v-for="user in filteredUsers"
-                        :user="user" :key="user.id" @edit="edit" />
+                        :user="user" :key="user.uid" @edit="edit" />
                 </sui-list>
             </sui-segment>
 

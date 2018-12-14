@@ -18,7 +18,7 @@ class UsersController extends Controller
     {
         exec('cat /etc/passwd', $lines);
 
-        $keys = ['name', 'password', 'id', 'group_id', 'full_name', 'home_directory', 'shell'];
+        $keys = ['name', 'password', 'uid', 'gid', 'full_name', 'home_directory', 'shell'];
         $users = collect();
 
         foreach ($lines as $line) {
@@ -48,8 +48,8 @@ class UsersController extends Controller
     {
         $data = $request->validate($this->validationRules());
 
-        if ((int) ($data['id'] ?? null) > 0) {
-            $options[] = '-u '.(int) $data['id'];
+        if ((int) ($data['uid'] ?? null) > 0) {
+            $options[] = '-u '.(int) $data['uid'];
         }
 
         $options[] = $data['name'];
@@ -72,15 +72,15 @@ class UsersController extends Controller
      * Update the specified user on the system.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $uid
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $uid)
     {
-        $new_id = $id;
+        $new_uid = $uid;
         $data = $request->validate($this->validationRules());
 
-        if (!$original = posix_getpwuid($id)) {
+        if (!$original = posix_getpwuid($uid)) {
             throw $this->failed("No user found matching the given criteria.");
         }
 
@@ -88,9 +88,9 @@ class UsersController extends Controller
             $options[] = '-l '.$data['name'];
         }
 
-        if ($data['id'] != $id && (int) $data['id'] > 0) {
-            $new_id = (int) $data['id'];
-            $options[] = '-u '.$new_id;
+        if ($data['uid'] != $uid && (int) $data['uid'] > 0) {
+            $new_uid = (int) $data['uid'];
+            $options[] = '-u '.$new_uid;
         }
 
         if (empty($options ?? null)) {
@@ -105,18 +105,18 @@ class UsersController extends Controller
             throw new ValidationException("Something went wrong. Exit code: ".$retval);
         }
 
-        return response(posix_getpwuid($new_id), Response::HTTP_OK);
+        return response(posix_getpwuid($new_uid), Response::HTTP_OK);
     }
 
     /**
      * Remove the specified user from the system.
      *
-     * @param  int  $id
+     * @param  int  $uid
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($uid)
     {
-        if ($user = posix_getpwuid($id)) {
+        if ($user = posix_getpwuid($uid)) {
             exec('sudo userdel '.$user['name']);
         }
 
@@ -148,11 +148,11 @@ class UsersController extends Controller
                 },
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
-            'id' => 'integer|nullable',
+            'uid' => 'integer|nullable',
         ];
     }
 
-    protected function failed($message, $key = 'id')
+    protected function failed($message, $key = 'uid')
     {
         return ValidationException::withMessages([
             $key => $message,

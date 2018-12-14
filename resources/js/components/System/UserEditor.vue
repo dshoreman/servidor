@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="editMode ? updateUser(tmpUser.id_original) : createUser()">
+    <sui-form @submit.prevent="editMode ? updateUser(tmpUser.uid_original) : createUser()">
         <sui-form-fields>
             <sui-form-field width="ten">
                 <label>Name</label>
@@ -7,7 +7,7 @@
             </sui-form-field>
             <sui-form-field width="six">
                 <label>UID</label>
-                <input v-model="tmpUser.id" type="number">
+                <input v-model="tmpUser.uid" type="number">
             </sui-form-field>
         </sui-form-fields>
         <sui-button-group fluid>
@@ -19,7 +19,7 @@
         <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
         <sui-segment class="red" v-show="editMode">
             <sui-button negative icon="trash" type="button"
-                content="Delete User" @click="deleteUser(tmpUser.id)" />
+                content="Delete User" @click="deleteUser(tmpUser.uid)" />
         </sui-segment>
     </sui-form>
 </template>
@@ -48,11 +48,11 @@ export default {
 
             this.$store.dispatch('createUser', this.tmpUser);
         },
-        updateUser (id) {
-            this.$store.dispatch('updateUser', {id, data: this.tmpUser});
+        updateUser (uid) {
+            this.$store.dispatch('updateUser', {uid, data: this.tmpUser});
         },
-        deleteUser (id) {
-            this.$store.dispatch('deleteUser', id);
+        deleteUser (uid) {
+            this.$store.dispatch('deleteUser', uid);
         },
         reset () {
             this.$store.commit('unsetEditorUser');
