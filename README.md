@@ -8,7 +8,7 @@ A server manager for managing servers. Built on Laravel, using Semantic-UI-Vue f
 
 Run `sudo visudo` and add a line that grants passwordless access:
 ```
-www-data ALL=(ALL)NOPASSWD:/usr/sbin/groupadd,/usr/sbin/groupmod
+www-data ALL=(ALL)NOPASSWD:/usr/sbin/groupadd,/usr/sbin/groupmod,/usr/sbin/groupdel,/usr/sbin/useradd,/usr/sbin/usermod,/usr/sbin/userdel
 ```
 
 Don't forget to `composer install`, `npm run build` and all that jazz.

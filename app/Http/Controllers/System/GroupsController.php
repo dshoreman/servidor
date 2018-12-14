@@ -18,7 +18,7 @@ class GroupsController extends Controller
     {
         exec('cat /etc/group', $lines);
 
-        $keys = ['name', 'password', 'id', 'users'];
+        $keys = ['name', 'password', 'gid', 'users'];
         $groups = collect();
 
         foreach ($lines as $line) {
@@ -51,8 +51,8 @@ class GroupsController extends Controller
     {
         $data = $request->validate($this->validationRules());
 
-        if ((int) ($data['id'] ?? null) > 0) {
-            $options[] = '-g '.(int) $data['id'];
+        if ((int) ($data['gid'] ?? null) > 0) {
+            $options[] = '-g '.(int) $data['gid'];
         }
 
         $options[] = $data['name'];
@@ -68,7 +68,7 @@ class GroupsController extends Controller
                 $group = posix_getgrnam($data['name']);
 
                 $data = [
-                    'id' => $group['gid'],
+                    'gid' => $group['gid'],
                     'name' => $group['name'],
                     'users' => $group['members'],
                 ];
@@ -91,15 +91,15 @@ class GroupsController extends Controller
      * Update the specified group on the system.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $gid
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $gid)
     {
-        $new_id = $id;
+        $new_gid = $gid;
         $data = $request->validate($this->validationRules());
 
-        if (!$original = posix_getgrgid($id)) {
+        if (!$original = posix_getgrgid($gid)) {
             throw $this->failed("No group found matching the given criteria.");
         }
 
@@ -107,9 +107,9 @@ class GroupsController extends Controller
             $options[] = '-n '.$data['name'];
         }
 
-        if ($data['id'] != $id && (int) $data['id'] > 0) {
-            $new_id = (int) $data['id'];
-            $options[] = '-g '.$new_id;
+        if ($data['gid'] != $gid && (int) $data['gid'] > 0) {
+            $new_gid = (int) $data['gid'];
+            $options[] = '-g '.$new_gid;
         }
 
         if (empty($options ?? null)) {
@@ -124,10 +124,10 @@ class GroupsController extends Controller
             throw new ValidationException("Something went wrong. Exit code: ".$retval);
         }
 
-        $updated = posix_getgrgid($new_id);
+        $updated = posix_getgrgid($new_gid);
 
         return response([
-            'id' => $updated['gid'],
+            'gid' => $updated['gid'],
             'name' => $updated['name'],
             'users' => $updated['members'],
         ], Response::HTTP_OK);
@@ -136,12 +136,12 @@ class GroupsController extends Controller
     /**
      * Remove the specified group from the system.
      *
-     * @param  int  $id
+     * @param  int  $gid
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($gid)
     {
-        if ($group = posix_getgrgid($id)) {
+        if ($group = posix_getgrgid($gid)) {
             exec('sudo groupdel '.$group['name']);
         }
 
@@ -173,12 +173,12 @@ class GroupsController extends Controller
                 },
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
-            'id' => 'integer|nullable',
+            'gid' => 'integer|nullable',
             'users' => 'array|nullable',
         ];
     }
 
-    protected function failed($message, $key = 'id')
+    protected function failed($message, $key = 'gid')
     {
         return ValidationException::withMessages([
             $key => $message,

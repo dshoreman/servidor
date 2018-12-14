@@ -5,11 +5,11 @@
                 <sui-form @submit.prevent="edit(search)">
                     <sui-form-field>
                         <sui-input placeholder="Search Groups..." class="huge fluid"
-                            v-model="search" />
+                            :value="search" @input="filterGroups" />
                     </sui-form-field>
                     <sui-form-field>
                         <sui-checkbox toggle label="Show system groups"
-                            v-model="showSysGroups" />
+                            :inputValue="showSysGroups" @change="toggleSysGroups"/>
                     </sui-form-field>
                 </sui-form>
             </sui-segment>
@@ -17,7 +17,7 @@
             <sui-segment attached v-if="filteredGroups.length">
                 <sui-list divided relaxed>
                     <system-group-item v-for="group in filteredGroups"
-                        :group="group" :key="group.id" @edit="edit" />
+                        :group="group" :key="group.gid" @edit="edit" />
                 </sui-list>
             </sui-segment>
 
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 import SystemGroupItem from './GroupItem';
 import SystemGroupEditor from './GroupEditor';
 
@@ -52,39 +52,29 @@ export default {
         SystemGroupItem,
         SystemGroupEditor,
     },
-    data () {
-        return {
-            search: '',
-            showSysGroups: false,
-        };
-    },
     mounted () {
         this.$store.dispatch('loadGroups');
     },
     computed: {
         ...mapState({
             editing: state => state.Group.editing,
+            search: state => state.Group.currentFilter,
+            showSysGroups: state => state.Group.showSystem,
         }),
         ...mapGetters([
             'groups',
+            'filteredGroups',
         ]),
-        filteredGroups() {
-            return this.groups.filter(function (group) {
-                if (!this.showSysGroups && group.id < 1000) {
-                    return false;
-                }
-
-                return group.name.includes(this.search);
-            }, this);
-        },
         listWidth() {
             return this.editing ? 10 : 16;
         },
     },
     methods: {
-        edit (group) {
-            this.$store.commit('setEditorGroup', group);
-        },
+        ...mapMutations({
+            edit: 'setEditorGroup',
+            filterGroups: 'setFilter',
+            toggleSysGroups: 'toggleSystemGroups',
+        }),
     },
 }
 </script>

@@ -23,6 +23,6 @@ Route::name('system')->prefix('/system')->namespace('System')->group(function ()
     ]);
 
     Route::resource('users', 'UsersController', [
-        'only' => ['index'],
+        'only' => ['index', 'store', 'update', 'destroy'],
     ]);
 });

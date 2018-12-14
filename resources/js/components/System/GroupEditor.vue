@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.id_original) : createGroup()">
+    <sui-form @submit.prevent="editMode ? updateGroup(tmpGroup.gid_original) : createGroup()">
         <sui-form-fields>
             <sui-form-field width="ten">
                 <label>Name</label>
@@ -7,7 +7,7 @@
             </sui-form-field>
             <sui-form-field width="six">
                 <label>GID</label>
-                <input v-model="tmpGroup.id" type="number">
+                <input v-model="tmpGroup.gid" type="number">
             </sui-form-field>
         </sui-form-fields>
         <sui-button-group fluid>
@@ -29,7 +29,7 @@
         <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
         <sui-segment class="red" v-show="editMode">
             <sui-button negative icon="trash" type="button"
-                content="Delete Group" @click="deleteGroup(tmpGroup.id)" />
+                content="Delete Group" @click="deleteGroup(tmpGroup.gid)" />
         </sui-segment>
     </sui-form>
 </template>
@@ -58,11 +58,11 @@ export default {
 
             this.$store.dispatch('createGroup', this.tmpGroup);
         },
-        updateGroup (id) {
-            this.$store.dispatch('updateGroup', {id, data: this.tmpGroup});
+        updateGroup (gid) {
+            this.$store.dispatch('updateGroup', {gid, data: this.tmpGroup});
         },
-        deleteGroup (id) {
-            this.$store.dispatch('deleteGroup', id);
+        deleteGroup (gid) {
+            this.$store.dispatch('deleteGroup', gid);
         },
         reset () {
             this.$store.commit('unsetEditorGroup');

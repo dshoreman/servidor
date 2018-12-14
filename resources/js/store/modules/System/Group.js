@@ -1,5 +1,6 @@
 export default {
     state: {
+        currentFilter: '',
         groups: [],
         group: {
             name: '',
@@ -7,10 +8,17 @@ export default {
         },
         editing: false,
         editMode: false,
+        showSystem: false,
     },
     mutations: {
         setGroups: (state, groups) => {
             state.groups = groups;
+        },
+        setFilter: (state, value) => {
+            state.currentFilter = value;
+        },
+        toggleSystemGroups: (state, value) => {
+            state.showSystem = value;
         },
         setEditorGroup: (state, group) => {
             if (state.editing) {
@@ -21,14 +29,14 @@ export default {
 
             if (!state.editMode) {
                 group = {
-                    id: null,
+                    gid: null,
                     name: group,
                     users: [],
                 };
             }
 
             state.group = Object.assign({}, group);
-            state.group.id_original = group.id;
+            state.group.gid_original = group.gid;
 
             state.editing = true;
         },
@@ -37,22 +45,22 @@ export default {
             state.editMode = false;
 
             state.group = {
-                id: null,
+                gid: null,
                 name: '',
                 users: [],
-                id_original: null,
+                gid_original: null,
             };
         },
         addGroup: (state, group) => {
             state.groups.push(group);
         },
         updateGroup: (state, {gid, group}) => {
-            let index = state.groups.findIndex(g => g.id === gid);
+            let index = state.groups.findIndex(g => g.gid === gid);
 
             Vue.set(state.groups, index, group);
         },
         removeGroup: (state, gid) => {
-            let index = state.groups.findIndex(g => g.id === gid);
+            let index = state.groups.findIndex(g => g.gid === gid);
 
             state.groups.splice(index, 1);
         },
@@ -70,17 +78,17 @@ export default {
             });
         },
         updateGroup: ({commit}, group) => {
-            axios.put('/api/system/groups/'+group.id, group.data).then(response => {
+            axios.put('/api/system/groups/'+group.gid, group.data).then(response => {
                 commit('updateGroup', {
-                    gid: group.id,
+                    gid: group.gid,
                     group: response.data
                 });
                 commit('unsetEditorGroup');
             });
         },
-        deleteGroup: ({commit, state}, id) => {
-            axios.delete('/api/system/groups/'+id).then(response => {
-                commit('removeGroup', state.group.id_original);
+        deleteGroup: ({commit, state}, gid) => {
+            axios.delete('/api/system/groups/'+gid).then(response => {
+                commit('removeGroup', state.group.gid_original);
                 commit('unsetEditorGroup');
             });
         },
@@ -89,5 +97,14 @@ export default {
         groups: state => {
             return state.groups;
         },
+        filteredGroups: state => {
+            return state.groups.filter(group => {
+                if (!state.showSystem && group.gid < 1000) {
+                    return false;
+                }
+
+                return group.name.includes(state.currentFilter);
+            });
+        }
     },
 };
