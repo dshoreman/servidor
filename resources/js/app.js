@@ -18,6 +18,7 @@ Vue.component('system-groups', require('./components/System/Groups.vue'));
 Vue.component('system-users', require('./components/System/Users.vue'));
 
 const router = new VueRouter({
+    mode: 'history',
     routes
 });
 

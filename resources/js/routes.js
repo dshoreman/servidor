@@ -2,6 +2,7 @@ import Dashboard from './pages/Dashboard.vue'
 import SystemLayout from './layouts/System.vue'
 import SystemGroups from './components/System/Groups.vue'
 import SystemUsers from './components/System/Users.vue'
+import NotFound from './pages/NotFound.vue'
 
 const routes = [{
     component: Dashboard,
@@ -18,6 +19,8 @@ const routes = [{
         name: 'system.users',
         path: '/system/users',
     }],
+}, {
+    path: '*', component: NotFound,
 }];
 
 export default routes;

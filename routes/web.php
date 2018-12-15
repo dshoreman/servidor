@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('servidor');
-});
-
 Route::get('apps', function () {
     return view('sites');
 });
+
+Route::get('/{all?}', function () {
+    return view('servidor');
+})->where('all', '.*');
