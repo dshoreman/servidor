@@ -1,6 +1,6 @@
 <template>
     <sui-menu fluid vertical tabular>
-        <router-link is="sui-menu-item"
+        <router-link is="sui-menu-item" :active="$route.name == item.href"
             v-for="(item, id) in menu" :key="id"
             :content="item.name" :to="{ name: item.href }">
         </router-link>

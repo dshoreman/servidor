@@ -1,7 +1,7 @@
 <template lang="html">
     <sui-menu :widths="menu.length">
         <router-link :to="{ name: item.href }" is="sui-menu-item"
-            v-for="(item, id) in menu" :key="id">
+            v-for="(item, id) in menu" :key="id" :active="isActive(item)">
             {{ item.name }}
         </router-link>
     </sui-menu>
@@ -25,6 +25,17 @@ export default {
                 href: 'system.groups'
             }],
         };
-    }
+    },
+    methods: {
+        isActive (item) {
+            let dest = item.href;
+
+            if (dest.includes('.')) {
+                dest = dest.substring(0, dest.indexOf('.'));
+            }
+
+            return this.$route.path.startsWith('/'+dest);
+        },
+    },
 }
 </script>
