@@ -97,6 +97,15 @@ export default {
         groups: state => {
             return state.groups;
         },
+        groupDropdown: state => {
+            return state.groups.map(group => {
+                return {
+                    icon: 'users',
+                    text: group.gid+' - '+group.name,
+                    value: group.gid,
+                };
+            });
+        },
         filteredGroups: state => {
             return state.groups.filter(group => {
                 if (!state.showSystem && group.gid < 1000) {

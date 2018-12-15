@@ -10,6 +10,12 @@
                 <input v-model="tmpUser.uid" type="number">
             </sui-form-field>
         </sui-form-fields>
+        <sui-form-field>
+            <label>Primary Group</label>
+            <sui-dropdown search selection
+                :options="groupDropdown" v-model="tmpUser.gid" />
+        </sui-form-field>
+
         <sui-button-group fluid>
             <sui-button type="button" @click="reset()">Cancel</sui-button>
             <sui-button-or></sui-button-or>
@@ -34,6 +40,9 @@ export default {
             editMode: state => state.User.editMode,
             tmpUser: state => state.User.user,
         }),
+        ...mapGetters([
+            'groupDropdown',
+        ]),
     },
     watch: {
         editing (editing) {

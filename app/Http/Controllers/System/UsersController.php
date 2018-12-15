@@ -42,6 +42,10 @@ class UsersController extends Controller
             $options[] = '-u '.(int) $data['uid'];
         }
 
+        if ((int) ($data['gid'] ?? null) > 0) {
+            $options[] = '-g '.(int) $data['gid'];
+        }
+
         $options[] = $data['name'];
 
         exec('sudo useradd '.implode(' ', $options), $output, $retval);
@@ -81,6 +85,10 @@ class UsersController extends Controller
         if ($data['uid'] != $uid && (int) $data['uid'] > 0) {
             $new_uid = (int) $data['uid'];
             $options[] = '-u '.$new_uid;
+        }
+
+        if ($data['gid'] != $original['gid'] && (int) $data['gid'] > 0) {
+            $options[] = '-g '.(int) $data['gid'];
         }
 
         if (empty($options ?? null)) {
@@ -139,6 +147,7 @@ class UsersController extends Controller
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
             'uid' => 'integer|nullable',
+            'gid' => 'integer|required',
         ];
     }
 
