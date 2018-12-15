@@ -1,9 +1,9 @@
 <template>
     <sui-menu fluid vertical tabular>
-        <a is="sui-menu-item"
+        <router-link is="sui-menu-item"
             v-for="(item, id) in menu" :key="id"
-            :content="item.name" :href="item.href">
-        </a>
+            :content="item.name" :to="{ name: item.href }">
+        </router-link>
     </sui-menu>
 </template>
 
@@ -13,10 +13,10 @@ export default {
         return {
             menu: [{
                 name: 'Groups',
-                href: '/system/groups'
+                href: 'system.groups'
             }, {
                 name: 'Users',
-                href: '/system/users'
+                href: 'system.users'
             }],
         };
     }

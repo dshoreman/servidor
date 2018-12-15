@@ -18,10 +18,12 @@
         "lodash": "^4.17.5",
         "popper.js": "^1.12",
         "semantic-ui-css": "^2.4.1",
+        "vue-template-compiler": "^2.5.21",
         "vue": "^2.5.21"
     },
     "dependencies": {
         "semantic-ui-vue": "^0.7.0",
+        "vue-router": "^3.0.2",
         "vuex": "^3.0.1"
     }
 }

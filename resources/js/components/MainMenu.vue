@@ -1,8 +1,9 @@
 <template lang="html">
     <sui-menu :widths="menu.length">
-        <sui-menu-item link :href="item.href" v-for="(item, id) in menu" :key="id">
+        <router-link :to="{ name: item.href }" is="sui-menu-item"
+            v-for="(item, id) in menu" :key="id">
             {{ item.name }}
-        </sui-menu-item>
+        </router-link>
     </sui-menu>
 </template>
 
@@ -12,16 +13,16 @@ export default {
         return {
             menu: [{
                 name: 'Applications',
-                href: '/apps'
+                href: 'apps'
             }, {
                 name: 'Databases',
-                href: '/databases'
+                href: 'databases'
             }, {
                 name: 'Files',
-                href: '/files'
+                href: 'files'
             }, {
                 name: 'System',
-                href: '/system/groups'
+                href: 'system.groups'
             }],
         };
     }

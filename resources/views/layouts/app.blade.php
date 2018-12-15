@@ -14,9 +14,9 @@
         <div id="app">
 
             <sui-menu fixed inverted>
-                <sui-menu-item header>
+                <router-link header :to="{ name: 'dashboard' }" is="sui-menu-item">
                     <sui-icon name="server" size="big"></sui-icon> Servidor
-                </sui-menu-item>
+                </router-link>
             </sui-menu>
 
             <sui-container class="main">

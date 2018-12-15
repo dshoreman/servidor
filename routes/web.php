@@ -11,15 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('dashboard');
-});
-
 Route::get('apps', function () {
     return view('sites');
 });
 
-Route::prefix('system/')->group(function () {
-    Route::get('groups', 'System\GroupsController@list');
-    Route::get('users', 'System\UsersController@list');
-});
+Route::get('/{all?}', function () {
+    return view('servidor');
+})->where('all', '.*');

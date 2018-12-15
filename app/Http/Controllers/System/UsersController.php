@@ -29,16 +29,6 @@ class UsersController extends Controller
     }
 
     /**
-     * Render the System Users page
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function list()
-    {
-        return view('system.users');
-    }
-
-    /**
      * Create a new user on the host system
      *
      * @param  \Illuminate\Http\Request  $request
