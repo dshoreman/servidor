@@ -32,16 +32,6 @@ class GroupsController extends Controller
     }
 
     /**
-     * Render the System Groups page
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function list()
-    {
-        return view('system.groups');
-    }
-
-    /**
      * Create a new group on the host system
      *
      * @param  \Illuminate\Http\Request  $request

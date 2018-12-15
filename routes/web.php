@@ -12,14 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('dashboard');
+    return view('servidor');
 });
 
 Route::get('apps', function () {
     return view('sites');
-});
-
-Route::prefix('system/')->group(function () {
-    Route::get('groups', 'System\GroupsController@list');
-    Route::get('users', 'System\UsersController@list');
 });

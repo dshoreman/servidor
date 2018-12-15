@@ -1,13 +1,11 @@
-@extends('layouts.app')
-
-@section ('content')
+<template>
     <sui-grid>
         <sui-grid-column :width="4">
             <system-menu></system-menu>
         </sui-grid-column>
 
         <sui-grid-column :width="12">
-            @yield('system-content')
+            <router-view />
         </sui-grid-column>
     </sui-grid>
-@stop
+</template>
