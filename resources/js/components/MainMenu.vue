@@ -28,13 +28,9 @@ export default {
     },
     methods: {
         isActive (item) {
-            let dest = item.href;
+            let href = '/' + item.href.split('.')[0];
 
-            if (dest.includes('.')) {
-                dest = dest.substring(0, dest.indexOf('.'));
-            }
-
-            return this.$route.path.startsWith('/'+dest);
+            return this.$route.path.startsWith(href);
         },
     },
 }
