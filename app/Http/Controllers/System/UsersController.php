@@ -23,12 +23,32 @@ class UsersController extends Controller
 
         foreach ($lines as $line) {
             $user = array_combine($keys, explode(':', $line));
-            $user['groups'] = explode(' ', exec('groups '.$user['name']));
+            $user['groups'] = $this->loadSecondaryGroups($user);
 
             $users->push($user);
         }
 
         return $users;
+    }
+
+    protected function loadSecondaryGroups(array $user)
+    {
+        $groups = [];
+        $primary = explode(':', exec('getent group '.$user['gid']));
+        $effective  = explode(' ', exec('groups '.$user['name']));
+
+        $primaryName = reset($primary);
+        $primaryMembers = explode(',', end($primary));
+
+        foreach ($effective as $group) {
+            if ($group == $primaryName && !in_array($group, $primaryMembers)) {
+                continue;
+            }
+
+            $groups[] = $group;
+        }
+
+        return $groups;
     }
 
     /**
