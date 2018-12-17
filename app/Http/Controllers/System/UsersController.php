@@ -22,7 +22,10 @@ class UsersController extends Controller
         $users = collect();
 
         foreach ($lines as $line) {
-            $users->push(array_combine($keys, explode(':', $line)));
+            $user = array_combine($keys, explode(':', $line));
+            $user['groups'] = explode(' ', exec('groups '.$user['name']));
+
+            $users->push($user);
         }
 
         return $users;

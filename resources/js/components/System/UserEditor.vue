@@ -22,6 +22,16 @@
             <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
         </sui-button-group>
 
+        <sui-header size="small" v-show="editMode">Secondary Groups</sui-header>
+        <sui-list divided relaxed v-show="editMode">
+            <sui-list-item v-for="group in tmpUser.groups" :key="group">
+                <sui-list-icon name="users" size="large" vertical-align="middle" />
+                <sui-list-content>
+                    <sui-list-header>{{ group }}</sui-list-header>
+                </sui-list-content>
+            </sui-list-item>
+        </sui-list>
+
         <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
         <sui-segment class="red" v-show="editMode">
             <sui-button negative icon="trash" type="button"
