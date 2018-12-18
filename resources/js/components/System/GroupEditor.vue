@@ -109,7 +109,10 @@ export default {
                 u => u.uid == this.newUser
             )];
 
-            this.tmpGroup.users.push(user.name);
+            if (!this.tmpGroup.users.includes(user.name)) {
+                this.tmpGroup.users.push(user.name);
+            }
+
             this.newUser = null;
         },
         deleteUser (name) {

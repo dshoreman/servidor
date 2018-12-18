@@ -114,7 +114,10 @@ export default {
                 g => g.gid == this.newGroup
             )];
 
-            this.tmpUser.groups.push(group.name);
+            if (!this.tmpUser.groups.includes(group.name)) {
+                this.tmpUser.groups.push(group.name);
+            }
+
             this.newGroup = null;
         },
         deleteGroup (name) {
