@@ -98,9 +98,9 @@ export default {
         updateUser (uid) {
             if (this.deleted.length) {
                 this.deleted.forEach(group => {
-                    let i = this.tmpUser.groups.findIndex(g => g.name === group);
+                    let i = this.tmpUser.groups.indexOf(group);
 
-                    this.tmpUser.groups.pop(i);
+                    this.tmpUser.groups.splice(i, 1);
                 });
             }
 
