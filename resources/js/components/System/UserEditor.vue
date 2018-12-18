@@ -16,32 +16,34 @@
                 :options="groupDropdown" v-model="tmpUser.gid" />
         </sui-form-field>
 
+        <sui-form-field>
+            <label v-show="editMode">Secondary Groups</label>
+            <sui-list divided v-show="editMode">
+                <sui-list-item v-for="group in tmpUser.groups" :key="group">
+                    <sui-list-icon size="large" name="users" />
+
+                    <sui-list-content v-if="!deleted.includes(group)">
+                        <sui-button icon="minus" type="button" @click="deleteGroup(group)"
+                            floated="right" class="circular compact red mini" />
+                        <sui-list-header class="ui small">{{ group }}</sui-list-header>
+                    </sui-list-content>
+
+                    <sui-list-content v-if="deleted.includes(group)">
+                        <sui-button icon="undo" type="button" @click="undeleteGroup(group)"
+                            floated="right" class="circular compact grey mini" />
+                        <sui-list-header class="ui small grey">
+                            <strike>{{ group }}</strike>
+                        </sui-list-header>
+                    </sui-list-content>
+                </sui-list-item>
+            </sui-list>
+        </sui-form-field>
+
         <sui-button-group fluid>
             <sui-button type="button" @click="reset()">Cancel</sui-button>
             <sui-button-or></sui-button-or>
             <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
         </sui-button-group>
-
-        <sui-header size="small" v-show="editMode">Secondary Groups</sui-header>
-        <sui-list divided relaxed v-show="editMode">
-            <sui-list-item v-for="group in tmpUser.groups" :key="group">
-                <sui-list-icon name="users" size="large" vertical-align="middle" />
-
-                <sui-list-content v-if="!deleted.includes(group)">
-                    <sui-button icon="minus" type="button" @click="deleteGroup(group)"
-                        floated="right" class="circular compact red mini" />
-                    <sui-list-header class="ui small">{{ group }}</sui-list-header>
-                </sui-list-content>
-
-                <sui-list-content v-if="deleted.includes(group)">
-                    <sui-button icon="undo" type="button" @click="undeleteGroup(group)"
-                        floated="right" class="circular compact grey mini" />
-                    <sui-list-header class="ui small grey">
-                        <strike>{{ group }}</strike>
-                    </sui-list-header>
-                </sui-list-content>
-            </sui-list-item>
-        </sui-list>
 
         <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
         <sui-segment class="red" v-show="editMode">
