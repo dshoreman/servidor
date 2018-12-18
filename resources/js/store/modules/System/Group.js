@@ -35,6 +35,7 @@ export default {
                 };
             }
 
+            group.users = group.users.slice(0);
             state.group = Object.assign({}, group);
             state.group.gid_original = group.gid;
 
