@@ -10,21 +10,24 @@
                 <input v-model="tmpGroup.gid" type="number">
             </sui-form-field>
         </sui-form-fields>
+
+        <sui-form-field v-show="editMode">
+            <label>Group Members</label>
+            <sui-list divided>
+                <sui-list-item v-for="user in tmpGroup.users" :key="user">
+                    <sui-list-icon name="user" size="large" />
+                    <sui-list-content>
+                        <sui-list-header>{{ user }}</sui-list-header>
+                    </sui-list-content>
+                </sui-list-item>
+            </sui-list>
+        </sui-form-field>
+
         <sui-button-group fluid>
             <sui-button type="button" @click="reset()">Cancel</sui-button>
             <sui-button-or></sui-button-or>
             <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
         </sui-button-group>
-
-        <sui-header size="small" v-show="editMode">Group Members</sui-header>
-        <sui-list divided relaxed v-show="editMode">
-            <sui-list-item v-for="user in tmpGroup.users" :key="user">
-                <sui-list-icon name="user" size="large" vertical-align="middle" />
-                <sui-list-content>
-                    <sui-list-header>{{ user }}</sui-list-header>
-                </sui-list-content>
-            </sui-list-item>
-        </sui-list>
 
         <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
         <sui-segment class="red" v-show="editMode">
