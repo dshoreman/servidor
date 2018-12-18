@@ -16,9 +16,17 @@
                 :options="groupDropdown" v-model="tmpUser.gid" />
         </sui-form-field>
 
-        <sui-form-field>
-            <label v-show="editMode">Secondary Groups</label>
-            <sui-list divided v-show="editMode">
+        <sui-form-field v-show="editMode">
+            <label>Secondary Groups</label>
+
+            <sui-dropdown button type="button" class="icon"
+                search :options="groupDropdown" v-model="newGroup"
+                floating labeled text="Select Group" />
+            <sui-button basic positive circular type="button"
+                icon="plus" @click="addGroup"
+                :disabled="newGroup === null" />
+
+            <sui-list divided>
                 <sui-list-item v-for="group in tmpUser.groups" :key="group">
                     <sui-list-icon size="large" name="users" />
 
@@ -64,12 +72,14 @@ export default {
             tmpUser: state => state.User.user,
         }),
         ...mapGetters([
+            'groups',
             'groupDropdown',
         ]),
     },
     data () {
         return {
             deleted: [],
+            newGroup: null,
         };
     },
     watch: {
@@ -98,6 +108,14 @@ export default {
         },
         deleteUser (uid) {
             this.$store.dispatch('deleteUser', uid);
+        },
+        addGroup () {
+            let group = this.groups[this.groups.findIndex(
+                g => g.gid == this.newGroup
+            )];
+
+            this.tmpUser.groups.push(group.name);
+            this.newGroup = null;
         },
         deleteGroup (name) {
             this.deleted.push(name);
