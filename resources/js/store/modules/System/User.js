@@ -74,10 +74,10 @@ export default {
                 commit('unsetEditorUser');
             });
         },
-        updateUser: ({commit}, user) => {
-            axios.put('/api/system/users/'+user.uid, user.data).then(response => {
+        updateUser: ({commit}, {uid, user}) => {
+            axios.put('/api/system/users/'+uid, user).then(response => {
                 commit('updateUser', {
-                    uid: user.uid,
+                    uid: uid,
                     user: response.data,
                 });
                 commit('unsetEditorUser');

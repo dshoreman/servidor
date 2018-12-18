@@ -68,7 +68,7 @@ export default {
             this.$store.dispatch('createUser', this.tmpUser);
         },
         updateUser (uid) {
-            this.$store.dispatch('updateUser', {uid, data: this.tmpUser});
+            this.$store.dispatch('updateUser', {uid, user: this.tmpUser});
         },
         deleteUser (uid) {
             this.$store.dispatch('deleteUser', uid);
