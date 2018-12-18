@@ -26,8 +26,19 @@
         <sui-list divided relaxed v-show="editMode">
             <sui-list-item v-for="group in tmpUser.groups" :key="group">
                 <sui-list-icon name="users" size="large" vertical-align="middle" />
-                <sui-list-content>
-                    <sui-list-header>{{ group }}</sui-list-header>
+
+                <sui-list-content v-if="!deleted.includes(group)">
+                    <sui-button icon="minus" type="button" @click="deleteGroup(group)"
+                        floated="right" class="circular compact red mini" />
+                    <sui-list-header class="ui small">{{ group }}</sui-list-header>
+                </sui-list-content>
+
+                <sui-list-content v-if="deleted.includes(group)">
+                    <sui-button icon="undo" type="button" @click="undeleteGroup(group)"
+                        floated="right" class="circular compact grey mini" />
+                    <sui-list-header class="ui small grey">
+                        <strike>{{ group }}</strike>
+                    </sui-list-header>
                 </sui-list-content>
             </sui-list-item>
         </sui-list>
@@ -54,6 +65,11 @@ export default {
             'groupDropdown',
         ]),
     },
+    data () {
+        return {
+            deleted: [],
+        };
+    },
     watch: {
         editing (editing) {
             (!editing) || this.$nextTick(() => this.$refs.name.focus());
@@ -68,12 +84,27 @@ export default {
             this.$store.dispatch('createUser', this.tmpUser);
         },
         updateUser (uid) {
+            if (this.deleted.length) {
+                this.deleted.forEach(group => {
+                    let i = this.tmpUser.groups.findIndex(g => g.name === group);
+
+                    this.tmpUser.groups.pop(i);
+                });
+            }
+
             this.$store.dispatch('updateUser', {uid, user: this.tmpUser});
         },
         deleteUser (uid) {
             this.$store.dispatch('deleteUser', uid);
         },
+        deleteGroup (name) {
+            this.deleted.push(name);
+        },
+        undeleteGroup (name) {
+            this.deleted.pop(this.deleted.indexOf(name));
+        },
         reset () {
+            this.deleted = [];
             this.$store.commit('unsetEditorUser');
         },
     },

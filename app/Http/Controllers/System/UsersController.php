@@ -114,6 +114,12 @@ class UsersController extends Controller
             $options[] = '-g '.(int) $data['gid'];
         }
 
+        $original['groups'] = $this->loadSecondaryGroups($original);
+
+        if ($data['groups'] != $original['groups']) {
+            $options[] = '-G "'.implode(',', $data['groups']).'"';
+        }
+
         if (empty($options ?? null)) {
             throw $this->failed("Nothing to update!");
         }
@@ -123,7 +129,7 @@ class UsersController extends Controller
         exec('sudo usermod '.implode(' ', $options), $output, $retval);
 
         if (0 !== $retval) {
-            throw new ValidationException("Something went wrong. Exit code: ".$retval);
+            throw new \Exception("Something went wrong. Exit code: ".$retval);
         }
 
         return response(posix_getpwuid($new_uid), Response::HTTP_OK);
@@ -171,6 +177,7 @@ class UsersController extends Controller
             ],
             'uid' => 'integer|nullable',
             'gid' => 'integer|required',
+            'groups' => 'array|nullable',
         ];
     }
 
