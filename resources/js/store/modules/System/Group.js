@@ -35,6 +35,7 @@ export default {
                 };
             }
 
+            group.users = group.users.slice(0);
             state.group = Object.assign({}, group);
             state.group.gid_original = group.gid;
 
@@ -96,6 +97,15 @@ export default {
     getters: {
         groups: state => {
             return state.groups;
+        },
+        groupDropdown: state => {
+            return state.groups.map(group => {
+                return {
+                    icon: 'users',
+                    text: group.gid+' - '+group.name,
+                    value: group.gid,
+                };
+            });
         },
         filteredGroups: state => {
             return state.groups.filter(group => {

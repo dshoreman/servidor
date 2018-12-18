@@ -91,6 +91,8 @@ class GroupsController extends Controller
 
         if (!$original = posix_getgrgid($gid)) {
             throw $this->failed("No group found matching the given criteria.");
+        } else {
+            $updated = $original;
         }
 
         if ($data['name'] != $original['name']) {
@@ -102,19 +104,37 @@ class GroupsController extends Controller
             $options[] = '-g '.$new_gid;
         }
 
-        if (empty($options ?? null)) {
+        if ($data['users'] != $original['members']) {
+            $members = implode(',', $data['users']);
+        }
+
+        if (empty($options ?? null) && !isset($members)) {
             throw $this->failed("Nothing to update!");
         }
 
-        $options[] = $original['name'];
+        if (count($options ?? [])) {
+            $options[] = $original['name'];
 
-        exec('sudo groupmod '.implode(' ', $options), $output, $retval);
+            exec('sudo groupmod '.implode(' ', $options), $output, $retval);
 
-        if (0 !== $retval) {
-            throw new ValidationException("Something went wrong. Exit code: ".$retval);
+            if (0 !== $retval) {
+                throw new ValidationException("Something went wrong. Exit code: ".$retval);
+            }
+
+            $updated = posix_getgrgid($new_gid);
         }
 
-        $updated = posix_getgrgid($new_gid);
+        if ($members ?? null) {
+            $group = $updated['name'];
+
+            exec("sudo gpasswd -M '{$members}' {$group}", $output, $retval);
+
+            if (0 !== $retval) {
+                throw new ValidationException("Something went wrong. Exit code: ".$retval);
+            }
+
+            $updated = posix_getgrgid($new_gid);
+        }
 
         return response([
             'gid' => $updated['gid'],
@@ -164,6 +184,7 @@ class GroupsController extends Controller
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
             'gid' => 'integer|nullable',
+            'groups' => 'array|nullable',
             'users' => 'array|nullable',
         ];
     }

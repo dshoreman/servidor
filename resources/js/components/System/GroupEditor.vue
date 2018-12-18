@@ -10,21 +10,43 @@
                 <input v-model="tmpGroup.gid" type="number">
             </sui-form-field>
         </sui-form-fields>
+
+        <sui-form-field v-show="editMode">
+            <label>Group Members</label>
+
+            <sui-dropdown button type="button" class="icon"
+                search :options="userDropdown" v-model="newUser"
+                floating labeled text="Select User" />
+            <sui-button basic positive circular type="button"
+                icon="plus" @click="addUser"
+                :disabled="newUser === null" />
+
+            <sui-list divided>
+                <sui-list-item v-for="user in tmpGroup.users" :key="user">
+                    <sui-list-icon name="user" size="large" />
+
+                    <sui-list-content v-if="!deleted.includes(user)">
+                        <sui-button icon="minus" type="button" @click="deleteUser(user)"
+                            floated="right" class="circular compact red mini" />
+                        <sui-list-header class="ui small">{{ user }}</sui-list-header>
+                    </sui-list-content>
+
+                    <sui-list-content v-if="deleted.includes(user)">
+                        <sui-button icon="undo" type="button" @click="undeleteUser(user)"
+                            floated="right" class="circular compact grey mini" />
+                        <sui-list-header class="ui small grey">
+                            <strike>{{ user }}</strike>
+                        </sui-list-header>
+                    </sui-list-content>
+                </sui-list-item>
+            </sui-list>
+        </sui-form-field>
+
         <sui-button-group fluid>
             <sui-button type="button" @click="reset()">Cancel</sui-button>
             <sui-button-or></sui-button-or>
             <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
         </sui-button-group>
-
-        <sui-header size="small" v-show="editMode">Group Members</sui-header>
-        <sui-list divided relaxed v-show="editMode">
-            <sui-list-item v-for="user in tmpGroup.users" :key="user">
-                <sui-list-icon name="user" size="large" vertical-align="middle" />
-                <sui-list-content>
-                    <sui-list-header>{{ user }}</sui-list-header>
-                </sui-list-content>
-            </sui-list-item>
-        </sui-list>
 
         <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
         <sui-segment class="red" v-show="editMode">
@@ -44,6 +66,16 @@ export default {
             editMode: state => state.Group.editMode,
             tmpGroup: state => state.Group.group,
         }),
+        ...mapGetters([
+            'users',
+            'userDropdown',
+        ]),
+    },
+    data () {
+        return {
+            deleted: [],
+            newUser: null,
+        };
     },
     watch: {
         editing (editing) {
@@ -59,12 +91,38 @@ export default {
             this.$store.dispatch('createGroup', this.tmpGroup);
         },
         updateGroup (gid) {
+            if (this.deleted.length) {
+                this.deleted.forEach(user => {
+                    let i = this.tmpGroup.users.indexOf(user);
+
+                    this.tmpGroup.users.splice(i, 1);
+                });
+            }
+
             this.$store.dispatch('updateGroup', {gid, data: this.tmpGroup});
         },
         deleteGroup (gid) {
             this.$store.dispatch('deleteGroup', gid);
         },
+        addUser () {
+            let user = this.users[this.users.findIndex(
+                u => u.uid == this.newUser
+            )];
+
+            if (!this.tmpGroup.users.includes(user.name)) {
+                this.tmpGroup.users.push(user.name);
+            }
+
+            this.newUser = null;
+        },
+        deleteUser (name) {
+            this.deleted.push(name);
+        },
+        undeleteUser (name) {
+            this.deleted.pop(this.deleted.indexOf(name));
+        },
         reset () {
+            this.deleted = [];
             this.$store.commit('unsetEditorGroup');
         },
     },

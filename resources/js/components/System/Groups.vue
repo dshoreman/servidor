@@ -1,6 +1,6 @@
 <template>
     <sui-grid>
-        <sui-grid-column stretched :width="listWidth">
+        <sui-grid-column :width="listWidth">
             <sui-segment attached>
                 <sui-form @submit.prevent="edit(search)">
                     <sui-form-field>
@@ -54,6 +54,7 @@ export default {
     },
     mounted () {
         this.$store.dispatch('loadGroups');
+        this.$store.dispatch('loadUsers');
     },
     computed: {
         ...mapState({

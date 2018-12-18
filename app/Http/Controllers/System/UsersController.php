@@ -22,10 +22,33 @@ class UsersController extends Controller
         $users = collect();
 
         foreach ($lines as $line) {
-            $users->push(array_combine($keys, explode(':', $line)));
+            $user = array_combine($keys, explode(':', $line));
+            $user['groups'] = $this->loadSecondaryGroups($user);
+
+            $users->push($user);
         }
 
         return $users;
+    }
+
+    protected function loadSecondaryGroups(array $user)
+    {
+        $groups = [];
+        $primary = explode(':', exec('getent group '.$user['gid']));
+        $effective  = explode(' ', exec('groups '.$user['name']));
+
+        $primaryName = reset($primary);
+        $primaryMembers = explode(',', end($primary));
+
+        foreach ($effective as $group) {
+            if ($group == $primaryName && !in_array($group, $primaryMembers)) {
+                continue;
+            }
+
+            $groups[] = $group;
+        }
+
+        return $groups;
     }
 
     /**
@@ -40,6 +63,10 @@ class UsersController extends Controller
 
         if ((int) ($data['uid'] ?? null) > 0) {
             $options[] = '-u '.(int) $data['uid'];
+        }
+
+        if ((int) ($data['gid'] ?? null) > 0) {
+            $options[] = '-g '.(int) $data['gid'];
         }
 
         $options[] = $data['name'];
@@ -83,6 +110,16 @@ class UsersController extends Controller
             $options[] = '-u '.$new_uid;
         }
 
+        if ($data['gid'] != $original['gid'] && (int) $data['gid'] > 0) {
+            $options[] = '-g '.(int) $data['gid'];
+        }
+
+        $original['groups'] = $this->loadSecondaryGroups($original);
+
+        if ($data['groups'] != $original['groups']) {
+            $options[] = '-G "'.implode(',', $data['groups']).'"';
+        }
+
         if (empty($options ?? null)) {
             throw $this->failed("Nothing to update!");
         }
@@ -92,7 +129,7 @@ class UsersController extends Controller
         exec('sudo usermod '.implode(' ', $options), $output, $retval);
 
         if (0 !== $retval) {
-            throw new ValidationException("Something went wrong. Exit code: ".$retval);
+            throw new \Exception("Something went wrong. Exit code: ".$retval);
         }
 
         return response(posix_getpwuid($new_uid), Response::HTTP_OK);
@@ -139,6 +176,8 @@ class UsersController extends Controller
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
             'uid' => 'integer|nullable',
+            'gid' => 'integer|required',
+            'groups' => 'array|nullable',
         ];
     }
 

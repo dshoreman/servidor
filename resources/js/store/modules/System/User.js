@@ -74,10 +74,10 @@ export default {
                 commit('unsetEditorUser');
             });
         },
-        updateUser: ({commit}, user) => {
-            axios.put('/api/system/users/'+user.uid, user.data).then(response => {
+        updateUser: ({commit}, {uid, user}) => {
+            axios.put('/api/system/users/'+uid, user).then(response => {
                 commit('updateUser', {
-                    uid: user.uid,
+                    uid: uid,
                     user: response.data,
                 });
                 commit('unsetEditorUser');
@@ -93,6 +93,15 @@ export default {
     getters: {
         users: state => {
             return state.users;
+        },
+        userDropdown: state => {
+            return state.users.map(user => {
+                return {
+                    icon: 'user',
+                    text: user.uid+' - '+user.name,
+                    value: user.uid,
+                };
+            });
         },
         filteredUsers: state => {
             return state.users.filter(user => {
