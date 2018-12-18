@@ -16,8 +16,19 @@
             <sui-list divided>
                 <sui-list-item v-for="user in tmpGroup.users" :key="user">
                     <sui-list-icon name="user" size="large" />
-                    <sui-list-content>
-                        <sui-list-header>{{ user }}</sui-list-header>
+
+                    <sui-list-content v-if="!deleted.includes(user)">
+                        <sui-button icon="minus" type="button" @click="deleteUser(user)"
+                            floated="right" class="circular compact red mini" />
+                        <sui-list-header class="ui small">{{ user }}</sui-list-header>
+                    </sui-list-content>
+
+                    <sui-list-content v-if="deleted.includes(user)">
+                        <sui-button icon="undo" type="button" @click="undeleteUser(user)"
+                            floated="right" class="circular compact grey mini" />
+                        <sui-list-header class="ui small grey">
+                            <strike>{{ user }}</strike>
+                        </sui-list-header>
                     </sui-list-content>
                 </sui-list-item>
             </sui-list>
@@ -48,6 +59,11 @@ export default {
             tmpGroup: state => state.Group.group,
         }),
     },
+    data () {
+        return {
+            deleted: [],
+        };
+    },
     watch: {
         editing (editing) {
             (!editing) || this.$nextTick(() => this.$refs.name.focus());
@@ -62,12 +78,27 @@ export default {
             this.$store.dispatch('createGroup', this.tmpGroup);
         },
         updateGroup (gid) {
+            if (this.deleted.length) {
+                this.deleted.forEach(user => {
+                    let i = this.tmpGroup.users.indexOf(user);
+
+                    this.tmpGroup.users.splice(i, 1);
+                });
+            }
+
             this.$store.dispatch('updateGroup', {gid, data: this.tmpGroup});
         },
         deleteGroup (gid) {
             this.$store.dispatch('deleteGroup', gid);
         },
+        deleteUser (name) {
+            this.deleted.push(name);
+        },
+        undeleteUser (name) {
+            this.deleted.pop(this.deleted.indexOf(name));
+        },
         reset () {
+            this.deleted = [];
             this.$store.commit('unsetEditorGroup');
         },
     },
