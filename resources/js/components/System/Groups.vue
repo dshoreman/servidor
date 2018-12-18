@@ -54,6 +54,7 @@ export default {
     },
     mounted () {
         this.$store.dispatch('loadGroups');
+        this.$store.dispatch('loadUsers');
     },
     computed: {
         ...mapState({

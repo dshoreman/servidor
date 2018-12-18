@@ -94,6 +94,15 @@ export default {
         users: state => {
             return state.users;
         },
+        userDropdown: state => {
+            return state.users.map(user => {
+                return {
+                    icon: 'user',
+                    text: user.uid+' - '+user.name,
+                    value: user.uid,
+                };
+            });
+        },
         filteredUsers: state => {
             return state.users.filter(user => {
                 if (!state.showSystem && user.uid < 1000) {
