@@ -27,7 +27,11 @@
                 :disabled="newGroup === null" />
 
             <sui-list divided>
-                <sui-list-item v-for="group in tmpUser.groups" :key="group">
+                <sui-message info v-if="!tmpUser.groups.length"
+                    header="No memberships!" icon="exclamation triangle"
+                    content="Groups will be listed here."
+                />
+                <sui-list-item v-else v-for="group in tmpUser.groups" :key="group">
                     <sui-list-icon size="large" name="users" />
 
                     <sui-list-content v-if="!deleted.includes(group)">

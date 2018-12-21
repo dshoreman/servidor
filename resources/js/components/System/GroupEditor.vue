@@ -22,7 +22,11 @@
                 :disabled="newUser === null" />
 
             <sui-list divided>
-                <sui-list-item v-for="user in tmpGroup.users" :key="user">
+                <sui-message info v-if="!tmpGroup.users.length"
+                    header="Empty group!" icon="exclamation triangle"
+                    content="Members will be listed here."
+                />
+                <sui-list-item v-else v-for="user in tmpGroup.users" :key="user">
                     <sui-list-icon name="user" size="large" />
 
                     <sui-list-content v-if="!deleted.includes(user)">
