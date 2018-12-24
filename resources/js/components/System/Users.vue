@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 import SystemUserItem from './UserItem';
 import SystemUserEditor from './UserEditor';
 
@@ -71,8 +71,10 @@ export default {
         },
     },
     methods: {
+        ...mapActions({
+            edit: 'editUser',
+        }),
         ...mapMutations({
-            edit: 'setEditorUser',
             filterUsers: 'setFilter',
             toggleSysUsers: 'toggleSystemUsers',
         }),

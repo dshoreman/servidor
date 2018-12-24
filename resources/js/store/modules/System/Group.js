@@ -1,5 +1,6 @@
 export default {
     state: {
+        clean: null,
         currentFilter: '',
         groups: [],
         group: {
@@ -21,10 +22,6 @@ export default {
             state.showSystem = value;
         },
         setEditorGroup: (state, group) => {
-            if (state.editing) {
-                return;
-            }
-
             state.editMode = typeof group == 'object';
 
             if (!state.editMode) {
@@ -35,6 +32,9 @@ export default {
                 };
             }
 
+            state.clean = Object.assign({}, group);
+            state.clean.users = group.users.slice(0);
+
             group.users = group.users.slice(0);
             state.group = Object.assign({}, group);
             state.group.gid_original = group.gid;
@@ -42,6 +42,7 @@ export default {
             state.editing = true;
         },
         unsetEditorGroup: (state) => {
+            state.clean = null;
             state.editing = false;
             state.editMode = false;
 
@@ -71,6 +72,13 @@ export default {
             axios.get('/api/system/groups').then(response => {
                 commit('setGroups', response.data);
             });
+        },
+        editGroup: ({commit, state, getters}, group) => {
+            if (state.editing && getters.groupIsDirty) {
+                return;
+            }
+
+            commit('setEditorGroup', group);
         },
         createGroup: ({commit, state}) => {
             axios.post('/api/system/groups', state.group).then(response => {
@@ -106,6 +114,18 @@ export default {
                     value: group.gid,
                 };
             });
+        },
+        groupIsDirty: state => {
+            let old = state.clean,
+                now = state.group;
+
+            if (old === null) {
+                return false;
+            }
+
+            return old.name != now.name
+                || old.gid != now.gid
+                || !_.isEqual(old.users, now.users);
         },
         filteredGroups: state => {
             return state.groups.filter(group => {

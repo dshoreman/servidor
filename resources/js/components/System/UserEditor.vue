@@ -33,7 +33,9 @@
                     <sui-list-content v-if="!deleted.includes(group)">
                         <sui-button icon="minus" type="button" @click="deleteGroup(group)"
                             floated="right" class="circular compact red mini" />
-                        <sui-list-header class="ui small">{{ group }}</sui-list-header>
+                        <sui-list-header :class="(hadGroup(group) ? '' : 'green ') + 'ui small'">
+                            {{ group }}
+                        </sui-list-header>
                     </sui-list-content>
 
                     <sui-list-content v-if="deleted.includes(group)">
@@ -69,6 +71,7 @@ export default {
         ...mapState({
             editing: state => state.User.editing,
             editMode: state => state.User.editMode,
+            oldUser: state => state.User.clean,
             tmpUser: state => state.User.user,
         }),
         ...mapGetters([
@@ -120,8 +123,13 @@ export default {
 
             this.newGroup = null;
         },
+        hadGroup (name) {
+            return this.oldUser.groups.includes(name);
+        },
         deleteGroup (name) {
-            this.deleted.push(name);
+            this.hadGroup(name)
+             ? this.deleted.push(name)
+             : this.tmpUser.groups.splice(this.tmpUser.groups.indexOf(name), 1);
         },
         undeleteGroup (name) {
             this.deleted.pop(this.deleted.indexOf(name));

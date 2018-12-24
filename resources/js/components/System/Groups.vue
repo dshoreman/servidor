@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 import SystemGroupItem from './GroupItem';
 import SystemGroupEditor from './GroupEditor';
 
@@ -72,9 +72,11 @@ export default {
     },
     methods: {
         ...mapMutations({
-            edit: 'setEditorGroup',
             filterGroups: 'setFilter',
             toggleSysGroups: 'toggleSystemGroups',
+        }),
+        ...mapActions({
+            edit: 'editGroup',
         }),
     },
 }

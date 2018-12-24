@@ -1,5 +1,6 @@
 export default {
     state: {
+        clean: null,
         currentFilter: '',
         editing: false,
         editMode: false,
@@ -20,10 +21,6 @@ export default {
             state.showSystem = value;
         },
         setEditorUser: (state, user) => {
-            if (state.editing) {
-                return;
-            }
-
             state.editMode = typeof user == 'object';
 
             if (!state.editMode) {
@@ -33,12 +30,16 @@ export default {
                 };
             }
 
+            state.clean = Object.assign({}, user);
+            state.clean.groups = user.groups.slice(0);
+
             state.user = Object.assign({}, user);
             state.user.uid_original = user.uid;
 
             state.editing = true;
         },
         unsetEditorUser: (state) => {
+            state.clean = null;
             state.editing = false;
             state.editMode = false;
 
@@ -67,6 +68,13 @@ export default {
             axios.get('/api/system/users').then(response => {
                 commit('setUsers', response.data);
             });
+        },
+        editUser: ({commit, state, getters}, user) => {
+            if (state.editing && getters.userIsDirty) {
+                return;
+            }
+
+            commit('setEditorUser', user);
         },
         createUser: ({commit, state}) => {
             axios.post('/api/system/users', state.user).then(response => {
@@ -102,6 +110,19 @@ export default {
                     value: user.uid,
                 };
             });
+        },
+        userIsDirty: state => {
+            let old = state.clean,
+                now = state.user;
+
+            if (old === null) {
+                return false;
+            }
+
+            return old.name != now.name
+                || old.uid != now.uid
+                || old.gid != now.gid
+                || !_.isEqual(old.groups, now.groups);
         },
         filteredUsers: state => {
             return state.users.filter(user => {
