@@ -8,6 +8,7 @@ export default {
         users: [],
         user: {
             name: '',
+            groups: [],
         },
     },
     mutations: {
