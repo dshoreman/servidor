@@ -16,7 +16,7 @@ class DeleteSystemGroupTest extends TestCase
             'name' => 'delete-test',
         ])->json();
 
-        $response = $this->deleteJson('/api/system/groups/'.$group['id'], []);
+        $response = $this->deleteJson('/api/system/groups/'.$group['gid'], []);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }

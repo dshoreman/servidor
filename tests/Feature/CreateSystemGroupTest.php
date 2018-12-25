@@ -29,7 +29,7 @@ class CreateSystemGroupTest extends TestCase
     public function createResponseContainsAllKeys($response)
     {
         $response->assertJsonStructure([
-            'id',
+            'gid',
             'name',
             'users',
         ]);

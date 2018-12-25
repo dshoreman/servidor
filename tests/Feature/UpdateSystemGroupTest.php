@@ -16,14 +16,14 @@ class UpdateSystemGroupTest extends TestCase
             'name' => 'updatetest',
         ])->json();
 
-        $response = $this->putJson('/api/system/groups/'.$group['id'], [
+        $response = $this->putJson('/api/system/groups/'.$group['gid'], [
             'name' => 'renametest',
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'name',
-            'id',
+            'gid',
             'users',
         ]);
     }

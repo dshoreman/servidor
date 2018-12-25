@@ -86,8 +86,8 @@ class GroupsController extends Controller
      */
     public function update(Request $request, $gid)
     {
-        $new_gid = $gid;
         $data = $request->validate($this->validationRules());
+        $data['gid'] = (int) ($data['gid'] ?? $gid);
 
         if (!$original = posix_getgrgid($gid)) {
             throw $this->failed("No group found matching the given criteria.");
@@ -99,12 +99,11 @@ class GroupsController extends Controller
             $options[] = '-n '.$data['name'];
         }
 
-        if ($data['gid'] != $gid && (int) $data['gid'] > 0) {
-            $new_gid = (int) $data['gid'];
-            $options[] = '-g '.$new_gid;
+        if ($data['gid'] != $gid && $data['gid'] > 0) {
+            $options[] = '-g '.$data['gid'];
         }
 
-        if ($data['users'] != $original['members']) {
+        if (($data['users'] ?? []) != $original['members']) {
             $members = implode(',', $data['users']);
         }
 
@@ -121,7 +120,7 @@ class GroupsController extends Controller
                 throw new ValidationException("Something went wrong. Exit code: ".$retval);
             }
 
-            $updated = posix_getgrgid($new_gid);
+            $updated = posix_getgrgid($data['gid']);
         }
 
         if ($members ?? null) {
@@ -133,7 +132,7 @@ class GroupsController extends Controller
                 throw new ValidationException("Something went wrong. Exit code: ".$retval);
             }
 
-            $updated = posix_getgrgid($new_gid);
+            $updated = posix_getgrgid($data['gid']);
         }
 
         return response([

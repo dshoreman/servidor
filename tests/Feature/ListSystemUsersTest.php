@@ -16,7 +16,7 @@ class ListSystemUsersTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
-            'username' => 'nobody',
+            'name' => 'nobody',
         ]);
     }
 
@@ -27,7 +27,7 @@ class ListSystemUsersTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
-            'username' => 'root'
+            'name' => 'root'
         ]);
     }
 
