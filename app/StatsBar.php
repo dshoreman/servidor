@@ -1,4 +1,4 @@
-<?php namespace App;
+<?php namespace Servidor;
 
 class StatsBar
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\System;
+namespace Servidor\Http\Controllers\System;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Controllers\Controller;
+use Servidor\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
 class UsersController extends Controller

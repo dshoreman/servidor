@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace Servidor\Providers;
 
-use App\StatsBar;
+use Servidor\StatsBar;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
