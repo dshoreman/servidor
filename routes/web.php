@@ -15,6 +15,8 @@ Route::get('apps', function () {
     return view('sites');
 });
 
+Auth::routes();
+
 Route::get('/{all?}', function () {
     return view('servidor');
 })->where('all', '.*');
