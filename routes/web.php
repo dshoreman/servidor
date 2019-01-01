@@ -15,7 +15,7 @@ Route::get('apps', function () {
     return view('sites');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/{all?}', function () {
     return view('servidor');
