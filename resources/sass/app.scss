@@ -6,7 +6,27 @@
 @import 'variables';
 
 body {
-    height: auto;
+    height: calc(100% - 5rem);
+
+    #app {
+        height: 100%;
+    }
+}
+
+body.login {
+    background: #dedede;
+    margin-top: 5em;
+
+    .grid {
+        height: 100%;
+    }
+    .column {
+        max-width: 450px;
+
+        .field[class*="left aligned"] {
+            text-align: left;
+        }
+    }
 }
 
 .main {
