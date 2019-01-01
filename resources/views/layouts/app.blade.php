@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, height=device-height">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Laravel</title>
+        <title>{{ config('app.name', '') }}</title>
 
         <link href="{{ asset('css/semantic.min.css') }}" rel="stylesheet" type="text/css">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
@@ -15,7 +15,8 @@
 
             <sui-menu fixed inverted>
                 <router-link header :to="{ name: 'dashboard' }" is="sui-menu-item">
-                    <sui-icon name="server" size="big"></sui-icon> Servidor
+                    <sui-icon name="server" size="big"></sui-icon>
+                    {{ config('app.name', '') }}
                 </router-link>
             </sui-menu>
 
