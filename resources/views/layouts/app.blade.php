@@ -19,14 +19,12 @@
                 </router-link>
                 @guest
                     <sui-menu-menu position="right">
-                        <a is="sui-menu-item" href="{{ route('login') }}">
+                        <router-link :to="{ name: 'login' }" is="sui-menu-item">
                             {{ __('Login') }}
-                        </a>
-                        @if (Route::has('register'))
-                            <a is="sui-menu-item" href="{{ route('register') }}">
-                                {{ __('Register') }}
-                            </a>
-                        @endif
+                        </router-link>
+                        <router-link :to="{ name: 'register' }" is="sui-menu-item">
+                            {{ __('Register') }}
+                        </router-link>
                     </sui-menu-menu>
                 @else
                     <div class="right menu">
@@ -46,16 +44,7 @@
                 @endguest
             </sui-menu>
 
-            <sui-container class="main">
-                <stats-bar hostname="{{ $stats->hostname }}"
-                           distro="{{ $stats->os->distro }}"
-                           version="{{ $stats->os->version }}">
-                </stats-bar>
-
-                <main-menu></main-menu>
-
-                @yield('content')
-            </sui-container>
+            @yield('content')
 
         </div>
 
