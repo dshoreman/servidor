@@ -13,16 +13,18 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-Route::name('system')->prefix('/system')->namespace('System')->group(function () {
-    Route::resource('groups', 'GroupsController', [
-        'only' => ['index', 'store', 'update', 'destroy'],
-    ]);
+    Route::name('system')->prefix('/system')->namespace('System')->group(function () {
+        Route::resource('groups', 'GroupsController', [
+            'only' => ['index', 'store', 'update', 'destroy'],
+        ]);
 
-    Route::resource('users', 'UsersController', [
-        'only' => ['index', 'store', 'update', 'destroy'],
-    ]);
+        Route::resource('users', 'UsersController', [
+            'only' => ['index', 'store', 'update', 'destroy'],
+        ]);
+    });
 });
