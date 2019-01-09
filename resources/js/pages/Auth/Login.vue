@@ -74,7 +74,9 @@ export default {
                 password: this.password,
             }).then(response => {
                 let token = response.data.access_token;
+
                 window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
+                localStorage.setItem('accessToken', token);
 
                 this.$router.push('/');
             }).catch(error => {
