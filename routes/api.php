@@ -30,3 +30,7 @@ Route::middleware('auth:api')->group(function () {
         ]);
     });
 });
+
+Route::any('/{all?}', function () {
+    abort(404);
+})->where('all', '.*');
