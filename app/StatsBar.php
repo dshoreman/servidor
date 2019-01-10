@@ -7,9 +7,9 @@ class StatsBar
         $os = self::parseReleaseFile('os');
         $lsb = self::parseReleaseFile('lsb');
 
-        return (object) [
+        return [
             'hostname' => gethostname(),
-            'os' => (object) [
+            'os' => [
                 'name' => php_uname('s'),
                 'distro' => $os['NAME'],
                 'version' => $lsb['DISTRIB_RELEASE'],

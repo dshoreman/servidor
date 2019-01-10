@@ -1,5 +1,5 @@
 <template lang="html">
-    <sui-statistics-group>
+    <sui-statistics-group v-if="loaded">
         <sui-statistic in-group>
             <sui-statistic-value>
                  {{ hostname }}
@@ -14,6 +14,29 @@
 
 <script>
 export default {
-  props: ['hostname', 'distro', 'version']
+    data () {
+        return {
+            loaded: false,
+            hostname: '',
+            distro: '',
+            version: '',
+        };
+    },
+    mounted () {
+        this.initStatsBar();
+    },
+    methods: {
+        initStatsBar () {
+            axios.get('/api/system-info').then(response => {
+                let data = response.data;
+
+                this.hostname = data.hostname;
+                this.distro = data.os.distro;
+                this.version = data.os.version;
+
+                this.loaded = true;
+            });
+        },
+    },
 }
 </script>

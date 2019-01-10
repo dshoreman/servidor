@@ -29,6 +29,8 @@ Route::middleware('auth:api')->group(function () {
             'only' => ['index', 'store', 'update', 'destroy'],
         ]);
     });
+
+    Route::get('system-info', 'SystemInformationController');
 });
 
 Route::any('/{all?}', function () {
