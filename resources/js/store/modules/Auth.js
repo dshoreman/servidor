@@ -1,6 +1,6 @@
 export default {
     state: {
-        token: null,
+        token: localStorage.getItem('accessToken') || null,
     },
     mutations: {
         setToken: (state, token) => {
