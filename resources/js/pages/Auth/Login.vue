@@ -69,15 +69,10 @@ export default {
     },
     methods:  {
         login () {
-            axios.post('/api/login', {
+            this.$store.dispatch('login', {
                 username: this.username,
                 password: this.password,
             }).then(response => {
-                let token = response.data.access_token;
-
-                window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
-                localStorage.setItem('accessToken', token);
-
                 this.$router.push('/');
             }).catch(error => {
                 this.error = error.response.data.message;
@@ -86,4 +81,3 @@ export default {
     },
 };
 </script>
-
