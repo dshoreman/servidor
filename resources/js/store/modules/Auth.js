@@ -28,4 +28,9 @@ export default {
             });
         },
     },
+    getters: {
+        loggedIn: state => {
+            return state.token !== null;
+        },
+    },
 };

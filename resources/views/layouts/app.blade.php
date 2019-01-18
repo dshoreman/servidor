@@ -13,37 +13,6 @@
     <body>
         <div id="app">
 
-            <sui-menu fixed inverted>
-                <router-link header :to="{ name: 'dashboard' }" is="sui-menu-item">
-                    <sui-icon name="server" size="big"></sui-icon> Servidor
-                </router-link>
-                @guest
-                    <sui-menu-menu position="right">
-                        <router-link :to="{ name: 'login' }" is="sui-menu-item">
-                            {{ __('Login') }}
-                        </router-link>
-                        <router-link :to="{ name: 'register' }" is="sui-menu-item">
-                            {{ __('Register') }}
-                        </router-link>
-                    </sui-menu-menu>
-                @else
-                    <div class="right menu">
-                        <sui-dropdown item text="{{ Auth::user()->name }}">
-                            <sui-dropdown-menu>
-                                <a is="sui-dropdown-item" href="{{ route('logout') }}"
-                                    @click.prevent="$refs.logoutForm.submit">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form ref="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </sui-dropdown-menu>
-                        </sui-dropdown>
-                    </div>
-                @endguest
-            </sui-menu>
-
             @yield('content')
 
         </div>
