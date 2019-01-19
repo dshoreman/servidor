@@ -1,6 +1,7 @@
 export default {
     state: {
         token: localStorage.getItem('accessToken') || null,
+        user: '',
     },
     mutations: {
         setToken: (state, token) => {
@@ -8,6 +9,9 @@ export default {
         },
         clearToken: (state) => {
             state.token = null;
+        },
+        setUser: (state, user) => {
+            state.user = user;
         },
     },
     actions: {
@@ -40,6 +44,11 @@ export default {
                     localStorage.removeItem('accessToken');
                     commit('clearToken');
                 });
+            });
+        },
+        fetchProfile: ({commit}) => {
+            axios.get('/api/user').then(response => {
+                commit('setUser', response.data);
             });
         },
     },

@@ -16,7 +16,7 @@
             </sui-menu-menu>
 
             <div class="right menu" v-else>
-                <sui-dropdown item text="Auth::user()->name">
+                <sui-dropdown item :text="user.name">
                     <sui-dropdown-menu>
                         <a is="sui-dropdown-item" @click.prevent="logout">
                             Logout
@@ -35,13 +35,19 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapState } from 'vuex';
 
 export default {
     computed: {
         ...mapGetters([
             'loggedIn',
         ]),
+        ...mapState({
+            user: state => state.Auth.user,
+        }),
+    },
+    created () {
+        this.$store.dispatch('fetchProfile');
     },
     methods: {
         logout () {
