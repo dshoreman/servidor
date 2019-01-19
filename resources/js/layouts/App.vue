@@ -18,14 +18,9 @@
             <div class="right menu" v-else>
                 <sui-dropdown item text="Auth::user()->name">
                     <sui-dropdown-menu>
-                        <a is="sui-dropdown-item" href="/logout"
-                            @click.prevent="$refs.logoutForm.submit">
+                        <a is="sui-dropdown-item" @click.prevent="logout">
                             Logout
                         </a>
-
-                        <form ref="logoutForm" action="/logout" method="POST" style="display: none;">
-                            @csrf
-                        </form>
                     </sui-dropdown-menu>
                 </sui-dropdown>
             </div>
@@ -40,13 +35,20 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     computed: {
         ...mapGetters([
             'loggedIn',
         ]),
+    },
+    methods: {
+        logout () {
+            this.$store.dispatch('logout').then(response => {
+                this.$router.push('/login');
+            });
+        },
     },
 }
 </script>

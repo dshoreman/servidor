@@ -38,4 +38,15 @@ class AuthController extends Controller
             );
         }
     }
+
+    public function logout ()
+    {
+        $user = auth()->user();
+
+        if ($user->token()->delete() !== true) {
+            throw new \Exception("Failed to delete token.");
+        }
+
+        return response(null, 204);
+    }
 }

@@ -20,6 +20,8 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
+    Route::post('logout', 'AuthController@logout');
+
     Route::name('system')->prefix('/system')->namespace('System')->group(function () {
         Route::resource('groups', 'GroupsController', [
             'only' => ['index', 'store', 'update', 'destroy'],

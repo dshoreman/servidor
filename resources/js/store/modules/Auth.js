@@ -6,6 +6,9 @@ export default {
         setToken: (state, token) => {
             state.token = token;
         },
+        clearToken: (state) => {
+            state.token = null;
+        },
     },
     actions: {
         login: ({commit}, data) => {
@@ -24,6 +27,18 @@ export default {
                     resolve(response);
                 }).catch(error => {
                     reject(error);
+                });
+            });
+        },
+        logout: ({commit}) => {
+            return new Promise((resolve, reject) => {
+                axios.post('/api/logout').then(response => {
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                }).then(() => {
+                    localStorage.removeItem('accessToken');
+                    commit('clearToken');
                 });
             });
         },
