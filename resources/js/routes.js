@@ -13,26 +13,31 @@ const routes = [{
         component: Dashboard,
         name: 'dashboard',
         path: '/',
+        meta: { auth: true },
     }, {
         path: '/system', component: SystemLayout,
         children: [{
             component: SystemGroups,
             name: 'system.groups',
             path: '/system/groups',
+            meta: { auth: true },
         }, {
             component: SystemUsers,
             name: 'system.users',
             path: '/system/users',
+            meta: { auth: true },
         }],
     }],
 }, {
     component: Login,
     name: 'login',
     path: '/login',
+    meta: { guest: true },
 }, {
     component: Register,
     name: 'register',
     path: '/register',
+    meta: { guest: true },
 }, {
     path: '*', component: NotFound,
 }];

@@ -26,6 +26,18 @@ const router = new VueRouter({
     routes
 });
 
+router.beforeEach((to, from, next) => {
+    let authed = store.getters.loggedIn;
+
+    if (!authed && to.matched.some(route => route.meta.auth)) {
+        next({ name: 'login' });
+    } else if (authed && to.matched.some(route => route.meta.guest)) {
+        next({ name: 'dashboard' });
+    } else {
+        next();
+    }
+});
+
 window.axios.interceptors.response.use(response => {
     return response;
 }, error => {
