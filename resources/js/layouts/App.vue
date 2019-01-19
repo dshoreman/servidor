@@ -52,7 +52,9 @@ export default {
     methods: {
         logout () {
             this.$store.dispatch('logout').then(response => {
-                this.$router.push('/login');
+                this.$nextTick(() => {
+                    this.$router.push('/login')
+                });
             });
         },
     },
