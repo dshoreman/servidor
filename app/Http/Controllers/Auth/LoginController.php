@@ -31,6 +31,14 @@ class LoginController extends Controller
      */
     public function login (Request $request, Client $client)
     {
+        $this->validateLogin($request);
+
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
         try {
             $response = $client->post(config('app.url').'/oauth/token', [
                 'form_params' => [
@@ -43,8 +51,12 @@ class LoginController extends Controller
                 ],
             ]);
 
+            $this->clearLoginAttempts($request);
+
             return $response->getBody();
         } catch (BadResponseException $e) {
+            $this->incrementLoginAttempts($request);
+
             return response(
                 $e->getResponse()->getBody(),
                 $e->getCode(),
