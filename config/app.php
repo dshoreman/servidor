@@ -56,6 +56,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | User Registration
+    |--------------------------------------------------------------------------
+    | Whether or not users can post to the /api/register endpoint.
+    | User auth isn't fully implemented (i.e. assets are global and not
+    | assigned to individual accounts) so create your account then disable.
+    */
+    'registration_enabled' => env('APP_REGISTRATION', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

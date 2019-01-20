@@ -5,7 +5,7 @@
                 <i class="server icon"></i>
                 Create your Servidor Account
             </h2>
-            <form class="ui form" method="POST" :action="{ name: 'register' }">
+            <form class="ui form" method="POST" action="/api/register">
                 <div class="ui stacked segment">
                     <div class="field left aligned">
                         <label for="name">Name</label>
