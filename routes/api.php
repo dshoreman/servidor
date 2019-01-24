@@ -13,16 +13,29 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('login', 'Auth\LoginController@login');
+Route::post('register', 'Auth\RegisterController@register');
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::post('logout', 'Auth\LoginController@logout');
+
+    Route::name('system')->prefix('/system')->namespace('System')->group(function () {
+        Route::resource('groups', 'GroupsController', [
+            'only' => ['index', 'store', 'update', 'destroy'],
+        ]);
+
+        Route::resource('users', 'UsersController', [
+            'only' => ['index', 'store', 'update', 'destroy'],
+        ]);
+    });
+
+    Route::get('system-info', 'SystemInformationController');
 });
 
-Route::name('system')->prefix('/system')->namespace('System')->group(function () {
-    Route::resource('groups', 'GroupsController', [
-        'only' => ['index', 'store', 'update', 'destroy'],
-    ]);
-
-    Route::resource('users', 'UsersController', [
-        'only' => ['index', 'store', 'update', 'destroy'],
-    ]);
-});
+Route::any('/{all?}', function () {
+    abort(404);
+})->where('all', '.*');

@@ -13,23 +13,7 @@
     <body>
         <div id="app">
 
-            <sui-menu fixed inverted>
-                <router-link header :to="{ name: 'dashboard' }" is="sui-menu-item">
-                    <sui-icon name="server" size="big"></sui-icon>
-                    {{ config('app.name', '') }}
-                </router-link>
-            </sui-menu>
-
-            <sui-container class="main">
-                <stats-bar hostname="{{ $stats->hostname }}"
-                           distro="{{ $stats->os->distro }}"
-                           version="{{ $stats->os->version }}">
-                </stats-bar>
-
-                <main-menu></main-menu>
-
-                @yield('content')
-            </sui-container>
+            @yield('content')
 
         </div>
 

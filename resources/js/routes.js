@@ -1,24 +1,43 @@
 import Dashboard from './pages/Dashboard.vue'
+import AppLayout from './layouts/App.vue'
 import SystemLayout from './layouts/System.vue'
 import SystemGroups from './components/System/Groups.vue'
 import SystemUsers from './components/System/Users.vue'
+import Login from './pages/Auth/Login.vue'
+import Register from './pages/Auth/Register.vue'
 import NotFound from './pages/NotFound.vue'
 
 const routes = [{
-    component: Dashboard,
-    name: 'dashboard',
-    path: '/',
-}, {
-    path: '/system', component: SystemLayout,
+    path: '/', component: AppLayout,
     children: [{
-        component: SystemGroups,
-        name: 'system.groups',
-        path: '/system/groups',
+        component: Dashboard,
+        name: 'dashboard',
+        path: '/',
+        meta: { auth: true },
     }, {
-        component: SystemUsers,
-        name: 'system.users',
-        path: '/system/users',
+        path: '/system', component: SystemLayout,
+        children: [{
+            component: SystemGroups,
+            name: 'system.groups',
+            path: '/system/groups',
+            meta: { auth: true },
+        }, {
+            component: SystemUsers,
+            name: 'system.users',
+            path: '/system/users',
+            meta: { auth: true },
+        }],
     }],
+}, {
+    component: Login,
+    name: 'login',
+    path: '/login',
+    meta: { guest: true },
+}, {
+    component: Register,
+    name: 'register',
+    path: '/register',
+    meta: { guest: true },
 }, {
     path: '*', component: NotFound,
 }];

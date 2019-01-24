@@ -25,6 +25,11 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
+let accessToken = localStorage.getItem('accessToken');
+if (accessToken) {
+    window.axios.defaults.headers.common['Authorization'] = 'Bearer '+accessToken;
+}
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
