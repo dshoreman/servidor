@@ -5,13 +5,14 @@
                 <i class="server icon"></i>
                 Create your Servidor Account
             </h2>
-            <form class="ui form" method="POST" action="/api/register">
+            <form class="ui form" method="POST" @submit.prevent="register">
                 <div class="ui stacked segment">
                     <div class="field left aligned">
                         <label for="name">Name</label>
 
                         <div class="ui left icon input">
-                            <input id="name" type="text" name="name" required autofocus>
+                            <input id="name" type="text" name="name"
+                                v-model="name" required autofocus>
                             <i class="user icon"></i>
                         </div>
                     </div>
@@ -20,7 +21,8 @@
                         <label for="email">E-Mail Address</label>
 
                         <div class="ui left icon input">
-                            <input id="email" type="email" name="email" required>
+                            <input id="email" type="email" name="email"
+                                v-model="email" required>
                             <i class="envelope icon"></i>
                         </div>
                     </div>
@@ -29,16 +31,18 @@
                         <label for="password">Password</label>
 
                         <div class="ui left icon input">
-                            <input id="password" type="password" name="password" required>
+                            <input id="password" type="password" name="password"
+                                v-model="password" required>
                             <i class="lock icon"></i>
                         </div>
                     </div>
 
                     <div class="field left aligned">
-                        <label for="password-confirm">Confirm Password</label>
+                        <label for="passconfirm">Confirm Password</label>
 
                         <div class="ui left icon input">
-                            <input id="password-confirm" type="password" name="password_confirmation" required>
+                            <input id="passconfirm" type="password" name="passconfirm"
+                                v-model="passwordConfirm" required>
                             <i class="lock icon"></i>
                         </div>
                     </div>
@@ -54,6 +58,14 @@
 
 <script>
 export default {
+    data () {
+        return {
+            name: '',
+            email: '',
+            password: '',
+            passwordConfirm: '',
+        };
+    },
     mounted () {
         document.body.classList.add('login');
     },
@@ -61,6 +73,18 @@ export default {
         document.body.classList.remove('login');
 
         return next();
+    },
+    methods: {
+        register () {
+            this.$store.dispatch('register', {
+                name: this.name,
+                email: this.email,
+                password: this.password,
+                passwordConfirmation: this.passwordConfirm,
+            }).then(response => {
+                this.$router.push({ name: 'login' });
+            });
+        },
     },
 };
 </script>

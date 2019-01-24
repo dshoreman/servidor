@@ -4,6 +4,7 @@ namespace Servidor\Http\Controllers\Auth;
 
 use Servidor\User;
 use Servidor\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -69,5 +70,17 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    /**
+     * Output user data on successful registration
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return \Illuminate\Http\Response
+     */
+    protected function registered(Request $request, $user)
+    {
+        return $user;
     }
 }

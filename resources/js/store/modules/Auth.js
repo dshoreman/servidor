@@ -15,6 +15,20 @@ export default {
         },
     },
     actions: {
+        register: ({commit}, data) => {
+            return new Promise((resolve, reject) => {
+                axios.post('/api/register', {
+                    name: data.name,
+                    email: data.email,
+                    password: data.password,
+                    password_confirmation: data.passwordConfirmation,
+                }).then(response => {
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });;
+            });
+        },
         login: ({commit}, data) => {
             return new Promise((resolve, reject) => {
                 axios.post('/api/login', {
