@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Servidor\User;
 use Tests\TestCase;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,13 +13,17 @@ class UpdateSystemGroupTest extends TestCase
     /** @test */
     public function canUpdateGroup()
     {
-        $group = $this->postJson('/api/system/groups', [
-            'name' => 'updatetest',
-        ])->json();
+        $user = factory(User::class)->create();
 
-        $response = $this->putJson('/api/system/groups/'.$group['gid'], [
-            'name' => 'renametest',
-        ]);
+        $group = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => 'updatetest',
+            ])->json();
+
+        $response = $this->actingAs($user, 'api')
+            ->putJson('/api/system/groups/'.$group['gid'], [
+                'name' => 'renametest',
+            ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
@@ -31,9 +36,12 @@ class UpdateSystemGroupTest extends TestCase
     /** @test */
     public function cannotUpdateNonExistantGroup()
     {
-        $response = $this->putJson('/api/system/groups/9032', [
-            'name' => 'nogrouptest',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->putJson('/api/system/groups/9032', [
+                'name' => 'nogrouptest',
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }

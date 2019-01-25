@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Servidor\User;
 use Tests\TestCase;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,9 +13,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function canCreateWithMinimumData()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => 'newtestgroup',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => 'newtestgroup',
+            ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestgroup']);
@@ -38,9 +42,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotStartWithDash()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => '-test-dash-prefix',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => '-test-dash-prefix',
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name format is invalid.']);
@@ -49,9 +56,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotStartWithPlus()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => '+test-plus-prefix',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => '+test-plus-prefix',
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name format is invalid.']);
@@ -60,9 +70,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotStartWithTilde()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => '~test-tilde-prefix',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => '~test-tilde-prefix',
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name format is invalid.']);
@@ -71,9 +84,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotContainColon()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => 'test-contains-:',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => 'test-contains-:',
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name cannot contain a colon.']);
@@ -82,9 +98,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotContainComma()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => 'test,contains,comma',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => 'test,contains,comma',
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name cannot contain a comma.']);
@@ -93,9 +112,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotContainTab()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => "test\tcontains\ttab",
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => "test\tcontains\ttab",
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
@@ -104,9 +126,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotContainNewline()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => "test\ncontains\nnewline",
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => "test\ncontains\nnewline",
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
@@ -115,9 +140,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotContainWhitespace()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => 'test contains space',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => 'test contains space',
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
@@ -126,9 +154,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameEndingWithWhitespaceGetsTrimmed()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => 'testgroup ',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => 'testgroup ',
+            ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'testgroup']);
@@ -137,9 +168,12 @@ class CreateSystemGroupTest extends TestCase
     /** @test */
     public function nameCannotBeTooLong()
     {
-        $response = $this->postJson('/api/system/groups', [
-            'name' => '_im-a-name-that-is-over-32-chars-',
-        ]);
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/system/groups', [
+                'name' => '_im-a-name-that-is-over-32-chars-',
+            ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name may not be greater than 32 characters.']);

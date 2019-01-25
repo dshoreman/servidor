@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Servidor\User;
 use Tests\TestCase;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,7 +13,10 @@ class ListSystemGroupsTest extends TestCase
     /** @test */
     public function canViewGroupsList()
     {
-        $response = $this->getJson('/api/system/groups');
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->getJson('/api/system/groups');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
@@ -23,7 +27,10 @@ class ListSystemGroupsTest extends TestCase
     /** @test */
     public function listIsAnArray()
     {
-        $response = $this->getJson('/api/system/groups');
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user, 'api')
+            ->getJson('/api/system/groups');
 
         $responseJson = json_decode($response->getContent());
 
