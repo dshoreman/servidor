@@ -10,6 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UpdateSystemGroupTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function canUpdateGroup()
     {

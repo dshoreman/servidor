@@ -10,6 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ListSystemGroupsTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function canViewGroupsList()
     {
