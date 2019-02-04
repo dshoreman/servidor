@@ -7,18 +7,17 @@ use Tests\TestCase;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\RequiresAuth;
 
 class ListSystemUsersTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresAuth;
 
     /** @test */
     public function listIncludesSystemUsers()
     {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user, 'api')
-            ->getJson('/api/system/users');
+        $response = $this->authed()->getJson('/api/system/users');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
@@ -29,10 +28,7 @@ class ListSystemUsersTest extends TestCase
     /** @test */
     public function listIncludesNormalUsers()
     {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user, 'api')
-            ->getJson('/api/system/users');
+        $response = $this->authed()->getJson('/api/system/users');
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
@@ -45,10 +41,7 @@ class ListSystemUsersTest extends TestCase
      */
     public function listIsAnArray()
     {
-        $user = factory(User::class)->create();
-
-        $response = $this->actingAs($user, 'api')
-            ->getJson('/api/system/users');
+        $response = $this->authed()->getJson('/api/system/users');
 
         $responseJson = json_decode($response->getContent());
 
