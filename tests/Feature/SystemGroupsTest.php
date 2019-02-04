@@ -54,11 +54,7 @@ class CreateSystemGroupTest extends TestCase
      */
     public function createResponseContainsAllKeys($response)
     {
-        $response->assertJsonStructure([
-            'gid',
-            'name',
-            'users',
-        ]);
+        $response->assertJsonStructure($this->expectedKeys());
     }
 
     /**
@@ -85,11 +81,7 @@ class CreateSystemGroupTest extends TestCase
      */
     public function updateResponseContainsAllKeys($response)
     {
-        $response->assertJsonStructure([
-            'name',
-            'gid',
-            'users',
-        ]);
+        $response->assertJsonStructure($this->expectedKeys());
     }
 
     /** @test */
@@ -223,5 +215,14 @@ class CreateSystemGroupTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name may not be greater than 32 characters.']);
+    }
+
+    private function expectedKeys()
+    {
+        return [
+            'gid',
+            'name',
+            'users',
+        ];
     }
 }
