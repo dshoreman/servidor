@@ -61,15 +61,16 @@ class CreateSystemGroupTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function canUpdateGroup()
+    /**
+     * @test
+     * @depends canCreateWithMinimumData
+     */
+    public function canUpdateGroup($response)
     {
-        $group = $this->authed()->postJson('/api/system/groups', [
-            'name' => 'updatetest',
-        ])->json();
+        $group = $response->json();
 
         $response = $this->authed()->putJson('/api/system/groups/'.$group['gid'], [
-            'name' => 'renametest',
+            'name' => 'newtestgroup-renamed',
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -78,6 +79,8 @@ class CreateSystemGroupTest extends TestCase
             'gid',
             'users',
         ]);
+
+        return $response;
     }
 
     /** @test */
@@ -90,12 +93,13 @@ class CreateSystemGroupTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    /** @test */
-    public function canDeleteGroup()
+    /**
+     * @test
+     * @depends canUpdateGroup
+     */
+    public function canDeleteGroup($response)
     {
-        $group = $this->authed()->postJson('/api/system/groups', [
-            'name' => 'delete-test',
-        ])->json();
+        $group = $response->json();
 
         $response = $this->authed()->deleteJson('/api/system/groups/'.$group['gid'], []);
 
