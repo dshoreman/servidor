@@ -15,6 +15,27 @@ class CreateSystemGroupTest extends TestCase
     use RequiresAuth;
 
     /** @test */
+    public function canViewGroupsList()
+    {
+        $response = $this->authed()->getJson('/api/system/groups');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'name' => 'root',
+        ]);
+    }
+
+    /** @test */
+    public function listIsAnArray()
+    {
+        $response = $this->authed()->getJson('/api/system/groups');
+
+        $responseJson = json_decode($response->getContent());
+
+        $this->assertEquals('array', gettype($responseJson));
+    }
+
+    /** @test */
     public function canCreateWithMinimumData()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
@@ -38,6 +59,47 @@ class CreateSystemGroupTest extends TestCase
             'name',
             'users',
         ]);
+    }
+
+    /** @test */
+    public function canUpdateGroup()
+    {
+        $group = $this->authed()->postJson('/api/system/groups', [
+            'name' => 'updatetest',
+        ])->json();
+
+        $response = $this->authed()->putJson('/api/system/groups/'.$group['gid'], [
+            'name' => 'renametest',
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'name',
+            'gid',
+            'users',
+        ]);
+    }
+
+    /** @test */
+    public function cannotUpdateNonExistantGroup()
+    {
+        $response = $this->authed()->putJson('/api/system/groups/9032', [
+            'name' => 'nogrouptest',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /** @test */
+    public function canDeleteGroup()
+    {
+        $group = $this->authed()->postJson('/api/system/groups', [
+            'name' => 'delete-test',
+        ])->json();
+
+        $response = $this->authed()->deleteJson('/api/system/groups/'.$group['gid'], []);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
     /** @test */
