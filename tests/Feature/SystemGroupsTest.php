@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\RequiresAuth;
 
-class CreateSystemGroupTest extends TestCase
+class SystemGroupsTest extends TestCase
 {
     use RefreshDatabase;
     use RequiresAuth;
