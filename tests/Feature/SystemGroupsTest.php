@@ -74,13 +74,22 @@ class CreateSystemGroupTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment(['name' => 'newtestgroup-renamed']);
+
+        return $response;
+    }
+
+    /**
+     * @test
+     * @depends canUpdateGroup
+     */
+    public function updateResponseContainsAllKeys($response)
+    {
         $response->assertJsonStructure([
             'name',
             'gid',
             'users',
         ]);
-
-        return $response;
     }
 
     /** @test */
