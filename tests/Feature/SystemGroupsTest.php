@@ -14,6 +14,16 @@ class SystemGroupsTest extends TestCase
     use RefreshDatabase;
     use RequiresAuth;
 
+    /**
+     * @var array
+     */
+    private $deleteGroupIds = [];
+
+    public function tearDown()
+    {
+        $this->deleteTemporaryGroups();
+    }
+
     /** @test */
     public function canViewGroupsList()
     {
@@ -204,6 +214,8 @@ class SystemGroupsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'testgroup']);
+
+        $this->addToDeleteList($response);
     }
 
     /** @test */
@@ -224,5 +236,21 @@ class SystemGroupsTest extends TestCase
             'name',
             'users',
         ];
+    }
+
+    private function addToDeleteList($response)
+    {
+        $group = $response->json();
+
+        $this->deleteGroupIds[] = $group['gid'];
+    }
+
+    private function deleteTemporaryGroups()
+    {
+        $endpoint = '/api/system/groups/';
+
+        foreach ($this->deleteGroupIds as $gid) {
+            $this->authed()->deleteJson($endpoint.$gid, []);
+        }
     }
 }
