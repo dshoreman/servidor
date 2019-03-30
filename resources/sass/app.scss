@@ -1,0 +1,33 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+body {
+    height: calc(100% - 5rem);
+
+    #app {
+        height: 100%;
+    }
+
+    .main {
+        margin-top: 5em;
+    }
+
+    &.login {
+        background: #dedede;
+        margin-top: 5em;
+
+        .grid {
+            height: 100%;
+        }
+        .column {
+            max-width: 450px;
+        }
+
+        .field[class*="left aligned"] {
+            text-align: left;
+        }
+    }
+}
