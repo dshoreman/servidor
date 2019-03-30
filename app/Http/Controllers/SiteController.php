@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Servidor\Http\Controllers;
 
-use App\Site;
+use Servidor\Site;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -40,7 +40,7 @@ class SiteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Site  $site
+     * @param  \Servidor\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function show(Site $site)
@@ -51,7 +51,7 @@ class SiteController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Site  $site
+     * @param  \Servidor\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function edit(Site $site)
@@ -63,7 +63,7 @@ class SiteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Site  $site
+     * @param  \Servidor\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Site $site)
@@ -82,7 +82,7 @@ class SiteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Site  $site
+     * @param  \Servidor\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function destroy(Site $site)
