@@ -4,7 +4,7 @@
             <sui-grid-column>
                 <sui-input placeholder="Type a name for your Application..."
                         icon="plus" class="fluid massive"
-                        v-model="newSite" @keyup.enter="addSite"></sui-input>
+                        v-model="site.name" @keyup.enter="create"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
         <sui-card-group>
@@ -22,32 +22,23 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
-    computed: {
-        nextSiteId() {
-            return this.sites.length + 1;
-        }
+    mounted () {
+        this.$store.dispatch('loadSites');
     },
-    data () {
-        return {
-            newSite: '',
-            sites: [{
-                'id': 1,
-                'name': 'Test 1',
-                'primary_domain': 'example.com',
-            }, {
-                'id': 2,
-                'name': 'Test 2',
-            }],
-        };
+    computed: {
+        ...mapState({
+            site: state => state.Site.site,
+        }),
+        ...mapGetters([
+            'sites',
+        ]),
     },
     methods: {
-        addSite () {
-            this.sites.push({
-                id: this.nextSiteId,
-                name: this.newSite,
-            });
-        }
+        ...mapActions({
+            create: 'createSite',
+        }),
     }
 }
 </script>
