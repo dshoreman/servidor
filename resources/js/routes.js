@@ -1,4 +1,5 @@
 import Dashboard from './pages/Dashboard.vue'
+import Sites from './pages/Sites.vue'
 import AppLayout from './layouts/App.vue'
 import SystemLayout from './layouts/System.vue'
 import SystemGroups from './components/System/Groups.vue'
@@ -13,6 +14,11 @@ const routes = [{
         component: Dashboard,
         name: 'dashboard',
         path: '/',
+        meta: { auth: true },
+    }, {
+        component: Sites,
+        name: 'apps',
+        path: '/apps',
         meta: { auth: true },
     }, {
         path: '/system', component: SystemLayout,
