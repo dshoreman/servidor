@@ -3,6 +3,7 @@
 namespace Servidor\Http\Controllers;
 
 use Servidor\Site;
+use Servidor\Rules\Domain;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -28,7 +29,7 @@ class SiteController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|unique:sites,name',
-            'primary_domain' => 'url',
+            'primary_domain' => [new Domain],
             'is_enabled' => 'boolean',
         ]);
 
@@ -70,7 +71,7 @@ class SiteController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|unique:sites,name',
-            'primary_domain' => 'url',
+            'primary_domain' => [new Domain],
             'is_enabled' => 'boolean',
         ]);
 
