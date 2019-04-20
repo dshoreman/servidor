@@ -17,7 +17,7 @@ class Domain implements Rule
             (\.?([\pL\-]|xn\-\-[\pL\pN-]+)+\.?)
         )|(
             (?!^-)
-            ([\pL\pN\-]+\.?)
+            ([\pL\pN\-]{1,63}+\.?)
         ))$/ixu';
 
     /**

@@ -124,6 +124,7 @@ class DomainValidationTest extends TestCase
     public function rejects_segments_exceeding_63_chars()
     {
         $this->assertFalse($this->validate('1234567890-1234567890-1234567890-1234567890-12345678901234567890.example.com'));
+        $this->assertFalse($this->validate('1234567890-1234567890-1234567890-1234567890-12345678901234567890'));
     }
 
     /**
