@@ -101,6 +101,15 @@ class DomainValidationTest extends TestCase
 
     /**
      * @test
+     * HOSTNAME(7): A hostname may not start with a hyphen
+     */
+    public function rejects_hostname_starting_with_dash()
+    {
+        $this->assertFalse($this->validate('-example'));
+    }
+
+    /**
+     * @test
      * RFC 3696, section 2: Requires that top-level domains not be all-numeric
      */
     public function rejects_numeric_tld()
