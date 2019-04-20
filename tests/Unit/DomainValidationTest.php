@@ -32,6 +32,18 @@ class DomainValidationTest extends TestCase
     }
 
     /** @test */
+    public function validates_hostnames_with_dashes()
+    {
+        $this->assertTrue($this->validate('example-hostname-'));
+    }
+
+    /** @test */
+    public function validates_hostnames_with_digits()
+    {
+        $this->assertTrue($this->validate('hostname-123'));
+    }
+
+    /** @test */
     public function validates_domains_with_common_tlds()
     {
         $this->assertTrue($this->validate('localhost.localdomain'));

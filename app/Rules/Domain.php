@@ -11,11 +11,13 @@ class Domain implements Rule
      */
     private $match = '/^
         (?=^.{1,253}$)
-        (
+        ((
             (?!^.+:\/\/)
-            ([\pL\pN\pS\pP]{1,63}\.)*
-            (\.?([\pL]|xn\-\-[\pL\pN-]+)+\.?)
-        )$/ixu';
+            ([\pL\pN\pS\pP]{1,63}\.)+
+            (\.?([\pL\-]|xn\-\-[\pL\pN-]+)+\.?)
+        )|(
+            ([\pL\pN\-]+\.?)
+        ))$/ixu';
 
     /**
      * Determine if the validation rule passes.
