@@ -26,6 +26,12 @@ class DomainValidationTest extends TestCase
     }
 
     /** @test */
+    public function validates_short_hostnames()
+    {
+        $this->assertTrue($this->validate('localhost'));
+    }
+
+    /** @test */
     public function validates_domains_with_common_tlds()
     {
         $this->assertTrue($this->validate('localhost.localdomain'));
@@ -72,6 +78,13 @@ class DomainValidationTest extends TestCase
     {
         $this->assertTrue($this->validate('xn--d1aacihrobi6i.xn--p1ai'));
         $this->assertTrue($this->validate('xn--kxae4bafwg.xn--pxaix.gr'));
+    }
+
+    /** @test */
+    public function rejects_domains_that_include_protocol()
+    {
+        $this->assertFalse($this->validate('http://example.com'));
+        $this->assertFalse($this->validate('https://example.com'));
     }
 
     /**
