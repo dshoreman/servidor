@@ -120,10 +120,11 @@ class DomainValidationTest extends TestCase
     /**
      * @test
      * RFC 1035, section 3.1: Length of an FQDN is limited to 255 characters
+     * HOSTNAME(7): the entire hostname, including the dots, can be at most 253 characters long.
      */
-    public function rejects_fqdn_exceeding_255_chars()
+    public function rejects_fqdn_exceeding_253_chars()
     {
-        $this->assertFalse($this->validate('1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.12.example.com'));
+        $this->assertFalse($this->validate('1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.12345678.90.example.com'));
     }
 
     private function validate($value)
