@@ -97,6 +97,7 @@ class DomainValidationTest extends TestCase
     {
         $this->assertFalse($this->validate('http://example.com'));
         $this->assertFalse($this->validate('https://example.com'));
+        $this->assertFalse($this->validate('https://localhost'));
     }
 
     /**

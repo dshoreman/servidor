@@ -10,15 +10,15 @@ class Domain implements Rule
      * @var string Regular expression to match against
      */
     private $match = '/^
-        (?=^.{1,253}$)
+        (?=^.{1,253}$)                          # Limit to 253 characters
         ((
-            (?!^.+:\/\/)
-            ([\pL\pN\pS\pP]{1,63}\.)+
-            (\.?([\pL\-]|xn\-\-[\pL\pN-]+)+\.?)
+            (?!^.+:\/\/)                        # Reject protocol prefixes
+            ([\pL\pN\pS\pP]{1,63}\.)+           # Subdomains can contain symbols
+            (\.?([\pL\-]|xn\-\-[\pL\pN-]+)+)    # But TLD cannot
         )|(
-            (?!^-)
-            ([\pL\pN\-]{1,63}+\.?)
-        ))$/ixu';
+            (?!^-)                              # Hostnames cannot start with dash
+            ([\pL\pN\-]{1,63}+)                 # but may contain dash and alphanums
+        ))\.?$/ixu';
 
     /**
      * Determine if the validation rule passes.
