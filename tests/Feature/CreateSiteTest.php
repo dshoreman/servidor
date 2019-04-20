@@ -21,20 +21,20 @@ class CreateSiteTest extends TestCase
     {
         $response = $this->postJson('/api/sites', [
             'name' => 'Test Site',
-            'primary_domain' => 'http://example.com',
+            'primary_domain' => 'example.com',
             'is_enabled' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment([
             'name' => 'Test Site',
-            'primary_domain' => 'http://example.com',
+            'primary_domain' => 'example.com',
             'is_enabled' => true,
         ]);
 
         $site = Site::first();
         $this->assertEquals('Test Site', $site->name);
-        $this->assertEquals('http://example.com', $site->primary_domain);
+        $this->assertEquals('example.com', $site->primary_domain);
         $this->assertTrue($site->is_enabled);
     }
 
