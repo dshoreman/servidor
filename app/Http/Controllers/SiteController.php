@@ -22,7 +22,8 @@ class SiteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -41,30 +42,31 @@ class SiteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Servidor\Site  $site
+     * @param \Servidor\Site $site
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(Site $site)
     {
-        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Servidor\Site  $site
+     * @param \Servidor\Site $site
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Site $site)
     {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Servidor\Site  $site
+     * @param \Illuminate\Http\Request $request
+     * @param \Servidor\Site           $site
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Site $site)
@@ -83,7 +85,8 @@ class SiteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Servidor\Site  $site
+     * @param \Servidor\Site $site
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(Site $site)

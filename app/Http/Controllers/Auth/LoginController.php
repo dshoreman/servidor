@@ -14,8 +14,6 @@ class LoginController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -23,13 +21,14 @@ class LoginController extends Controller
     }
 
     /**
-     * Proxy login requests to /oauth/token with client secret
+     * Proxy login requests to /oauth/token with client secret.
      *
-     * @param  Illuminate\Http\Request  $request
-     * @param  GuzzleHttp\Client        $client
+     * @param Illuminate\Http\Request $request
+     * @param GuzzleHttp\Client       $client
+     *
      * @return Illuminate\Http\Response
      */
-    public function login (Request $request, Client $client)
+    public function login(Request $request, Client $client)
     {
         $this->validateLogin($request);
 
@@ -64,12 +63,12 @@ class LoginController extends Controller
         }
     }
 
-    protected function username ()
+    protected function username()
     {
         return 'username';
     }
 
-    public function logout ()
+    public function logout()
     {
         $user = auth()->user();
 

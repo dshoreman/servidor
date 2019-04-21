@@ -32,9 +32,10 @@ class GroupsController extends Controller
     }
 
     /**
-     * Create a new group on the host system
+     * Create a new group on the host system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -80,8 +81,9 @@ class GroupsController extends Controller
     /**
      * Update the specified group on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $gid
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $gid
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $gid)
@@ -145,7 +147,8 @@ class GroupsController extends Controller
     /**
      * Remove the specified group from the system.
      *
-     * @param  int  $gid
+     * @param int $gid
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($gid)
@@ -158,7 +161,7 @@ class GroupsController extends Controller
     }
 
     /**
-     * Get the validation rules for system groups
+     * Get the validation rules for system groups.
      *
      * @return array
      */
