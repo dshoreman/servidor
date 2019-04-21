@@ -35,7 +35,7 @@ class UsersController extends Controller
     {
         $groups = [];
         $primary = explode(':', exec('getent group '.$user['gid']));
-        $effective  = explode(' ', exec('groups '.$user['name']));
+        $effective = explode(' ', exec('groups '.$user['name']));
 
         $primaryName = reset($primary);
         $primaryMembers = explode(',', end($primary));
@@ -52,9 +52,10 @@ class UsersController extends Controller
     }
 
     /**
-     * Create a new user on the host system
+     * Create a new user on the host system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -73,7 +74,7 @@ class UsersController extends Controller
 
         exec('sudo useradd '.implode(' ', $options), $output, $retval);
 
-        if ($retval !== 0) {
+        if (0 !== $retval) {
             $data['error'] = "Something went wrong (Exit code: {$retval})";
         } else {
             $data = posix_getpwnam($data['name']);
@@ -88,8 +89,9 @@ class UsersController extends Controller
     /**
      * Update the specified user on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $uid
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $uid
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $uid)
@@ -98,7 +100,7 @@ class UsersController extends Controller
         $data = $request->validate($this->validationRules());
 
         if (!$original = posix_getpwuid($uid)) {
-            throw $this->failed("No user found matching the given criteria.");
+            throw $this->failed('No user found matching the given criteria.');
         }
 
         if ($data['name'] != $original['name']) {
@@ -121,7 +123,7 @@ class UsersController extends Controller
         }
 
         if (empty($options ?? null)) {
-            throw $this->failed("Nothing to update!");
+            throw $this->failed('Nothing to update!');
         }
 
         $options[] = $original['name'];
@@ -129,7 +131,7 @@ class UsersController extends Controller
         exec('sudo usermod '.implode(' ', $options), $output, $retval);
 
         if (0 !== $retval) {
-            throw new \Exception("Something went wrong. Exit code: ".$retval);
+            throw new \Exception('Something went wrong. Exit code: '.$retval);
         }
 
         return response(posix_getpwuid($new_uid), Response::HTTP_OK);
@@ -138,7 +140,8 @@ class UsersController extends Controller
     /**
      * Remove the specified user from the system.
      *
-     * @param  int  $uid
+     * @param int $uid
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($uid)
@@ -151,7 +154,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Get the validation rules for system users
+     * Get the validation rules for system users.
      *
      * @return array
      */

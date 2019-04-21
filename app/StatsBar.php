@@ -1,4 +1,6 @@
-<?php namespace Servidor;
+<?php
+
+namespace Servidor;
 
 class StatsBar
 {
@@ -23,7 +25,7 @@ class StatsBar
         $data = [];
 
         foreach (file('/etc/'.$file.'-release', $flags) as $line) {
-            list ($key, $val) = explode('=', $line);
+            list($key, $val) = explode('=', $line);
 
             $key = trim($key, '[]');
             $val = trim($val, '"');
