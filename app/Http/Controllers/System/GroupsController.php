@@ -23,7 +23,7 @@ class GroupsController extends Controller
 
         foreach ($lines as $line) {
             $group = array_combine($keys, explode(':', $line));
-            $group['users'] = $group['users'] == '' ? [] : explode(',', $group['users']);
+            $group['users'] = '' == $group['users'] ? [] : explode(',', $group['users']);
 
             $groups->push($group);
         }
@@ -92,10 +92,9 @@ class GroupsController extends Controller
         $data['gid'] = (int) ($data['gid'] ?? $gid);
 
         if (!$original = posix_getgrgid($gid)) {
-            throw $this->failed("No group found matching the given criteria.");
-        } else {
-            $updated = $original;
+            throw $this->failed('No group found matching the given criteria.');
         }
+        $updated = $original;
 
         if ($data['name'] != $original['name']) {
             $options[] = '-n '.$data['name'];
@@ -110,7 +109,7 @@ class GroupsController extends Controller
         }
 
         if (empty($options ?? null) && !isset($members)) {
-            throw $this->failed("Nothing to update!");
+            throw $this->failed('Nothing to update!');
         }
 
         if (count($options ?? [])) {
@@ -119,7 +118,7 @@ class GroupsController extends Controller
             exec('sudo groupmod '.implode(' ', $options), $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException("Something went wrong. Exit code: ".$retval);
+                throw new ValidationException('Something went wrong. Exit code: '.$retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -131,7 +130,7 @@ class GroupsController extends Controller
             exec("sudo gpasswd -M '{$members}' {$group}", $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException("Something went wrong. Exit code: ".$retval);
+                throw new ValidationException('Something went wrong. Exit code: '.$retval);
             }
 
             $updated = posix_getgrgid($data['gid']);

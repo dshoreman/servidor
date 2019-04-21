@@ -72,8 +72,8 @@ class LoginController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->token()->delete() !== true) {
-            throw new \Exception("Failed to delete token.");
+        if (true !== $user->token()->delete()) {
+            throw new \Exception('Failed to delete token.');
         }
 
         return response(null, 204);

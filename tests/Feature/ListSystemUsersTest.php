@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use Servidor\User;
 use Tests\TestCase;
 use Illuminate\Http\Response;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\RequiresAuth;
 
@@ -32,7 +30,7 @@ class ListSystemUsersTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
-            'name' => 'root'
+            'name' => 'root',
         ]);
     }
 

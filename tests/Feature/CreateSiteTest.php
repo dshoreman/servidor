@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use Servidor\Site;
 use Tests\TestCase;
 use Illuminate\Http\Response;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CreateSiteTest extends TestCase

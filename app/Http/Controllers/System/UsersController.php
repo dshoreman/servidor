@@ -74,7 +74,7 @@ class UsersController extends Controller
 
         exec('sudo useradd '.implode(' ', $options), $output, $retval);
 
-        if ($retval !== 0) {
+        if (0 !== $retval) {
             $data['error'] = "Something went wrong (Exit code: {$retval})";
         } else {
             $data = posix_getpwnam($data['name']);
@@ -100,7 +100,7 @@ class UsersController extends Controller
         $data = $request->validate($this->validationRules());
 
         if (!$original = posix_getpwuid($uid)) {
-            throw $this->failed("No user found matching the given criteria.");
+            throw $this->failed('No user found matching the given criteria.');
         }
 
         if ($data['name'] != $original['name']) {
@@ -123,7 +123,7 @@ class UsersController extends Controller
         }
 
         if (empty($options ?? null)) {
-            throw $this->failed("Nothing to update!");
+            throw $this->failed('Nothing to update!');
         }
 
         $options[] = $original['name'];
@@ -131,7 +131,7 @@ class UsersController extends Controller
         exec('sudo usermod '.implode(' ', $options), $output, $retval);
 
         if (0 !== $retval) {
-            throw new \Exception("Something went wrong. Exit code: ".$retval);
+            throw new \Exception('Something went wrong. Exit code: '.$retval);
         }
 
         return response(posix_getpwuid($new_uid), Response::HTTP_OK);
