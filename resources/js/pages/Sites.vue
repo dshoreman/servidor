@@ -8,22 +8,19 @@
             </sui-grid-column>
         </sui-grid-row>
         <sui-card-group>
-            <sui-card v-for="site in sites" :key="site.id">
-                <sui-card-content>
-                    <sui-card-header>{{ site.name }}</sui-card-header>
-                    <sui-card-meta>{{ site.primary_domain }}</sui-card-meta>
-                </sui-card-content>
-                <sui-button attached="bottom">
-                    <sui-icon name="cogs"></sui-icon> Manage Site
-                </sui-button>
-            </sui-card>
+            <site-item v-for="site in sites" :key="site.id" :site="site"></site-item>
         </sui-card-group>
     </sui-container>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
+import SiteItem from '../components/Sites/SiteItem';
+
 export default {
+    components: {
+        SiteItem,
+    },
     mounted () {
         this.$store.dispatch('loadSites');
     },
