@@ -4,9 +4,10 @@
             <sui-card-header>{{ site.name }}</sui-card-header>
             <sui-card-meta>{{ site.primary_domain }}</sui-card-meta>
         </sui-card-content>
-        <sui-button attached="bottom">
+        <router-link is="sui-button" attached="bottom"
+            :to="{ name: 'apps.edit', params: { id: site.id } }">
             <sui-icon name="cogs"></sui-icon> Manage Site
-        </sui-button>
+        </router-link>
     </sui-card>
 </template>
 
