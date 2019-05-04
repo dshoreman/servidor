@@ -1,5 +1,6 @@
 import Dashboard from './pages/Dashboard.vue'
 import Sites from './pages/Sites.vue'
+import SiteList from './pages/Sites/List.vue'
 import AppLayout from './layouts/App.vue'
 import SystemLayout from './layouts/System.vue'
 import SystemGroups from './components/System/Groups.vue'
@@ -16,10 +17,13 @@ const routes = [{
         path: '/',
         meta: { auth: true },
     }, {
-        component: Sites,
-        name: 'apps',
-        path: '/apps',
-        meta: { auth: true },
+        path: '/apps', component: Sites,
+        children: [{
+            component: SiteList,
+            name: 'apps',
+            path: '/',
+            meta: { auth: true },
+        }],
     }, {
         path: '/system', component: SystemLayout,
         children: [{

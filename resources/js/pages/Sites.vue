@@ -7,20 +7,14 @@
                         v-model="site.name" @keyup.enter="create"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
-        <sui-card-group>
-            <site-item v-for="site in sites" :key="site.id" :site="site"></site-item>
-        </sui-card-group>
+        <router-view></router-view>
     </sui-container>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
-import SiteItem from '../components/Sites/SiteItem';
 
 export default {
-    components: {
-        SiteItem,
-    },
     mounted () {
         this.$store.dispatch('loadSites');
     },
