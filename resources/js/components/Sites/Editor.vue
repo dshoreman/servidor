@@ -7,14 +7,14 @@
             </sui-header-subheader>
         </h2>
 
-        <sui-form @submit.prevent="updateSite(site.id)">
+        <sui-form @submit.prevent="updateSite(tmpSite.id)">
             <sui-form-field>
                 <label>App Name</label>
-                <sui-input v-model="site.name" placeholder="My Blog" />
+                <sui-input v-model="tmpSite.name" placeholder="My Blog" />
             </sui-form-field>
             <sui-form-field>
                 <label>Primary Domain</label>
-                <sui-input v-model="site.primary_domain" placeholder="example.com" />
+                <sui-input v-model="tmpSite.primary_domain" placeholder="example.com" />
             </sui-form-field>
 
             <sui-button-group>
@@ -35,9 +35,14 @@ export default {
             default: () => ({}),
         },
     },
+    computed: {
+        tmpSite(){
+            return {...this.site};
+        },
+    },
     methods: {
         updateSite(id) {
-            this.$store.dispatch('updateSite', {id, data: this.site});
+            this.$store.dispatch('updateSite', {id, data: this.tmpSite});
         },
     },
 }
