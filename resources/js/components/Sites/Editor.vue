@@ -7,7 +7,7 @@
             </sui-header-subheader>
         </h2>
 
-        <sui-form>
+        <sui-form @submit.prevent="updateSite(site.id)">
             <sui-form-field>
                 <label>App Name</label>
                 <sui-input v-model="site.name" placeholder="My Blog" />
@@ -33,6 +33,11 @@ export default {
         site: {
             type: Object,
             default: () => ({}),
+        },
+    },
+    methods: {
+        updateSite(id) {
+            this.$store.dispatch('updateSite', {id, data: this.site});
         },
     },
 }

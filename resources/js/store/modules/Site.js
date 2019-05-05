@@ -13,6 +13,11 @@ export default {
             state.sites.push(site);
             state.site.name = '';
         },
+        updateSite: (state, {id, site}) => {
+            let index = state.sites.findIndex(s => s.id === id);
+
+            Vue.set(state.sites, index, site);
+        },
     },
     actions: {
         loadSites: ({commit}) => {
@@ -23,6 +28,14 @@ export default {
         createSite: ({commit, state}) => {
             axios.post('/api/sites', state.site).then(response => {
                 commit('addSite', response.data);
+            });
+        },
+        updateSite: ({commit}, site) => {
+            axios.put('/api/sites/'+site.id, site.data).then(response => {
+                commit('updateSite', {
+                    id: site.id,
+                    site: response.data
+                });
             });
         },
     },
