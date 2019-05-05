@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import SiteEditor from '../../components/Sites/Editor';
 import SiteItem from '../../components/Sites/SiteItem';
 
@@ -26,11 +25,9 @@ export default {
             type: Number,
             default: 0,
         },
+        sites: Array,
     },
     computed: {
-        ...mapGetters([
-            'sites',
-        ]),
         site(){
             return this.sites.find(s => s.id === this.id);
         },

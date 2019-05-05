@@ -7,7 +7,7 @@
                         v-model="site.name" @keyup.enter="create"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
-        <router-view></router-view>
+        <router-view :sites="sites"></router-view>
     </sui-container>
 </template>
 

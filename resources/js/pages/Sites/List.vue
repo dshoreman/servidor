@@ -5,17 +5,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import SiteItem from '../../components/Sites/SiteItem';
 
 export default {
     components: {
         SiteItem,
     },
-    computed: {
-        ...mapGetters([
-            'sites',
-        ]),
-    },
+    props: [
+        'sites',
+    ],
 }
 </script>
