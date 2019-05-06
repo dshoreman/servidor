@@ -5,7 +5,7 @@
                 <site-item v-for="site in sites" :key="site.id" :site="site"></site-item>
             </sui-card-group>
         </sui-grid-column>
-        <sui-grid-column :width=8>
+        <sui-grid-column :width=12>
             <site-editor :site="site" />
         </sui-grid-column>
     </sui-grid-row>
