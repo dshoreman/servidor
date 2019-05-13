@@ -17,7 +17,8 @@
             <sui-form-fields>
                 <sui-form-field :width="12">
                     <label>Domain Name</label>
-                    <sui-input v-model="tmpSite.primary_domain" placeholder="example.com" />
+                    <sui-input placeholder="example.com" @input="setDocroot"
+                        v-model="tmpSite.primary_domain" />
                 </sui-form-field>
                 <sui-form-field :width="4">
                     <label>Project type</label>
@@ -52,10 +53,7 @@
             </sui-form-field>
             <sui-form-field v-if="['basic', 'php', 'laravel'].includes(tmpSite.type)">
                 <label>Document Root</label>
-                <sui-input v-if="tmpSite.type == 'laravel'"
-                           :value="'/var/www/'+site.primary_domain+'/public'" />
-                <sui-input v-else
-                           :value="'/var/www/'+site.primary_domain" />
+                <sui-input readonly v-model="tmpSite.document_root" />
             </sui-form-field>
 
             <sui-button-group>
@@ -85,6 +83,11 @@ export default {
             return this.clonedSite;
         },
     },
+    watch: {
+        'tmpSite.type'() {
+            this.setDocroot();
+        },
+    },
     data() {
         return {
             clonedSite: {},
@@ -93,6 +96,20 @@ export default {
     methods: {
         updateSite(id) {
             this.$store.dispatch('updateSite', {id, data: this.tmpSite});
+        },
+        setDocroot() {
+            const site = this.clonedSite;
+            let val = '';
+
+            if (['basic', 'php', 'laravel'].includes(site.type)) {
+                val = '/var/www/' + site.primary_domain;
+
+                if (site.type == 'laravel') {
+                    val += '/public';
+                }
+            }
+
+            site.document_root = val;
         },
     },
 }
