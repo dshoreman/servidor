@@ -26,33 +26,33 @@
                         { text: 'Basic Website', value: 'basic' },
                         { text: 'PHP Website', value: 'php' },
                         { text: 'Laravel App', value: 'laravel' },
-                    ]" v-model="dummy.type" />
+                    ]" v-model="tmpSite.type" />
                 </sui-form-field>
             </sui-form-fields>
 
-            <sui-form-field v-if="dummy.type == 'redirect'">
+            <sui-form-field v-if="tmpSite.type == 'redirect'">
                 <label>Destination</label>
-                <sui-input v-model="dummy.redirect_to" placeholder="example.com" />
+                <sui-input v-model="tmpSite.redirect_to" placeholder="example.com" />
             </sui-form-field>
-            <sui-form-fields inline v-if="dummy.type == 'redirect'">
+            <sui-form-fields inline v-if="tmpSite.type == 'redirect'">
                 <label>Redirect Type</label>
                 <sui-form-field>
-                    <sui-checkbox radio v-model="dummy.redirect_type"
+                    <sui-checkbox radio v-model="tmpSite.redirect_type"
                         name="redirect" label="Temporary" value="301" />
                 </sui-form-field>
                 <sui-form-field>
-                    <sui-checkbox radio v-model="dummy.redirect_type"
+                    <sui-checkbox radio v-model="tmpSite.redirect_type"
                         name="redirect" label="Permanent" value="302" />
                 </sui-form-field>
             </sui-form-fields>
 
-            <sui-form-field v-if="dummy.type && dummy.type != 'redirect'">
+            <sui-form-field v-if="tmpSite.type && tmpSite.type != 'redirect'">
                 <label>Clone URL</label>
-                <sui-input v-model="dummy.source_repo" />
+                <sui-input v-model="tmpSite.source_repo" />
             </sui-form-field>
-            <sui-form-field v-if="['basic', 'php', 'laravel'].includes(dummy.type)">
+            <sui-form-field v-if="['basic', 'php', 'laravel'].includes(tmpSite.type)">
                 <label>Document Root</label>
-                <sui-input v-if="dummy.type == 'laravel'"
+                <sui-input v-if="tmpSite.type == 'laravel'"
                            :value="'/var/www/'+site.primary_domain+'/public'" />
                 <sui-input v-else
                            :value="'/var/www/'+site.primary_domain" />
@@ -78,12 +78,16 @@ export default {
     },
     computed: {
         tmpSite(){
-            return {...this.site};
+            if (_.isEmpty(this.clonedSite) || this.site.id != this.clonedSite.id) {
+                this.clonedSite = {...this.site};
+            }
+
+            return this.clonedSite;
         },
     },
     data() {
         return {
-            dummy: {},
+            clonedSite: {},
         };
     },
     methods: {
