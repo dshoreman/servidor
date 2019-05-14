@@ -14,6 +14,7 @@
 <script>
 import SiteEditor from '../../components/Sites/Editor';
 import SiteItem from '../../components/Sites/SiteItem';
+import store from '../../store';
 
 export default {
     components: {
@@ -27,9 +28,21 @@ export default {
         },
         sites: Array,
     },
+    beforeRouteEnter (to, from, next) {
+        next(vm => vm.edit(to.params.id));
+    },
+    beforeRouteUpdate (to, from, next) {
+        this.edit(to.params.id);
+        next();
+    },
     computed: {
         site(){
             return this.sites.find(s => s.id === this.id);
+        },
+    },
+    methods: {
+        edit(id) {
+            return store.dispatch('editSite', parseInt(id));
         },
     },
 }

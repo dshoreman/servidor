@@ -13,10 +13,11 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
+import store from '../store';
 
 export default {
-    mounted () {
-        this.$store.dispatch('loadSites');
+    beforeRouteEnter (to, from, next) {
+        store.dispatch('loadSites').then(() => next());
     },
     computed: {
         ...mapState({

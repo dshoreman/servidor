@@ -39,11 +39,11 @@
                 <label>Redirect Type</label>
                 <sui-form-field>
                     <sui-checkbox radio v-model="tmpSite.redirect_type"
-                        label="Temporary" :value="302" />
+                        label="Temporary" value="302" />
                 </sui-form-field>
                 <sui-form-field>
                     <sui-checkbox radio v-model="tmpSite.redirect_type"
-                        label="Permanent" :value="301" />
+                        label="Permanent" value="301" />
                 </sui-form-field>
             </sui-form-fields>
 
@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
     props: {
         site: {
@@ -75,13 +77,9 @@ export default {
         },
     },
     computed: {
-        tmpSite(){
-            if (_.isEmpty(this.clonedSite) || this.site.id != this.clonedSite.id) {
-                this.clonedSite = {...this.site};
-            }
-
-            return this.clonedSite;
-        },
+        ...mapState({
+            'tmpSite': state => state.Site.current,
+        }),
     },
     watch: {
         'tmpSite.type'() {
