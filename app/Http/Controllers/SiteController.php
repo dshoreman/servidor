@@ -74,6 +74,11 @@ class SiteController extends Controller
         $data = $request->validate([
             'name' => 'required|string|unique:sites,name',
             'primary_domain' => [new Domain],
+            'type' => 'required|in:basic,php,laravel,redirect',
+            'source_repo' => 'required_unless:type,redirect|nullable|url',
+            'document_root' => 'required_unless:type,redirect|nullable|string',
+            'redirect_type' => 'required_if:type,redirect|nullable|integer',
+            'redirect_to' => 'required_if:type,redirect|nullable|string',
             'is_enabled' => 'boolean',
         ]);
 
