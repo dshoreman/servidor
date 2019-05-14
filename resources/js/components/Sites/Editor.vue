@@ -39,11 +39,11 @@
                 <label>Redirect Type</label>
                 <sui-form-field>
                     <sui-checkbox radio v-model="tmpSite.redirect_type"
-                        name="redirect" label="Temporary" value="301" />
+                        label="Temporary" :value="302" />
                 </sui-form-field>
                 <sui-form-field>
                     <sui-checkbox radio v-model="tmpSite.redirect_type"
-                        name="redirect" label="Permanent" value="302" />
+                        label="Permanent" :value="301" />
                 </sui-form-field>
             </sui-form-fields>
 
