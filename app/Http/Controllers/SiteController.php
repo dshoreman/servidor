@@ -6,6 +6,7 @@ use Servidor\Site;
 use Servidor\Rules\Domain;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 class SiteController extends Controller
 {
@@ -72,7 +73,11 @@ class SiteController extends Controller
     public function update(Request $request, Site $site)
     {
         $data = $request->validate([
-            'name' => 'required|string|unique:sites,name',
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('sites', 'name')->ignore($site->id),
+            ],
             'primary_domain' => [new Domain],
             'type' => 'required|in:basic,php,laravel,redirect',
             'source_repo' => 'required_unless:type,redirect|nullable|url',
