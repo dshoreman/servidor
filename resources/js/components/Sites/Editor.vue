@@ -8,7 +8,7 @@
         </h2>
 
         <sui-form @submit.prevent="updateSite(tmpSite.id)" :error="error != ''">
-            <sui-message error header="Could not save Site!">
+            <sui-message error :header="errorHeader">
                 <p>{{ error }}</p>
             </sui-message>
 
@@ -112,6 +112,7 @@ export default {
         ...mapState({
             'error': state => state.Site.error,
             'errors': state => state.Site.errors,
+            'errorHeader': state => state.Site.error_title,
             'tmpSite': state => state.Site.current,
         }),
     },

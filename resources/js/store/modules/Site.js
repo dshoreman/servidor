@@ -2,6 +2,7 @@ export default {
     state: {
         error: '',
         errors: [],
+        error_title: '',
         sites: [],
         site: {
             name: '',
@@ -9,8 +10,9 @@ export default {
         current: {},
     },
     mutations: {
-        setErrors: (state, {message, errors}) => {
+        setErrors: (state, {message, errors, action = 'save'}) => {
             state.error = message;
+            state.error_title = 'Could not ' + action + ' Site!';
 
             if (errors) {
                 state.errors = errors;
@@ -89,7 +91,10 @@ export default {
                     commit('removeSite', id);
                     resolve(response);
                 }).catch(error => {
-                    alert(error.message);
+                    commit('setErrors', {
+                        message: error.message,
+                        action: 'delete',
+                    });
                     reject(error);
                 });
             });
