@@ -84,8 +84,14 @@ export default {
             });
         },
         deleteSite: ({commit, state}, id) => {
-            axios.delete('/api/sites/' + id).then(response => {
-                commit('removeSite', id)
+            return new Promise((resolve, reject) => {
+                axios.delete('/api/sites/' + id).then(response => {
+                    commit('removeSite', id);
+                    resolve(response);
+                }).catch(error => {
+                    alert(error.message);
+                    reject(error);
+                });
             });
         },
     },

@@ -131,7 +131,9 @@ export default {
         },
         deleteSite() {
             confirm("Deletion is permanent! Are you sure?") &&
-                this.$store.dispatch('deleteSite', this.site.id);
+                this.$store.dispatch('deleteSite', this.site.id).then(
+                    response => this.$router.push({ name: 'apps' })
+                );
         },
         setDocroot() {
             const site = this.clonedSite;
