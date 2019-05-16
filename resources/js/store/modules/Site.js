@@ -39,6 +39,11 @@ export default {
 
             Vue.set(state.sites, index, site);
         },
+        removeSite: (state, id) => {
+            let index = state.sites.findIndex(s => s.id === id);
+
+            state.sites.splice(index, 1);
+        },
     },
     actions: {
         loadSites: ({commit}) => {
@@ -76,6 +81,11 @@ export default {
                 } else {
                     commit('setErrors', error.message);
                 }
+            });
+        },
+        deleteSite: ({commit, state}, id) => {
+            axios.delete('/api/sites/' + id).then(response => {
+                commit('removeSite', id)
             });
         },
     },

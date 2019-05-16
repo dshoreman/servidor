@@ -86,6 +86,8 @@
                 </sui-label>
             </sui-form-field>
 
+            <sui-button negative icon="trash" type="button"
+                content="Delete" floated="right" @click="deleteSite(site.id)" />
             <sui-button-group>
                 <router-link :to="{ name: 'apps' }" is="sui-button"
                     type="button" content="Cancel" />
@@ -126,6 +128,10 @@ export default {
     methods: {
         updateSite(id) {
             this.$store.dispatch('updateSite', {id, data: this.tmpSite});
+        },
+        deleteSite() {
+            confirm("Deletion is permanent! Are you sure?") &&
+                this.$store.dispatch('deleteSite', this.site.id);
         },
         setDocroot() {
             const site = this.clonedSite;
