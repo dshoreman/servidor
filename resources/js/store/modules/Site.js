@@ -68,7 +68,7 @@ export default {
 
                 if (res && res.status === 422) {
                     commit('setErrors', {
-                        message: res.data.message,
+                        message: "Fix the validation errors below and try again.",
                         errors: res.data.errors
                     });
                 } else if (res) {
