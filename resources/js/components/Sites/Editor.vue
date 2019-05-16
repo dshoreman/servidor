@@ -7,7 +7,9 @@
             </sui-header-subheader>
         </h2>
 
-        <sui-form @submit.prevent="updateSite(tmpSite.id)">
+        <sui-form @submit.prevent="updateSite(tmpSite.id)" :error="error != ''">
+            <sui-message error header="Could not save Site!" :content="error" />
+
             <sui-form-field>
                 <label>App Name</label>
                 <sui-input v-model="tmpSite.name" placeholder="My Blog" />
@@ -78,6 +80,7 @@ export default {
     },
     computed: {
         ...mapState({
+            'error': state => state.Site.error,
             'tmpSite': state => state.Site.current,
         }),
     },
