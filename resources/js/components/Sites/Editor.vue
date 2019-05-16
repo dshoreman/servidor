@@ -8,27 +8,30 @@
         </h2>
 
         <sui-form @submit.prevent="updateSite(tmpSite.id)" :error="error != ''">
-            <sui-message error header="Could not save Site!" :content="error">
-                <sui-message-list>
-                    <sui-message-item v-for="(msg, field) in errors" :key="field">
-                        {{ msg[0] }}
-                    </sui-message-item>
-                </sui-message-list>
+            <sui-message error header="Could not save Site!">
+                <p>{{ error }}</p>
             </sui-message>
 
-            <sui-form-field>
+            <sui-form-field :error="'name' in errors">
                 <label>App Name</label>
                 <sui-input v-model="tmpSite.name" placeholder="My Blog" />
+                <sui-label basic color="red" pointing v-if="'name' in errors">
+                    {{ errors.name[0] }}
+                </sui-label>
             </sui-form-field>
 
             <sui-header content="Primary Domain" />
             <sui-form-fields>
-                <sui-form-field :width="12">
+                <sui-form-field :width="12" :error="'primary_domain' in errors">
                     <label>Domain Name</label>
                     <sui-input placeholder="example.com" @input="setDocroot"
                         v-model="tmpSite.primary_domain" />
+                        <sui-label basic color="red" pointing
+                            v-if="'primary_domain' in errors">
+                            {{ errors.primary_domain[0] }}
+                        </sui-label>
                 </sui-form-field>
-                <sui-form-field :width="4">
+                <sui-form-field :width="4" :error="'type' in errors">
                     <label>Project type</label>
                     <sui-dropdown selection :options="[
                         { text: 'Redirect', value: 'redirect' },
@@ -36,32 +39,51 @@
                         { text: 'PHP Website', value: 'php' },
                         { text: 'Laravel App', value: 'laravel' },
                     ]" v-model="tmpSite.type" />
+                    <sui-label basic color="red" pointing v-if="'type' in errors">
+                        {{ errors.type[0] }}
+                    </sui-label>
                 </sui-form-field>
             </sui-form-fields>
 
-            <sui-form-field v-if="tmpSite.type == 'redirect'">
+            <sui-form-field v-if="tmpSite.type == 'redirect'"
+                :error="'redirect_to' in errors">
                 <label>Destination</label>
                 <sui-input v-model="tmpSite.redirect_to" placeholder="example.com" />
+                <sui-label basic color="red" pointing v-if="'redirect_to' in errors">
+                    {{ errors.redirect_to[0] }}
+                </sui-label>
             </sui-form-field>
             <sui-form-fields inline v-if="tmpSite.type == 'redirect'">
                 <label>Redirect Type</label>
-                <sui-form-field>
+                <sui-form-field :error="'redirect_type' in errors">
                     <sui-checkbox radio v-model="tmpSite.redirect_type"
                         label="Temporary" value="302" />
                 </sui-form-field>
-                <sui-form-field>
+                <sui-form-field :error="'redirect_type' in errors">
                     <sui-checkbox radio v-model="tmpSite.redirect_type"
                         label="Permanent" value="301" />
+                    <sui-label basic color="red" pointing="left"
+                        v-if="'redirect_type' in errors">
+                        {{ errors.redirect_type[0] }}
+                    </sui-label>
                 </sui-form-field>
             </sui-form-fields>
 
-            <sui-form-field v-if="tmpSite.type && tmpSite.type != 'redirect'">
+            <sui-form-field v-if="tmpSite.type && tmpSite.type != 'redirect'"
+                :error="'source_repo' in errors">
                 <label>Clone URL</label>
                 <sui-input v-model="tmpSite.source_repo" />
+                <sui-label basic color="red" pointing v-if="'source_repo' in errors">
+                    {{ errors.source_repo[0] }}
+                </sui-label>
             </sui-form-field>
-            <sui-form-field v-if="['basic', 'php', 'laravel'].includes(tmpSite.type)">
+            <sui-form-field v-if="['basic', 'php', 'laravel'].includes(tmpSite.type)"
+                :error="'document_root' in errors">
                 <label>Document Root</label>
                 <sui-input readonly v-model="tmpSite.document_root" />
+                <sui-label basic color="red" pointing v-if="'document_root' in errors">
+                    {{ errors.document_root[0] }}
+                </sui-label>
             </sui-form-field>
 
             <sui-button-group>
