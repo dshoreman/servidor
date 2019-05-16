@@ -8,7 +8,13 @@
         </h2>
 
         <sui-form @submit.prevent="updateSite(tmpSite.id)" :error="error != ''">
-            <sui-message error header="Could not save Site!" :content="error" />
+            <sui-message error header="Could not save Site!" :content="error">
+                <sui-message-list>
+                    <sui-message-item v-for="(msg, field) in errors" :key="field">
+                        {{ msg[0] }}
+                    </sui-message-item>
+                </sui-message-list>
+            </sui-message>
 
             <sui-form-field>
                 <label>App Name</label>
@@ -81,6 +87,7 @@ export default {
     computed: {
         ...mapState({
             'error': state => state.Site.error,
+            'errors': state => state.Site.errors,
             'tmpSite': state => state.Site.current,
         }),
     },

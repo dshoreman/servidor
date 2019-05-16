@@ -1,6 +1,7 @@
 export default {
     state: {
         error: '',
+        errors: [],
         sites: [],
         site: {
             name: '',
@@ -8,8 +9,12 @@ export default {
         current: {},
     },
     mutations: {
-        setError: (state, error) => {
-            state.error = error;
+        setErrors: (state, {message, errors}) => {
+            state.error = message;
+
+            if (errors) {
+                state.errors = errors;
+            }
         },
         setSites: (state, sites) => {
             state.sites = sites;
@@ -62,11 +67,14 @@ export default {
                 const res = error.response;
 
                 if (res && res.status === 422) {
-                    commit('setError', res.data.message);
+                    commit('setErrors', {
+                        message: res.data.message,
+                        errors: res.data.errors
+                    });
                 } else if (res) {
-                    commit('setError', res.statusText);
+                    commit('setErrors', res.statusText);
                 } else {
-                    commit('setError', error.message);
+                    commit('setErrors', error.message);
                 }
             });
         },
