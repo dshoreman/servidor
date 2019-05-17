@@ -60,56 +60,31 @@ class SitesApiTest extends TestCase
         $this->assertEquals('My Updated Blog', Site::find($site->id)->name);
     }
 
-    public function testNameIsRequired()
+    /** @test */
+    public function cannot_create_site_witout_required_fields()
     {
-        $response = $this->postJson('/api/sites', ['name' => '']);
+        $response = $this->postJson('/api/sites', []);
 
-        $this->assertValidationErrors($response, 'name');
-
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors(['name']);
         $this->assertNull(Site::first());
     }
 
-    public function testNameMustBeString()
-    {
-        $response = $this->postJson('/api/sites', ['name' => 42]);
-
-        $this->assertValidationErrors($response, 'name');
-
-        $this->assertNull(Site::first());
-    }
-
-    public function testNameMustBeUnique()
-    {
-        Site::create(['name' => 'Duplicate me!']);
-
-        $response = $this->postJson('/api/sites', ['name' => 'Duplicate me!']);
-
-        $this->assertValidationErrors($response, 'name');
-
-        $this->assertEquals(1, Site::count());
-    }
-
-    public function testPrimaryDomainMustBeUrl()
+    /** @test */
+    public function cannot_create_site_with_invalid_data()
     {
         $response = $this->postJson('/api/sites', [
-            'name' => 'Good name',
-            'primary_domain' => 'not a url',
+            'name' => '',
+            'primary_domain' => '',
+            'is_enabled' => '',
         ]);
 
-        $this->assertValidationErrors($response, 'primary_domain');
-
-        $this->assertNull(Site::first());
-    }
-
-    public function testIsEnabledMustBeBoolean()
-    {
-        $response = $this->postJson('/api/sites', [
-            'name' => 'Good name',
-            'is_enabled' => 'true',
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors([
+            'name',
+            'primary_domain',
+            'is_enabled',
         ]);
-
-        $this->assertValidationErrors($response, 'is_enabled');
-
         $this->assertNull(Site::first());
     }
 }
