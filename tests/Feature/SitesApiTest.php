@@ -7,13 +7,23 @@ use Tests\TestCase;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CreateSiteTest extends TestCase
+class SitesApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * A basic test example.
-     */
+    public function testGuestCanListSites()
+    {
+        Site::create(['name' => 'Blog 1']);
+        Site::create(['name' => 'Blog 2']);
+
+        $response = $this->getJson('/api/sites');
+        $data = $response->getContent();
+
+        $response->assertOk();
+        $response->assertJsonCount(2);
+        $response->assertJson(Site::all()->toArray());
+    }
+
     public function testGuestCanCreateSite()
     {
         $response = $this->postJson('/api/sites', [
@@ -33,6 +43,21 @@ class CreateSiteTest extends TestCase
         $this->assertEquals('Test Site', $site->name);
         $this->assertEquals('example.com', $site->primary_domain);
         $this->assertTrue($site->is_enabled);
+    }
+
+    public function testGuestCanUpdateSite()
+    {
+        $site = Site::create(['name' => 'My Blog']);
+
+        $response = $this->putJson('/api/sites/'.$site->id, [
+            'name' => 'My Updated Blog',
+            'type' => 'basic',
+            'source_repo' => 'https://github.com/user/blog.git',
+            'document_root' => '/var/www/blog',
+        ]);
+
+        $response->assertOk();
+        $this->assertEquals('My Updated Blog', Site::find($site->id)->name);
     }
 
     public function testNameIsRequired()
