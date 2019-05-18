@@ -29,7 +29,7 @@ class UpdateSite extends FormRequest
             'name' => [
                 'required',
                 'string',
-                Rule::unique('sites', 'name')->ignore($this->route('id')),
+                Rule::unique('sites', 'name')->ignore($this->route('site')),
             ],
             'primary_domain' => [new Domain],
             'type' => 'required|in:basic,php,laravel,redirect',

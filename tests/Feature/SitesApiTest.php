@@ -45,23 +45,8 @@ class SitesApiTest extends TestCase
         $this->assertTrue($site->is_enabled);
     }
 
-    public function testGuestCanUpdateSite()
-    {
-        $site = Site::create(['name' => 'My Blog']);
-
-        $response = $this->putJson('/api/sites/'.$site->id, [
-            'name' => 'My Updated Blog',
-            'type' => 'basic',
-            'source_repo' => 'https://github.com/user/blog.git',
-            'document_root' => '/var/www/blog',
-        ]);
-
-        $response->assertOk();
-        $this->assertEquals('My Updated Blog', Site::find($site->id)->name);
-    }
-
     /** @test */
-    public function cannot_create_site_witout_required_fields()
+    public function cannot_create_site_without_required_fields()
     {
         $response = $this->postJson('/api/sites', []);
 
@@ -86,5 +71,34 @@ class SitesApiTest extends TestCase
             'is_enabled',
         ]);
         $this->assertNull(Site::first());
+    }
+
+    /** @test */
+    public function guest_can_update_site()
+    {
+        $site = Site::create(['name' => 'My Blog']);
+
+        $response = $this->putJson('/api/sites/'.$site->id, [
+            'name' => 'My Updated Blog',
+            'type' => 'basic',
+            'source_repo' => 'https://github.com/user/blog.git',
+            'document_root' => '/var/www/blog',
+        ]);
+
+        $response->assertOk();
+        $this->assertEquals('My Updated Blog', Site::find($site->id)->name);
+    }
+
+    /** @test */
+    public function can_update_site_while_retaining_the_same_name()
+    {
+        $site = Site::create(['name' => 'My New Blog']);
+
+        $response = $this->putJson('/api/sites/'.$site->id, [
+            'name' => 'My New Blog',
+            'type' => 'redirect',
+        ]);
+
+        $response->assertJsonMissingValidationErrors(['name']);
     }
 }
