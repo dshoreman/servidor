@@ -4,11 +4,11 @@ namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\Validator;
-use Servidor\Http\Requests\CreateSite;
+use Servidor\Http\Requests\UpdateSite;
 use Servidor\Site;
 use Tests\TestCase;
 
-class CreateSiteRequestTest extends TestCase
+class UpdateSiteRequestTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -16,7 +16,7 @@ class CreateSiteRequestTest extends TestCase
     {
         parent::setUp();
 
-        $this->rules = (new CreateSite)->rules();
+        $this->rules = (new UpdateSite)->rules();
         $this->validator = $this->app['validator'];
     }
 
@@ -73,6 +73,6 @@ class CreateSiteRequestTest extends TestCase
 
     private function getValidator(array $data, array $rules = []): Validator
     {
-        return $this->validator->make($data, $rules ?? $this->rules);
+        return $this->validator->make($data, $rules ?: $this->rules);
     }
 }
