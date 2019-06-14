@@ -13,6 +13,11 @@ class Site extends Model
     protected $fillable = [
         'name',
         'primary_domain',
+        'type',
+        'source_repo',
+        'document_root',
+        'redirect_type',
+        'redirect_to',
         'is_enabled',
     ];
 }

@@ -1,5 +1,7 @@
 import Dashboard from './pages/Dashboard.vue'
 import Sites from './pages/Sites.vue'
+import SiteList from './pages/Sites/List.vue'
+import SiteEditor from './pages/Sites/Edit.vue'
 import AppLayout from './layouts/App.vue'
 import SystemLayout from './layouts/System.vue'
 import SystemGroups from './components/System/Groups.vue'
@@ -16,10 +18,27 @@ const routes = [{
         path: '/',
         meta: { auth: true },
     }, {
-        component: Sites,
-        name: 'apps',
-        path: '/apps',
-        meta: { auth: true },
+        path: '/apps', component: Sites,
+        children: [{
+            component: SiteList,
+            name: 'apps',
+            path: '/',
+            meta: { auth: true },
+        }, {
+            component: SiteEditor,
+            name: 'apps.edit',
+            path: '/apps/:id',
+            meta: { auth: true },
+            props: (route) => {
+                let id = parseInt(route.params.id);
+
+                if (Number.isNaN(id) || id < 0) {
+                    return { id: 0 };
+                }
+
+                return { id: id };
+            },
+        }],
     }, {
         path: '/system', component: SystemLayout,
         children: [{

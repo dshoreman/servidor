@@ -2,8 +2,9 @@
 
 namespace Servidor\Http\Controllers;
 
+use Servidor\Http\Requests\CreateSite;
+use Servidor\Http\Requests\UpdateSite;
 use Servidor\Site;
-use Servidor\Rules\Domain;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -22,62 +23,28 @@ class SiteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param CreateSite $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateSite $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|unique:sites,name',
-            'primary_domain' => [new Domain],
-            'is_enabled' => 'boolean',
-        ]);
-
-        $site = Site::create($data);
+        $site = Site::create($request->validated());
 
         return response($site, Response::HTTP_CREATED);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \Servidor\Site $site
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Site $site)
-    {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \Servidor\Site $site
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Site $site)
-    {
-    }
-
-    /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Servidor\Site           $site
+     * @param UpdateSite     $request
+     * @param \Servidor\Site $site
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Site $site)
+    public function update(UpdateSite $request, Site $site)
     {
-        $data = $request->validate([
-            'name' => 'required|string|unique:sites,name',
-            'primary_domain' => [new Domain],
-            'is_enabled' => 'boolean',
-        ]);
-
-        $site->update($data);
+        $site->update($request->validated());
 
         return response($site, Response::HTTP_OK);
     }
