@@ -14,7 +14,7 @@ class CreateSite extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return (bool) $this->user();
     }
 
     /**

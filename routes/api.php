@@ -23,6 +23,10 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('logout', 'Auth\LoginController@logout');
 
+    Route::resource('sites', 'SiteController', [
+        'only' => ['index', 'store', 'update', 'destroy'],
+    ]);
+
     Route::name('system')->prefix('/system')->namespace('System')->group(function () {
         Route::resource('groups', 'GroupsController', [
             'only' => ['index', 'store', 'update', 'destroy'],
@@ -35,10 +39,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('system-info', 'SystemInformationController');
 });
-
-Route::resource('sites', 'SiteController', [
-    'only' => ['index', 'store', 'update', 'destroy'],
-]);
 
 Route::any('/{all?}', function () {
     abort(404);
