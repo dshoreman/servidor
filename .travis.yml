@@ -17,3 +17,6 @@ before_script:
   - cp .env.travis .env
   - php artisan key:generate
   - php artisan migrate
+
+after_failure:
+  - cat storage/logs/laravel.log
