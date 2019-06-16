@@ -6,6 +6,7 @@ main() {
     install_software
     configure_nginx
 
+    set_group
     install_composer
 
     configure_shell
@@ -29,6 +30,10 @@ configure_nginx() {
 
     start_service php7.3-fpm
     start_service nginx
+}
+
+set_group() {
+    usermod -aG www-data vagrant
 }
 
 install_composer() {
@@ -56,7 +61,7 @@ configure_app() {
         echo "FLUSH PRIVILEGES; CREATE DATABASE servidor" | mysql && \
         echo "Database and user 'servidor' created."
 
-    [ -d vendor ] || sudo -u www-data composer -n install --no-progress --no-suggest
+    [ -d vendor ] || sudo -Hu vagrant composer -n install --no-progress --no-suggest
     [ -f .env ] || cp -v .env.example .env
 
     if grep -qP "^APP_KEY=$" .env; then

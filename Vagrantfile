@@ -9,9 +9,12 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network",
     ip: "192.168.10.100"
 
-  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder ".", "/vagrant",
+    disabled: true
+
   config.vm.synced_folder ".", "/var/servidor",
-    create: true, owner: "www-data", group: "www-data"
+    create: true, owner: "vagrant", group: "www-data",
+    mount_options: ["dmode=775,fmode=664"]
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "servidor-dev"
