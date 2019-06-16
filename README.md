@@ -24,7 +24,7 @@ Clone from git, create a database and setup your `.env` file with the applicable
 ```sh
 composer install
 php artisan key:generate
-php artisan migrate
+php artisan migrate --seed
 php artisan passport:install
 npm ci
 ```
