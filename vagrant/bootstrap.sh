@@ -47,6 +47,8 @@ configure_shell() {
 }
 
 configure_app() {
+    local client_id
+
     cd /var/servidor && echo "Configuring application..."
 
     echo "CREATE USER 'servidor'@'localhost' IDENTIFIED BY 'vagrant'" | mysql && \
@@ -62,10 +64,15 @@ configure_app() {
     fi
 
     php artisan migrate --seed
-    has_passport_keys || php artisan passport:install
-    php artisan passport:client -n --password --name=Servidor
 
-    edit_line .env "PASSPORT_CLIENT_ID" "1"
+    has_passport_keys || php artisan passport:install
+
+    if [ "$(oauth_clients)" = "0" ]; then
+        php artisan passport:client -n --password --name="Servidor Password Grant Client"
+    fi
+
+    client_id=$(oauth_client_id)
+    edit_line .env "PASSPORT_CLIENT_ID" "${client_id}"
     edit_line .env "PASSPORT_CLIENT_SECRET" "$(oauth_secret)"
 }
 
@@ -88,8 +95,16 @@ has_passport_keys() {
     [ -f storage/oauth-private.key ] && [ -f storage/oauth-public.key ]
 }
 
+oauth_clients() {
+    mysql -Ne "SELECT COUNT(*) FROM servidor.oauth_clients WHERE password_client=1"
+}
+
+oauth_client_id() {
+    mysql -Ne "SELECT id FROM servidor.oauth_clients WHERE password_client=1 LIMIT 1"
+}
+
 oauth_secret() {
-    mysql -Ne "SELECT secret FROM servidor.oauth_clients WHERE id=1"
+    mysql -Ne "SELECT secret FROM servidor.oauth_clients WHERE id=${client_id}"
 }
 
 start_service() {
