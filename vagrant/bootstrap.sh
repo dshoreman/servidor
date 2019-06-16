@@ -14,7 +14,7 @@ main() {
 
 install_software() {
     update="apt-get update"
-    install="apt-get install -y --no-install-recommends"
+    install="apt-get install -qy --no-install-recommends"
 
     add-apt-repository ppa:ondrej/php
 
@@ -54,7 +54,7 @@ configure_app() {
         echo "FLUSH PRIVILEGES; CREATE DATABASE servidor" | mysql && \
         echo "Database and user 'servidor' created."
 
-    [ -d vendor ] || sudo -u www-data composer install
+    [ -d vendor ] || sudo -u www-data composer -n install --no-progress --no-suggest
     [ -f .env ] || cp -v .env.example .env
 
     if grep -qP "^APP_KEY=$" .env; then
