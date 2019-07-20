@@ -15,7 +15,7 @@
         "browser-sync-webpack-plugin": "^2.2.2",
         "cross-env": "^5.1",
         "laravel-mix": "^2.0",
-        "lodash": "^4.17.14",
+        "lodash": "^4.17.15",
         "popper.js": "^1.12",
         "semantic-ui-css": "^2.4.1",
         "vue-template-compiler": "^2.6.10",
