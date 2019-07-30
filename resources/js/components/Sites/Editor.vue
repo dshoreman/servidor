@@ -1,13 +1,17 @@
 <template>
     <sui-container>
-        <h2 is="sui-header">
-            Editing {{ site.name }}
-            <sui-header-subheader>
-                {{ site.primary_domain }}
-            </sui-header-subheader>
-        </h2>
-
         <sui-form @submit.prevent="updateSite(tmpSite.id)" :error="error != ''">
+            <sui-form-field class="enable-switch">
+                <sui-checkbox toggle v-model="tmpSite.is_enabled"/>
+            </sui-form-field>
+
+            <h2 is="sui-header">
+                Editing {{ site.name }}
+                <sui-header-subheader>
+                    {{ site.primary_domain }}
+                </sui-header-subheader>
+            </h2>
+
             <sui-message error :header="errorHeader">
                 <p>{{ error }}</p>
             </sui-message>
@@ -97,6 +101,13 @@
         </sui-form>
     </sui-container>
 </template>
+
+<style scoped>
+.ui.form .field.enable-switch {
+    float: right;
+    margin-top: 5px;
+}
+</style>
 
 <script>
 import { mapState } from 'vuex';
