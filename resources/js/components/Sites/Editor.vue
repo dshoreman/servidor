@@ -137,7 +137,7 @@ export default {
                 );
         },
         setDocroot() {
-            const site = this.clonedSite;
+            const site = this.tmpSite;
             let val = '';
 
             if (['basic', 'php', 'laravel'].includes(site.type)) {
