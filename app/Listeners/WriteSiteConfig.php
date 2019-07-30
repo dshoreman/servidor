@@ -8,41 +8,66 @@ use Servidor\Events\SiteUpdated;
 class WriteSiteConfig
 {
     /**
+     * @var Site
+     */
+    private $site;
+
+    /**
+     * @var string
+     */
+    private $filename;
+
+    /**
+     * @var string
+     */
+    private $config_path;
+
+    /**
+     * @var string
+     */
+    private $symlink;
+
+    /**
      * Handle the event.
      *
      * @param SiteUpdated $event
      */
     public function handle(SiteUpdated $event)
     {
-        $site = $event->site;
+        $site = $this->site = $event->site;
 
         if ($site->document_root && !is_dir($site->document_root)) {
             mkdir($site->document_root, 755);
         }
 
-        $filename = $site->primary_domain.'.conf';
-        $filepath = 'vhosts/'.$filename;
-        $fullpath = Storage::disk('local')->path($filepath);
-        $confpath = '/etc/nginx/sites-available/'.$filename;
-        $livepath = '/etc/nginx/sites-enabled/'.$filename;
+        $filename = $this->filename = $site->primary_domain.'.conf';
+        $this->config_path = '/etc/nginx/sites-available/'.$filename;
+        $this->symlink = '/etc/nginx/sites-enabled/'.$filename;
 
-        $template = 'laravel' == $site->type ? 'php' : $site->type;
+        $this->updateConfig();
 
-        Storage::put($filepath, view('sites.server-templates.'.$template, ['site' => $site]));
-        exec('sudo cp "'.$fullpath.'" "'.$confpath.'"');
-
-        if ($site->is_enabled) {
-            $this->createSymlink($confpath, $livepath);
-        } else {
-            $this->removeSymlink($confpath, $livepath);
-        }
+        $site->is_enabled
+            ? $this->createSymlink()
+            : $this->removeSymlink();
 
         exec('sudo systemctl reload-or-restart nginx.service');
     }
 
-    private function createSymlink(string $target, string $symlink)
+    private function updateConfig()
     {
-        if (is_link($symlink) && readlink($symlink) == $target) {
+        $view = 'laravel' == $this->site->type
+            ? view('sites.server-templates.php')
+            : view('sites.server-templates.'.$this->site->type);
+
+        Storage::put('vhosts/'.$this->filename, $view->with('site', $this->site));
+
+        $file = Storage::disk('local')->path('vhosts/'.$this->filename);
+        exec('sudo cp "'.$file.'" "'.$this->config_path.'"');
+    }
+
+    private function createSymlink()
+    {
+        if (is_link($symlink = $this->symlink) && readlink($symlink) == $this->config_path) {
             return;
         }
 
@@ -50,12 +75,12 @@ class WriteSiteConfig
             exec('sudo rm "'.$symlink.'"');
         }
 
-        exec('sudo ln -s "'.$target.'" "'.$symlink.'"');
+        exec('sudo ln -s "'.$this->config_path.'" "'.$symlink.'"');
     }
 
-    private function removeSymlink(string $target, string $symlink)
+    private function removeSymlink()
     {
-        if (!is_link($symlink) || readlink($symlink) != $target) {
+        if (!is_link($symlink = $this->symlink) || readlink($symlink) != $this->config_path) {
             return;
         }
 
