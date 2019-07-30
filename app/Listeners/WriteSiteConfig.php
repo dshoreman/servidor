@@ -31,10 +31,34 @@ class WriteSiteConfig
         Storage::put($filepath, view('sites.server-templates.'.$template, ['site' => $site]));
         exec('sudo cp "'.$fullpath.'" "'.$confpath.'"');
 
-        if ($site->is_enabled && !is_link($livepath)) {
-            exec('sudo ln -s "'.$confpath.'" "'.$livepath.'"');
+        if ($site->is_enabled) {
+            $this->createSymlink($confpath, $livepath);
+        } else {
+            $this->removeSymlink($confpath, $livepath);
         }
 
         exec('sudo systemctl reload-or-restart nginx.service');
+    }
+
+    private function createSymlink(string $target, string $symlink)
+    {
+        if (is_link($symlink) && readlink($symlink) == $target) {
+            return;
+        }
+
+        if (file_exists($symlink)) {
+            exec('sudo rm "'.$symlink.'"');
+        }
+
+        exec('sudo ln -s "'.$target.'" "'.$symlink.'"');
+    }
+
+    private function removeSymlink(string $target, string $symlink)
+    {
+        if (!is_link($symlink) || readlink($symlink) != $target) {
+            return;
+        }
+
+        exec('sudo rm "'.$symlink.'"');
     }
 }
