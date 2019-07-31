@@ -131,6 +131,7 @@ class SitesApiTest extends TestCase
             'type' => 'basic',
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
             'document_root' => '/var/www/blog',
+            'primary_domain' => 'test.com',
         ]);
 
         $updated = Site::find($site->id);
