@@ -75,7 +75,11 @@ class WriteSiteConfig
 
         if (is_dir($root.'/.git')) {
             exec('cd "'.$root.'" && git pull');
-        } elseif (!is_dir(dirname($root))) {
+
+            return;
+        }
+
+        if (!is_dir(dirname($root))) {
             mkdir(dirname($root), 755);
         }
 
