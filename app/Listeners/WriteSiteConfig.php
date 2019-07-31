@@ -35,16 +35,12 @@ class WriteSiteConfig
     public function handle(SiteUpdated $event)
     {
         $site = $this->site = $event->site;
-
-        if ($site->document_root && !is_dir($site->document_root)) {
-            mkdir($site->document_root, 755);
-        }
-
         $filename = $this->filename = $site->primary_domain.'.conf';
         $this->config_path = '/etc/nginx/sites-available/'.$filename;
         $this->symlink = '/etc/nginx/sites-enabled/'.$filename;
 
         $this->updateConfig();
+        $this->pullSite();
 
         $site->is_enabled
             ? $this->createSymlink()
@@ -63,6 +59,23 @@ class WriteSiteConfig
 
         $file = Storage::disk('local')->path('vhosts/'.$this->filename);
         exec('sudo cp "'.$file.'" "'.$this->config_path.'"');
+    }
+
+    private function pullSite()
+    {
+        $root = $this->site->document_root;
+
+        if (!$this->site->type || 'redirect' == $this->site->type || !$root) {
+            return;
+        }
+
+        if (is_dir($root.'/.git')) {
+            exec('cd "'.$root.'" && git pull');
+        } elseif (!is_dir(dirname($root))) {
+            mkdir(dirname($root), 755);
+        }
+
+        exec('git clone "'.$this->site->source_repo.'" "'.$root.'"');
     }
 
     private function createSymlink()
