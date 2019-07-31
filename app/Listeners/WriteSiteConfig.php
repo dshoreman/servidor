@@ -34,6 +34,10 @@ class WriteSiteConfig
      */
     public function handle(SiteUpdated $event)
     {
+        if (!is_dir('/etc/nginx/sites-available')) {
+            return;
+        }
+
         $site = $this->site = $event->site;
         $filename = $this->filename = $site->primary_domain.'.conf';
         $this->config_path = '/etc/nginx/sites-available/'.$filename;
@@ -56,11 +60,6 @@ class WriteSiteConfig
             : view('sites.server-templates.'.$this->site->type);
 
         Storage::put('vhosts/'.$this->filename, $view->with('site', $this->site));
-
-        // This is purely to keep Travis happy. Ideally we should probably
-        // do something if nginx isn't installed because now I'm fixing
-        // this error it'll no doubt fail on restarting the service.
-        exec('sudo mkdir -p /etc/nginx/sites-{available,enabled}');
 
         $file = Storage::disk('local')->path('vhosts/'.$this->filename);
         exec('sudo cp "'.$file.'" "'.$this->config_path.'"');
