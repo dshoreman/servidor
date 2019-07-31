@@ -34,6 +34,7 @@ class UpdateSite extends FormRequest
             'primary_domain' => [new Domain],
             'type' => 'required|in:basic,php,laravel,redirect',
             'source_repo' => 'required_unless:type,redirect|nullable|url',
+            'source_branch' => 'nullable|string',
             'document_root' => 'required_unless:type,redirect|nullable|string',
             'redirect_type' => 'required_if:type,redirect|nullable|integer',
             'redirect_to' => 'required_if:type,redirect|nullable|string',

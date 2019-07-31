@@ -20,6 +20,7 @@ class Site extends Model
         'primary_domain',
         'type',
         'source_repo',
+        'source_branch',
         'document_root',
         'redirect_type',
         'redirect_to',
