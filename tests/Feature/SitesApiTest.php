@@ -129,8 +129,9 @@ class SitesApiTest extends TestCase
         $response = $this->authed()->putJson('/api/sites/'.$site->id, [
             'name' => 'My Updated Blog',
             'type' => 'basic',
-            'source_repo' => 'https://github.com/user/blog.git',
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
             'document_root' => '/var/www/blog',
+            'primary_domain' => 'test.com',
         ]);
 
         $updated = Site::find($site->id);
@@ -138,7 +139,7 @@ class SitesApiTest extends TestCase
         $response->assertOk();
         $this->assertEquals('My Updated Blog', $updated->name);
         $this->assertEquals('basic', $updated->type);
-        $this->assertEquals('https://github.com/user/blog.git', $updated->source_repo);
+        $this->assertEquals('https://github.com/dshoreman/servidor-test-site.git', $updated->source_repo);
         $this->assertEquals('/var/www/blog', $updated->document_root);
     }
 

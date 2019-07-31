@@ -56,6 +56,8 @@ configure_app() {
 
     cd /var/servidor && echo "Configuring application..."
 
+    chown www-data:www-data /var/www
+
     echo "CREATE USER 'servidor'@'localhost' IDENTIFIED BY 'vagrant'" | mysql && \
         echo "GRANT ALL PRIVILEGES ON *.* TO 'servidor'@'localhost'" | mysql && \
         echo "FLUSH PRIVILEGES; CREATE DATABASE servidor" | mysql && \
