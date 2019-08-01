@@ -11,6 +11,7 @@
 /.idea
 /.vscode
 /.vagrant
+/*.log
 Homestead.json
 Homestead.yaml
 npm-debug.log
