@@ -4,10 +4,10 @@
             <sui-grid-column>
                 <sui-input placeholder="Type a name for your Application..."
                         icon="plus" class="fluid massive"
-                        v-model="site.name" @keyup.enter="create"></sui-input>
+                        v-model="site.name" @input="filterSites" @keyup.enter="create"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
-        <router-view :sites="sites"></router-view>
+        <router-view :sites="filteredSites"></router-view>
     </sui-container>
 </template>
 
@@ -25,11 +25,15 @@ export default {
         }),
         ...mapGetters([
             'sites',
+            'filteredSites',
         ]),
     },
     methods: {
         ...mapActions({
             create: 'createSite',
+        }),
+        ...mapMutations({
+            filterSites: 'setFilter',
         }),
     }
 }
