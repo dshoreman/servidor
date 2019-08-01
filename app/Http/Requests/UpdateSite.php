@@ -41,4 +41,38 @@ class UpdateSite extends FormRequest
             'is_enabled' => 'boolean',
         ];
     }
+
+    /**
+     * Configure the validator instance.
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $data = $validator->getData();
+
+            if ('' == $data['source_branch'] || '' == $data['source_repo']) {
+                return;
+            }
+
+            exec(sprintf("git ls-remote --exit-code '%s' 'refs/heads/*'", $data['source_repo']), $branches, $status);
+
+            if (128 === $status) {
+                $validator->errors()->add('source_repo', "This repo couldn't be found. Does it require auth?");
+            } elseif (2 === $status) {
+                $validator->errors()->add('source_repo', 'This repo does not have any branches.');
+            } elseif (0 !== $status) {
+                $validator->errors()->add('source_repo', 'Branch listing failed. Is this repo valid?');
+            } else {
+                $branches = array_map(function ($value) {
+                    return mb_substr($value, 11 + mb_strpos($value, 'refs/heads/'));
+                }, $branches);
+
+                if (!in_array($data['source_branch'], $branches)) {
+                    $validator->errors()->add('source_branch', 'Branch does not exist.');
+                }
+            }
+        });
+    }
 }
