@@ -68,13 +68,14 @@ class WriteSiteConfig
     private function pullSite()
     {
         $root = $this->site->document_root;
+        $branch = $this->site->source_branch;
 
         if (!$this->site->type || 'redirect' == $this->site->type || !$root) {
             return;
         }
 
         if (is_dir($root.'/.git')) {
-            exec('cd "'.$root.'" && git pull');
+            exec('cd "'.$root.'"'.($branch ? ' && git checkout "'.$branch.'"' : '').' && git pull');
 
             return;
         }
@@ -83,7 +84,8 @@ class WriteSiteConfig
             mkdir(dirname($root), 755);
         }
 
-        exec('git clone "'.$this->site->source_repo.'" "'.$root.'"');
+        $cloneCmd = $branch ? 'git clone --branch "'.$branch.'"' : 'git clone';
+        exec($cloneCmd.' "'.$this->site->source_repo.'" "'.$root.'"');
     }
 
     private function createSymlink()
