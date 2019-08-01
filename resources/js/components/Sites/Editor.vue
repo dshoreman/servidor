@@ -73,14 +73,23 @@
                 </sui-form-field>
             </sui-form-fields>
 
-            <sui-form-field v-if="tmpSite.type && tmpSite.type != 'redirect'"
-                :error="'source_repo' in errors">
-                <label>Clone URL</label>
-                <sui-input v-model="tmpSite.source_repo" />
-                <sui-label basic color="red" pointing v-if="'source_repo' in errors">
-                    {{ errors.source_repo[0] }}
-                </sui-label>
-            </sui-form-field>
+            <sui-form-fields v-if="tmpSite.type && tmpSite.type != 'redirect'">
+                <sui-form-field :width="12" :error="'source_repo' in errors">
+                    <label>Clone URL</label>
+                    <sui-input v-model="tmpSite.source_repo" />
+                    <sui-label basic color="red" pointing v-if="'source_repo' in errors">
+                        {{ errors.source_repo[0] }}
+                    </sui-label>
+                </sui-form-field>
+                <sui-form-field :width="4" :error="'source_branch' in errors">
+                    <label>Branch</label>
+                    <sui-input v-model="tmpSite.source_branch" />
+                    <sui-label basic color="red" pointing v-if="'source_branch' in errors">
+                        {{ errors.source_branch[0] }}
+                    </sui-label>
+                </sui-form-field>
+            </sui-form-fields>
+
             <sui-form-field v-if="['basic', 'php', 'laravel'].includes(tmpSite.type)"
                 :error="'document_root' in errors">
                 <label>Document Root</label>
