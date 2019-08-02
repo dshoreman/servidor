@@ -1,4 +1,5 @@
 import Dashboard from './pages/Dashboard.vue'
+import Files from './pages/Files.vue'
 import Sites from './pages/Sites.vue'
 import SiteList from './pages/Sites/List.vue'
 import SiteEditor from './pages/Sites/Edit.vue'
@@ -39,6 +40,11 @@ const routes = [{
                 return { id: id };
             },
         }],
+    }, {
+        component: Files,
+        name: 'files',
+        path: '/files',
+        meta: { auth: true },
     }, {
         path: '/system', component: SystemLayout,
         children: [{
