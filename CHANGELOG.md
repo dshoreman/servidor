@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* This changelog!
+* Support for adding/editing Sites/Applications
+* Vagrant setup for easier development
+* Automatic configuration of Nginx server configs
+* Custom fallback "404" page for sites that aren't configured or enabled
+* Global footer showing current Servidor version
 
 
 ## [0.1.0] - 2019-03-30
