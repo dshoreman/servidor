@@ -3,7 +3,7 @@
         <sui-grid-row>
             <sui-grid-column>
                 <sui-input placeholder="Type a name for your Application..."
-                        icon="plus" class="fluid massive"
+                        :icon="filterIcon" class="fluid massive"
                         v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
@@ -27,6 +27,19 @@ export default {
             'sites',
             'filteredSites',
         ]),
+        filterIcon: function () {
+            const match = this.site.name.toLowerCase();
+
+            if (match == '') {
+                return 'search';
+            }
+
+            if ('object' == typeof(this.filteredSites.find(s => s.name.toLowerCase() == match))) {
+                return 'cogs';
+            }
+
+            return 'plus';
+        },
     },
     methods: {
         ...mapMutations({
@@ -39,9 +52,7 @@ export default {
                 return;
             }
 
-            let result = this.filteredSites.find(function (s) {
-                return s.name.toLowerCase() == match;
-            });
+            let result = this.filteredSites.find(s => s.name.toLowerCase() == match);
 
             if (typeof(result) === 'object') {
                 return this.$router.push({ name: 'apps.edit', params: { id: result.id }});
