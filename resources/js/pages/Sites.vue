@@ -3,16 +3,16 @@
         <sui-grid-row>
             <sui-grid-column>
                 <sui-input placeholder="Type a name for your Application..."
-                        icon="plus" class="fluid massive"
-                        v-model="site.name" @keyup.enter="create"></sui-input>
+                        :icon="filterIcon" class="fluid massive"
+                        v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
-        <router-view :sites="sites"></router-view>
+        <router-view :sites="filteredSites"></router-view>
     </sui-container>
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 import store from '../store';
 
 export default {
@@ -25,12 +25,41 @@ export default {
         }),
         ...mapGetters([
             'sites',
+            'filteredSites',
         ]),
+        filterIcon: function () {
+            const match = this.site.name.toLowerCase();
+
+            if (match == '') {
+                return 'search';
+            }
+
+            if ('object' == typeof(this.filteredSites.find(s => s.name.toLowerCase() == match))) {
+                return 'cogs';
+            }
+
+            return 'plus';
+        },
     },
     methods: {
-        ...mapActions({
-            create: 'createSite',
+        ...mapMutations({
+            filterSites: 'setFilter',
         }),
+        createOrEdit: function () {
+            const match = this.site.name.toLowerCase();
+
+            if (match == '') {
+                return;
+            }
+
+            let result = this.filteredSites.find(s => s.name.toLowerCase() == match);
+
+            if (typeof(result) === 'object') {
+                return this.$router.push({ name: 'apps.edit', params: { id: result.id }});
+            }
+
+            this.$store.dispatch('createSite');
+        },
     }
 }
 </script>

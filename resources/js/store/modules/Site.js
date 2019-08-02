@@ -1,5 +1,7 @@
 export default {
     state: {
+        current: {},
+        currentFilter: '',
         error: '',
         errors: [],
         error_title: '',
@@ -7,7 +9,6 @@ export default {
         site: {
             name: '',
         },
-        current: {},
     },
     mutations: {
         setErrors: (state, {message, errors, action = 'save'}) => {
@@ -17,6 +18,9 @@ export default {
             if (errors) {
                 state.errors = errors;
             }
+        },
+        setFilter: (state, value) => {
+            state.currentFilter = value;
         },
         setSites: (state, sites) => {
             state.sites = sites;
@@ -101,6 +105,11 @@ export default {
         },
     },
     getters: {
+        filteredSites: state => {
+            return state.sites.filter(site => {
+                return site.name.toLowerCase().includes(state.currentFilter.toLowerCase());
+            });
+        },
         sites: state => {
             return state.sites;
         },
