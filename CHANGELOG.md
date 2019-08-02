@@ -1,0 +1,21 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+
+## [Unreleased]
+
+
+## [0.1.0] - 2019-03-30
+### Added
+* System section with pages for managing Linux users and groups
+* "Stats bar" showing system hostname and distro
+* Ability to add/remove users to/from groups and vice-versa
+* Basic login/logout auth stuff
+
+
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.1.0...develop
+[0.1.0]: https://github.com/dshoreman/servidor/releases/tag/v0.1.0
