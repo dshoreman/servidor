@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+
+## [0.2.0] - 2019-08-02
 ### Added
 * This changelog!
 * Support for adding/editing Sites/Applications
@@ -24,5 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.1.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.2.0...develop
+[0.2.0]: https://github.com/dshoreman/servidor/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/dshoreman/servidor/releases/tag/v0.1.0
