@@ -1,0 +1,25 @@
+html {
+    position: relative;
+    min-height: 100%;
+    height: unset;
+}
+
+body {
+    margin-bottom: 60px;
+
+    #app {
+        padding-bottom: 20px;
+    }
+
+    & > footer {
+        position: absolute;
+        bottom: 0;
+        height: 60px;
+        width: 100%;
+
+        p {
+            line-height: 60px;
+            text-align: center;
+        }
+    }
+}

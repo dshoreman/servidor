@@ -23,7 +23,7 @@ class GroupsController extends Controller
 
         foreach ($lines as $line) {
             $group = array_combine($keys, explode(':', $line));
-            $group['users'] = $group['users'] == '' ? [] : explode(',', $group['users']);
+            $group['users'] = '' == $group['users'] ? [] : explode(',', $group['users']);
 
             $groups->push($group);
         }
@@ -32,9 +32,10 @@ class GroupsController extends Controller
     }
 
     /**
-     * Create a new group on the host system
+     * Create a new group on the host system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -80,8 +81,9 @@ class GroupsController extends Controller
     /**
      * Update the specified group on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $gid
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $gid
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $gid)
@@ -90,10 +92,9 @@ class GroupsController extends Controller
         $data['gid'] = (int) ($data['gid'] ?? $gid);
 
         if (!$original = posix_getgrgid($gid)) {
-            throw $this->failed("No group found matching the given criteria.");
-        } else {
-            $updated = $original;
+            throw $this->failed('No group found matching the given criteria.');
         }
+        $updated = $original;
 
         if ($data['name'] != $original['name']) {
             $options[] = '-n '.$data['name'];
@@ -108,7 +109,7 @@ class GroupsController extends Controller
         }
 
         if (empty($options ?? null) && !isset($members)) {
-            throw $this->failed("Nothing to update!");
+            throw $this->failed('Nothing to update!');
         }
 
         if (count($options ?? [])) {
@@ -117,7 +118,7 @@ class GroupsController extends Controller
             exec('sudo groupmod '.implode(' ', $options), $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException("Something went wrong. Exit code: ".$retval);
+                throw new ValidationException('Something went wrong. Exit code: '.$retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -129,7 +130,7 @@ class GroupsController extends Controller
             exec("sudo gpasswd -M '{$members}' {$group}", $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException("Something went wrong. Exit code: ".$retval);
+                throw new ValidationException('Something went wrong. Exit code: '.$retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -145,7 +146,8 @@ class GroupsController extends Controller
     /**
      * Remove the specified group from the system.
      *
-     * @param  int  $gid
+     * @param int $gid
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($gid)
@@ -158,7 +160,7 @@ class GroupsController extends Controller
     }
 
     /**
-     * Get the validation rules for system groups
+     * Get the validation rules for system groups.
      *
      * @return array
      */

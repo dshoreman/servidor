@@ -23,7 +23,9 @@ and vice-versa. Oh, and it can delete them too.
 Clone from git, create a database and setup your `.env` file with the applicable config, then:
 ```sh
 composer install
-php artisan migrate
+php artisan key:generate
+php artisan migrate --seed
+php artisan passport:install
 npm ci
 ```
 

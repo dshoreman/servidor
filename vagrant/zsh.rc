@@ -1,0 +1,5 @@
+alias as-web="sudo -u www-data"
+alias wv="as-web vim"
+alias pa="php artisan"
+alias php="as-web php"
+alias composer="php composer.phar"

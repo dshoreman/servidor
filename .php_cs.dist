@@ -1,0 +1,36 @@
+<?php
+
+$finder = (new PhpCsFixer\Finder)
+    ->notName('*.blade.php')
+    ->notPath('bootstrap/cache')
+    ->notPath('storage')
+    ->in(__DIR__);
+
+return PhpCsFixer\Config::create()
+    ->setFinder($finder)
+    ->setLineEnding("\n")
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@Symfony' => true,
+
+        // Symfony Overrides
+        'braces' => [
+            'allow_single_line_closure' => true,
+        ],
+        'new_with_braces' => false,
+        'no_short_bool_cast' => false,
+
+        // Other Rules
+        'array_indentation' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'backtick_to_shell_exec' => true,
+        'combine_consecutive_issets' => true,
+        'combine_consecutive_unsets' => true,
+        'mb_str_functions' => true,
+        'multiline_comment_opening_closing' => true,
+        'no_useless_else' => true,
+        'phpdoc_order' => true,
+        'ternary_to_null_coalescing' => true,
+    ]);
+
+// vim: ft=php

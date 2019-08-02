@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('apps', function () {
-    return view('sites');
-});
-
 // Auth routes copied from Illuminate\Routing\Router@auth
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');

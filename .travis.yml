@@ -1,7 +1,7 @@
 language: php
 
 php:
-  - '7.2'
+  - '7.3'
 
 before_install:
   - composer self-update
@@ -17,3 +17,7 @@ before_script:
   - cp .env.travis .env
   - php artisan key:generate
   - php artisan migrate
+  - php artisan passport:install
+
+after_failure:
+  - cat storage/logs/laravel.log
