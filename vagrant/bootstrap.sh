@@ -27,6 +27,8 @@ install_software() {
 
 configure_nginx() {
     cp -v /var/servidor/vagrant/nginx/servidor.conf /etc/nginx/sites-enabled/
+    cp -v /var/servidor/vagrant/nginx/index.default.html /var/www/html/index.html
+    rm -v /var/www/html/index.nginx-debian.html
 
     start_service php7.3-fpm
     start_service nginx
