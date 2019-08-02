@@ -12,10 +12,12 @@
     </head>
     <body>
         <div id="app">
-
             @yield('content')
-
         </div>
+
+        <footer>
+            <p>Servidor v{{ SERVIDOR_VERSION }}</p>
+        </footer>
 
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
