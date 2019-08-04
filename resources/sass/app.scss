@@ -1,12 +1,10 @@
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
-
-// Variables
 @import 'variables';
+@import '~semantic-ui-sass/semantic-ui';
 
 @import 'footer';
 
 body {
+    background-color: $body-bg;
     height: calc(100% - 5rem);
 
     #app {
