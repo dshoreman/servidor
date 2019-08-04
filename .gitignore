@@ -1,7 +1,5 @@
 /node_modules
 /public/mix-manifest.json
-/public/css/themes/default/assets/fonts
-/public/css/semantic.min.css
 /public/css/app.css
 /public/js/app.js
 /public/hot

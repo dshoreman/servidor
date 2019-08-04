@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <sui-menu :widths="menu.length">
         <router-link :to="{ name: item.href }" is="sui-menu-item"
             v-for="(item, id) in menu" :key="id" :active="isActive(item)">

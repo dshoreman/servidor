@@ -7,7 +7,6 @@
 
         <title>{{ config('app.name', '') }}</title>
 
-        <link href="{{ asset('css/semantic.min.css') }}" rel="stylesheet" type="text/css">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
     </head>
     <body>

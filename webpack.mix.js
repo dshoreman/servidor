@@ -12,7 +12,6 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
-   .copy('node_modules/semantic-ui-css/semantic.min.css', 'public/css/')
-   .copy('node_modules/semantic-ui-css/themes/default/assets/fonts', 'public/css/themes/default/assets/fonts')
-   .browserSync('localhost')
+   .sass('resources/sass/app.scss', 'public/css').options({ processCssUrls: false })
+   .copy('node_modules/semantic-ui-sass/icons', 'public/fonts')
+   .browserSync('servidor.local')
