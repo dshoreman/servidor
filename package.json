@@ -14,12 +14,15 @@
         "browser-sync": "^2.26.7",
         "browser-sync-webpack-plugin": "^2.2.2",
         "cross-env": "^5.1",
-        "laravel-mix": "^2.0",
+        "laravel-mix": "^4.1.2",
         "lodash": "^4.17.15",
         "popper.js": "^1.12",
+        "resolve-url-loader": "3.1.0",
+        "sass": "^1.22.9",
+        "sass-loader": "7.*",
         "semantic-ui-css": "^2.4.1",
-        "vue-template-compiler": "^2.6.10",
-        "vue": "^2.6.10"
+        "vue": "^2.6.10",
+        "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
         "semantic-ui-vue": "^0.7.0",
