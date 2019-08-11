@@ -18,29 +18,29 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function list()
+    public function list_returns_items_in_given_path()
     {
-        $list = $this->manager->list('/var/servidor');
+        $list = $this->manager->list('/etc');
 
         $this->assertIsArray($list);
         $this->assertNotCount(0, $list);
 
         $item = $list[0];
 
-        $this->assertArrayHasKey('filename', $list[0]);
-        $this->assertArrayHasKey('isDir', $list[0]);
-        $this->assertArrayHasKey('isFile', $list[0]);
-        $this->assertArrayHasKey('isLink', $list[0]);
-        $this->assertArrayHasKey('target', $list[0]);
-        $this->assertArrayHasKey('owner', $list[0]);
-        $this->assertArrayHasKey('group', $list[0]);
-        $this->assertArrayHasKey('perms', $list[0]);
+        $this->assertArrayHasKey('filename', $item);
+        $this->assertArrayHasKey('isDir', $item);
+        $this->assertArrayHasKey('isFile', $item);
+        $this->assertArrayHasKey('isLink', $item);
+        $this->assertArrayHasKey('target', $item);
+        $this->assertArrayHasKey('owner', $item);
+        $this->assertArrayHasKey('group', $item);
+        $this->assertArrayHasKey('perms', $item);
     }
 
     /** @test */
     public function list_includes_hidden_files()
     {
-        $list = $this->manager->list('/var/servidor');
+        $list = $this->manager->list('/etc/skel');
 
         $hidden = array_filter($list, function ($file) {
             return '.' === mb_substr($file['filename'], 0, 1);
@@ -59,9 +59,9 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function show()
+    public function show_returns_contents_of_given_file()
     {
-        $file = $this->manager->open('/var/www/html/index.html');
+        $file = $this->manager->open('/etc/hostname');
 
         $this->assertIsArray($file);
         $this->assertArrayHasKey('contents', $file);
