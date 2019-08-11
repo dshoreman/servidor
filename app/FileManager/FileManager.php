@@ -27,8 +27,8 @@ class FileManager
                 'isFile' => $file->isFile(),
                 'isLink' => $file->isLink(),
                 'target' => $file->isLink() ? $file->getLinkTarget() : '',
-                'owner' => $file->getOwner(),
-                'group' => $file->getGroup(),
+                'owner' => posix_getpwuid($file->getOwner())['name'],
+                'group' => posix_getgrgid($file->getGroup())['name'],
                 'perms' => $file->getPerms(),
             ];
         }, iterator_to_array($files, false));
