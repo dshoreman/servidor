@@ -32,7 +32,10 @@ export default {
                 axios.get('/api/files/' + file).then(response => {
                     commit('setFile', response.data);
                     resolve(response);
-                }).catch(error => reject(error))
+                }).catch(error => {
+                    commit('setFile', { contents: error.response.data.message })
+                    reject(error);
+                })
             );
         },
     },
