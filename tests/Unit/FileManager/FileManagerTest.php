@@ -48,4 +48,14 @@ class FileManagerTest extends TestCase
 
         $this->assertNotEmpty($hidden);
     }
+
+    /** @test */
+    public function show()
+    {
+        $file = $this->manager->open('/var/www/html/index.html');
+
+        $this->assertIsArray($file);
+        $this->assertArrayHasKey('contents', $file);
+        $this->assertNotEmpty($file['contents']);
+    }
 }

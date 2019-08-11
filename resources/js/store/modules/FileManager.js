@@ -2,10 +2,14 @@ export default {
     state: {
         currentPath: '',
         files: [],
+        file: [],
     },
     mutations: {
         setFiles: (state, files) => {
             state.files = files;
+        },
+        setFile: (state, file) => {
+            state.file = file;
         },
         setPath: (state, path) => {
             state.currentPath = path;
@@ -23,13 +27,18 @@ export default {
                 }).catch(error => reject(error))
             );
         },
+        openFile: ({commit}, {file}) => {
+            return new Promise((resolve, reject) =>
+                axios.get('/api/files/' + file).then(response => {
+                    commit('setFile', response.data);
+                    resolve(response);
+                }).catch(error => reject(error))
+            );
+        },
     },
     getters: {
-        files: state => {
-            return state.files;
-        },
-        currentPath: state => {
-            return state.currentPath;
-        }
+        files: state => state.files,
+        file: state => state.file,
+        currentPath: state => state.currentPath,
     },
 }

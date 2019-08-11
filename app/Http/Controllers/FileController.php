@@ -31,4 +31,16 @@ class FileController extends Controller
 
         return (array) $results;
     }
+
+    /**
+     * Display the contents of a specific file.
+     *
+     * @param string $filepath
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show($filepath)
+    {
+        return $this->fm->open($filepath);
+    }
 }

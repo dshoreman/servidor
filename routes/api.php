@@ -31,6 +31,12 @@ Route::middleware('auth:api')->group(function () {
         'only' => ['index'],
     ]);
 
+    // Shitty hack because Laravel decodes the entire URL and
+    // treats encoded slashes the exact same as a raw '/'.
+    // Taylor's answer? "Don't use slash". What a moron.
+    Route::get('/files/{filepath}', 'FileController@show')
+        ->where('filepath', '.*');
+
     Route::name('system')->prefix('/system')->namespace('System')->group(function () {
         Route::resource('groups', 'GroupsController', [
             'only' => ['index', 'store', 'update', 'destroy'],

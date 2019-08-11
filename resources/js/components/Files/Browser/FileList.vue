@@ -25,10 +25,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     props: [
         'files',
     ],
+    computed: {
+        ...mapGetters([
+            'currentPath',
+        ]),
+    },
     methods: {
         icon: function (file) {
             if (file.isLink) {
@@ -42,6 +49,15 @@ export default {
             }
         },
         open: function (file) {
+            if (file.isFile) {
+                return this.$router.push({
+                    name: 'files.edit',
+                    query: {
+                        f: this.currentPath + '/' + file.filename,
+                    },
+                });
+            }
+
             if (!file.isDir) {
                 return;
             }

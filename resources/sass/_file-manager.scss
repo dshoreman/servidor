@@ -1,11 +1,19 @@
-#file-browser {
+#file-browser, #file-editor {
     button#levelup {
         vertical-align: top;
     }
+}
 
+#file-browser {
     table.files {
         tbody > tr {
             cursor: pointer;
         }
+    }
+}
+
+#file-editor {
+    pre {
+        overflow: auto;
     }
 }

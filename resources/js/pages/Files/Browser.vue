@@ -11,7 +11,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex';
-import FileList from './Browser/FileList';
+import FileList from '../../components/Files/Browser/FileList';
 
 export default {
     mounted () {
