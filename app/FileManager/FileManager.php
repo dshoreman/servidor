@@ -25,6 +25,8 @@ class FileManager
                 'filename' => $file->getFilename(),
                 'isDir' => $file->isDir(),
                 'isFile' => $file->isFile(),
+                'isLink' => $file->isLink(),
+                'target' => $file->isLink() ? $file->getLinkTarget() : '',
                 'owner' => $file->getOwner(),
                 'group' => $file->getGroup(),
                 'perms' => $file->getPerms(),
