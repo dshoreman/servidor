@@ -20,7 +20,7 @@ class FileManagerTest extends TestCase
     /** @test */
     public function list_returns_items_in_given_path()
     {
-        $list = $this->manager->list('/etc');
+        $list = $this->manager->list($this->dummy('mixed'));
 
         $this->assertIsArray($list);
         $this->assertNotCount(0, $list);
@@ -40,7 +40,7 @@ class FileManagerTest extends TestCase
     /** @test */
     public function list_includes_hidden_files()
     {
-        $list = $this->manager->list('/etc/skel');
+        $list = $this->manager->list($this->dummy('hidden'));
 
         $hidden = array_filter($list, function ($file) {
             return '.' === mb_substr($file['filename'], 0, 1);
@@ -61,10 +61,22 @@ class FileManagerTest extends TestCase
     /** @test */
     public function show_returns_contents_of_given_file()
     {
-        $file = $this->manager->open('/etc/hostname');
+        $file = $this->manager->open($this->dummy('mixed/hello.md'));
 
         $this->assertIsArray($file);
         $this->assertArrayHasKey('contents', $file);
         $this->assertNotEmpty($file['contents']);
+    }
+
+    /**
+     * Get the path to a file within the test skeleton.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private function dummy(string $path): string
+    {
+        return resource_path('test-skel/'.$path);
     }
 }
