@@ -9,7 +9,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="file in files" @click="$emit('set-path', file)">
+            <tr v-for="file in files" @click="open(file)">
                 <sui-table-cell collapsing>
                     <sui-icon :name="icon(file)" /> {{ file.filename }}
                     <span v-if="file.isLink">
@@ -40,7 +40,14 @@ export default {
             if (file.isFile) {
                 return 'file';
             }
-        }
+        },
+        open: function (file) {
+            if (!file.isDir) {
+                return;
+            }
+
+            this.$emit('set-path', file)
+        },
     },
 }
 </script>
