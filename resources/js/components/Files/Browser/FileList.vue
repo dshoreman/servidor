@@ -1,5 +1,5 @@
 <template>
-    <sui-table compact>
+    <sui-table compact selectable class="files">
         <thead>
             <tr>
                 <th>Filename</th>

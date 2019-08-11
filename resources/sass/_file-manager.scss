@@ -2,4 +2,10 @@
     button#levelup {
         vertical-align: top;
     }
+
+    table.files {
+        tbody > tr {
+            cursor: pointer;
+        }
+    }
 }
