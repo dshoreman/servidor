@@ -1,6 +1,10 @@
 <template>
     <sui-container id="file-editor">
-        <h2>{{ filePath }}</h2>
+        <h2>
+            <sui-button id="levelup" size="mini" icon="chevron left"
+                @click="backToDir" />
+            {{ filePath }}
+        </h2>
 
         <pre>{{ file.contents }}</pre>
     </sui-container>
@@ -20,6 +24,16 @@ export default {
         ...mapGetters([
             'file',
         ]),
+    },
+    methods: {
+        backToDir: function () {
+            let path = this.filePath;
+
+            this.$router.push({
+                name: 'files',
+                params: { path: path.substr(0, path.lastIndexOf('/')) },
+            });
+        },
     },
 }
 </script>

@@ -42,17 +42,19 @@ const routes = [{
             },
         }],
     }, {
-        component: FileBrowser,
-        name: 'files',
-        path: '/files',
-        meta: { auth: true },
-        props: { path: '/var/www' },
-    }, {
         component: FileEditor,
         name: 'files.edit',
         path: '/files/edit',
         meta: { auth: true },
         props: (route) => ({ filePath: route.query.f }),
+    }, {
+        component: FileBrowser,
+        name: 'files',
+        path: '/files/:path?',
+        meta: { auth: true },
+        props: (route) => ({
+            path: route.params.path ? route.params.path : '/var/www'
+        }),
     }, {
         path: '/system', component: SystemLayout,
         children: [{
