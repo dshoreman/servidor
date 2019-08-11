@@ -9,37 +9,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr v-for="file in files">
                 <sui-table-cell collapsing>
-                    <sui-icon name="folder" /> bin -> usr/bin
+                    <sui-icon name="folder" /> {{ file.filename }}
                 </sui-table-cell>
-                <td>lrwxrwxrwx</td>
-                <td>root</td>
-                <td>root</td>
-            </tr>
-            <tr>
-                <sui-table-cell collapsing>
-                    <sui-icon name="folder" /> etc
-                </sui-table-cell>
-                <td>drewr-xr-x</td>
-                <td>root</td>
-                <td>root</td>
-            </tr>
-            <tr>
-                <sui-table-cell collapsing>
-                    <sui-icon name="folder" /> home
-                </sui-table-cell>
-                <td>drwxr-xr-x</td>
-                <td>root</td>
-                <td>root</td>
-            </tr>
-            <tr>
-                <sui-table-cell collapsing>
-                    <sui-icon name="folder" /> var
-                </sui-table-cell>
-                <td>drwxr-xr-x</td>
-                <td>root</td>
-                <td>root</td>
+                <td>{{ file.perms }}</td>
+                <td>{{ file.owner }}</td>
+                <td>{{ file.group }}</td>
             </tr>
         </tbody>
     </sui-table>
@@ -47,5 +23,8 @@
 
 <script>
 export default {
+    props: [
+        'files',
+    ],
 }
 </script>

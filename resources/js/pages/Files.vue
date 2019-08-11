@@ -1,6 +1,6 @@
 <template>
     <div>
-        <file-browser />
+        <file-browser path="/var/www" />
     </div>
 </template>
 

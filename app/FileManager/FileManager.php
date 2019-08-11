@@ -20,6 +20,13 @@ class FileManager
     {
         $files = $this->finder->depth(0)->in($path);
 
-        return iterator_to_array($files);
+        return array_map(function ($file) {
+            return [
+                'filename' => $file->getFilename(),
+                'owner' => $file->getOwner(),
+                'group' => $file->getGroup(),
+                'perms' => $file->getPerms(),
+            ];
+        }, iterator_to_array($files, false));
     }
 }
