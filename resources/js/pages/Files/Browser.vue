@@ -37,9 +37,10 @@ export default {
         },
         upOneLevel: function () {
             let path = this.currentPath;
+            let next = path.substr(0, path.lastIndexOf('/'))
 
             this.$store.dispatch('loadFiles', {
-                path: path.substr(0, path.lastIndexOf('/'))
+                path: next ? next : '/'
             });
         },
     }

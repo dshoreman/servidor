@@ -50,6 +50,15 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
+    public function list_can_show_files_in_system_root()
+    {
+        $list = $this->manager->list('/');
+
+        $this->assertIsArray($list);
+        $this->assertNotCount(0, $list);
+    }
+
+    /** @test */
     public function show()
     {
         $file = $this->manager->open('/var/www/html/index.html');

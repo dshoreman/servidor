@@ -19,6 +19,12 @@ class FileManager
 
     public function list(string $path): array
     {
+        // Symfony's Finder trims all slashes from the end,
+        // so we have to workaround it with this hack.
+        if ('/' == $path) {
+            $path = '/../';
+        }
+
         $files = $this->finder->depth(0)->in($path)
                       ->ignoreDotFiles(false);
 
