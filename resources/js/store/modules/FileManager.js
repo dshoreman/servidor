@@ -1,11 +1,15 @@
 export default {
     state: {
+        currentPath: '',
         files: [],
     },
     mutations: {
         setFiles: (state, files) => {
             state.files = files;
         },
+        setPath: (state, path) => {
+            state.currentPath = path;
+        }
     },
     actions: {
         loadFiles: ({commit}, {path}) => {
@@ -13,6 +17,7 @@ export default {
                 axios.get('/api/files', {
                     params: { path: path },
                 }) .then(response => {
+                    commit('setPath', path);
                     commit('setFiles', response.data);
                     resolve(response);
                 }).catch(error => reject(error))
@@ -23,5 +28,8 @@ export default {
         files: state => {
             return state.files;
         },
+        currentPath: state => {
+            return state.currentPath;
+        }
     },
 }

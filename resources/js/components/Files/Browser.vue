@@ -1,6 +1,9 @@
 <template>
-    <sui-container>
-        <h2>{{ path }}</h2>
+    <sui-container id="file-browser">
+        <h2>
+            <sui-button id="levelup" size="mini" icon="level up" @click="upOneLevel"/>
+            {{ currentPath }}
+        </h2>
 
         <file-list :files="files" @set-path="setPath($event)" />
     </sui-container>
@@ -22,6 +25,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'currentPath',
             'files',
         ]),
     },
@@ -29,6 +33,13 @@ export default {
         setPath: function (file) {
             this.$store.dispatch('loadFiles', {
                 path: this.path + '/' + file.filename,
+            });
+        },
+        upOneLevel: function () {
+            let path = this.currentPath;
+
+            this.$store.dispatch('loadFiles', {
+                path: path.substr(0, path.lastIndexOf('/'))
             });
         },
     }

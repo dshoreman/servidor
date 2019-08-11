@@ -3,6 +3,8 @@
 
 @import 'footer';
 
+@import 'file-manager';
+
 body {
     background-color: $body-bg;
     height: calc(100% - 5rem);
