@@ -29,7 +29,7 @@ class FileManager
                 'target' => $file->isLink() ? $file->getLinkTarget() : '',
                 'owner' => posix_getpwuid($file->getOwner())['name'],
                 'group' => posix_getgrgid($file->getGroup())['name'],
-                'perms' => $file->getPerms(),
+                'perms' => mb_substr(decoct($file->getPerms()), -4),
             ];
         }, iterator_to_array($files, false));
     }
