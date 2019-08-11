@@ -32,7 +32,7 @@ export default {
     methods: {
         setPath: function (file) {
             this.$store.dispatch('loadFiles', {
-                path: this.path + '/' + file.filename,
+                path: this.currentPath + '/' + file.filename,
             });
         },
         upOneLevel: function () {
