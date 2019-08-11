@@ -36,4 +36,16 @@ class FileManagerTest extends TestCase
         $this->assertArrayHasKey('group', $list[0]);
         $this->assertArrayHasKey('perms', $list[0]);
     }
+
+    /** @test */
+    public function list_includes_hidden_files()
+    {
+        $list = $this->manager->list('/var/servidor');
+
+        $hidden = array_filter($list, function ($file) {
+            return '.' === mb_substr($file['filename'], 0, 1);
+        });
+
+        $this->assertNotEmpty($hidden);
+    }
 }

@@ -18,7 +18,8 @@ class FileManager
 
     public function list(string $path): array
     {
-        $files = $this->finder->depth(0)->in($path);
+        $files = $this->finder->depth(0)->in($path)
+                      ->ignoreDotFiles(false);
 
         return array_map(function ($file) {
             return [
