@@ -28,6 +28,8 @@ class FileManagerTest extends TestCase
         $item = $list[0];
 
         $this->assertArrayHasKey('filename', $list[0]);
+        $this->assertArrayHasKey('isDir', $list[0]);
+        $this->assertArrayHasKey('isFile', $list[0]);
         $this->assertArrayHasKey('owner', $list[0]);
         $this->assertArrayHasKey('group', $list[0]);
         $this->assertArrayHasKey('perms', $list[0]);

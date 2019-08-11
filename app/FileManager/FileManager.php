@@ -23,6 +23,8 @@ class FileManager
         return array_map(function ($file) {
             return [
                 'filename' => $file->getFilename(),
+                'isDir' => $file->isDir(),
+                'isFile' => $file->isFile(),
                 'owner' => $file->getOwner(),
                 'group' => $file->getGroup(),
                 'perms' => $file->getPerms(),

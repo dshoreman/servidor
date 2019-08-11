@@ -11,7 +11,7 @@
         <tbody>
             <tr v-for="file in files" @click="$emit('set-path', file)">
                 <sui-table-cell collapsing>
-                    <sui-icon name="folder" /> {{ file.filename }}
+                    <sui-icon :name="icon(file)" /> {{ file.filename }}
                 </sui-table-cell>
                 <td>{{ file.perms }}</td>
                 <td>{{ file.owner }}</td>
@@ -26,5 +26,15 @@ export default {
     props: [
         'files',
     ],
+    methods: {
+        icon: function (file) {
+            if (file.isDir) {
+                return 'folder';
+            }
+            if (file.isFile) {
+                return 'file';
+            }
+        }
+    },
 }
 </script>
