@@ -9,7 +9,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="file in files">
+            <tr v-for="file in files" @click="$emit('set-path', file)">
                 <sui-table-cell collapsing>
                     <sui-icon name="folder" /> {{ file.filename }}
                 </sui-table-cell>

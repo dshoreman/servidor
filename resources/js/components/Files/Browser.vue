@@ -2,7 +2,7 @@
     <sui-container>
         <h2>{{ path }}</h2>
 
-        <file-list :files="files" />
+        <file-list :files="files" @set-path="setPath($event)" />
     </sui-container>
 </template>
 
@@ -25,5 +25,12 @@ export default {
             'files',
         ]),
     },
+    methods: {
+        setPath: function (file) {
+            this.$store.dispatch('loadFiles', {
+                path: this.path + '/' + file.filename,
+            });
+        },
+    }
 }
 </script>
