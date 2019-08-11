@@ -26,6 +26,7 @@ class FileManager
         }
 
         $files = $this->finder->depth(0)->in($path)
+                      ->sortByName($naturalSort = true)
                       ->ignoreDotFiles(false);
 
         return array_map(
