@@ -29,7 +29,9 @@ export default {
         },
         openFile: ({commit}, {file}) => {
             return new Promise((resolve, reject) =>
-                axios.get('/api/files/' + file).then(response => {
+                axios.get('/api/files/', {
+                    params: { file: file }
+                }).then(response => {
                     commit('setFile', response.data);
                     resolve(response);
                 }).catch(error => {

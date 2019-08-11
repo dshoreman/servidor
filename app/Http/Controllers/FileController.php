@@ -18,7 +18,7 @@ class FileController extends Controller
     }
 
     /**
-     * Output a list of files from the local filesystem.
+     * Output a file or list of files from the local filesystem.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -26,21 +26,12 @@ class FileController extends Controller
      */
     public function index(Request $request)
     {
+        if ($filepath = $request->get('file')) {
+            return $this->fm->open($filepath);
+        }
+
         $path = $request->get('path');
-        $results = $this->fm->list($path);
 
-        return (array) $results;
-    }
-
-    /**
-     * Display the contents of a specific file.
-     *
-     * @param string $filepath
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($filepath)
-    {
-        return $this->fm->open($filepath);
+        return $this->fm->list($path);
     }
 }
