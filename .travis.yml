@@ -17,6 +17,7 @@ install:
   - npm run dev
 
 before_script:
+  - sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"
   - mysql -e 'CREATE DATABASE servidor_test;'
   - cp .env.travis .env
   - php artisan key:generate

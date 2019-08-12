@@ -25,17 +25,16 @@ class FileManagerTest extends TestCase
         $this->assertIsArray($list);
         $this->assertCount(3, $list);
 
-        $this->assertArraySubset([
+        $this->assertSame([
             'filename' => 'another-dir',
             'isDir' => true,
             'isFile' => false,
             'isLink' => false,
             'target' => '',
+            'owner' => 'www-data',
+            'group' => 'www-data',
             'perms' => '0775',
         ], $list[0]);
-
-        $this->assertArrayHasKey('owner', $list[0]);
-        $this->assertArrayHasKey('group', $list[0]);
     }
 
     /** @test */
