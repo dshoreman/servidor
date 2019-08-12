@@ -23,18 +23,19 @@ class FileManagerTest extends TestCase
         $list = $this->manager->list($this->dummy('mixed'));
 
         $this->assertIsArray($list);
-        $this->assertNotCount(0, $list);
+        $this->assertCount(3, $list);
 
-        $item = $list[0];
+        $this->assertArraySubset([
+            'filename' => 'another-dir',
+            'isDir' => true,
+            'isFile' => false,
+            'isLink' => false,
+            'target' => '',
+            'perms' => '0775',
+        ], $list[0]);
 
-        $this->assertArrayHasKey('filename', $item);
-        $this->assertArrayHasKey('isDir', $item);
-        $this->assertArrayHasKey('isFile', $item);
-        $this->assertArrayHasKey('isLink', $item);
-        $this->assertArrayHasKey('target', $item);
-        $this->assertArrayHasKey('owner', $item);
-        $this->assertArrayHasKey('group', $item);
-        $this->assertArrayHasKey('perms', $item);
+        $this->assertArrayHasKey('owner', $list[0]);
+        $this->assertArrayHasKey('group', $list[0]);
     }
 
     /** @test */
