@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+
+## [0.3.0] - 2019-08-13
 ### Added
 * File Manager with basic text file viewing capability
 
@@ -29,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.2.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.3.0...develop
+[0.3.0]: https://github.com/dshoreman/servidor/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/dshoreman/servidor/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/dshoreman/servidor/releases/tag/v0.1.0
