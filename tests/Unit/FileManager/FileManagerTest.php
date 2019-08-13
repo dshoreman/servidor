@@ -103,12 +103,14 @@ class FileManagerTest extends TestCase
     public function show_includes_details_about_the_file()
     {
         $file = $this->manager->open($this->dummy('mixed/hello.md'));
+        unset($file['contents']);
 
-        $this->assertArraySubset([
+        $this->assertSame([
             'filename' => 'hello.md',
             'isDir' => false,
             'isFile' => true,
             'isLink' => false,
+            'target' => '',
             'owner' => 'www-data',
             'group' => 'www-data',
             'perms' => '0664',
