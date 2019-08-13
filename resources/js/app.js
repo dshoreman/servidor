@@ -5,21 +5,30 @@ import SuiVue from 'semantic-ui-vue';
 import routes from './routes'
 import store from './store'
 
+import MainMenu from './components/MainMenu.vue';
+import StatsBar from './components/StatsBar.vue';
+import SystemMenu from './components/System/Menu.vue';
+import SystemGroups from './components/System/Groups.vue';
+import SystemUsers from './components/System/Users.vue';
+import PassportClients from './components/passport/Clients.vue';
+import PassportAuthorizedClients from './components/passport/AuthorizedClients.vue';
+import PassportAccessTokens from './components/passport/PersonalAccessTokens.vue';
+
 window.Vue = Vue;
 
 Vue.use(VueRouter);
 Vue.use(SuiVue);
 
-Vue.component('main-menu', require('./components/MainMenu.vue'));
-Vue.component('stats-bar', require('./components/StatsBar.vue'));
+Vue.component('main-menu', MainMenu);
+Vue.component('stats-bar', StatsBar);
 
-Vue.component('system-menu', require('./components/System/Menu.vue'));
-Vue.component('system-groups', require('./components/System/Groups.vue'));
-Vue.component('system-users', require('./components/System/Users.vue'));
+Vue.component('system-menu', SystemMenu);
+Vue.component('system-groups', SystemGroups);
+Vue.component('system-users', SystemUsers);
 
-Vue.component('passport-clients', require('./components/passport/Clients.vue'));
-Vue.component('passport-authorized-clients', require('./components/passport/AuthorizedClients.vue'));
-Vue.component('passport-personal-access-tokens', require('./components/passport/PersonalAccessTokens.vue'));
+Vue.component('passport-clients', PassportClients);
+Vue.component('passport-authorized-clients', PassportAuthorizedClients);
+Vue.component('passport-personal-access-tokens', PassportAccessTokens);
 
 const router = new VueRouter({
     mode: 'history',

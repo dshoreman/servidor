@@ -7,7 +7,6 @@
 
         <title>{{ config('app.name', '') }}</title>
 
-        <link href="{{ asset('css/semantic.min.css') }}" rel="stylesheet" type="text/css">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
     </head>
     <body>
@@ -19,6 +18,6 @@
             <p>Servidor v{{ SERVIDOR_VERSION }}</p>
         </footer>
 
-        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ mix('js/app.js') }}"></script>
     </body>
 </html>

@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <sui-statistics-group v-if="loaded">
         <sui-statistic in-group>
             <sui-statistic-value>

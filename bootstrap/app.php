@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('SERVIDOR_VERSION')) {
+    define('SERVIDOR_VERSION', '0.3.0');
+}
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application

@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
     disabled: true
 
   config.vm.synced_folder ".", "/var/servidor",
-    create: true, owner: "vagrant", group: "www-data",
+    create: true, owner: "www-data", group: "www-data",
     mount_options: ["dmode=775,fmode=664"]
 
   config.vm.provider "virtualbox" do |vb|
