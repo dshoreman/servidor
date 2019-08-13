@@ -65,6 +65,9 @@ configure_app() {
         echo "FLUSH PRIVILEGES; CREATE DATABASE servidor" | mysql && \
         echo "Database and user 'servidor' created."
 
+    # Make sure both user and group are www-data for our tests
+    chown -R www-data:www-data /var/servidor/resources/test-skel
+
     [ -d vendor ] || sudo -Hu vagrant composer -n install --no-progress --no-suggest
     [ -f .env ] || cp -v .env.example .env
 

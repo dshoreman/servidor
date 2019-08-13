@@ -1,4 +1,6 @@
 import Dashboard from './pages/Dashboard.vue'
+import FileBrowser from './pages/Files/Browser.vue'
+import FileEditor from './pages/Files/Editor.vue'
 import Sites from './pages/Sites.vue'
 import SiteList from './pages/Sites/List.vue'
 import SiteEditor from './pages/Sites/Edit.vue'
@@ -39,6 +41,20 @@ const routes = [{
                 return { id: id };
             },
         }],
+    }, {
+        component: FileEditor,
+        name: 'files.edit',
+        path: '/files/edit',
+        meta: { auth: true },
+        props: (route) => ({ filePath: route.query.f }),
+    }, {
+        component: FileBrowser,
+        name: 'files',
+        path: '/files/:path?',
+        meta: { auth: true },
+        props: (route) => ({
+            path: route.params.path ? route.params.path : '/var/www'
+        }),
     }, {
         path: '/system', component: SystemLayout,
         children: [{
