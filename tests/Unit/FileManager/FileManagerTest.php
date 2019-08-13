@@ -38,6 +38,19 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
+    public function list_correctly_identifies_symlinks()
+    {
+        $list = $this->manager->list($this->dummy('mixed/another-dir'));
+
+        $this->assertTrue($list[0]['isLink']);
+        $this->assertTrue($list[0]['isFile']);
+        $this->assertFalse($list[0]['isDir']);
+        $this->assertArrayHasKey('target', $list[0]);
+        $this->assertEquals('baz-link', $list[0]['filename']);
+        $this->assertEquals('../../hidden/.baz.txt', $list[0]['target']);
+    }
+
+    /** @test */
     public function list_includes_hidden_files()
     {
         $list = $this->manager->list($this->dummy('hidden'));
@@ -84,6 +97,30 @@ class FileManagerTest extends TestCase
             "# Hello World\n\n> What would you like to do today?\n",
             $file['contents'],
         );
+    }
+
+    /** @test */
+    public function show_includes_details_about_the_file()
+    {
+        $file = $this->manager->open($this->dummy('mixed/hello.md'));
+
+        $this->assertArraySubset([
+            'filename' => 'hello.md',
+            'isDir' => false,
+            'isFile' => true,
+            'isLink' => false,
+            'owner' => 'www-data',
+            'group' => 'www-data',
+            'perms' => '0664',
+        ], $file);
+    }
+
+    /** @test */
+    public function show_follows_symlinks()
+    {
+        $file = $this->manager->open($this->dummy('mixed/another-dir/baz-link'));
+
+        $this->assertEquals("link me!\n", $file['contents']);
     }
 
     /**
