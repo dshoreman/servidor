@@ -1,7 +1,6 @@
 <?php
 
 define('LARAVEL_START', microtime(true));
-define('SERVIDOR_VERSION', '0.2.0');
 
 require __DIR__.'/../vendor/autoload.php';
 
