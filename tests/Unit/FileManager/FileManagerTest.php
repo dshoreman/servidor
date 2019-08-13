@@ -42,11 +42,10 @@ class FileManagerTest extends TestCase
     {
         $list = $this->manager->list($this->dummy('hidden'));
 
-        $hidden = array_filter($list, function ($file) {
-            return '.' === mb_substr($file['filename'], 0, 1);
-        });
-
-        $this->assertNotEmpty($hidden);
+        $this->assertIsArray($list);
+        $this->assertCount(3, $list);
+        $this->assertTrue($list[0]['isFile']);
+        $this->assertEquals('.bar', $list[0]['filename']);
     }
 
     /** @test */
@@ -55,7 +54,23 @@ class FileManagerTest extends TestCase
         $list = $this->manager->list('/');
 
         $this->assertIsArray($list);
-        $this->assertNotCount(0, $list);
+
+        $matches = array_filter($list, function ($a) {
+            return in_array($a['filename'], ['bin', 'etc', 'home', 'usr', 'var']);
+        });
+
+        $expected = [
+            'isDir' => true,
+            'isFile' => false,
+            'owner' => 'root',
+            'group' => 'root',
+            'perms' => '0755',
+        ];
+
+        $this->assertCount(5, $matches);
+        foreach ($matches as $match) {
+            $this->assertArraySubset($expected, $match);
+        }
     }
 
     /** @test */
@@ -65,7 +80,10 @@ class FileManagerTest extends TestCase
 
         $this->assertIsArray($file);
         $this->assertArrayHasKey('contents', $file);
-        $this->assertNotEmpty($file['contents']);
+        $this->assertEquals(
+            "# Hello World\n\n> What would you like to do today?\n",
+            $file['contents'],
+        );
     }
 
     /**
