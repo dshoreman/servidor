@@ -9,6 +9,10 @@
             <router-link :to="{ name: 'apps.edit', params: { id: site.id } }">
                 <sui-icon name="cogs"></sui-icon> Manage Site
             </router-link>
+            <router-link :to="{ name: 'files', params: { path: site.document_root } }"
+                slot="right" v-if="site.document_root != null">
+                <sui-icon name="open folder" /> Browse Files
+            </router-link>
         </sui-card-content>
     </sui-card>
 </template>
