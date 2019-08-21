@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * Buttons to navigate between Sites and their files
 
+### Changed
+* Icons in the File Manager are now coloured based on type (file or folder)
+
 
 ## [0.3.0] - 2019-08-13
 ### Added

@@ -9,61 +9,27 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="file in files" @click="open(file)">
-                <sui-table-cell collapsing>
-                    <sui-icon :name="icon(file)" /> {{ file.filename }}
-                    <span v-if="file.isLink">
-                        <sui-icon name="alternate long arrow right" /> {{ file.target }}
-                    </span>
-                </sui-table-cell>
-                <td>{{ file.perms }}</td>
-                <td>{{ file.owner }}</td>
-                <td>{{ file.group }}</td>
-            </tr>
+            <file-row v-for="file in files" :key="file.id" :file="file"
+                :path="currentPath" @cd="$emit('set-path', $event)" />
         </tbody>
     </sui-table>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import FileRow from './FileRow';
 
 export default {
     props: [
         'files',
     ],
+    components: {
+        FileRow,
+    },
     computed: {
         ...mapGetters([
             'currentPath',
         ]),
-    },
-    methods: {
-        icon: function (file) {
-            if (file.isLink) {
-                return 'linkify';
-            }
-            if (file.isDir) {
-                return 'folder';
-            }
-            if (file.isFile) {
-                return 'file';
-            }
-        },
-        open: function (file) {
-            if (file.isFile) {
-                return this.$router.push({
-                    name: 'files.edit',
-                    query: {
-                        f: this.currentPath + '/' + file.filename,
-                    },
-                });
-            }
-
-            if (!file.isDir) {
-                return;
-            }
-
-            this.$emit('set-path', file)
-        },
     },
 }
 </script>
