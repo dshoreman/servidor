@@ -1,7 +1,7 @@
 <template>
     <tr @click="open(file)">
         <sui-table-cell collapsing>
-            <sui-icon :name="icon(file)" /> {{ file.filename }}
+            <sui-icon :color="iconColour()" :name="icon()" /> {{ file.filename }}
             <span v-if="file.isLink">
                 <sui-icon name="alternate long arrow right" /> {{ file.target }}
             </span>
@@ -30,6 +30,14 @@ export default {
             }
             if (this.file.isFile) {
                 return 'file';
+            }
+        },
+        iconColour: function () {
+            if (this.file.isDir) {
+                return 'blue';
+            }
+            if (this.file.isFile) {
+                return 'violet';
             }
         },
         open: function () {
