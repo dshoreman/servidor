@@ -61,8 +61,8 @@ configure_app() {
     chown www-data:www-data /var/www
 
     echo "CREATE USER 'servidor'@'localhost' IDENTIFIED BY 'vagrant'" | mysql && \
-        echo "GRANT ALL PRIVILEGES ON *.* TO 'servidor'@'localhost'" | mysql && \
-        echo "FLUSH PRIVILEGES; CREATE DATABASE servidor" | mysql && \
+        echo "GRANT ALL PRIVILEGES ON *.* TO 'servidor'@'localhost'; FLUSH PRIVILEGES;" | mysql && \
+        echo "CREATE DATABASE servidor; CREATE DATABASE servidor_testing;" | mysql && \
         echo "Database and user 'servidor' created."
 
     # Make sure both user and group are www-data for our tests
