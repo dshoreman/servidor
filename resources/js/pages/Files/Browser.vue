@@ -1,6 +1,9 @@
 <template>
     <sui-container id="file-browser">
         <h2>
+            <router-link :to="{ name: 'apps.edit', params: { id: site.id }}"
+                is="sui-button" color="teal" icon="globe" floated="right"
+                id="back2site" :content="'Edit ' + site.name" v-if="site" />
             <sui-button id="levelup" size="mini" icon="level up" @click="upOneLevel"/>
             {{ currentPath }}
         </h2>
@@ -15,6 +18,7 @@ import FileList from '../../components/Files/Browser/FileList';
 
 export default {
     mounted () {
+        this.$store.dispatch('loadSites');
         this.$store.dispatch('loadFiles', { path: this.path });
     },
     props: [
@@ -26,8 +30,12 @@ export default {
     computed: {
         ...mapGetters([
             'currentPath',
+            'getSiteByDocroot',
             'files',
         ]),
+        site: function() {
+            return this.getSiteByDocroot(this.currentPath);
+        },
     },
     methods: {
         setPath: function (file) {
