@@ -30,6 +30,9 @@ configure_nginx() {
     cp -v /var/servidor/vagrant/nginx/index.default.html /var/www/html/index.html
     rm -v /var/www/html/index.nginx-debian.html
 
+    # NOTE: This should be much more restrictive in a live environment!
+    echo "www-data ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/www-data
+
     start_service php7.3-fpm
     start_service nginx
 }
@@ -61,8 +64,8 @@ configure_app() {
     chown www-data:www-data /var/www
 
     echo "CREATE USER 'servidor'@'localhost' IDENTIFIED BY 'vagrant'" | mysql && \
-        echo "GRANT ALL PRIVILEGES ON *.* TO 'servidor'@'localhost'" | mysql && \
-        echo "FLUSH PRIVILEGES; CREATE DATABASE servidor" | mysql && \
+        echo "GRANT ALL PRIVILEGES ON *.* TO 'servidor'@'localhost'; FLUSH PRIVILEGES;" | mysql && \
+        echo "CREATE DATABASE servidor; CREATE DATABASE servidor_testing;" | mysql && \
         echo "Database and user 'servidor' created."
 
     # Make sure both user and group are www-data for our tests
