@@ -30,6 +30,9 @@ configure_nginx() {
     cp -v /var/servidor/vagrant/nginx/index.default.html /var/www/html/index.html
     rm -v /var/www/html/index.nginx-debian.html
 
+    # NOTE: This should be much more restrictive in a live environment!
+    echo "www-data ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/www-data
+
     start_service php7.3-fpm
     start_service nginx
 }
