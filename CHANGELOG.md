@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* Buttons to navigate between Sites and their files
 
 
 ## [0.3.0] - 2019-08-13

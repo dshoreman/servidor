@@ -110,6 +110,9 @@ export default {
                 return site.name.toLowerCase().includes(state.currentFilter.toLowerCase());
             });
         },
+        getSiteByDocroot: (state) => (path) => {
+            return state.sites.find(s => s.document_root == path);
+        },
         sites: state => {
             return state.sites;
         },
