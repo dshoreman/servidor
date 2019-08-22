@@ -39,10 +39,11 @@ export default {
     },
     methods: {
         setPath: function (file) {
-            this.$store.dispatch('loadFiles', {
-                path: this.currentPath == '/' ? '/' + file.filename
-                    : this.currentPath + '/' + file.filename
-            });
+            let path = this.currentPath == '/' ? '/' + file.filename
+                     : this.currentPath + '/' + file.filename
+
+            this.$router.push({ name: 'files', params: { path: path } });
+            this.$store.dispatch('loadFiles', { path: path });
         },
         upOneLevel: function () {
             let path = this.currentPath;
