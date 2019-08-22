@@ -46,11 +46,11 @@ export default {
         },
         upOneLevel: function () {
             let path = this.currentPath;
-            let next = path.substr(0, path.lastIndexOf('/'))
+            let next = path.substr(0, path.lastIndexOf('/'));
+            next = next ? next : '/';
 
-            this.$store.dispatch('loadFiles', {
-                path: next ? next : '/'
-            });
+            this.$router.push({ name: 'files', params: { path: next } });
+            this.$store.dispatch('loadFiles', { path: next });
         },
     }
 }
