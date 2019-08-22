@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * Path wouldn't update in File Manager URL while changing folders
+* Domain name is now required when updating a Site
 
 
 ## [0.3.0] - 2019-08-13
