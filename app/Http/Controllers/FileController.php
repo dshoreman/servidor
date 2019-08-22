@@ -3,6 +3,7 @@
 namespace Servidor\Http\Controllers;
 
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Servidor\FileManager\FileManager;
 
 class FileController extends Controller
@@ -33,7 +34,11 @@ class FileController extends Controller
                 return response($file, $file['error']['code']);
             }
 
-            return response()->json($file);
+            try {
+                return response()->json($file);
+            } catch (InvalidArgumentException $e) {
+                return ['error' => ['code' => 422, 'msg' => 'Failed loading file']];
+            }
         }
 
         $path = $request->get('path');
