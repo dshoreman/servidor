@@ -11,6 +11,7 @@
         <sui-segment class="placeholder" v-else>
             <sui-header icon>
                 <sui-icon v-if="file.error.code == 403" name="ban" color="red" />
+                <sui-icon v-else-if="file.error.code == 404" name="search" color="teal" />
                 <sui-icon v-else name="bug" color="orange" />
                 {{ file.error.msg }}
             </sui-header>

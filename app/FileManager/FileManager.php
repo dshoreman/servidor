@@ -38,6 +38,10 @@ class FileManager
 
     public function open($file): array
     {
+        if (!file_exists($file)) {
+            return ['error' => ['code' => 404, 'msg' => 'File not found']];
+        }
+
         return $this->fileToArray($file, true);
     }
 
