@@ -6,7 +6,16 @@
             {{ filePath }}
         </h2>
 
-        <pre>{{ file.contents }}</pre>
+        <pre v-if="file.error == undefined">{{ file.contents }}</pre>
+
+        <sui-segment class="placeholder" v-else>
+            <sui-header icon>
+                <sui-icon v-if="file.error.code == 403" name="ban" color="red" />
+                <sui-icon v-else name="bug" color="orange" />
+                {{ file.error.msg }}
+            </sui-header>
+        </sui-segment>
+
     </sui-container>
 </template>
 
