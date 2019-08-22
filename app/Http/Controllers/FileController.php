@@ -37,7 +37,13 @@ class FileController extends Controller
             try {
                 return response()->json($file);
             } catch (InvalidArgumentException $e) {
-                return ['error' => ['code' => 422, 'msg' => 'Failed loading file']];
+                $file['contents'] = '';
+                $file['error'] = [
+                    'code' => 422,
+                    'msg' => 'Failed loading file',
+                ];
+
+                return response()->json($file);
             }
         }
 
