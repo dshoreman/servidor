@@ -16,6 +16,10 @@ Vagrant.configure("2") do |config|
     create: true, owner: "www-data", group: "www-data",
     mount_options: ["dmode=775,fmode=664"]
 
+  config.vm.synced_folder "./resources/test-skel/protected", "/var/servidor/resources/test-skel/protected",
+    create: false, owner: "vagrant", group: "vagrant",
+    mount_options: ["dmode=775,fmode=600"]
+
   config.vm.provider "virtualbox" do |vb|
     vb.name = "servidor-dev"
     vb.linked_clone = true

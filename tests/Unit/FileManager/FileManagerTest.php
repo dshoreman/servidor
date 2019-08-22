@@ -100,6 +100,21 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
+    public function show_catches_runtime_exceptions()
+    {
+        $file = $this->manager->open($this->dummy('protected/forbidden'));
+
+        $this->assertIsArray($file);
+        $this->assertEmpty($file['contents']);
+        $this->assertArrayHasKey('error', $file);
+        $this->assertIsArray($file['error']);
+        $this->assertSame([
+            'code' => 403,
+            'msg' => 'Permission denied',
+        ], $file['error']);
+    }
+
+    /** @test */
     public function show_includes_details_about_the_file()
     {
         $file = $this->manager->open($this->dummy('mixed/hello.md'));

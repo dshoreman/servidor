@@ -27,11 +27,17 @@ class FileController extends Controller
     public function index(Request $request)
     {
         if ($filepath = $request->get('file')) {
-            return $this->fm->open($filepath);
+            $file = $this->fm->open($filepath);
+
+            if (array_key_exists('error', $file)) {
+                return response($file, $file['error']['code']);
+            }
+
+            return response()->json($file);
         }
 
         $path = $request->get('path');
 
-        return $this->fm->list($path);
+        return response()->json($this->fm->list($path));
     }
 }
