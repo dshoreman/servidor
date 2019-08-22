@@ -39,18 +39,19 @@ export default {
     },
     methods: {
         setPath: function (file) {
-            this.$store.dispatch('loadFiles', {
-                path: this.currentPath == '/' ? '/' + file.filename
-                    : this.currentPath + '/' + file.filename
-            });
+            let path = this.currentPath == '/' ? '/' + file.filename
+                     : this.currentPath + '/' + file.filename
+
+            this.$router.push({ name: 'files', params: { path: path } });
+            this.$store.dispatch('loadFiles', { path: path });
         },
         upOneLevel: function () {
             let path = this.currentPath;
-            let next = path.substr(0, path.lastIndexOf('/'))
+            let next = path.substr(0, path.lastIndexOf('/'));
+            next = next ? next : '/';
 
-            this.$store.dispatch('loadFiles', {
-                path: next ? next : '/'
-            });
+            this.$router.push({ name: 'files', params: { path: next } });
+            this.$store.dispatch('loadFiles', { path: next });
         },
     }
 }

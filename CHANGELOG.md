@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Icons in the File Manager are now coloured based on type (file or folder)
 * Error handling when opening files in File Manager is greatly improved
 
+### Fixed
+* Path wouldn't update in File Manager URL while changing folders
+
 
 ## [0.3.0] - 2019-08-13
 ### Added
