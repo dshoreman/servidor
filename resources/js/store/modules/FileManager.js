@@ -35,7 +35,16 @@ export default {
                     commit('setFile', response.data);
                     resolve(response);
                 }).catch(error => {
-                    commit('setFile', { contents: error.response.data.message })
+                    let data = error.response.data;
+
+                    if (!data.error || !data.error.code) {
+                        data = { error: {
+                            code: error.response.status,
+                            msg: data.message
+                        }};
+                    }
+
+                    commit('setFile', data);
                     reject(error);
                 })
             );

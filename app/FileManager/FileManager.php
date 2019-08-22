@@ -2,6 +2,7 @@
 
 namespace Servidor\FileManager;
 
+use Illuminate\Http\Response;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -37,6 +38,10 @@ class FileManager
 
     public function open($file): array
     {
+        if (!file_exists($file)) {
+            return ['error' => ['code' => 404, 'msg' => 'File not found']];
+        }
+
         return $this->fileToArray($file, true);
     }
 
@@ -61,7 +66,17 @@ class FileManager
         ];
 
         if ($includeContents) {
-            $data['contents'] = $file->getContents();
+            try {
+                $data['contents'] = $file->getContents();
+            } catch (\RuntimeException $e) {
+                $msg = $e->getMessage();
+                $data['contents'] = '';
+
+                $data['error'] = str_contains($msg, 'Permission denied') ? [
+                    'code' => Response::HTTP_FORBIDDEN,
+                    'msg' => 'Permission denied',
+                ] : ['code' => 418, 'msg' => $msg];
+            }
         }
 
         return $data;
