@@ -19,7 +19,7 @@ install_software() {
 
     add-apt-repository ppa:ondrej/php
 
-    $update && $install mariadb-server nginx openssl unzip zsh \
+    $update && $install mariadb-server nginx openssl sysstat unzip zsh \
         php7.3-fpm php7.3-bcmath php7.3-json php7.3-mbstring php7.3-mysql php7.3-xml php7.3-zip
 
     start_service mariadb
