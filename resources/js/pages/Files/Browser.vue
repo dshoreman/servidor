@@ -8,17 +8,17 @@
             <sui-button id="levelup" icon="level up" @click="upOneLevel"/>
 
             <sui-breadcrumb class="massive">
-                <a is="router-link" :to="{ name: 'files', params: { path: segment.path }}"
-                   v-for="(segment, index) in pathParts" :key="segment.path">
-                    <sui-breadcrumb-section>
+                <template v-for="(segment, index) in pathParts">
+                    <sui-breadcrumb-section link @click="setPath(segment.path)">
                         {{ segment.dirname }}
                     </sui-breadcrumb-section>
-                    <sui-breadcrumb-divider v-if="index < (pathParts.length - 1)" />
-                </a>
+                    <sui-breadcrumb-divider @click="setPath(segment.path)"
+                        v-if="index < (pathParts.length - 1)" />
+                </template>
             </sui-breadcrumb>
         </h2>
 
-        <file-list :files="files" @set-path="setPath($event)" />
+        <file-list :files="files" @set-path="setPathToFile($event)" />
     </sui-container>
 </template>
 
@@ -30,6 +30,10 @@ export default {
     mounted () {
         this.$store.dispatch('loadSites');
         this.$store.dispatch('loadFiles', { path: this.path });
+    },
+    beforeRouteUpdate (to, from, next) {
+        this.$store.dispatch('loadFiles', { path: to.params.path });
+        next();
     },
     props: [
         'path',
@@ -63,7 +67,12 @@ export default {
         },
     },
     methods: {
-        setPath: function (file) {
+        setPath: function (path) {
+            path = '' == path ? '/' : path;
+
+            this.$router.push({ name: 'files', params: { path: path } });
+        },
+        setPathToFile: function (file) {
             let path = this.currentPath == '/' ? '/' + file.filename
                      : this.currentPath + '/' + file.filename
 
