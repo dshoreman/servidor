@@ -8,10 +8,13 @@
             <sui-button id="levelup" icon="level up" @click="upOneLevel"/>
 
             <sui-breadcrumb class="massive">
-                <template v-for="(segment, index) in pathParts">
-                    <sui-breadcrumb-section>{{ segment.dirname }}</sui-breadcrumb-section>
+                <a is="router-link" :to="{ name: 'files', params: { path: segment.path }}"
+                   v-for="(segment, index) in pathParts" :key="segment.path">
+                    <sui-breadcrumb-section>
+                        {{ segment.dirname }}
+                    </sui-breadcrumb-section>
                     <sui-breadcrumb-divider v-if="index < (pathParts.length - 1)" />
-                </template>
+                </a>
             </sui-breadcrumb>
         </h2>
 
@@ -41,10 +44,16 @@ export default {
             'files',
         ]),
         pathParts: function() {
-            let parts = [];
+            let parts = [],
+                path = '';
 
             for (let part of this.currentPath.split('/')) {
-                parts.push({ 'dirname': part });
+                path = path + part + '/';
+
+                parts.push({
+                    'path': path.replace(/\/+$/, ''),
+                    'dirname': part,
+                });
             }
 
             return parts;
