@@ -8,8 +8,8 @@
             <sui-button id="levelup" icon="level up" @click="upOneLevel"/>
 
             <sui-breadcrumb class="massive">
-                <template v-for="(part, index) in pathParts">
-                    <sui-breadcrumb-section>{{ part }}</sui-breadcrumb-section>
+                <template v-for="(segment, index) in pathParts">
+                    <sui-breadcrumb-section>{{ segment.dirname }}</sui-breadcrumb-section>
                     <sui-breadcrumb-divider v-if="index < (pathParts.length - 1)" />
                 </template>
             </sui-breadcrumb>
@@ -41,7 +41,13 @@ export default {
             'files',
         ]),
         pathParts: function() {
-            return this.currentPath.split('/');
+            let parts = [];
+
+            for (let part of this.currentPath.split('/')) {
+                parts.push({ 'dirname': part });
+            }
+
+            return parts;
         },
         site: function() {
             return this.getSiteByDocroot(this.currentPath);
