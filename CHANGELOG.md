@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 * Buttons to navigate between Sites and their files
+* CPU usage and current free RAM added to Stats Bar
 
 ### Changed
 * Icons in the File Manager are now coloured based on type (file or folder)
 * Error handling when opening files in File Manager is greatly improved
+* Segments in the File Browser's path bar will now jump to that path
 
 ### Fixed
 * Path wouldn't update in File Manager URL while changing folders
