@@ -4,8 +4,15 @@
             <router-link :to="{ name: 'apps.edit', params: { id: site.id }}"
                 is="sui-button" color="teal" icon="globe" floated="right"
                 id="back2site" :content="'Edit ' + site.name" v-if="site" />
-            <sui-button id="levelup" size="mini" icon="level up" @click="upOneLevel"/>
-            {{ currentPath }}
+
+            <sui-button id="levelup" icon="level up" @click="upOneLevel"/>
+
+            <sui-breadcrumb class="massive">
+                <template v-for="(part, index) in pathParts">
+                    <sui-breadcrumb-section>{{ part }}</sui-breadcrumb-section>
+                    <sui-breadcrumb-divider v-if="index < (pathParts.length - 1)" />
+                </template>
+            </sui-breadcrumb>
         </h2>
 
         <file-list :files="files" @set-path="setPath($event)" />
@@ -33,6 +40,9 @@ export default {
             'getSiteByDocroot',
             'files',
         ]),
+        pathParts: function() {
+            return this.currentPath.split('/');
+        },
         site: function() {
             return this.getSiteByDocroot(this.currentPath);
         },
