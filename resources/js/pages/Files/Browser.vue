@@ -9,11 +9,18 @@
 
             <sui-breadcrumb class="massive">
                 <template v-for="(segment, index) in pathParts">
-                    <sui-breadcrumb-section link @click="setPath(segment.path)">
+
+                    <sui-breadcrumb-section link @click="setPath(segment.path)"
+                        v-if="segment.path != currentPath">
                         {{ segment.dirname }}
                     </sui-breadcrumb-section>
+                    <sui-breadcrumb-section v-else>
+                        {{ segment.dirname }}
+                    </sui-breadcrumb-section>
+
                     <sui-breadcrumb-divider @click="setPath(segment.path)"
                         v-if="index < (pathParts.length - 1)" />
+
                 </template>
             </sui-breadcrumb>
         </h2>
