@@ -10,6 +10,7 @@ class StatsBar
         $lsb = self::parseReleaseFile('lsb');
 
         return [
+            'cpu' => self::getCpuUsage(),
             'hostname' => gethostname(),
             'os' => [
                 'name' => php_uname('s'),
@@ -19,7 +20,7 @@ class StatsBar
         ];
     }
 
-    protected static function parseReleaseFile($file)
+    private static function parseReleaseFile($file)
     {
         $flags = FILE_IGNORE_NEW_LINES;
         $data = [];
@@ -34,5 +35,13 @@ class StatsBar
         }
 
         return $data;
+    }
+
+    /**
+     * Get the current CPU usage in percent.
+     */
+    private static function getCpuUsage(): float
+    {
+        return (float) exec("mpstat | tail -n1 | awk '{ print 100 - $12 }'");
     }
 }

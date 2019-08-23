@@ -14,6 +14,9 @@ class StatsBarTest extends TestCase
 
         $this->assertIsArray($data);
 
+        $this->assertArrayHasKey('cpu', $data);
+        $this->assertIsFloat($data['cpu']);
+
         $this->assertArrayHasKey('hostname', $data);
         $this->assertIsString($data['hostname']);
 
