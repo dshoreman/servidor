@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Servidor\Site;
-use Tests\TestCase;
-use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Traits\RequiresAuth;
+use Illuminate\Http\Response;
+use Servidor\Site;
+use Tests\RequiresAuth;
+use Tests\TestCase;
 
 class SitesApiTest extends TestCase
 {

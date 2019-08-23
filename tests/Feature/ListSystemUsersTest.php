@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Traits\RequiresAuth;
+use Illuminate\Http\Response;
+use Tests\RequiresAuth;
+use Tests\TestCase;
 
 class ListSystemUsersTest extends TestCase
 {
