@@ -25,7 +25,7 @@
             </sui-breadcrumb>
         </h2>
 
-        <file-list :files="files" @set-path="setPathToFile($event)" />
+        <file-list :files="files" @set-path="setPath($event)" />
     </sui-container>
 </template>
 
@@ -74,17 +74,15 @@ export default {
         },
     },
     methods: {
-        setPath: function (path) {
-            path = '' == path ? '/' : path;
+        setPath: function (target) {
+            if (typeof target == 'string') {
+                target = '' == target ? '/' : target;
+            } else {
+                target = this.currentPath == '/' ? '/' + target.filename
+                     : this.currentPath + '/' + target.filename
+            }
 
-            this.$router.push({ name: 'files', params: { path: path } });
-        },
-        setPathToFile: function (file) {
-            let path = this.currentPath == '/' ? '/' + file.filename
-                     : this.currentPath + '/' + file.filename
-
-            this.$router.push({ name: 'files', params: { path: path } });
-            this.$store.dispatch('loadFiles', { path: path });
+            this.$router.push({ name: 'files', params: { path: target } });
         },
         upOneLevel: function () {
             let path = this.currentPath;
