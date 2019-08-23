@@ -7,7 +7,7 @@
             <sui-statistic-label>
                 <i class="circular inverted orange linux icon" /> {{ distro }} {{ version }}
             </sui-statistic-label>
-        </sui-statistic in-group>
+        </sui-statistic>
         <!-- todo: add cpu, mem, hdd minigraphs floated on the right -->
         <sui-statistic in-group>
             <sui-statistic-label>
@@ -16,7 +16,15 @@
             <sui-statistic-value>
                 {{ cpu_usage }}%
             </sui-statistic-value>
-        </sui-statistic in-group>
+        </sui-statistic>
+        <sui-statistic in-group>
+            <sui-statistic-label>
+                <sui-icon name="microchip" /> Free RAM
+            </sui-statistic-label>
+            <sui-statistic-value>
+                {{ ram.free }}MB
+            </sui-statistic-value>
+        </sui-statistic>
     </sui-statistics-group>
 </template>
 
@@ -40,6 +48,7 @@ export default {
 
                 this.hostname = data.hostname;
                 this.cpu_usage = data.cpu;
+                this.ram = data.ram;
                 this.distro = data.os.distro;
                 this.version = data.os.version;
 

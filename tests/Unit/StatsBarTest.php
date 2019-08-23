@@ -17,6 +17,12 @@ class StatsBarTest extends TestCase
         $this->assertArrayHasKey('cpu', $data);
         $this->assertIsFloat($data['cpu']);
 
+        $this->assertArrayHasKey('ram', $data);
+        $this->assertIsArray($data['ram']);
+        $this->assertArrayHasKey('total', $data['ram']);
+        $this->assertArrayHasKey('used', $data['ram']);
+        $this->assertArrayHasKey('free', $data['ram']);
+
         $this->assertArrayHasKey('hostname', $data);
         $this->assertIsString($data['hostname']);
 
@@ -41,5 +47,13 @@ class StatsBarTest extends TestCase
         $data = StatsBar::stats();
 
         $this->assertSame('Linux', $data['os']['name']);
+    }
+
+    /** @test */
+    public function free_memory_matches_total_minus_used_memory()
+    {
+        $data = StatsBar::stats()['ram'];
+
+        $this->assertEquals($data['total'] - $data['used'], $data['free']);
     }
 }
