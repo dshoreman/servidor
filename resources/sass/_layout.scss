@@ -1,0 +1,12 @@
+body {
+    background-color: $body-bg;
+    height: calc(100% - 5rem);
+
+    #app {
+        height: 100%;
+
+        .main {
+            margin-top: 5em;
+        }
+    }
+}
