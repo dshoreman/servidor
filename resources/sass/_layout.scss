@@ -4,6 +4,10 @@ body {
     #app {
         height: 100%;
 
+        .sidebar .submenu-item {
+            border-right: none;
+        }
+
         .sidebar #user-menu {
             background: rgba(0, 0, 0, 0.6);
             border-top: 1px solid rgba(255, 255, 255, 0.3);
