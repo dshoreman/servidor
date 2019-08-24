@@ -9,7 +9,7 @@
 
             <main-menu use_new=true />
 
-            <sui-menu-menu position="right" v-if="!loggedIn">
+            <sui-menu class="large" secondary fluid inverted pointing id="user-menu" v-if="!loggedIn">
                 <sui-menu-item>
                     <router-link :to="{ name: 'login' }">
                         Login
@@ -20,17 +20,16 @@
                         Register
                     </router-link>
                 </sui-menu-item>
-            </sui-menu-menu>
+            </sui-menu>
 
-            <div class="right menu" v-else>
-                <sui-dropdown item :text="user.name">
-                    <sui-dropdown-menu>
-                        <a is="sui-dropdown-item" @click.prevent="logout">
-                            Logout
-                        </a>
-                    </sui-dropdown-menu>
-                </sui-dropdown>
-            </div>
+            <sui-menu class="large" secondary fluid inverted vertical pointing id="user-menu" v-else>
+                <sui-menu-item>
+                    {{ user.name }} <sui-icon name="chevron up" />
+                </sui-menu-item>
+                <a is="sui-menu-item" @click.prevent="logout">
+                    Logout
+                </a>
+            </sui-menu>
         </sui-menu>
 
         <section class="main">

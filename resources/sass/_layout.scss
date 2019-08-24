@@ -4,6 +4,17 @@ body {
     #app {
         height: 100%;
 
+        .sidebar #user-menu {
+            background: rgba(0, 0, 0, 0.6);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            position: absolute;
+            bottom: 0;
+
+            & > div {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+        }
+
         .main {
             margin-left: $sidebar-width;
 
