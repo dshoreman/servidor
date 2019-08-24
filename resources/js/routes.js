@@ -4,7 +4,7 @@ import FileEditor from './pages/Files/Editor.vue'
 import Sites from './pages/Sites.vue'
 import SiteList from './pages/Sites/List.vue'
 import SiteEditor from './pages/Sites/Edit.vue'
-import AppLayout from './layouts/App.vue'
+import NewLayout from './layouts/Servidor.vue'
 import SystemLayout from './layouts/System.vue'
 import SystemGroups from './components/System/Groups.vue'
 import SystemUsers from './components/System/Users.vue'
@@ -13,7 +13,7 @@ import Register from './pages/Auth/Register.vue'
 import NotFound from './pages/NotFound.vue'
 
 const routes = [{
-    path: '/', component: AppLayout,
+    path: '/', component: NewLayout,
     children: [{
         component: Dashboard,
         name: 'dashboard',
