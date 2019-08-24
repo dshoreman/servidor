@@ -1,23 +1,36 @@
 export default {
     state: {
+        alerts: [],
         current: {},
         currentFilter: '',
-        error: '',
         errors: [],
-        error_title: '',
         sites: [],
         site: {
             name: '',
         },
     },
     mutations: {
+        setSuccess: (state, message) => {
+            state.alerts.push({
+                title: 'Success!',
+                message: message,
+                isSuccess: true,
+            });
+        },
         setErrors: (state, {message, errors, action = 'save'}) => {
-            state.error = message;
-            state.error_title = 'Could not ' + action + ' Site!';
+            state.alerts.push({
+                title: 'Could not ' + action + ' Site!',
+                message: message,
+                isSuccess: false,
+            });
 
             if (errors) {
                 state.errors = errors;
             }
+        },
+        clearMessages: state => {
+            state.alerts = [];
+            state.errors = [];
         },
         setFilter: (state, value) => {
             state.currentFilter = value;
@@ -66,16 +79,21 @@ export default {
         createSite: ({commit, state}) => {
             axios.post('/api/sites', state.site).then(response => {
                 commit('addSite', response.data);
+                commit('clearMessages');
+                commit('setSuccess', "The site '" + response.data.name + "' has been created.");
             });
         },
         updateSite: ({commit}, site) => {
             axios.put('/api/sites/'+site.id, site.data).then(response => {
+                commit('clearMessages');
                 commit('updateSite', {
                     id: site.id,
                     site: response.data
                 });
+                commit('setSuccess', "The site '" + site.data.name + "' has been saved.");
             }).catch(error => {
                 const res = error.response;
+                commit('clearMessages');
 
                 if (res && res.status === 422) {
                     commit('setErrors', {

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* When saving a Site you'll now see a success message
+
+### Fixed
+* Errors weren't being cleared between Site form submissions
 
 
 ## [0.4.0] - 2019-08-24

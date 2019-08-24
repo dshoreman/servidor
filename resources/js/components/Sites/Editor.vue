@@ -1,6 +1,6 @@
 <template>
     <sui-container>
-        <sui-form @submit.prevent="updateSite(tmpSite.id)" :error="error != ''">
+        <sui-form @submit.prevent="updateSite(tmpSite.id)">
             <sui-form-field class="enable-switch">
                 <sui-checkbox toggle v-model="tmpSite.is_enabled"/>
             </sui-form-field>
@@ -12,9 +12,7 @@
                 </sui-header-subheader>
             </h2>
 
-            <sui-message error :header="errorHeader">
-                <p>{{ error }}</p>
-            </sui-message>
+            <alerts :alerts="alerts" />
 
             <sui-form-field :error="'name' in errors">
                 <label>App Name</label>
@@ -120,6 +118,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import Alerts from '../Alerts';
 
 export default {
     props: {
@@ -128,11 +127,13 @@ export default {
             default: () => ({}),
         },
     },
+    components: {
+        Alerts,
+    },
     computed: {
         ...mapState({
-            'error': state => state.Site.error,
+            'alerts': state => state.Site.alerts,
             'errors': state => state.Site.errors,
-            'errorHeader': state => state.Site.error_title,
             'tmpSite': state => state.Site.current,
         }),
     },
