@@ -15,7 +15,7 @@
             <!-- todo: add hdd  -->
             <sui-statistic size="mini">
                 <sui-statistic-label>
-                    <sui-icon name="microchip" /> CPU Usage
+                    <sui-icon name="tachometer alternate" /> CPU Usage
                 </sui-statistic-label>
                 <sui-statistic-value>
                     {{ cpu_usage }}%
