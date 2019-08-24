@@ -1,17 +1,25 @@
 <template>
     <div>
         <sui-menu inverted vertical class="visible sidebar" fixed="left">
-            <router-link header :to="{ name: 'dashboard' }" is="sui-menu-item">
-                <sui-icon name="server" size="big"></sui-icon> Servidor
-            </router-link>
+            <sui-menu-item>
+                <router-link :to="{ name: 'dashboard' }">
+                    <sui-icon name="server" size="big"></sui-icon> Servidor
+                </router-link>
+            </sui-menu-item>
+
+            <main-menu use_new=true />
 
             <sui-menu-menu position="right" v-if="!loggedIn">
-                <router-link :to="{ name: 'login' }" is="sui-menu-item">
-                    Login
-                </router-link>
-                <router-link :to="{ name: 'register' }" is="sui-menu-item">
-                    Register
-                </router-link>
+                <sui-menu-item>
+                    <router-link :to="{ name: 'login' }">
+                        Login
+                    </router-link>
+                </sui-menu-item>
+                <sui-menu-item>
+                    <router-link :to="{ name: 'register' }">
+                        Register
+                    </router-link>
+                </sui-menu-item>
             </sui-menu-menu>
 
             <div class="right menu" v-else>
@@ -28,8 +36,6 @@
         <section class="main">
             <sui-container>
                 <stats-bar />
-
-                <main-menu></main-menu>
 
                 <router-view />
             </sui-container>

@@ -1,5 +1,11 @@
 <template>
-    <sui-menu :widths="menu.length">
+    <sui-menu class="large" secondary fluid inverted vertical pointing v-if="use_new">
+        <router-link :to="{ name: item.href }" is="sui-menu-item"
+            v-for="(item, id) in menu" :key="id" :active="isActive(item)">
+            {{ item.name }}
+        </router-link>
+    </sui-menu>
+    <sui-menu :widths="menu.length" v-else>
         <router-link :to="{ name: item.href }" is="sui-menu-item"
             v-for="(item, id) in menu" :key="id" :active="isActive(item)">
             {{ item.name }}
@@ -9,6 +15,9 @@
 
 <script>
 export default {
+    props: [
+        'use_new',
+    ],
     data () {
         return {
             menu: [{
@@ -18,7 +27,7 @@ export default {
                 name: 'Databases',
                 href: 'databases'
             }, {
-                name: 'Files',
+                name: 'File Browser',
                 href: 'files'
             }, {
                 name: 'System',
