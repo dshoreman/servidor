@@ -87,7 +87,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function show_returns_contents_of_given_file()
+    public function open_returns_contents_of_given_file()
     {
         $file = $this->manager->open($this->dummy('mixed/hello.md'));
 
@@ -100,7 +100,36 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function show_includes_details_about_the_file()
+    public function open_catches_permission_denied_errors()
+    {
+        $file = $this->manager->open($this->dummy('protected/forbidden'));
+
+        $this->assertIsArray($file);
+        $this->assertEmpty($file['contents']);
+        $this->assertArrayHasKey('error', $file);
+        $this->assertIsArray($file['error']);
+        $this->assertSame([
+            'code' => 403,
+            'msg' => 'Permission denied',
+        ], $file['error']);
+    }
+
+    /** @test */
+    public function open_catches_stat_failed_error_when_file_does_not_exist()
+    {
+        $file = $this->manager->open($this->dummy('invalid/file'));
+
+        $this->assertIsArray($file);
+        $this->assertArrayHasKey('error', $file);
+        $this->assertIsArray($file['error']);
+        $this->assertSame([
+            'code' => 404,
+            'msg' => 'File not found',
+        ], $file['error']);
+    }
+
+    /** @test */
+    public function open_includes_details_about_the_file()
     {
         $file = $this->manager->open($this->dummy('mixed/hello.md'));
         unset($file['contents']);
@@ -118,7 +147,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function show_follows_symlinks()
+    public function open_follows_symlinks()
     {
         $file = $this->manager->open($this->dummy('mixed/another-dir/baz-link'));
 

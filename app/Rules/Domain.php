@@ -40,6 +40,6 @@ class Domain implements Rule
      */
     public function message()
     {
-        return ':attribute is not a valid FQDN.';
+        return 'The :attribute is not a valid FQDN.';
     }
 }
