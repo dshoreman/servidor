@@ -10,6 +10,13 @@ export default {
         },
     },
     mutations: {
+        setSuccess: (state, message) => {
+            state.alerts.push({
+                title: 'Success!',
+                message: message,
+                isSuccess: true,
+            });
+        },
         setErrors: (state, {message, errors, action = 'save'}) => {
             state.alerts.push({
                 title: 'Could not ' + action + ' Site!',
@@ -21,7 +28,7 @@ export default {
                 state.errors = errors;
             }
         },
-        clearErrors: state => {
+        clearMessages: state => {
             state.alerts = [];
             state.errors = [];
         },
@@ -72,19 +79,21 @@ export default {
         createSite: ({commit, state}) => {
             axios.post('/api/sites', state.site).then(response => {
                 commit('addSite', response.data);
-                commit('clearErrors');
+                commit('clearMessages');
+                commit('setSuccess', "The site '" + site.name + "' has been created.");
             });
         },
         updateSite: ({commit}, site) => {
             axios.put('/api/sites/'+site.id, site.data).then(response => {
+                commit('clearMessages');
                 commit('updateSite', {
                     id: site.id,
                     site: response.data
                 });
-                commit('clearErrors');
+                commit('setSuccess', "The site '" + site.data.name + "' has been saved.");
             }).catch(error => {
                 const res = error.response;
-                commit('clearErrors');
+                commit('clearMessages');
 
                 if (res && res.status === 422) {
                     commit('setErrors', {
