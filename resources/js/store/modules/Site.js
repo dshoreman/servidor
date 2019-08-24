@@ -19,6 +19,11 @@ export default {
                 state.errors = errors;
             }
         },
+        clearErrors: state => {
+            state.error = '';
+            state.errors = [];
+            state.error_title = '';
+        },
         setFilter: (state, value) => {
             state.currentFilter = value;
         },
@@ -66,6 +71,7 @@ export default {
         createSite: ({commit, state}) => {
             axios.post('/api/sites', state.site).then(response => {
                 commit('addSite', response.data);
+                commit('clearErrors');
             });
         },
         updateSite: ({commit}, site) => {
@@ -74,6 +80,7 @@ export default {
                     id: site.id,
                     site: response.data
                 });
+                commit('clearErrors');
             }).catch(error => {
                 const res = error.response;
 
