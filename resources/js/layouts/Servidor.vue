@@ -34,9 +34,9 @@
         </sui-menu>
 
         <section class="main">
-            <sui-container>
-                <stats-bar />
+            <stats-bar id="stats-bar" />
 
+            <sui-container id="content">
                 <router-view />
             </sui-container>
         </section>
