@@ -80,7 +80,7 @@ export default {
             axios.post('/api/sites', state.site).then(response => {
                 commit('addSite', response.data);
                 commit('clearMessages');
-                commit('setSuccess', "The site '" + site.name + "' has been created.");
+                commit('setSuccess', "The site '" + response.data.name + "' has been created.");
             });
         },
         updateSite: ({commit}, site) => {
