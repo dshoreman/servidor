@@ -1,10 +1,9 @@
 export default {
     state: {
+        alerts: [],
         current: {},
         currentFilter: '',
-        error: '',
         errors: [],
-        error_title: '',
         sites: [],
         site: {
             name: '',
@@ -12,17 +11,19 @@ export default {
     },
     mutations: {
         setErrors: (state, {message, errors, action = 'save'}) => {
-            state.error = message;
-            state.error_title = 'Could not ' + action + ' Site!';
+            state.alerts.push({
+                title: 'Could not ' + action + ' Site!',
+                message: message,
+                isSuccess: false,
+            });
 
             if (errors) {
                 state.errors = errors;
             }
         },
         clearErrors: state => {
-            state.error = '';
+            state.alerts = [];
             state.errors = [];
-            state.error_title = '';
         },
         setFilter: (state, value) => {
             state.currentFilter = value;

@@ -12,8 +12,11 @@
                 </sui-header-subheader>
             </h2>
 
-            <sui-message error :header="errorHeader">
-                <p>{{ error }}</p>
+            <sui-message v-for="alert in alerts" :key="alert.message"
+                         :header="alert.title" v-if="alert.message"
+                         :success="alert.isSuccess" :error="!alert.isSuccess"
+                         class="visible">
+                <p>{{ alert.message }}</p>
             </sui-message>
 
             <sui-form-field :error="'name' in errors">
@@ -130,6 +133,7 @@ export default {
     },
     computed: {
         ...mapState({
+            'alerts': state => state.Site.alerts,
             'error': state => state.Site.error,
             'errors': state => state.Site.errors,
             'errorHeader': state => state.Site.error_title,
