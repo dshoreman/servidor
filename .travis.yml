@@ -33,6 +33,8 @@ notifications:
   irc:
     channels:
       - "chat.freenode.net#servidor"
+    on_success: change
+    on_failure: always
     template:
       - "Build #%{build_number} (%{branch} @ %{commit} by %{author}) - %{message}"
       - "Details: %{build_url}"
