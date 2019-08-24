@@ -84,6 +84,7 @@ export default {
                 commit('clearErrors');
             }).catch(error => {
                 const res = error.response;
+                commit('clearErrors');
 
                 if (res && res.status === 422) {
                     commit('setErrors', {
