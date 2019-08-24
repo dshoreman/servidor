@@ -23,10 +23,10 @@
             </sui-menu>
 
             <sui-menu class="large" secondary fluid inverted vertical pointing id="user-menu" v-else>
-                <a is="sui-menu-item" @click="showUserMenu = !showUserMenu">
-                    {{ user.name }} <sui-icon :name="'chevron ' + (showUserMenu ? 'down' : 'up')" />
+                <a is="sui-menu-item">
+                    {{ user.name }} <sui-icon name="chevron up" />
                 </a>
-                <a is="sui-menu-item" @click.prevent="logout" v-if="showUserMenu">
+                <a is="sui-menu-item" @click.prevent="logout">
                     Logout
                 </a>
             </sui-menu>
@@ -46,11 +46,6 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 
 export default {
-    data () {
-        return {
-            showUserMenu: false,
-        };
-    },
     computed: {
         ...mapGetters([
             'loggedIn',

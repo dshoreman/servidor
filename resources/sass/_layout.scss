@@ -7,11 +7,29 @@ body {
         .sidebar #user-menu {
             background: rgba(0, 0, 0, 0.6);
             border-top: 1px solid rgba(255, 255, 255, 0.3);
+            transition: max-height .5s ease-out;
+            max-height: 35px;
+            overflow: hidden;
             position: absolute;
             bottom: 0;
 
-            & > div {
+            & a:first-child {
+                background: rgba(0, 0, 0, 0.9);
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+
+            .item i.chevron.up {
+                transition: 0.3s;
+            }
+
+            &:hover {
+                max-height: 80px;
+                transition: max-height .2s ease-in;
+
+                .item i.chevron.up {
+                    transform: rotate(-180deg);
+                    transition: 0.3s;
+                }
             }
         }
 
