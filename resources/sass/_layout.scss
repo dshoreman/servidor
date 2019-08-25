@@ -12,6 +12,7 @@ body {
             background: rgba(0, 0, 0, 0.6);
             border-top: 1px solid rgba(255, 255, 255, 0.3);
             transition: max-height .5s ease-out;
+            min-height: 35px;
             max-height: 35px;
             overflow: hidden;
             position: absolute;
