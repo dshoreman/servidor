@@ -1,0 +1,15 @@
+body.login {
+    background: #dedede;
+    margin-top: 5em;
+
+    .grid {
+        height: 100%;
+    }
+    .column {
+        max-width: 450px;
+    }
+
+    .field[class*="left aligned"] {
+        text-align: left;
+    }
+}

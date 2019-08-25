@@ -4,16 +4,15 @@ import FileEditor from './pages/Files/Editor.vue'
 import Sites from './pages/Sites.vue'
 import SiteList from './pages/Sites/List.vue'
 import SiteEditor from './pages/Sites/Edit.vue'
-import AppLayout from './layouts/App.vue'
-import SystemLayout from './layouts/System.vue'
 import SystemGroups from './components/System/Groups.vue'
 import SystemUsers from './components/System/Users.vue'
+import Layout from './layouts/Servidor.vue'
 import Login from './pages/Auth/Login.vue'
 import Register from './pages/Auth/Register.vue'
 import NotFound from './pages/NotFound.vue'
 
 const routes = [{
-    path: '/', component: AppLayout,
+    path: '/', component: Layout,
     children: [{
         component: Dashboard,
         name: 'dashboard',
@@ -56,18 +55,15 @@ const routes = [{
             path: route.params.path ? route.params.path : '/var/www'
         }),
     }, {
-        path: '/system', component: SystemLayout,
-        children: [{
-            component: SystemGroups,
-            name: 'system.groups',
-            path: '/system/groups',
-            meta: { auth: true },
-        }, {
-            component: SystemUsers,
-            name: 'system.users',
-            path: '/system/users',
-            meta: { auth: true },
-        }],
+        component: SystemGroups,
+        name: 'system.groups',
+        path: '/system/groups',
+        meta: { auth: true },
+    }, {
+        component: SystemUsers,
+        name: 'system.users',
+        path: '/system/users',
+        meta: { auth: true },
     }],
 }, {
     component: Login,

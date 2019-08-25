@@ -7,7 +7,6 @@ import store from './store'
 
 import MainMenu from './components/MainMenu.vue';
 import StatsBar from './components/StatsBar.vue';
-import SystemMenu from './components/System/Menu.vue';
 import SystemGroups from './components/System/Groups.vue';
 import SystemUsers from './components/System/Users.vue';
 import PassportClients from './components/passport/Clients.vue';
@@ -22,7 +21,6 @@ Vue.use(SuiVue);
 Vue.component('main-menu', MainMenu);
 Vue.component('stats-bar', StatsBar);
 
-Vue.component('system-menu', SystemMenu);
 Vue.component('system-groups', SystemGroups);
 Vue.component('system-users', SystemUsers);
 
