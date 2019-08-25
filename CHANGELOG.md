@@ -15,10 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Icons in the File Manager are now coloured based on type (file or folder)
 * Error handling when opening files in File Manager is greatly improved
 * Segments in the File Browser's path bar will now jump to that path
+* Main layout and stats bar completely redesigned
 
 ### Fixed
 * Path wouldn't update in File Manager URL while changing folders
 * Domain name is now required when updating a Site
+* Icon for CPU usage in the Stats Bar no longer matches Free RAM
 
 
 ## [0.3.0] - 2019-08-13

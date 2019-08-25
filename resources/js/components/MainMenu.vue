@@ -1,5 +1,5 @@
 <template>
-    <sui-menu class="large" secondary fluid inverted vertical pointing v-if="use_new">
+    <sui-menu class="large" secondary fluid inverted vertical pointing>
         <router-link :to="{ name: item.href }" is="sui-menu-item" v-if="!item.menu"
             v-for="item in menu" :key="item.href" :active="isActive(item)">
             {{ item.name }}
@@ -20,20 +20,10 @@
             </sui-menu-item>
         </template>
     </sui-menu>
-
-    <sui-menu :widths="menu.length" v-else>
-        <router-link :to="{ name: item.href }" is="sui-menu-item"
-            v-for="(item, id) in menu" :key="id" :active="isActive(item)">
-            {{ item.name }}
-        </router-link>
-    </sui-menu>
 </template>
 
 <script>
 export default {
-    props: [
-        'use_new',
-    ],
     data () {
         return {
             menu: [{

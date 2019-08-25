@@ -4,15 +4,15 @@ import FileEditor from './pages/Files/Editor.vue'
 import Sites from './pages/Sites.vue'
 import SiteList from './pages/Sites/List.vue'
 import SiteEditor from './pages/Sites/Edit.vue'
-import NewLayout from './layouts/Servidor.vue'
 import SystemGroups from './components/System/Groups.vue'
 import SystemUsers from './components/System/Users.vue'
+import Layout from './layouts/Servidor.vue'
 import Login from './pages/Auth/Login.vue'
 import Register from './pages/Auth/Register.vue'
 import NotFound from './pages/NotFound.vue'
 
 const routes = [{
-    path: '/', component: NewLayout,
+    path: '/', component: Layout,
     children: [{
         component: Dashboard,
         name: 'dashboard',
