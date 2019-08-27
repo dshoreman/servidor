@@ -13,22 +13,12 @@
         </sui-menu-item>
         <sui-menu-menu position="right">
         <sui-menu-item>
-            <sui-statistic size="mini">
+            <sui-statistic size="mini" :data-tooltip="cpuTooltip()" data-position="bottom center">
                 <sui-statistic-label>
                     <sui-icon name="tachometer alternate" /> CPU Usage
                 </sui-statistic-label>
                 <sui-statistic-value>
-                    {{ cpu_usage }}%
-                </sui-statistic-value>
-            </sui-statistic>
-        </sui-menu-item>
-        <sui-menu-item>
-            <sui-statistic size="mini" :data-tooltip="loadAvgTooltip()" data-position="bottom center">
-                <sui-statistic-label>
-                    <sui-icon name="history" /> Load Avg.
-                </sui-statistic-label>
-                <sui-statistic-value>
-                    {{ load_avg['5m'] }} (5m)
+                    {{ cpu_usage }}% ({{ load_avg['5m'] }})
                 </sui-statistic-value>
             </sui-statistic>
         </sui-menu-item>
@@ -86,10 +76,9 @@ export default {
                 this.loaded = true;
             });
         },
-        loadAvgTooltip () {
-            return this.load_avg['1m'] + ' / ' +
-                    this.load_avg['5m'] + ' / ' +
-                    this.load_avg['15m'] + ' (1m / 5m / 15m)';
+        cpuTooltip () {
+            return 'Load average: ' + this.load_avg['1m'] + ', '
+                 + this.load_avg['5m'] + ', ' + this.load_avg['15m'];
         },
         ramTooltip () {
             return 'Using ' + this.ram.used + 'M of ' + this.ram.total + 'M';

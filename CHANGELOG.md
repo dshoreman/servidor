@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * When saving a Site you'll now see a success message
 * Disk usage of the root mountpoint is now shown in Stats Bar
-* Load average is also now displayed in Stats Bar
+* Extra information added in tooltips on the stats bar items
 
 ### Changed
 * Main layout and stats bar completely redesigned
