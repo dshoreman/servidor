@@ -59,7 +59,7 @@ class StatsBar
         return [
             'total' => round($data[1] / 1024),
             'used' => round($data[2] / 1024),
-            'free' => round(($data[3] + $data[5]) / 1024),
+            'free' => round((round($data[3]) + round($data[5])) / 1024),
         ];
     }
 
