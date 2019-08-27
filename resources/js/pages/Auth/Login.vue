@@ -31,7 +31,7 @@
                     </div>
                     <div class="field left aligned">
                         <div class="ui toggle checkbox">
-                            <input type="checkbox" name="remember">
+                            <input type="checkbox" name="remember" id="remember">
                             <label for="remember">Remember Me</label>
                         </div>
                     </div>
