@@ -11,6 +11,7 @@
                 </sui-statistic-label>
             </sui-statistic>
         </sui-menu-item>
+        <sui-menu-menu position="right">
         <sui-menu-item>
             <sui-statistic size="mini">
                 <sui-statistic-label>
@@ -42,6 +43,7 @@
                 </sui-statistic-value>
             </sui-statistic>
         </sui-menu-item>
+        </sui-menu-menu>
     </sui-menu>
 </template>
 
