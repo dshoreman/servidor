@@ -35,9 +35,7 @@
         <section class="main">
             <stats-bar id="stats-bar" />
 
-            <sui-container id="content">
-                <router-view />
-            </sui-container>
+            <router-view id="content" />
         </section>
     </div>
 </template>
