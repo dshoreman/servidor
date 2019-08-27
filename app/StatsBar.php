@@ -11,7 +11,9 @@ class StatsBar
 
         return [
             'cpu' => self::getCpuUsage(),
+            'load_average' => self::getLoadAverage(),
             'ram' => self::getRamUsage(),
+            'disk' => self::getDiskUsage(),
             'hostname' => gethostname(),
             'os' => [
                 'name' => php_uname('s'),
@@ -47,6 +49,20 @@ class StatsBar
     }
 
     /**
+     * Get the CPU load average over 1, 5 and 15 minute intervals.
+     */
+    private static function getLoadAverage(): array
+    {
+        $output = explode(' ', exec('awk \'{ print $1,$2,$3; }\' /proc/loadavg'));
+
+        return [
+            '1m' => $output[0],
+            '5m' => $output[1],
+            '15m' => $output[2],
+        ];
+    }
+
+    /**
      * Get details about the RAM currently used/free.
      */
     private static function getRamUsage(): array
@@ -58,7 +74,25 @@ class StatsBar
         return [
             'total' => round($data[1] / 1024),
             'used' => round($data[2] / 1024),
-            'free' => round(($data[3] + $data[5]) / 1024),
+            'free' => round((round($data[3]) + round($data[5])) / 1024),
+        ];
+    }
+
+    /**
+     * Get the disk usage details for the root mountpoint.
+     */
+    private static function getDiskUsage(): array
+    {
+        $output = exec('df | grep " /$"');
+
+        $data = sscanf($output, '%s %d %d %d %s %s');
+
+        return [
+            'partition' => $data[0],
+            'total' => number_format($data[1] / 1024 / 1024, 1),
+            'used' => number_format($data[2] / 1024 / 1024, 1),
+            'used_pct' => $data[4],
+            'free' => number_format($data[3] / 1024 / 1024, 1),
         ];
     }
 }
