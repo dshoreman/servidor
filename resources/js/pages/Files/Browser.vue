@@ -1,32 +1,34 @@
 <template>
-    <sui-container id="file-browser">
-        <h2>
-            <router-link :to="{ name: 'apps.edit', params: { id: site.id }}"
-                is="sui-button" color="teal" icon="globe" floated="right"
-                id="back2site" :content="'Edit ' + site.name" v-if="site" />
+    <sui-grid container id="file-browser">
+        <sui-grid-column>
+            <h2>
+                <router-link :to="{ name: 'apps.edit', params: { id: site.id }}"
+                    is="sui-button" color="teal" icon="globe" floated="right"
+                    id="back2site" :content="'Edit ' + site.name" v-if="site" />
 
-            <sui-button id="levelup" icon="level up" @click="upOneLevel"/>
+                <sui-button id="levelup" icon="level up" @click="upOneLevel"/>
 
-            <sui-breadcrumb class="massive">
-                <template v-for="(segment, index) in pathParts">
+                <sui-breadcrumb class="massive">
+                    <template v-for="(segment, index) in pathParts">
 
-                    <sui-breadcrumb-section link @click="setPath(segment.path)"
-                        v-if="segment.path != currentPath">
-                        {{ segment.dirname }}
-                    </sui-breadcrumb-section>
-                    <sui-breadcrumb-section v-else>
-                        {{ segment.dirname }}
-                    </sui-breadcrumb-section>
+                        <sui-breadcrumb-section link @click="setPath(segment.path)"
+                            v-if="segment.path != currentPath">
+                            {{ segment.dirname }}
+                        </sui-breadcrumb-section>
+                        <sui-breadcrumb-section v-else>
+                            {{ segment.dirname }}
+                        </sui-breadcrumb-section>
 
-                    <sui-breadcrumb-divider @click="setPath(segment.path)"
-                        v-if="index < (pathParts.length - 1)" />
+                        <sui-breadcrumb-divider @click="setPath(segment.path)"
+                            v-if="index < (pathParts.length - 1)" />
 
-                </template>
-            </sui-breadcrumb>
-        </h2>
+                    </template>
+                </sui-breadcrumb>
+            </h2>
 
-        <file-list :files="files" @set-path="setPath($event)" />
-    </sui-container>
+            <file-list :files="files" @set-path="setPath($event)" />
+        </sui-grid-column>
+    </sui-grid>
 </template>
 
 <script>

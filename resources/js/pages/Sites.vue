@@ -1,5 +1,5 @@
 <template>
-    <sui-container class="grid">
+    <sui-grid container>
         <sui-grid-row>
             <sui-grid-column>
                 <sui-input placeholder="Type a name for your Application..."
@@ -7,8 +7,8 @@
                         v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
-        <router-view :sites="filteredSites"></router-view>
-    </sui-container>
+        <router-view :sites="filteredSites" />
+    </sui-grid>
 </template>
 
 <script>

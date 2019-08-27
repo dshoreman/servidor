@@ -1,5 +1,5 @@
 <template>
-    <sui-grid>
+    <sui-grid container>
         <sui-grid-column :width="listWidth">
             <sui-segment attached>
                 <sui-form @submit.prevent="edit(search)">
