@@ -12,6 +12,7 @@ class StatsBar
         return [
             'cpu' => self::getCpuUsage(),
             'ram' => self::getRamUsage(),
+            'disk' => self::getDiskUsage(),
             'hostname' => gethostname(),
             'os' => [
                 'name' => php_uname('s'),
@@ -59,6 +60,24 @@ class StatsBar
             'total' => round($data[1] / 1024),
             'used' => round($data[2] / 1024),
             'free' => round(($data[3] + $data[5]) / 1024),
+        ];
+    }
+
+    /**
+     * Get the disk usage details for the root mountpoint.
+     */
+    private static function getDiskUsage(): array
+    {
+        $output = exec('df | grep " /$"');
+
+        $data = sscanf($output, '%s %d %d %d %s %s');
+
+        return [
+            'partition' => $data[0],
+            'total' => number_format($data[1] / 1024 / 1024, 1),
+            'used' => number_format($data[2] / 1024 / 1024, 1),
+            'used_pct' => $data[4],
+            'free' => number_format($data[3] / 1024 / 1024, 1),
         ];
     }
 }

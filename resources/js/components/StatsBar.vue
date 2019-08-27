@@ -12,7 +12,6 @@
             </sui-statistic>
         </sui-menu-item>
         <sui-menu-item>
-            <!-- todo: add hdd  -->
             <sui-statistic size="mini">
                 <sui-statistic-label>
                     <sui-icon name="tachometer alternate" /> CPU Usage
@@ -29,6 +28,17 @@
                 </sui-statistic-label>
                 <sui-statistic-value>
                     {{ ram.free }}MB
+                </sui-statistic-value>
+            </sui-statistic>
+        </sui-menu-item>
+        <sui-menu-item>
+            <sui-statistic size="mini">
+                <sui-statistic-label>
+                    <sui-icon name="disk" /> {{ disk.partition }} Usage
+                </sui-statistic-label>
+                <sui-statistic-value>
+                    <!-- {{ disk.free }}MB -->
+                    {{ disk.used_pct }} of {{ disk.total }}GB
                 </sui-statistic-value>
             </sui-statistic>
         </sui-menu-item>
@@ -56,6 +66,7 @@ export default {
                 this.hostname = data.hostname;
                 this.cpu_usage = data.cpu;
                 this.ram = data.ram;
+                this.disk = data.disk;
                 this.distro = data.os.distro;
                 this.version = data.os.version;
 

@@ -23,6 +23,12 @@ class StatsBarTest extends TestCase
         $this->assertArrayHasKey('used', $data['ram']);
         $this->assertArrayHasKey('free', $data['ram']);
 
+        $this->assertArrayHasKey('disk', $data);
+        $this->assertIsArray($data['disk']);
+        $this->assertArrayHasKey('total', $data['disk']);
+        $this->assertArrayHasKey('used', $data['disk']);
+        $this->assertArrayHasKey('free', $data['disk']);
+
         $this->assertArrayHasKey('hostname', $data);
         $this->assertIsString($data['hostname']);
 
@@ -50,7 +56,7 @@ class StatsBarTest extends TestCase
     }
 
     /** @test */
-    public function free_memory_matches_total_minus_used_memory()
+    public function free_memory_matches_total_minus_used()
     {
         $data = StatsBar::stats()['ram'];
 
