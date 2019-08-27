@@ -15,9 +15,8 @@
 
             <sui-menu fixed inverted>
                 <router-link header :to="{ name: 'dashboard' }" is="sui-menu-item">
-                    <sui-icon name="server" size="big"></sui-icon>
-                        {{ config('app.name', 'Laravel') }}
-                    </a>
+                    <sui-icon name="server" size="big" />
+                    {{ config('app.name', 'Laravel') }}
                 </router-link>
                 @guest
                     <sui-menu-menu position="right">

@@ -10,9 +10,7 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
     </head>
     <body>
-        <div id="app">
-            @yield('content')
-        </div>
+        @yield('content')
 
         <footer>
             <p>Servidor v{{ SERVIDOR_VERSION }}</p>

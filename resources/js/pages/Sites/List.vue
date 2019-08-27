@@ -1,7 +1,7 @@
 <template>
     <sui-container>
         <alerts :alerts="alerts" />
-        <sui-card-group>
+        <sui-card-group :items-per-row="4">
             <site-item v-for="site in sites" :key="site.id" :site="site"></site-item>
         </sui-card-group>
     </sui-container>
