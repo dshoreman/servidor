@@ -7,7 +7,9 @@
                 {{ filePath }}
             </h2>
 
-            <pre v-if="file.error == undefined">{{ file.contents }}</pre>
+            <sui-segment v-if="file.error == undefined">
+                <pre>{{ file.contents }}</pre>
+            </sui-segment>
 
             <sui-segment class="placeholder" v-else>
                 <sui-header icon>
