@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * Errors weren't being cleared between Site form submissions
 * Icon for CPU usage in the Stats Bar no longer matches Free RAM
+* Site cards in the list view now use the full container width
 
 
 ## [0.4.0] - 2019-08-24
