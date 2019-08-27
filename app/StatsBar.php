@@ -11,6 +11,7 @@ class StatsBar
 
         return [
             'cpu' => self::getCpuUsage(),
+            'load_average' => self::getLoadAverage(),
             'ram' => self::getRamUsage(),
             'disk' => self::getDiskUsage(),
             'hostname' => gethostname(),
@@ -45,6 +46,20 @@ class StatsBar
     private static function getCpuUsage(): float
     {
         return (float) exec("mpstat | tail -n1 | awk '{ print 100 - $12 }'");
+    }
+
+    /**
+     * Get the CPU load average over 1, 5 and 15 minute intervals.
+     */
+    private static function getLoadAverage(): array
+    {
+        $output = explode(' ', exec('awk \'{ print $1,$2,$3; }\' /proc/loadavg'));
+
+        return [
+            '1m' => $output[0],
+            '5m' => $output[1],
+            '15m' => $output[2],
+        ];
     }
 
     /**

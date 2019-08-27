@@ -17,6 +17,12 @@ class StatsBarTest extends TestCase
         $this->assertArrayHasKey('cpu', $data);
         $this->assertIsFloat($data['cpu']);
 
+        $this->assertArrayHasKey('load_average', $data);
+        $this->assertIsArray($data['load_average']);
+        $this->assertArrayHasKey('1m', $data['load_average']);
+        $this->assertArrayHasKey('5m', $data['load_average']);
+        $this->assertArrayHasKey('15m', $data['load_average']);
+
         $this->assertArrayHasKey('ram', $data);
         $this->assertIsArray($data['ram']);
         $this->assertArrayHasKey('total', $data['ram']);

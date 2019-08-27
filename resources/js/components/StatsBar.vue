@@ -25,6 +25,16 @@
         <sui-menu-item>
             <sui-statistic size="mini">
                 <sui-statistic-label>
+                    <sui-icon name="history" /> Load Avg.
+                </sui-statistic-label>
+                <sui-statistic-value>
+                    {{ load_avg['5m'] }} (5m)
+                </sui-statistic-value>
+            </sui-statistic>
+        </sui-menu-item>
+        <sui-menu-item>
+            <sui-statistic size="mini">
+                <sui-statistic-label>
                     <sui-icon name="microchip" /> Free RAM
                 </sui-statistic-label>
                 <sui-statistic-value>
@@ -67,6 +77,7 @@ export default {
 
                 this.hostname = data.hostname;
                 this.cpu_usage = data.cpu;
+                this.load_avg = data.load_average;
                 this.ram = data.ram;
                 this.disk = data.disk;
                 this.distro = data.os.distro;
