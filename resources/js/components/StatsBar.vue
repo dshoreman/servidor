@@ -23,7 +23,7 @@
             </sui-statistic>
         </sui-menu-item>
         <sui-menu-item>
-            <sui-statistic size="mini">
+            <sui-statistic size="mini" :data-tooltip="loadAvgTooltip()" data-position="bottom center">
                 <sui-statistic-label>
                     <sui-icon name="history" /> Load Avg.
                 </sui-statistic-label>
@@ -33,23 +33,23 @@
             </sui-statistic>
         </sui-menu-item>
         <sui-menu-item>
-            <sui-statistic size="mini">
+            <sui-statistic size="mini" :data-tooltip="ramTooltip()" data-position="bottom center">
                 <sui-statistic-label>
                     <sui-icon name="microchip" /> Free RAM
                 </sui-statistic-label>
                 <sui-statistic-value>
-                    {{ ram.free }}MB
+                    {{ ram.free }}M
                 </sui-statistic-value>
             </sui-statistic>
         </sui-menu-item>
         <sui-menu-item>
-            <sui-statistic size="mini">
+            <sui-statistic size="mini" :data-tooltip="diskTooltip()" data-position="bottom center">
                 <sui-statistic-label>
                     <sui-icon name="disk" /> {{ disk.partition }} Usage
                 </sui-statistic-label>
                 <sui-statistic-value>
                     <!-- {{ disk.free }}MB -->
-                    {{ disk.used_pct }} of {{ disk.total }}GB
+                    {{ disk.used_pct }} of {{ disk.total }}G
                 </sui-statistic-value>
             </sui-statistic>
         </sui-menu-item>
@@ -85,6 +85,17 @@ export default {
 
                 this.loaded = true;
             });
+        },
+        loadAvgTooltip () {
+            return this.load_avg['1m'] + ' / ' +
+                    this.load_avg['5m'] + ' / ' +
+                    this.load_avg['15m'] + ' (1m / 5m / 15m)';
+        },
+        ramTooltip () {
+            return 'Using ' + this.ram.used + 'M of ' + this.ram.total + 'M';
+        },
+        diskTooltip () {
+            return this.disk.used + 'G used; ' + this.disk.free + 'G free' ;
         },
     },
 }
