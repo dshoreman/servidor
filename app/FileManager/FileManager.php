@@ -86,9 +86,13 @@ class FileManager
             'group' => posix_getgrgid($file->getGroup())['name'],
         ];
 
-        $data['perms'] = in_array($data['filename'], $this->file_perms)
-                                 ? $this->file_perms[$data['filename']]
-                                 : mb_substr(decoct($file->getPerms()), -4);
+        $data['perms'] = is_null($this->file_perms) || !isset($this->file_perms[$data['filename']])
+                       ? ['text' => '', 'octal' => mb_substr(decoct($file->getPerms()), -4)]
+                       : $this->file_perms[$data['filename']];
+
+        if (3 === mb_strlen($data['perms']['octal'])) {
+            $data['perms']['octal'] = '0'.$data['perms']['octal'];
+        }
 
         if ($includeContents) {
             try {
