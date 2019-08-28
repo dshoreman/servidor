@@ -56,7 +56,7 @@ class FileManager
     {
         $perms = [];
 
-        exec("stat -c '%n %A %a' ${path}/*", $files);
+        exec('cd "'.$path.'" && stat -c "%n %A %a" *', $files);
 
         foreach ($files as $file) {
             list($filename, $text, $octal) = explode(' ', $file);
