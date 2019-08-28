@@ -65,6 +65,18 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
+    public function permissions_are_loaded_for_hidden_files()
+    {
+        $list = $this->manager->list($this->dummy('hidden'));
+
+        $this->assertCount(3, $list);
+        $this->assertEquals([
+            'text' => '-rw-rw-r--',
+            'octal' => '0664',
+        ], $list[0]['perms']);
+    }
+
+    /** @test */
     public function list_can_show_files_in_system_root()
     {
         $list = $this->manager->list('/');

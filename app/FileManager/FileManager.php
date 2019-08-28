@@ -56,7 +56,7 @@ class FileManager
 
     private function loadPermissions(string $path, bool $isFile = false): array
     {
-        $name = '*';
+        $name = '.* *';
         $perms = [];
 
         if ($isFile) {
