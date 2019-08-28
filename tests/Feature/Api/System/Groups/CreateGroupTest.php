@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api\System\Groups;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
-class SystemGroupsTest extends TestCase
+class CreateGroupTest extends TestCase
 {
     use RefreshDatabase;
     use RequiresAuth;
@@ -23,28 +23,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function canViewGroupsList()
-    {
-        $response = $this->authed()->getJson('/api/system/groups');
-
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment([
-            'name' => 'root',
-        ]);
-    }
-
-    /** @test */
-    public function listIsAnArray()
-    {
-        $response = $this->authed()->getJson('/api/system/groups');
-
-        $responseJson = json_decode($response->getContent());
-
-        $this->assertEquals('array', gettype($responseJson));
-    }
-
-    /** @test */
-    public function canCreateWithMinimumData()
+    public function can_create_with_minimum_data()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => 'newtestgroup',
@@ -58,65 +37,15 @@ class SystemGroupsTest extends TestCase
 
     /**
      * @test
-     * @depends canCreateWithMinimumData
+     * @depends can_create_with_minimum_data
      */
-    public function createResponseContainsAllKeys($response)
-    {
-        $response->assertJsonStructure($this->expectedKeys());
-    }
-
-    /**
-     * @test
-     * @depends canCreateWithMinimumData
-     */
-    public function canUpdateGroup($response)
-    {
-        $group = $response->json();
-
-        $response = $this->authed()->putJson('/api/system/groups/'.$group['gid'], [
-            'name' => 'newtestgroup-renamed',
-        ]);
-
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment(['name' => 'newtestgroup-renamed']);
-
-        return $response;
-    }
-
-    /**
-     * @test
-     * @depends canUpdateGroup
-     */
-    public function updateResponseContainsAllKeys($response)
+    public function create_response_contains_all_keys($response)
     {
         $response->assertJsonStructure($this->expectedKeys());
     }
 
     /** @test */
-    public function cannotUpdateNonExistantGroup()
-    {
-        $response = $this->authed()->putJson('/api/system/groups/9032', [
-            'name' => 'nogrouptest',
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    /**
-     * @test
-     * @depends canUpdateGroup
-     */
-    public function canDeleteGroup($response)
-    {
-        $group = $response->json();
-
-        $response = $this->authed()->deleteJson('/api/system/groups/'.$group['gid'], []);
-
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
-    }
-
-    /** @test */
-    public function nameCannotStartWithDash()
+    public function name_cannot_start_with_dash()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => '-test-dash-prefix',
@@ -127,7 +56,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameCannotStartWithPlus()
+    public function name_cannot_start_with_plus()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => '+test-plus-prefix',
@@ -138,7 +67,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameCannotStartWithTilde()
+    public function name_cannot_start_with_tilde()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => '~test-tilde-prefix',
@@ -149,7 +78,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameCannotContainColon()
+    public function name_cannot_contain_colon()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => 'test-contains-:',
@@ -160,7 +89,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameCannotContainComma()
+    public function name_cannot_contain_comma()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => 'test,contains,comma',
@@ -171,7 +100,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameCannotContainTab()
+    public function name_cannot_contain_tab()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => "test\tcontains\ttab",
@@ -182,7 +111,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameCannotContainNewline()
+    public function name_cannot_contain_newline()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => "test\ncontains\nnewline",
@@ -193,7 +122,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameCannotContainWhitespace()
+    public function name_cannot_contain_whitespace()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => 'test contains space',
@@ -204,7 +133,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameEndingWithWhitespaceGetsTrimmed()
+    public function name_ending_with_whitespace_gets_trimmed()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => 'testgroup ',
@@ -217,7 +146,7 @@ class SystemGroupsTest extends TestCase
     }
 
     /** @test */
-    public function nameCannotBeTooLong()
+    public function name_cannot_be_too_long()
     {
         $response = $this->authed()->postJson('/api/system/groups', [
             'name' => '_im-a-name-that-is-over-32-chars-',
@@ -225,15 +154,6 @@ class SystemGroupsTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name may not be greater than 32 characters.']);
-    }
-
-    private function expectedKeys()
-    {
-        return [
-            'gid',
-            'name',
-            'users',
-        ];
     }
 
     private function addToDeleteList($response)
@@ -250,5 +170,14 @@ class SystemGroupsTest extends TestCase
         foreach ($this->deleteGroupIds as $gid) {
             $this->authed()->deleteJson($endpoint.$gid, []);
         }
+    }
+
+    private function expectedKeys()
+    {
+        return [
+            'gid',
+            'name',
+            'users',
+        ];
     }
 }
