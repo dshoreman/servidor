@@ -149,7 +149,7 @@ class FileManagerTest extends TestCase
             'owner' => 'www-data',
             'group' => 'www-data',
             'perms' => [
-                'text' => '',
+                'text' => '-rw-rw-r--',
                 'octal' => '0664',
             ],
         ], $file);

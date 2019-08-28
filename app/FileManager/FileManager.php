@@ -49,14 +49,23 @@ class FileManager
             return ['error' => ['code' => 404, 'msg' => 'File not found']];
         }
 
+        $this->loadPermissions($file, true);
+
         return $this->fileToArray($file, true);
     }
 
-    private function loadPermissions($path)
+    private function loadPermissions(string $path, bool $isFile = false): array
     {
+        $name = '*';
         $perms = [];
 
-        exec('cd "'.$path.'" && stat -c "%n %A %a" *', $files);
+        if ($isFile) {
+            $pathParts = explode('/', $path);
+            $name = array_pop($pathParts);
+            $path = mb_substr($path, 0, mb_strrpos($path, '/'));
+        }
+
+        exec('cd "'.$path.'" && stat -c "%n %A %a" '.$name, $files);
 
         foreach ($files as $file) {
             list($filename, $text, $octal) = explode(' ', $file);
@@ -64,7 +73,7 @@ class FileManager
             $perms[$filename] = compact('text', 'octal');
         }
 
-        $this->file_perms = $perms;
+        return $this->file_perms = $perms;
     }
 
     private function fileToArray($file, $includeContents = false): array
