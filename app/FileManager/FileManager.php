@@ -13,6 +13,11 @@ class FileManager
      */
     private $finder;
 
+    /**
+     * @var array
+     */
+    private $file_perms;
+
     public function __construct()
     {
         $this->finder = new Finder;
@@ -25,6 +30,8 @@ class FileManager
         if ('/' == $path) {
             $path = '/../';
         }
+
+        $this->loadPermissions($path);
 
         $files = $this->finder->depth(0)->in($path)
                       ->sortByName($naturalSort = true)
@@ -42,7 +49,31 @@ class FileManager
             return ['error' => ['code' => 404, 'msg' => 'File not found']];
         }
 
+        $this->loadPermissions($file, true);
+
         return $this->fileToArray($file, true);
+    }
+
+    private function loadPermissions(string $path, bool $isFile = false): array
+    {
+        $name = '.* *';
+        $perms = [];
+
+        if ($isFile) {
+            $pathParts = explode('/', $path);
+            $name = array_pop($pathParts);
+            $path = mb_substr($path, 0, mb_strrpos($path, '/'));
+        }
+
+        exec('cd "'.$path.'" && stat -c "%n %A %a" '.$name, $files);
+
+        foreach ($files as $file) {
+            list($filename, $text, $octal) = explode(' ', $file);
+
+            $perms[$filename] = compact('text', 'octal');
+        }
+
+        return $this->file_perms = $perms;
     }
 
     private function fileToArray($file, $includeContents = false): array
@@ -62,8 +93,15 @@ class FileManager
             'target' => $file->isLink() ? $file->getLinkTarget() : '',
             'owner' => posix_getpwuid($file->getOwner())['name'],
             'group' => posix_getgrgid($file->getGroup())['name'],
-            'perms' => mb_substr(decoct($file->getPerms()), -4),
         ];
+
+        $data['perms'] = is_null($this->file_perms) || !isset($this->file_perms[$data['filename']])
+                       ? ['text' => '', 'octal' => mb_substr(decoct($file->getPerms()), -4)]
+                       : $this->file_perms[$data['filename']];
+
+        if (3 === mb_strlen($data['perms']['octal'])) {
+            $data['perms']['octal'] = '0'.$data['perms']['octal'];
+        }
 
         if ($includeContents) {
             try {

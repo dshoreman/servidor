@@ -33,7 +33,10 @@ class FileManagerTest extends TestCase
             'target' => '',
             'owner' => 'www-data',
             'group' => 'www-data',
-            'perms' => '0775',
+            'perms' => [
+                'text' => 'drwxrwxr-x',
+                'octal' => '0775',
+            ],
         ], $list[0]);
     }
 
@@ -62,6 +65,18 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
+    public function permissions_are_loaded_for_hidden_files()
+    {
+        $list = $this->manager->list($this->dummy('hidden'));
+
+        $this->assertCount(3, $list);
+        $this->assertEquals([
+            'text' => '-rw-rw-r--',
+            'octal' => '0664',
+        ], $list[0]['perms']);
+    }
+
+    /** @test */
     public function list_can_show_files_in_system_root()
     {
         $list = $this->manager->list('/');
@@ -77,7 +92,10 @@ class FileManagerTest extends TestCase
             'isFile' => false,
             'owner' => 'root',
             'group' => 'root',
-            'perms' => '0755',
+            'perms' => [
+                'text' => 'drwxr-xr-x',
+                'octal' => '0755',
+            ],
         ];
 
         $this->assertCount(5, $matches);
@@ -142,7 +160,10 @@ class FileManagerTest extends TestCase
             'target' => '',
             'owner' => 'www-data',
             'group' => 'www-data',
-            'perms' => '0664',
+            'perms' => [
+                'text' => '-rw-rw-r--',
+                'octal' => '0664',
+            ],
         ], $file);
     }
 
