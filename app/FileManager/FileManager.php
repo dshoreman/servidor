@@ -13,6 +13,11 @@ class FileManager
      */
     private $finder;
 
+    /**
+     * @var array
+     */
+    private $file_perms;
+
     public function __construct()
     {
         $this->finder = new Finder;
@@ -25,6 +30,8 @@ class FileManager
         if ('/' == $path) {
             $path = '/../';
         }
+
+        $this->loadPermissions($path);
 
         $files = $this->finder->depth(0)->in($path)
                       ->sortByName($naturalSort = true)
@@ -45,6 +52,21 @@ class FileManager
         return $this->fileToArray($file, true);
     }
 
+    private function loadPermissions($path)
+    {
+        $perms = [];
+
+        exec("stat -c '%n %A %a' ${path}/*", $files);
+
+        foreach ($files as $file) {
+            list($filename, $text, $octal) = explode(' ', $file);
+
+            $perms[$filename] = compact('text', 'octal');
+        }
+
+        $this->file_perms = $perms;
+    }
+
     private function fileToArray($file, $includeContents = false): array
     {
         if (is_string($file)) {
@@ -62,8 +84,11 @@ class FileManager
             'target' => $file->isLink() ? $file->getLinkTarget() : '',
             'owner' => posix_getpwuid($file->getOwner())['name'],
             'group' => posix_getgrgid($file->getGroup())['name'],
-            'perms' => mb_substr(decoct($file->getPerms()), -4),
         ];
+
+        $data['perms'] = in_array($data['filename'], $this->file_perms)
+                                 ? $this->file_perms[$data['filename']]
+                                 : mb_substr(decoct($file->getPerms()), -4);
 
         if ($includeContents) {
             try {
