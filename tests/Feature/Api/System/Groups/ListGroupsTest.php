@@ -13,32 +13,47 @@ class ListGroupsTest extends TestCase
     use RequiresAuth;
 
     /** @test */
-    public function can_view_groups_list()
+    public function can_view_groups_page()
     {
         $response = $this->authed()->getJson('/api/system/groups');
 
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment([
-            'name' => 'root',
-        ]);
+
+        return $response;
     }
 
-    /** @test */
-    public function list_is_an_array()
+    /**
+     * @test
+     * @depends can_view_groups_page
+     */
+    public function list_is_an_array($response)
     {
-        $response = $this->authed()->getJson('/api/system/groups');
-
         $responseJson = json_decode($response->getContent());
 
-        $this->assertEquals('array', gettype($responseJson));
+        $this->assertIsArray($responseJson);
     }
 
-    private function expectedKeys()
+    /**
+     * @test
+     * @depends can_view_groups_page
+     */
+    public function list_results_contain_expected_data($response)
     {
-        return [
+        $response->assertJsonStructure([[
             'gid',
             'name',
+            'password',
             'users',
-        ];
+        ]]);
+    }
+
+    /**
+     * @test
+     * @depends can_view_groups_page
+     */
+    public function list_results_include_default_groups($response)
+    {
+        $response->assertJsonFragment(['name' => 'root']);
+        $response->assertJsonFragment(['name' => 'users']);
     }
 }
