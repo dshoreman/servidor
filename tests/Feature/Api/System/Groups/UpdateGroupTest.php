@@ -12,6 +12,16 @@ class UpdateGroupTest extends TestCase
     use RefreshDatabase;
     use RequiresAuth;
 
+    /**
+     * @var array
+     */
+    private $deleteGroupIds = [];
+
+    protected function tearDown()
+    {
+        $this->deleteTemporaryGroups();
+    }
+
     /** @test */
     public function can_update_group()
     {
@@ -25,6 +35,8 @@ class UpdateGroupTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['name' => 'updatetestgroup-renamed']);
+
+        $this->deleteGroupIds[] = $response->json()['gid'];
 
         return $response;
     }
@@ -46,6 +58,15 @@ class UpdateGroupTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    private function deleteTemporaryGroups()
+    {
+        $endpoint = '/api/system/groups/';
+
+        foreach ($this->deleteGroupIds as $gid) {
+            $this->authed()->deleteJson($endpoint.$gid);
+        }
     }
 
     private function expectedKeys()

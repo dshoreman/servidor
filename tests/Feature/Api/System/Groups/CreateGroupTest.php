@@ -32,6 +32,8 @@ class CreateGroupTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestgroup']);
 
+        $this->addToDeleteList($response);
+
         return $response;
     }
 
