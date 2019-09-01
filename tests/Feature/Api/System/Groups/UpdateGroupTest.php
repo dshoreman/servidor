@@ -3,21 +3,18 @@
 namespace Tests\Feature\Api\System\Groups;
 
 use Illuminate\Http\Response;
+use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
 class UpdateGroupTest extends TestCase
 {
+    use PrunesDeletables;
     use RequiresAuth;
-
-    /**
-     * @var array
-     */
-    private $deleteGroupIds = [];
 
     protected function tearDown()
     {
-        $this->deleteTemporaryGroups();
+        $this->pruneDeletable('groups');
     }
 
     /** @test */
@@ -34,7 +31,7 @@ class UpdateGroupTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['name' => 'updatetestgroup-renamed']);
 
-        $this->deleteGroupIds[] = $response->json()['gid'];
+        $this->addDeletable('group', $response);
 
         return $response;
     }
@@ -56,15 +53,6 @@ class UpdateGroupTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    private function deleteTemporaryGroups()
-    {
-        $endpoint = '/api/system/groups/';
-
-        foreach ($this->deleteGroupIds as $gid) {
-            $this->authed()->deleteJson($endpoint.$gid);
-        }
     }
 
     private function expectedKeys()

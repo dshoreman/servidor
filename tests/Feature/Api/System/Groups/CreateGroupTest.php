@@ -3,21 +3,18 @@
 namespace Tests\Feature\Api\System\Groups;
 
 use Illuminate\Http\Response;
+use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
 class CreateGroupTest extends TestCase
 {
+    use PrunesDeletables;
     use RequiresAuth;
-
-    /**
-     * @var array
-     */
-    private $deleteGroupIds = [];
 
     public function tearDown()
     {
-        $this->deleteTemporaryGroups();
+        $this->pruneDeletable('groups');
     }
 
     /** @test */
@@ -30,7 +27,7 @@ class CreateGroupTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestgroup']);
 
-        $this->addToDeleteList($response);
+        $this->addDeletable('group', $response);
 
         return $response;
     }
@@ -142,7 +139,7 @@ class CreateGroupTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'testgroup']);
 
-        $this->addToDeleteList($response);
+        $this->addDeletable('group', $response);
     }
 
     /** @test */
@@ -154,22 +151,6 @@ class CreateGroupTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name may not be greater than 32 characters.']);
-    }
-
-    private function addToDeleteList($response)
-    {
-        $group = $response->json();
-
-        $this->deleteGroupIds[] = $group['gid'];
-    }
-
-    private function deleteTemporaryGroups()
-    {
-        $endpoint = '/api/system/groups/';
-
-        foreach ($this->deleteGroupIds as $gid) {
-            $this->authed()->deleteJson($endpoint.$gid, []);
-        }
     }
 
     private function expectedKeys()

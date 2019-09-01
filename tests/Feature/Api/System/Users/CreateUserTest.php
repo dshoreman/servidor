@@ -3,21 +3,18 @@
 namespace Tests\Feature\Api\System\Users;
 
 use Illuminate\Http\Response;
+use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
 class CreateUserTest extends TestCase
 {
+    use PrunesDeletables;
     use RequiresAuth;
-
-    /**
-     * @var array
-     */
-    private $deleteUserIds = [];
 
     public function tearDown()
     {
-        $this->deleteTemporaryUsers();
+        $this->pruneDeletable('users');
 
         parent::tearDown();
     }
@@ -33,7 +30,7 @@ class CreateUserTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestuser']);
 
-        $this->addToDeleteList($response);
+        $this->addDeletable('user', $response);
 
         return $response;
     }
@@ -154,7 +151,7 @@ class CreateUserTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'testuser']);
 
-        $this->addToDeleteList($response);
+        $this->addDeletable('user', $response);
     }
 
     /** @test */
@@ -167,22 +164,6 @@ class CreateUserTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name may not be greater than 32 characters.']);
-    }
-
-    private function addToDeleteList($response)
-    {
-        $user = $response->json();
-
-        $this->deleteUserIds[] = $user['gid'];
-    }
-
-    private function deleteTemporaryUsers()
-    {
-        $endpoint = '/api/system/users/';
-
-        foreach ($this->deleteUserIds as $gid) {
-            $this->authed()->deleteJson($endpoint.$gid, []);
-        }
     }
 
     private function expectedKeys()

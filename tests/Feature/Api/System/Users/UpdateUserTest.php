@@ -3,21 +3,18 @@
 namespace Tests\Feature\Api\System\Users;
 
 use Illuminate\Http\Response;
+use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
 class UpdateUserTest extends TestCase
 {
+    use PrunesDeletables;
     use RequiresAuth;
-
-    /**
-     * @var array
-     */
-    private $deleteUser = [];
 
     protected function tearDown()
     {
-        $this->deleteTemporaryUsers();
+        $this->pruneDeletable(['users', 'groups']);
 
         parent::tearDown();
     }
@@ -38,7 +35,8 @@ class UpdateUserTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['name' => 'updatetestuser-renamed']);
 
-        $this->deleteUser = $response->json();
+        $this->addDeletable('user', $response);
+        $this->addDeletable('group', $response);
 
         return $response;
     }
@@ -68,17 +66,5 @@ class UpdateUserTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    private function deleteTemporaryUsers()
-    {
-        if (!$user = $this->deleteUser) {
-            return;
-        }
-
-        $endpoint = '/api/system/';
-
-        $this->authed()->deleteJson($endpoint.'users/'.$user['uid']);
-        $this->authed()->deleteJson($endpoint.'groups/'.$user['gid']);
     }
 }
