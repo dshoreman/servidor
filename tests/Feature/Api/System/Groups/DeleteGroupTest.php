@@ -22,5 +22,18 @@ class DeleteGroupTest extends TestCase
         $response = $this->authed()->deleteJson('/api/system/groups/'.$group['gid'], []);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        return $group;
+    }
+
+    /**
+     * @test
+     * @depends can_delete_group
+     */
+    public function group_does_not_exist_after_deletion($group)
+    {
+        $response = $this->authed()->getJson('/api/system/groups/'.$group['gid']);
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 }
