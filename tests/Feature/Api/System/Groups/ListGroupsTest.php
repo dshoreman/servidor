@@ -4,7 +4,6 @@ namespace Tests\Feature\Api\System\Groups;
 
 use Illuminate\Http\Response;
 use Tests\RequiresAuth;
-use Tests\TestCase;
 
 class ListGroupsTest extends TestCase
 {
@@ -13,7 +12,7 @@ class ListGroupsTest extends TestCase
     /** @test */
     public function can_view_groups_page()
     {
-        $response = $this->authed()->getJson('/api/system/groups');
+        $response = $this->authed()->getJson($this->endpoint);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -24,25 +23,13 @@ class ListGroupsTest extends TestCase
      * @test
      * @depends can_view_groups_page
      */
-    public function list_is_an_array($response)
+    public function list_response_contains_expected_data($response)
     {
         $responseJson = json_decode($response->getContent());
 
         $this->assertIsArray($responseJson);
-    }
 
-    /**
-     * @test
-     * @depends can_view_groups_page
-     */
-    public function list_results_contain_expected_data($response)
-    {
-        $response->assertJsonStructure([[
-            'gid',
-            'name',
-            'password',
-            'users',
-        ]]);
+        $response->assertJsonStructure([$this->expectedKeys]);
     }
 
     /**

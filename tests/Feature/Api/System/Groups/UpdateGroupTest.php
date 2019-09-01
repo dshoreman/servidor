@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\System\Groups;
 use Illuminate\Http\Response;
 use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
-use Tests\TestCase;
 
 class UpdateGroupTest extends TestCase
 {
@@ -22,47 +21,28 @@ class UpdateGroupTest extends TestCase
     /** @test */
     public function can_update_group()
     {
-        $group = $this->authed()->postJson('/api/system/groups', [
+        $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'updatetestgroup',
         ])->json();
 
-        $response = $this->authed()->putJson('/api/system/groups/'.$group['gid'], [
+        $response = $this->authed()->putJson($this->endpoint($group['gid']), [
             'name' => 'updatetestgroup-renamed',
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['name' => 'updatetestgroup-renamed']);
+        $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('group', $response);
-
-        return $response;
-    }
-
-    /**
-     * @test
-     * @depends can_update_group
-     */
-    public function update_response_contains_all_keys($response)
-    {
-        $response->assertJsonStructure($this->expectedKeys());
     }
 
     /** @test */
     public function cannot_update_nonexistant_group()
     {
-        $response = $this->authed()->putJson('/api/system/groups/9032', [
+        $response = $this->authed()->putJson($this->endpoint(9032), [
             'name' => 'nogrouptest',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    private function expectedKeys()
-    {
-        return [
-            'gid',
-            'name',
-            'users',
-        ];
     }
 }

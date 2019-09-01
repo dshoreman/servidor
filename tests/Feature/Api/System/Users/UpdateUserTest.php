@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\System\Users;
 use Illuminate\Http\Response;
 use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
-use Tests\TestCase;
 
 class UpdateUserTest extends TestCase
 {
@@ -22,46 +21,28 @@ class UpdateUserTest extends TestCase
     /** @test */
     public function can_update_user()
     {
-        $user = $this->authed()->postJson('/api/system/users', [
+        $user = $this->authed()->postJson($this->endpoint, [
             'name' => 'updatetestuser',
             'gid' => 0,
         ])->json();
 
-        $response = $this->authed()->putJson('/api/system/users/'.$user['uid'], [
+        $response = $this->authed()->putJson($this->endpoint($user['uid']), [
             'name' => 'updatetestuser-renamed',
             'gid' => 0,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment(['name' => 'updatetestuser-renamed']);
+        $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('user', $response);
         $this->addDeletable('group', $response);
-
-        return $response;
-    }
-
-    /**
-     * @test
-     * @depends can_update_user
-     */
-    public function update_response_contains_all_keys($response)
-    {
-        $response->assertJsonStructure([
-            'name',
-            'passwd',
-            'uid',
-            'gid',
-            'gecos',
-            'dir',
-            'shell',
-        ]);
     }
 
     /** @test */
     public function cannot_update_nonexistant_user()
     {
-        $response = $this->authed()->putJson('/api/system/users/9032', [
+        $response = $this->authed()->putJson($this->endpoint(9032), [
             'name' => 'nousertest',
         ]);
 

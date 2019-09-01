@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\System\Groups;
 use Illuminate\Http\Response;
 use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
-use Tests\TestCase;
 
 class CreateGroupTest extends TestCase
 {
@@ -22,31 +21,21 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function can_create_with_minimum_data()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestgroup',
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestgroup']);
+        $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('group', $response);
-
-        return $response;
-    }
-
-    /**
-     * @test
-     * @depends can_create_with_minimum_data
-     */
-    public function create_response_contains_all_keys($response)
-    {
-        $response->assertJsonStructure($this->expectedKeys());
     }
 
     /** @test */
     public function name_cannot_start_with_dash()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => '-test-dash-prefix',
         ]);
 
@@ -57,7 +46,7 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_cannot_start_with_plus()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => '+test-plus-prefix',
         ]);
 
@@ -68,7 +57,7 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_cannot_start_with_tilde()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => '~test-tilde-prefix',
         ]);
 
@@ -79,7 +68,7 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_cannot_contain_colon()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test-contains-:',
         ]);
 
@@ -90,7 +79,7 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_cannot_contain_comma()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test,contains,comma',
         ]);
 
@@ -101,7 +90,7 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_cannot_contain_tab()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\tcontains\ttab",
         ]);
 
@@ -112,7 +101,7 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_cannot_contain_newline()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\ncontains\nnewline",
         ]);
 
@@ -123,7 +112,7 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_cannot_contain_whitespace()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test contains space',
         ]);
 
@@ -134,7 +123,7 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_ending_with_whitespace_gets_trimmed()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'testgroup ',
         ]);
 
@@ -147,20 +136,11 @@ class CreateGroupTest extends TestCase
     /** @test */
     public function name_cannot_be_too_long()
     {
-        $response = $this->authed()->postJson('/api/system/groups', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => '_im-a-name-that-is-over-32-chars-',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name may not be greater than 32 characters.']);
-    }
-
-    private function expectedKeys()
-    {
-        return [
-            'gid',
-            'name',
-            'users',
-        ];
     }
 }

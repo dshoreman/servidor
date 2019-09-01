@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\System\Users;
 use Illuminate\Http\Response;
 use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
-use Tests\TestCase;
 
 class CreateUserTest extends TestCase
 {
@@ -22,32 +21,22 @@ class CreateUserTest extends TestCase
     /** @test */
     public function can_create_with_minimum_data()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestuser',
             'gid' => 0,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestuser']);
+        $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('user', $response);
-
-        return $response;
-    }
-
-    /**
-     * @test
-     * @depends can_create_with_minimum_data
-     */
-    public function create_response_contains_all_keys($response)
-    {
-        $response->assertJsonStructure($this->expectedKeys());
     }
 
     /** @test */
     public function name_cannot_start_with_dash()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => '-test-dash-prefix',
             'gid' => 0,
         ]);
@@ -59,7 +48,7 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_cannot_start_with_plus()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => '+test-plus-prefix',
             'gid' => 0,
         ]);
@@ -71,7 +60,7 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_cannot_start_with_tilde()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => '~test-tilde-prefix',
             'gid' => 0,
         ]);
@@ -83,7 +72,7 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_cannot_contain_colon()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test-contains-:',
             'gid' => 0,
         ]);
@@ -95,7 +84,7 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_cannot_contain_comma()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test,contains,comma',
             'gid' => 0,
         ]);
@@ -107,7 +96,7 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_cannot_contain_tab()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\tcontains\ttab",
             'gid' => 0,
         ]);
@@ -119,7 +108,7 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_cannot_contain_newline()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\ncontains\nnewline",
             'gid' => 0,
         ]);
@@ -131,7 +120,7 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_cannot_contain_whitespace()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test contains space',
             'gid' => 0,
         ]);
@@ -143,7 +132,7 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_ending_with_whitespace_gets_trimmed()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'testuser ',
             'gid' => 0,
         ]);
@@ -157,25 +146,12 @@ class CreateUserTest extends TestCase
     /** @test */
     public function name_cannot_be_too_long()
     {
-        $response = $this->authed()->postJson('/api/system/users', [
+        $response = $this->authed()->postJson($this->endpoint, [
             'name' => '_im-a-name-that-is-over-32-chars-',
             'gid' => 0,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment(['The name may not be greater than 32 characters.']);
-    }
-
-    private function expectedKeys()
-    {
-        return [
-            'name',
-            'passwd',
-            'uid',
-            'gid',
-            'gecos',
-            'dir',
-            'shell',
-        ];
     }
 }

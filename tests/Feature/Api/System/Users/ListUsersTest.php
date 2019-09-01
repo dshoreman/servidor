@@ -4,7 +4,6 @@ namespace Tests\Feature\Api\System\Users;
 
 use Illuminate\Http\Response;
 use Tests\RequiresAuth;
-use Tests\TestCase;
 
 class ListUsersTest extends TestCase
 {
@@ -13,7 +12,7 @@ class ListUsersTest extends TestCase
     /** @test */
     public function can_view_users_page()
     {
-        $response = $this->authed()->getJson('/api/system/users');
+        $response = $this->authed()->getJson($this->endpoint);
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -46,28 +45,12 @@ class ListUsersTest extends TestCase
      * @test
      * @depends can_view_users_page
      */
-    public function list_is_an_array($response)
+    public function list_response_contains_expected_data($response)
     {
         $responseJson = json_decode($response->getContent());
 
         $this->assertEquals('array', gettype($responseJson));
-    }
 
-    /**
-     * @test
-     * @depends can_view_users_page
-     */
-    public function list_results_contain_expected_data($response)
-    {
-        $response->assertJsonStructure([[
-            'name',
-            'passwd',
-            'uid',
-            'gid',
-            'groups',
-            'gecos',
-            'dir',
-            'shell',
-        ]]);
+        $response->assertJsonStructure([$this->expectedKeys]);
     }
 }
