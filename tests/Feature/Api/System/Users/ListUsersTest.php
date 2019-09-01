@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Api\System\Users;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
 class ListUsersTest extends TestCase
 {
-    use RefreshDatabase;
     use RequiresAuth;
 
     /** @test */

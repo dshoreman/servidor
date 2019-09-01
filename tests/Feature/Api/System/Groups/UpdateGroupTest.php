@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Api\System\Groups;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
 class UpdateGroupTest extends TestCase
 {
-    use RefreshDatabase;
     use RequiresAuth;
 
     /**
