@@ -15,6 +15,8 @@ class CreateGroupTest extends TestCase
     public function tearDown()
     {
         $this->pruneDeletable('groups');
+
+        parent::tearDown();
     }
 
     /** @test */
