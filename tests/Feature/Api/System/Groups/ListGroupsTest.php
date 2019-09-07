@@ -10,18 +10,28 @@ class ListGroupsTest extends TestCase
     use RequiresAuth;
 
     /** @test */
-    public function can_view_groups_page()
+    public function guest_cannot_list_groups()
+    {
+        $response = $this->getJson($this->endpoint);
+
+        $response->assertJsonCount(1);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+    }
+
+    /** @test */
+    public function authed_user_can_list_groups()
     {
         $response = $this->authed()->getJson($this->endpoint);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertOk();
 
         return $response;
     }
 
     /**
      * @test
-     * @depends can_view_groups_page
+     * @depends authed_user_can_list_groups
      */
     public function list_response_contains_expected_data($response)
     {
@@ -34,7 +44,7 @@ class ListGroupsTest extends TestCase
 
     /**
      * @test
-     * @depends can_view_groups_page
+     * @depends authed_user_can_list_groups
      */
     public function list_results_include_default_groups($response)
     {

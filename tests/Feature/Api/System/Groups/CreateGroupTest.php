@@ -19,7 +19,22 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function can_create_with_minimum_data()
+    public function guest_cannot_create_group()
+    {
+        $response = $this->postJson($this->endpoint, [
+            'name' => 'guesttestgroup',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJsonCount(1);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+
+        $updated = $this->authed()->getJson($this->endpoint);
+        $updated->assertJsonMissing(['name' => 'guesttestgroup']);
+    }
+
+    /** @test */
+    public function authed_user_can_create_user_with_minimum_data()
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestgroup',
@@ -30,6 +45,36 @@ class CreateGroupTest extends TestCase
         $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('group', $response);
+    }
+
+    /** @test */
+    public function cannot_create_group_without_required_fields()
+    {
+        $response = $this->authed()->postJson($this->endpoint, ['gid' => 1337]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors(['name']);
+
+        $updated = $this->authed()->getJson($this->endpoint);
+        $updated->assertJsonMissing(['gid' > 1337]);
+    }
+
+    /** @test */
+    public function cannot_create_group_with_invalid_data()
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => '',
+            'users' => 'notanarray',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors([
+            'name',
+            'users',
+        ]);
+
+        $updated = $this->authed()->getJson($this->endpoint);
+        $updated->assertJsonMissing(['users' => 'notanarray']);
     }
 
     /** @test */

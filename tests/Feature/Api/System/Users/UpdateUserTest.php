@@ -19,7 +19,26 @@ class UpdateUserTest extends TestCase
     }
 
     /** @test */
-    public function can_update_user()
+    public function guest_cannot_update_user()
+    {
+        exec('sudo useradd -u 4270 guestupduser');
+        $this->addDeletable('user', 4270);
+
+        $response = $this->putJson($this->endpoint(4270), [
+            'name' => 'guestupdateduser',
+            'gid' => 0,
+        ]);
+
+        $updated = $this->authed()->getJson($this->endpoint);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJsonCount(1);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+        $updated->assertJsonFragment(['name' => 'guestupduser']);
+    }
+
+    /** @test */
+    public function authed_user_can_update_user()
     {
         $user = $this->authed()->postJson($this->endpoint, [
             'name' => 'updatetestuser',
@@ -31,7 +50,7 @@ class UpdateUserTest extends TestCase
             'gid' => 0,
         ]);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertOk();
         $response->assertJsonFragment(['name' => 'updatetestuser-renamed']);
         $response->assertJsonStructure($this->expectedKeys);
 

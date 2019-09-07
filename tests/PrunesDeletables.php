@@ -15,7 +15,7 @@ trait PrunesDeletables
         ],
     ];
 
-    private function addDeletable($type, $data)
+    private function addDeletable($type, $data): int
     {
         $key = mb_strtolower($type).'s';
 
@@ -23,9 +23,13 @@ trait PrunesDeletables
             throw new Exception('Invalid deletable type "'.$type.'".');
         }
 
+        if (is_int($data)) {
+            return $this->deletables[$key]['items'][] = $data;
+        }
+
         $filter = $this->deletables[$key]['key'];
 
-        $this->deletables[$key]['items'][] = $data->json()[$filter];
+        return $this->deletables[$key]['items'][] = $data->json()[$filter];
     }
 
     private function pruneDeletable($types = [])

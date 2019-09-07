@@ -19,7 +19,22 @@ class CreateUserTest extends TestCase
     }
 
     /** @test */
-    public function can_create_with_minimum_data()
+    public function guest_cannot_create_user()
+    {
+        $response = $this->postJson($this->endpoint, [
+            'name' => 'guesttestuser',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJsonCount(1);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+
+        $updated = $this->authed()->getJson($this->endpoint);
+        $updated->assertJsonMissing(['name' => 'guesttestuser']);
+    }
+
+    /** @test */
+    public function authed_user_can_create_user_with_minimum_data()
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestuser',
@@ -31,6 +46,38 @@ class CreateUserTest extends TestCase
         $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('user', $response);
+    }
+
+    /** @test */
+    public function cannot_create_user_without_required_fields()
+    {
+        $response = $this->authed()->postJson($this->endpoint, ['uid' => 1337]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors(['name', 'gid']);
+
+        $updated = $this->authed()->getJson($this->endpoint);
+        $updated->assertJsonMissing(['uid' > 1337]);
+    }
+
+    /** @test */
+    public function cannot_create_user_with_invalid_data()
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => '',
+            'gid' => '',
+            'groups' => 'notanarray',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors([
+            'name',
+            'gid',
+            'groups',
+        ]);
+
+        $updated = $this->authed()->getJson($this->endpoint);
+        $updated->assertJsonMissing(['groups' => 'notanarray']);
     }
 
     /** @test */
