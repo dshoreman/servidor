@@ -107,7 +107,7 @@ class UsersController extends Controller
             $options[] = '-l '.$data['name'];
         }
 
-        if ($data['uid'] != $uid && (int) $data['uid'] > 0) {
+        if (isset($data['uid']) && $data['uid'] != $uid && (int) $data['uid'] > 0) {
             $new_uid = (int) $data['uid'];
             $options[] = '-u '.$new_uid;
         }
@@ -118,7 +118,7 @@ class UsersController extends Controller
 
         $original['groups'] = $this->loadSecondaryGroups($original);
 
-        if ($data['groups'] != $original['groups']) {
+        if (isset($data['groups']) && $data['groups'] != $original['groups']) {
             $options[] = '-G "'.implode(',', $data['groups']).'"';
         }
 
