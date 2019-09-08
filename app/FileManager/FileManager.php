@@ -65,7 +65,7 @@ class FileManager
             $path = mb_substr($path, 0, mb_strrpos($path, '/'));
         }
 
-        exec('cd "'.$path.'" && stat -c "%n %A %a" '.$name, $files);
+        exec('cd "'.$path.'" && stat -c "%n %A %a" '.$name.' 2>/dev/null', $files);
 
         foreach ($files as $file) {
             list($filename, $text, $octal) = explode(' ', $file);
