@@ -1,10 +1,9 @@
 <template>
-    <sui-grid container id="file-editor">
-        <sui-grid-column>
+    <sui-grid container>
+        <sui-grid-column id="file-editor">
             <h2>
-                <sui-button id="levelup" size="mini" icon="chevron left"
-                    @click="backToDir" />
-                {{ filePath }}
+                <sui-button id="levelup" icon="chevron left" @click="backToDir" />
+                <span class="pathbar">{{ filePath }}</span>
             </h2>
 
             <sui-segment v-if="file.error == undefined">

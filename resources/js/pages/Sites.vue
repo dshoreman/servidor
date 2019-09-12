@@ -7,7 +7,7 @@
                         v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
-        <router-view :sites="filteredSites" />
+        <router-view id="sites" :sites="filteredSites" />
     </sui-grid>
 </template>
 

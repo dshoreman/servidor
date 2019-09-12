@@ -1,0 +1,24 @@
+#stats-bar {
+    background: rgba(27, 28, 29, 0.9);
+    left: $sidebar-width;
+    width: calc(100% - #{$sidebar-width});
+
+    .item {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .statistic .value,
+    .statistic .label {
+        color: #fff;
+    }
+
+    .mini.statistic .value {
+        padding-top: 4px;
+    }
+
+    .hostname i {
+        position: relative;
+        top: -5px;
+    }
+}

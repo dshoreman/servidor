@@ -1,12 +1,12 @@
 <template>
-    <sui-grid container id="file-browser">
-        <sui-grid-column>
+    <sui-grid container>
+        <sui-grid-column id="file-browser">
             <h2>
                 <router-link :to="{ name: 'apps.edit', params: { id: site.id }}"
                     is="sui-button" color="teal" icon="globe" floated="right"
                     id="back2site" :content="'Edit ' + site.name" v-if="site" />
 
-                <sui-button id="levelup" icon="level up" @click="upOneLevel"/>
+                <sui-button id="levelup" icon="level up" @click="upOneLevel" />
 
                 <sui-breadcrumb class="massive">
                     <template v-for="(segment, index) in pathParts">

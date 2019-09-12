@@ -4,66 +4,11 @@ body {
     #app {
         height: 100%;
 
-        .sidebar .submenu-item {
-            border-right: none;
-        }
-
-        .sidebar #user-menu {
-            background: rgba(0, 0, 0, 0.6);
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            transition: max-height .5s ease-out;
-            min-height: 35px;
-            max-height: 35px;
-            overflow: hidden;
-            position: absolute;
-            bottom: 0;
-
-            & a:first-child {
-                background: rgba(0, 0, 0, 0.9);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-            }
-
-            .item i.chevron.up {
-                transition: 0.3s;
-            }
-
-            &:hover {
-                max-height: 80px;
-                transition: max-height .2s ease-in;
-
-                .item i.chevron.up {
-                    transform: rotate(-180deg);
-                    transition: 0.3s;
-                }
-            }
-        }
-
         .main {
             margin-left: $sidebar-width;
 
-            #stats-bar {
-                background: rgba(27, 28, 29, 0.9);
-                height: 54px;
-                left: $sidebar-width;
-                width: calc(100% - #{$sidebar-width});
-
-                .statistic .value,
-                .statistic .label {
-                    color: #fff;
-                }
-
-                .mini.statistic .value {
-                    padding-top: 4px;
-                }
-
-                .hostname i {
-                    position: relative;
-                    top: -5px;
-                }
-            }
-
             #content {
-                margin-top: 65px;
+                margin-top: 1rem;
             }
         }
     }
