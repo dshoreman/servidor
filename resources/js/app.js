@@ -34,7 +34,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    let authed = store.getters.loggedIn;
+    let authed = store.getters.loggedIn,
+        token = store.getters.token;
+
+    if (token && token !== localStorage.getItem('accessToken')) {
+        store.commit('clearToken');
+        authed = false;
+    }
 
     if (!authed && to.matched.some(route => route.meta.auth)) {
         next({ name: 'login' });

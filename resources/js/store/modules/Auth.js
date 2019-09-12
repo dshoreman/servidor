@@ -63,6 +63,7 @@ export default {
         },
     },
     getters: {
+        token: state => state.token,
         loggedIn: state => {
             return state.token !== null;
         },
