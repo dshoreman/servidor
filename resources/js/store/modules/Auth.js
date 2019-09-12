@@ -1,13 +1,16 @@
 export default {
     state: {
         token: localStorage.getItem('accessToken') || null,
-        user: '',
+        user: {},
     },
     mutations: {
         setToken: (state, token) => {
+            window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
+            localStorage.setItem('accessToken', token);
             state.token = token;
         },
         clearToken: (state) => {
+            localStorage.removeItem('accessToken');
             state.token = null;
         },
         setUser: (state, user) => {
@@ -35,13 +38,7 @@ export default {
                     username: data.username,
                     password: data.password,
                 }).then(response => {
-                    const token = response.data.access_token;
-
-                    window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
-                    localStorage.setItem('accessToken', token);
-
-                    commit('setToken', token);
-
+                    commit('setToken', response.data.access_token);
                     resolve(response);
                 }).catch(error => {
                     reject(error);
@@ -55,7 +52,6 @@ export default {
                 }).catch(error => {
                     reject(error);
                 }).then(() => {
-                    localStorage.removeItem('accessToken');
                     commit('clearToken');
                 });
             });
