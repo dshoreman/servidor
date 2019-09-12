@@ -1,5 +1,5 @@
 <template>
-    <sui-container>
+    <sui-container fluid>
         <alerts :alerts="alerts" />
         <sui-card-group :items-per-row="4">
             <site-item v-for="site in sites" :key="site.id" :site="site"></site-item>
