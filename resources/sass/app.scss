@@ -2,8 +2,11 @@
 @import '~semantic-ui-sass/semantic-ui';
 
 @import 'layout';
-@import 'alerts';
-@import 'footer';
+@import 'layout/sidebar';
+@import 'layout/footer';
 
-@import 'login';
-@import 'file-manager';
+@import 'components/alerts';
+@import 'components/statsbar';
+
+@import 'pages/login';
+@import 'pages/file-manager';

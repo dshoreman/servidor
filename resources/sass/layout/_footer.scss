@@ -7,10 +7,6 @@ html {
 body {
     margin-bottom: 60px;
 
-    #app {
-        padding-bottom: 20px;
-    }
-
     & > footer {
         margin-left: $sidebar_width;
         position: absolute;
