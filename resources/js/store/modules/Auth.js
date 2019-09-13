@@ -1,13 +1,27 @@
 export default {
     state: {
+        alert: {
+            title: '',
+            msg: '',
+        },
         token: localStorage.getItem('accessToken') || null,
-        user: '',
+        user: {},
     },
     mutations: {
+        setAlert: (state, {msg, title}) => {
+            state.alert.title = title;
+            state.alert.msg = msg;
+        },
+        clearAlert: (state) => {
+            state.alert = {};
+        },
         setToken: (state, token) => {
+            window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
+            localStorage.setItem('accessToken', token);
             state.token = token;
         },
         clearToken: (state) => {
+            localStorage.removeItem('accessToken');
             state.token = null;
         },
         setUser: (state, user) => {
@@ -35,15 +49,15 @@ export default {
                     username: data.username,
                     password: data.password,
                 }).then(response => {
-                    const token = response.data.access_token;
-
-                    window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
-                    localStorage.setItem('accessToken', token);
-
-                    commit('setToken', token);
-
+                    commit('clearAlert');
+                    commit('setToken', response.data.access_token);
                     resolve(response);
                 }).catch(error => {
+                    commit('clearAlert');
+                    commit('setAlert', {
+                        title: "We couldn't get you logged in :(",
+                        msg: error.response.data.message
+                    });
                     reject(error);
                 });
             });
@@ -55,7 +69,6 @@ export default {
                 }).catch(error => {
                     reject(error);
                 }).then(() => {
-                    localStorage.removeItem('accessToken');
                     commit('clearToken');
                 });
             });
@@ -65,8 +78,14 @@ export default {
                 commit('setUser', response.data);
             });
         },
+        forceLogin: ({commit}, reason) => {
+            commit('setAlert', { title: reason, msg: 'Please login again.' });
+            commit('clearToken');
+        },
     },
     getters: {
+        authMsg: state => state.alert,
+        token: state => state.token,
         loggedIn: state => {
             return state.token !== null;
         },

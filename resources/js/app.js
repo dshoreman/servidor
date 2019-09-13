@@ -34,7 +34,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    let authed = store.getters.loggedIn;
+    let authed = store.getters.loggedIn,
+        token = store.getters.token;
+
+    if (token && token !== localStorage.getItem('accessToken')) {
+        store.dispatch('forceLogin', 'Token mismatch');
+        authed = false;
+    }
 
     if (!authed && to.matched.some(route => route.meta.auth)) {
         next({ name: 'login' });
@@ -48,7 +54,8 @@ router.beforeEach((to, from, next) => {
 window.axios.interceptors.response.use(response => {
     return response;
 }, error => {
-    if (error.response.status === 401) {
+    if (error.response.status === 401 && error.response.data.error != 'invalid_credentials') {
+        store.dispatch('forceLogin', 'Session timed out');
         router.push({ name: 'login' });
     }
 

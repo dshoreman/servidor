@@ -7,12 +7,10 @@
             </h2>
             <form class="ui form" @submit.prevent="login" method="POST" action="/login">
                 <div class="ui stacked segment">
-                    <sui-message negative v-if="error">
-                        <sui-message-header>
-                            We couldn't get you logged in :(
-                        </sui-message-header>
-                        {{ error }}
-                    </sui-message>
+                    <sui-message negative v-if="error.msg"
+                        :header="error.title"
+                        :content="error.msg" />
+
                     <div class="field">
                         <div class="ui left icon input" type="email" placeholder="Email address">
                             <input id="email" type="email" name="email"
@@ -51,10 +49,11 @@
 </template>
 
 <script>
+import { mapMutations, mapGetters } from 'vuex';
+
 export default {
     data () {
         return {
-            error: null,
             username: '',
             password: '',
         };
@@ -67,15 +66,21 @@ export default {
 
         return next();
     },
-    methods:  {
+    computed: {
+        ...mapGetters({
+            error: 'authMsg',
+        }),
+    },
+    methods: {
+        ...mapMutations([
+            'setAlert',
+        ]),
         login () {
             this.$store.dispatch('login', {
                 username: this.username,
                 password: this.password,
             }).then(response => {
                 this.$router.push({ name: 'dashboard' });
-            }).catch(error => {
-                this.error = error.response.data.message;
             });
         },
     },
