@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
         token = store.getters.token;
 
     if (token && token !== localStorage.getItem('accessToken')) {
-        store.commit('clearToken');
+        store.dispatch('forceLogin', 'Token mismatch');
         authed = false;
     }
 
@@ -54,8 +54,8 @@ router.beforeEach((to, from, next) => {
 window.axios.interceptors.response.use(response => {
     return response;
 }, error => {
-    if (error.response.status === 401) {
-        store.commit('clearToken');
+    if (error.response.status === 401 && error.response.data.error != 'invalid_credentials') {
+        store.dispatch('forceLogin', 'Session timed out');
         router.push({ name: 'login' });
     }
 

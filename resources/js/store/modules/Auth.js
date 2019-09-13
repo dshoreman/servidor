@@ -1,9 +1,20 @@
 export default {
     state: {
+        alert: {
+            title: '',
+            msg: '',
+        },
         token: localStorage.getItem('accessToken') || null,
         user: {},
     },
     mutations: {
+        setAlert: (state, {msg, title}) => {
+            state.alert.title = title;
+            state.alert.msg = msg;
+        },
+        clearAlert: (state) => {
+            state.alert = {};
+        },
         setToken: (state, token) => {
             window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
             localStorage.setItem('accessToken', token);
@@ -33,6 +44,8 @@ export default {
             });
         },
         login: ({commit}, data) => {
+            commit('clearAlert');
+
             return new Promise((resolve, reject) => {
                 axios.post('/api/login', {
                     username: data.username,
@@ -41,6 +54,10 @@ export default {
                     commit('setToken', response.data.access_token);
                     resolve(response);
                 }).catch(error => {
+                    commit('setAlert', {
+                        title: "We couldn't get you logged in :(",
+                        msg: error.response.data.message
+                    });
                     reject(error);
                 });
             });
@@ -61,8 +78,13 @@ export default {
                 commit('setUser', response.data);
             });
         },
+        forceLogin: ({commit}, reason) => {
+            commit('setAlert', { title: reason, msg: 'Please login again.' });
+            commit('clearToken');
+        },
     },
     getters: {
+        authMsg: state => state.alert,
         token: state => state.token,
         loggedIn: state => {
             return state.token !== null;
