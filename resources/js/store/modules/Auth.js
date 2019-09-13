@@ -44,16 +44,16 @@ export default {
             });
         },
         login: ({commit}, data) => {
-            commit('clearAlert');
-
             return new Promise((resolve, reject) => {
                 axios.post('/api/login', {
                     username: data.username,
                     password: data.password,
                 }).then(response => {
+                    commit('clearAlert');
                     commit('setToken', response.data.access_token);
                     resolve(response);
                 }).catch(error => {
+                    commit('clearAlert');
                     commit('setAlert', {
                         title: "We couldn't get you logged in :(",
                         msg: error.response.data.message
