@@ -23,7 +23,7 @@ before_script:
   - sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"
   - sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"
   - sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"
-  - npm run dev
+  - npm run prod
 
 script:
   - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no
