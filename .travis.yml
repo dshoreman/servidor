@@ -12,19 +12,18 @@ before_install:
   - composer validate
 
 install:
+  - mysql -e 'CREATE DATABASE servidor_test;'
   - composer install --no-interaction
   - npm clean-install
-  - npm run dev
+  - cp .env.travis .env
+  - php artisan key:generate
+  - php artisan migrate && php artisan passport:install
 
 before_script:
   - sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"
   - sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"
   - sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"
-  - mysql -e 'CREATE DATABASE servidor_test;'
-  - cp .env.travis .env
-  - php artisan key:generate
-  - php artisan migrate
-  - php artisan passport:install
+  - npm run dev
 
 script:
   - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no
