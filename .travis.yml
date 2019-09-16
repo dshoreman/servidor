@@ -26,6 +26,10 @@ before_script:
   - php artisan migrate
   - php artisan passport:install
 
+script:
+  - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no
+  - vendor/bin/phpunit
+
 after_failure:
   - cat storage/logs/laravel.log
 
