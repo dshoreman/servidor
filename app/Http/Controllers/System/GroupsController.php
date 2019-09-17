@@ -9,6 +9,12 @@ use Illuminate\Validation\ValidationException;
 
 class GroupsController extends Controller
 {
+    const GROUP_NAME_TAKEN = 9;
+    const GROUP_GID_TAKEN = 4;
+    const GROUP_SYNTAX_INVALID = 2;
+    const GROUP_OPTION_INVALID = 3;
+    const GROUP_UPDATE_FAILED = 10;
+
     /**
      * Display a listing of the resource.
      *
@@ -65,19 +71,19 @@ class GroupsController extends Controller
                 ];
 
                 break;
-            case 2:
+            case self::GROUP_SYNTAX_INVALID:
                 $data['error'] = 'Invalid command syntax.';
                 break;
-            case 3:
+            case self::GROUP_OPTION_INVALID:
                 $data['error'] = 'Invalid argument to option';
                 break;
-            case 4:
+            case self::GROUP_GID_TAKEN:
                 $data['error'] = 'GID not unique (when -o not used)';
                 break;
-            case 9:
+            case self::GROUP_NAME_TAKEN:
                 $data['error'] = 'Group name not unique';
                 break;
-            case 10:
+            case self::GROUP_UPDATE_FAILED:
                 $data['error'] = "Can't update group file";
                 break;
         }

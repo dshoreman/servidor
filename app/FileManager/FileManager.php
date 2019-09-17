@@ -99,7 +99,7 @@ class FileManager
                        ? ['text' => '', 'octal' => mb_substr(decoct($file->getPerms()), -4)]
                        : $this->file_perms[$data['filename']];
 
-        if (3 === mb_strlen($data['perms']['octal'])) {
+        if (intval(3) === mb_strlen($data['perms']['octal'])) {
             $data['perms']['octal'] = '0' . $data['perms']['octal'];
         }
 
