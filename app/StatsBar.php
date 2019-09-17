@@ -28,7 +28,7 @@ class StatsBar
         $flags = FILE_IGNORE_NEW_LINES;
         $data = [];
 
-        foreach (file('/etc/'.$file.'-release', $flags) as $line) {
+        foreach (file('/etc/' . $file . '-release', $flags) as $line) {
             list($key, $val) = explode('=', $line);
 
             $key = trim($key, '[]');

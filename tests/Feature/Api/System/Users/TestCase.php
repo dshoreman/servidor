@@ -23,7 +23,7 @@ abstract class TestCase extends BaseCase
         $endpoint = $this->endpoint;
 
         if ($id) {
-            $endpoint .= '/'.$id;
+            $endpoint .= '/' . $id;
         }
 
         return $endpoint;

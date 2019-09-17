@@ -31,7 +31,7 @@ class UpdateSite extends FormRequest
                 'string',
                 Rule::unique('sites', 'name')->ignore($this->route('site')),
             ],
-            'primary_domain' => ['required', new Domain],
+            'primary_domain' => ['required', new Domain()],
             'type' => 'required|in:basic,php,laravel,redirect',
             'source_repo' => 'required_unless:type,redirect|nullable|url',
             'source_branch' => 'nullable|string',
@@ -56,7 +56,11 @@ class UpdateSite extends FormRequest
                 return;
             }
 
-            exec('git ls-remote --heads --exit-code "'.$data['source_repo'].'" "'.$data['source_branch'].'"', $o, $status);
+            $stringOpts = [
+                $data['source_repo'],
+                $data['source_branch'],
+            ];
+            exec('git ls-remote --heads --exit-code "' . implode('" "', $stringOpts) . '"', $o, $status);
 
             if (128 === $status) {
                 $validator->errors()->add('source_repo', "This repo couldn't be found. Does it require auth?");

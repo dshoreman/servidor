@@ -27,6 +27,6 @@ class Version extends Command
      */
     public function handle()
     {
-        $this->info('Servidor v'.SERVIDOR_VERSION);
+        $this->info('Servidor v' . SERVIDOR_VERSION);
     }
 }

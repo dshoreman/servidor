@@ -27,6 +27,7 @@ before_script:
 
 script:
   - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no
+  - vendor/bin/phpcs app --standard=PSR12
   - vendor/bin/phpunit
 
 after_failure:

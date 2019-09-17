@@ -34,8 +34,8 @@ class UsersController extends Controller
     protected function loadSecondaryGroups(array $user)
     {
         $groups = [];
-        $primary = explode(':', exec('getent group '.$user['gid']));
-        $effective = explode(' ', exec('groups '.$user['name']));
+        $primary = explode(':', exec('getent group ' . $user['gid']));
+        $effective = explode(' ', exec('groups ' . $user['name']));
 
         $primaryName = reset($primary);
         $primaryMembers = explode(',', end($primary));
@@ -63,16 +63,16 @@ class UsersController extends Controller
         $data = $request->validate($this->validationRules());
 
         if ((int) ($data['uid'] ?? null) > 0) {
-            $options[] = '-u '.(int) $data['uid'];
+            $options[] = '-u ' . (int) $data['uid'];
         }
 
         if ((int) ($data['gid'] ?? null) > 0) {
-            $options[] = '-g '.(int) $data['gid'];
+            $options[] = '-g ' . (int) $data['gid'];
         }
 
         $options[] = $data['name'];
 
-        exec('sudo useradd '.implode(' ', $options), $output, $retval);
+        exec('sudo useradd ' . implode(' ', $options), $output, $retval);
 
         if (0 !== $retval) {
             $data['error'] = "Something went wrong (Exit code: {$retval})";
@@ -82,8 +82,7 @@ class UsersController extends Controller
 
         return response($data, 0 === $retval
             ? Response::HTTP_CREATED
-            : Response::HTTP_UNPROCESSABLE_ENTITY
-        );
+            : Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -104,22 +103,22 @@ class UsersController extends Controller
         }
 
         if ($data['name'] != $original['name']) {
-            $options[] = '-l '.$data['name'];
+            $options[] = '-l ' . $data['name'];
         }
 
         if (isset($data['uid']) && $data['uid'] != $uid && (int) $data['uid'] > 0) {
             $new_uid = (int) $data['uid'];
-            $options[] = '-u '.$new_uid;
+            $options[] = '-u ' . $new_uid;
         }
 
         if ($data['gid'] != $original['gid'] && (int) $data['gid'] > 0) {
-            $options[] = '-g '.(int) $data['gid'];
+            $options[] = '-g ' . (int) $data['gid'];
         }
 
         $original['groups'] = $this->loadSecondaryGroups($original);
 
         if (isset($data['groups']) && $data['groups'] != $original['groups']) {
-            $options[] = '-G "'.implode(',', $data['groups']).'"';
+            $options[] = '-G "' . implode(',', $data['groups']) . '"';
         }
 
         if (empty($options ?? null)) {
@@ -128,10 +127,10 @@ class UsersController extends Controller
 
         $options[] = $original['name'];
 
-        exec('sudo usermod '.implode(' ', $options), $output, $retval);
+        exec('sudo usermod ' . implode(' ', $options), $output, $retval);
 
         if (0 !== $retval) {
-            throw new \Exception('Something went wrong. Exit code: '.$retval);
+            throw new \Exception('Something went wrong. Exit code: ' . $retval);
         }
 
         return response(posix_getpwuid($new_uid), Response::HTTP_OK);
@@ -147,7 +146,7 @@ class UsersController extends Controller
     public function destroy($uid)
     {
         if ($user = posix_getpwuid($uid)) {
-            exec('sudo userdel '.$user['name']);
+            exec('sudo userdel ' . $user['name']);
         }
 
         return response(null, Response::HTTP_NO_CONTENT);

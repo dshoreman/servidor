@@ -39,7 +39,7 @@ class LoginController extends Controller
         }
 
         try {
-            $response = $client->post(config('app.url').'/oauth/token', [
+            $response = $client->post(config('app.url') . '/oauth/token', [
                 'form_params' => [
                     'grant_type' => 'password',
                     'client_id' => config('passport.client_id'),

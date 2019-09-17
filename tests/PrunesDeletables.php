@@ -17,10 +17,10 @@ trait PrunesDeletables
 
     private function addDeletable($type, $data): int
     {
-        $key = mb_strtolower($type).'s';
+        $key = mb_strtolower($type) . 's';
 
         if (!array_key_exists($key, $this->deletables)) {
-            throw new Exception('Invalid deletable type "'.$type.'".');
+            throw new Exception('Invalid deletable type "' . $type . '".');
         }
 
         if (is_int($data)) {
@@ -42,7 +42,7 @@ trait PrunesDeletables
             $endpoint = "/api/system/{$type}/";
 
             foreach ($this->deletables[$type]['items'] as $id) {
-                $this->authed()->deleteJson($endpoint.$id, []);
+                $this->authed()->deleteJson($endpoint . $id, []);
             }
         }
     }

@@ -26,7 +26,7 @@ class CreateSite extends FormRequest
     {
         return [
             'name' => 'required|string|unique:sites,name',
-            'primary_domain' => [new Domain],
+            'primary_domain' => [new Domain()],
             'is_enabled' => 'boolean',
         ];
     }

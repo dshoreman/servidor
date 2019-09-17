@@ -20,7 +20,7 @@ class FileManager
 
     public function __construct()
     {
-        $this->finder = new Finder;
+        $this->finder = new Finder();
     }
 
     public function list(string $path): array
@@ -65,7 +65,7 @@ class FileManager
             $path = mb_substr($path, 0, mb_strrpos($path, '/'));
         }
 
-        exec('cd "'.$path.'" && stat -c "%n %A %a" '.$name.' 2>/dev/null', $files);
+        exec('cd "' . $path . '" && stat -c "%n %A %a" ' . $name . ' 2>/dev/null', $files);
 
         foreach ($files as $file) {
             list($filename, $text, $octal) = explode(' ', $file);
@@ -100,7 +100,7 @@ class FileManager
                        : $this->file_perms[$data['filename']];
 
         if (3 === mb_strlen($data['perms']['octal'])) {
-            $data['perms']['octal'] = '0'.$data['perms']['octal'];
+            $data['perms']['octal'] = '0' . $data['perms']['octal'];
         }
 
         if ($includeContents) {
