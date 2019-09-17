@@ -55,6 +55,7 @@ class GroupsController extends Controller
         $options[] = $data['name'];
 
         exec('sudo groupadd ' . implode(' ', $options), $output, $retval);
+        unset($output);
 
         if ($data['users'] ?? null === null) {
             $data['users'] = '';

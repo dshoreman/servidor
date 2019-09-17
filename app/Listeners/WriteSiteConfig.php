@@ -20,7 +20,7 @@ class WriteSiteConfig
     /**
      * @var string
      */
-    private $config_path;
+    private $configPath;
 
     /**
      * @var string
@@ -40,7 +40,7 @@ class WriteSiteConfig
 
         $site = $this->site = $event->site;
         $filename = $this->filename = $site->primary_domain . '.conf';
-        $this->config_path = '/etc/nginx/sites-available/' . $filename;
+        $this->configPath = '/etc/nginx/sites-available/' . $filename;
         $this->symlink = '/etc/nginx/sites-enabled/' . $filename;
 
         $this->updateConfig();
@@ -62,7 +62,7 @@ class WriteSiteConfig
         Storage::put('vhosts/' . $this->filename, $view->with('site', $this->site));
 
         $file = Storage::disk('local')->path('vhosts/' . $this->filename);
-        exec('sudo cp "' . $file . '" "' . $this->config_path . '"');
+        exec('sudo cp "' . $file . '" "' . $this->configPath . '"');
     }
 
     private function pullSite()
@@ -90,7 +90,7 @@ class WriteSiteConfig
 
     private function createSymlink()
     {
-        if (is_link($symlink = $this->symlink) && readlink($symlink) == $this->config_path) {
+        if (is_link($symlink = $this->symlink) && readlink($symlink) == $this->configPath) {
             return;
         }
 
@@ -98,12 +98,12 @@ class WriteSiteConfig
             exec('sudo rm "' . $symlink . '"');
         }
 
-        exec('sudo ln -s "' . $this->config_path . '" "' . $symlink . '"');
+        exec('sudo ln -s "' . $this->configPath . '" "' . $symlink . '"');
     }
 
     private function removeSymlink()
     {
-        if (!is_link($symlink = $this->symlink) || readlink($symlink) != $this->config_path) {
+        if (!is_link($symlink = $this->symlink) || readlink($symlink) != $this->configPath) {
             return;
         }
 

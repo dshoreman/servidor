@@ -64,6 +64,7 @@ class UpdateSite extends FormRequest
                 $data['source_branch'],
             ];
             exec('git ls-remote --heads --exit-code "' . implode('" "', $stringOpts) . '"', $o, $status);
+            unset($o);
 
             if (self::GIT_NOT_FOUND === $status) {
                 $validator->errors()->add('source_repo', "This repo couldn't be found. Does it require auth?");

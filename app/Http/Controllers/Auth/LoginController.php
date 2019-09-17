@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers\Auth;
 
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Servidor\Http\Controllers\Controller;
@@ -73,7 +74,7 @@ class LoginController extends Controller
         $user = auth()->user();
 
         if (true !== $user->token()->delete()) {
-            throw new \Exception('Failed to delete token.');
+            throw new Exception('Failed to delete token.');
         }
 
         return response(null, 204);
