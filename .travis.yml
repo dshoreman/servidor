@@ -22,8 +22,6 @@ before_install:
   - phpenv config-rm xdebug.ini
 
 install:
-  - if [[ "$WITH_PHP" == true ]]; then composer self-update; fi
-  - if [[ "$WITH_PHP" == true ]]; then composer validate; fi
   - if [[ "$WITH_PHP" == true ]]; then mysql -e 'CREATE DATABASE servidor_test;'; fi
   - if [[ "$WITH_PHP" == true ]]; then composer install --no-interaction; fi
   - if [[ "$WITH_NPM" == true ]]; then npm clean-install; fi
