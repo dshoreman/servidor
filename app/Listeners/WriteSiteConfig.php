@@ -8,7 +8,7 @@ use Servidor\Events\SiteUpdated;
 class WriteSiteConfig
 {
     /**
-     * @var Site
+     * @var \Servidor\Site
      */
     private $site;
 

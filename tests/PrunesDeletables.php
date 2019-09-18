@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use Exception;
+
 trait PrunesDeletables
 {
     private $deletables = [

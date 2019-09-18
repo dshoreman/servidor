@@ -143,7 +143,7 @@ class GroupsController extends Controller
         if ($members ?? null) {
             $group = $updated['name'];
 
-            exec("sudo gpasswd -M '{$members}' {$group}", $output, $retval);
+            exec("sudo gpasswd -M '" . ($members ?? null) . "' {$group}", $output, $retval);
 
             if (0 !== $retval) {
                 throw new ValidationException('Something went wrong. Exit code: ' . $retval);

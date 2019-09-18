@@ -24,10 +24,10 @@ class LoginController extends Controller
     /**
      * Proxy login requests to /oauth/token with client secret.
      *
-     * @param Illuminate\Http\Request $request
-     * @param GuzzleHttp\Client       $client
+     * @param \Illuminate\Http\Request $request
+     * @param \GuzzleHttp\Client       $client
      *
-     * @return Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function login(Request $request, Client $client)
     {
