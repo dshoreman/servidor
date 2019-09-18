@@ -10,13 +10,10 @@ matrix:
   include:
     - php: 7.3
       env:
-        - WITH_CS=true
+        - WITH_PHP=true
     - php: 7.3
       env:
         - WITH_NPM=true
-    - php: 7.3
-      env:
-        - WITH_TESTS=true
 
 services:
   - mysql
@@ -25,28 +22,28 @@ before_install:
   - phpenv config-rm xdebug.ini
 
 install:
-  - if [[ -z "$WITH_NPM" ]]; then composer self-update; fi
-  - if [[ -z "$WITH_NPM" ]]; then composer validate; fi
-  - if [[ -z "$WITH_NPM" ]]; then mysql -e 'CREATE DATABASE servidor_test;'; fi
-  - if [[ -z "$WITH_NPM" ]]; then composer install --no-interaction; fi
+  - if [[ "$WITH_PHP" == true ]]; then composer self-update; fi
+  - if [[ "$WITH_PHP" == true ]]; then composer validate; fi
+  - if [[ "$WITH_PHP" == true ]]; then mysql -e 'CREATE DATABASE servidor_test;'; fi
+  - if [[ "$WITH_PHP" == true ]]; then composer install --no-interaction; fi
   - if [[ "$WITH_NPM" == true ]]; then npm clean-install; fi
-  - if [[ -z "$WITH_NPM" ]]; then cp .env.travis .env; fi
-  - if [[ -z "$WITH_NPM" ]]; then php artisan key:generate; fi
-  - if [[ -z "$WITH_NPM" ]]; then php artisan migrate && php artisan passport:install; fi
+  - if [[ "$WITH_PHP" == true ]]; then cp .env.travis .env; fi
+  - if [[ "$WITH_PHP" == true ]]; then php artisan key:generate; fi
+  - if [[ "$WITH_PHP" == true ]]; then php artisan migrate && php artisan passport:install; fi
 
 before_script:
-  - if [[ "$WITH_TESTS" ]]; then sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"; fi
-  - if [[ "$WITH_TESTS" ]]; then sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"; fi
-  - if [[ "$WITH_TESTS" ]]; then sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"; fi
-  - if [[ "$WITH_NPM" == true ]]; then npm run prod; fi
+  - if [[ "$WITH_PHP" == true ]]; then sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"; fi
+  - if [[ "$WITH_PHP" == true ]]; then sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"; fi
+  - if [[ "$WITH_PHP" == true ]]; then sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"; fi
 
 script:
-  - if [[ "$WITH_CS" == true ]]; then vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no; fi
-  - if [[ "$WITH_CS" == true ]]; then vendor/bin/phpcs app --standard=PSR12; fi
-  - if [[ "$WITH_CS" == true ]]; then vendor/bin/phpmd app text .phpmd.xml; fi
-  - if [[ "$WITH_CS" == true ]]; then vendor/bin/phpmnd . --non-zero-exit-on-violation --exclude tests; fi
-  - if [[ "$WITH_TESTS" == true ]]; then vendor/bin/phpstan analyze -c phpstan.neon.dist; fi
-  - if [[ "$WITH_TESTS" == true ]]; then vendor/bin/phpunit; fi
+  - if [[ "$WITH_NPM" == true ]]; then npm run prod; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpcs app --standard=PSR12; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmd app text .phpmd.xml; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmnd . --non-zero-exit-on-violation --exclude tests; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpstan analyze -c phpstan.neon.dist; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpunit; fi
 
 after_failure:
   - cat storage/logs/laravel.log
