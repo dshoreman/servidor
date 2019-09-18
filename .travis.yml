@@ -23,8 +23,8 @@ before_install:
 
 install:
   - if [[ "$WITH_PHP" == true ]]; then mysql -e 'CREATE DATABASE servidor_test;'; fi
-  - if [[ "$WITH_PHP" == true ]]; then composer install --no-interaction; fi
-  - if [[ "$WITH_NPM" == true ]]; then npm clean-install; fi
+  - if [[ "$WITH_PHP" == true ]]; then travis_retry composer install --no-interaction; fi
+  - if [[ "$WITH_NPM" == true ]]; then travis_retry npm clean-install; fi
   - if [[ "$WITH_PHP" == true ]]; then cp .env.travis .env; fi
   - if [[ "$WITH_PHP" == true ]]; then php artisan key:generate; fi
   - if [[ "$WITH_PHP" == true ]]; then php artisan migrate && php artisan passport:install; fi
