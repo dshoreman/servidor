@@ -1,43 +1,52 @@
 dist: bionic
 language: php
 
-php:
-  - '7.3'
-
-services:
-  - mysql
-
 cache:
   directories:
     - $HOME/.composer/cache
     - vendor
 
+matrix:
+  include:
+    - php: 7.3
+      env:
+        - WITH_CS=true
+    - php: 7.3
+      env:
+        - WITH_NPM=true
+    - php: 7.3
+      env:
+        - WITH_TESTS=true
+
+services:
+  - mysql
+
 before_install:
   - phpenv config-rm xdebug.ini
 
 install:
-  - composer self-update
-  - composer validate
-  - mysql -e 'CREATE DATABASE servidor_test;'
-  - composer install --no-interaction
-  - npm clean-install
-  - cp .env.travis .env
-  - php artisan key:generate
-  - php artisan migrate && php artisan passport:install
+  - if [[ -z "$WITH_NPM" ]]; then composer self-update; fi
+  - if [[ -z "$WITH_NPM" ]]; then composer validate; fi
+  - if [[ -z "$WITH_NPM" ]]; then mysql -e 'CREATE DATABASE servidor_test;'; fi
+  - if [[ -z "$WITH_NPM" ]]; then composer install --no-interaction; fi
+  - if [[ "$WITH_NPM" == true ]]; then npm clean-install; fi
+  - if [[ -z "$WITH_NPM" ]]; then cp .env.travis .env; fi
+  - if [[ -z "$WITH_NPM" ]]; then php artisan key:generate; fi
+  - if [[ -z "$WITH_NPM" ]]; then php artisan migrate && php artisan passport:install; fi
 
 before_script:
-  - sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"
-  - sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"
-  - sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"
-  - npm run prod
+  - if [[ "$WITH_TESTS" ]]; then sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"; fi
+  - if [[ "$WITH_TESTS" ]]; then sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"; fi
+  - if [[ "$WITH_TESTS" ]]; then sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"; fi
+  - if [[ "$WITH_NPM" == true ]]; then npm run prod; fi
 
 script:
-  - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no
-  - vendor/bin/phpstan analyze -c phpstan.neon.dist
-  - vendor/bin/phpcs app --standard=PSR12
-  - vendor/bin/phpmd app text .phpmd.xml
-  - vendor/bin/phpmnd . --non-zero-exit-on-violation --exclude tests
-  - vendor/bin/phpunit
+  - if [[ "$WITH_CS" == true ]]; then vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no; fi
+  - if [[ "$WITH_CS" == true ]]; then vendor/bin/phpcs app --standard=PSR12; fi
+  - if [[ "$WITH_CS" == true ]]; then vendor/bin/phpmd app text .phpmd.xml; fi
+  - if [[ "$WITH_CS" == true ]]; then vendor/bin/phpmnd . --non-zero-exit-on-violation --exclude tests; fi
+  - if [[ "$WITH_TESTS" == true ]]; then vendor/bin/phpstan analyze -c phpstan.neon.dist; fi
+  - if [[ "$WITH_TESTS" == true ]]; then vendor/bin/phpunit; fi
 
 after_failure:
   - cat storage/logs/laravel.log
