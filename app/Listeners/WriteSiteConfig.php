@@ -8,7 +8,7 @@ use Servidor\Events\SiteUpdated;
 class WriteSiteConfig
 {
     /**
-     * @var Site
+     * @var \Servidor\Site
      */
     private $site;
 
@@ -20,7 +20,7 @@ class WriteSiteConfig
     /**
      * @var string
      */
-    private $config_path;
+    private $configPath;
 
     /**
      * @var string
@@ -39,9 +39,9 @@ class WriteSiteConfig
         }
 
         $site = $this->site = $event->site;
-        $filename = $this->filename = $site->primary_domain.'.conf';
-        $this->config_path = '/etc/nginx/sites-available/'.$filename;
-        $this->symlink = '/etc/nginx/sites-enabled/'.$filename;
+        $filename = $this->filename = $site->primary_domain . '.conf';
+        $this->configPath = '/etc/nginx/sites-available/' . $filename;
+        $this->symlink = '/etc/nginx/sites-enabled/' . $filename;
 
         $this->updateConfig();
         $this->pullSite();
@@ -57,12 +57,12 @@ class WriteSiteConfig
     {
         $view = 'laravel' == $this->site->type
             ? view('sites.server-templates.php')
-            : view('sites.server-templates.'.$this->site->type);
+            : view('sites.server-templates.' . $this->site->type);
 
-        Storage::put('vhosts/'.$this->filename, $view->with('site', $this->site));
+        Storage::put('vhosts/' . $this->filename, $view->with('site', $this->site));
 
-        $file = Storage::disk('local')->path('vhosts/'.$this->filename);
-        exec('sudo cp "'.$file.'" "'.$this->config_path.'"');
+        $file = Storage::disk('local')->path('vhosts/' . $this->filename);
+        exec('sudo cp "' . $file . '" "' . $this->configPath . '"');
     }
 
     private function pullSite()
@@ -74,8 +74,8 @@ class WriteSiteConfig
             return;
         }
 
-        if (is_dir($root.'/.git')) {
-            exec('cd "'.$root.'"'.($branch ? ' && git checkout "'.$branch.'"' : '').' && git pull');
+        if (is_dir($root . '/.git')) {
+            exec('cd "' . $root . '"' . ($branch ? ' && git checkout "' . $branch . '"' : '') . ' && git pull');
 
             return;
         }
@@ -84,29 +84,29 @@ class WriteSiteConfig
             mkdir(dirname($root), 755);
         }
 
-        $cloneCmd = $branch ? 'git clone --branch "'.$branch.'"' : 'git clone';
-        exec($cloneCmd.' "'.$this->site->source_repo.'" "'.$root.'"');
+        $cloneCmd = $branch ? 'git clone --branch "' . $branch . '"' : 'git clone';
+        exec($cloneCmd . ' "' . $this->site->source_repo . '" "' . $root . '"');
     }
 
     private function createSymlink()
     {
-        if (is_link($symlink = $this->symlink) && readlink($symlink) == $this->config_path) {
+        if (is_link($symlink = $this->symlink) && readlink($symlink) == $this->configPath) {
             return;
         }
 
         if (file_exists($symlink)) {
-            exec('sudo rm "'.$symlink.'"');
+            exec('sudo rm "' . $symlink . '"');
         }
 
-        exec('sudo ln -s "'.$this->config_path.'" "'.$symlink.'"');
+        exec('sudo ln -s "' . $this->configPath . '" "' . $symlink . '"');
     }
 
     private function removeSymlink()
     {
-        if (!is_link($symlink = $this->symlink) || readlink($symlink) != $this->config_path) {
+        if (!is_link($symlink = $this->symlink) || readlink($symlink) != $this->configPath) {
             return;
         }
 
-        exec('sudo rm "'.$symlink.'"');
+        exec('sudo rm "' . $symlink . '"');
     }
 }

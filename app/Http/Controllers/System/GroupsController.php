@@ -9,6 +9,12 @@ use Illuminate\Validation\ValidationException;
 
 class GroupsController extends Controller
 {
+    const GROUP_NAME_TAKEN = 9;
+    const GROUP_GID_TAKEN = 4;
+    const GROUP_SYNTAX_INVALID = 2;
+    const GROUP_OPTION_INVALID = 3;
+    const GROUP_UPDATE_FAILED = 10;
+
     /**
      * Display a listing of the resource.
      *
@@ -43,12 +49,13 @@ class GroupsController extends Controller
         $data = $request->validate($this->validationRules());
 
         if ((int) ($data['gid'] ?? null) > 0) {
-            $options[] = '-g '.(int) $data['gid'];
+            $options[] = '-g ' . (int) $data['gid'];
         }
 
         $options[] = $data['name'];
 
-        exec('sudo groupadd '.implode(' ', $options), $output, $retval);
+        exec('sudo groupadd ' . implode(' ', $options), $output, $retval);
+        unset($output);
 
         if ($data['users'] ?? null === null) {
             $data['users'] = '';
@@ -65,17 +72,26 @@ class GroupsController extends Controller
                 ];
 
                 break;
-            case 2: $data['error'] = 'Invalid command syntax.'; break;
-            case 3: $data['error'] = 'Invalid argument to option'; break;
-            case 4: $data['error'] = 'GID not unique (when -o not used)'; break;
-            case 9: $data['error'] = 'Group name not unique'; break;
-            case 10: $data['error'] = "Can't update group file"; break;
+            case self::GROUP_SYNTAX_INVALID:
+                $data['error'] = 'Invalid command syntax.';
+                break;
+            case self::GROUP_OPTION_INVALID:
+                $data['error'] = 'Invalid argument to option';
+                break;
+            case self::GROUP_GID_TAKEN:
+                $data['error'] = 'GID not unique (when -o not used)';
+                break;
+            case self::GROUP_NAME_TAKEN:
+                $data['error'] = 'Group name not unique';
+                break;
+            case self::GROUP_UPDATE_FAILED:
+                $data['error'] = "Can't update group file";
+                break;
         }
 
         return response($data, 0 === $retval
             ? Response::HTTP_CREATED
-            : Response::HTTP_UNPROCESSABLE_ENTITY
-        );
+            : Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -97,11 +113,11 @@ class GroupsController extends Controller
         $updated = $original;
 
         if ($data['name'] != $original['name']) {
-            $options[] = '-n '.$data['name'];
+            $options[] = '-n ' . $data['name'];
         }
 
         if ($data['gid'] != $gid && $data['gid'] > 0) {
-            $options[] = '-g '.$data['gid'];
+            $options[] = '-g ' . $data['gid'];
         }
 
         if (($data['users'] ?? []) != $original['members']) {
@@ -115,10 +131,10 @@ class GroupsController extends Controller
         if (count($options ?? [])) {
             $options[] = $original['name'];
 
-            exec('sudo groupmod '.implode(' ', $options), $output, $retval);
+            exec('sudo groupmod ' . implode(' ', $options), $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException('Something went wrong. Exit code: '.$retval);
+                throw new ValidationException('Something went wrong. Exit code: ' . $retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -127,10 +143,10 @@ class GroupsController extends Controller
         if ($members ?? null) {
             $group = $updated['name'];
 
-            exec("sudo gpasswd -M '{$members}' {$group}", $output, $retval);
+            exec("sudo gpasswd -M '" . ($members ?? null) . "' {$group}", $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException('Something went wrong. Exit code: '.$retval);
+                throw new ValidationException('Something went wrong. Exit code: ' . $retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -153,7 +169,7 @@ class GroupsController extends Controller
     public function destroy($gid)
     {
         if ($group = posix_getgrgid($gid)) {
-            exec('sudo groupdel '.$group['name']);
+            exec('sudo groupdel ' . $group['name']);
         }
 
         return response(null, Response::HTTP_NO_CONTENT);

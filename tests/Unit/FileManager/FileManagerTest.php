@@ -184,6 +184,6 @@ class FileManagerTest extends TestCase
      */
     private function dummy(string $path): string
     {
-        return resource_path('test-skel/'.$path);
+        return resource_path('test-skel/' . $path);
     }
 }

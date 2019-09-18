@@ -12,6 +12,16 @@ class UpdateSiteRequestTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * @var array
+     */
+    private $rules;
+
+    /**
+     * @var \Illuminate\Foundation\Application
+     */
+    private $validator;
+
     public function setUp()
     {
         parent::setUp();

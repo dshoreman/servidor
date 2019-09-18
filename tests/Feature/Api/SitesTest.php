@@ -105,7 +105,7 @@ class SitesApiTest extends TestCase
     {
         $site = Site::create(['name' => 'My Blog']);
 
-        $response = $this->putJson('/api/sites/'.$site->id, [
+        $response = $this->putJson('/api/sites/' . $site->id, [
             'name' => 'My Updated Blog',
             'type' => 'basic',
             'source_repo' => 'https://github.com/user/blog.git',
@@ -126,7 +126,7 @@ class SitesApiTest extends TestCase
     {
         $site = Site::create(['name' => 'My Other Blog']);
 
-        $response = $this->authed()->putJson('/api/sites/'.$site->id, [
+        $response = $this->authed()->putJson('/api/sites/' . $site->id, [
             'name' => 'My Updated Blog',
             'type' => 'basic',
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
@@ -148,7 +148,7 @@ class SitesApiTest extends TestCase
     {
         $site = Site::create(['name' => 'My New Blog']);
 
-        $response = $this->putJson('/api/sites/'.$site->id, [
+        $response = $this->putJson('/api/sites/' . $site->id, [
             'name' => 'My New Blog',
             'type' => 'redirect',
         ]);
@@ -161,7 +161,7 @@ class SitesApiTest extends TestCase
     {
         $site = Site::create(['name' => 'Primed for deletion']);
 
-        $response = $this->deleteJson('/api/sites/'.$site->id);
+        $response = $this->deleteJson('/api/sites/' . $site->id);
 
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -174,7 +174,7 @@ class SitesApiTest extends TestCase
     {
         $site = Site::create(['name' => 'Delete me!']);
 
-        $response = $this->authed()->deleteJson('/api/sites/'.$site->id);
+        $response = $this->authed()->deleteJson('/api/sites/' . $site->id);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
         $this->assertNull(Site::find($site->id));

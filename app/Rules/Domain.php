@@ -23,6 +23,8 @@ class Domain implements Rule
     /**
      * Determine if the validation rule passes.
      *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
      * @param string $attribute
      * @param mixed  $value
      *

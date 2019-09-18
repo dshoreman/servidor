@@ -17,6 +17,9 @@ return PhpCsFixer\Config::create()
         'braces' => [
             'allow_single_line_closure' => true,
         ],
+        'concat_space' => [
+            'spacing' => 'one',
+        ],
         'new_with_braces' => false,
         'no_short_bool_cast' => false,
 

@@ -11,7 +11,7 @@ class VersionTest extends TestCase
     {
         $cmd = $this->artisan('servidor:version');
 
-        $cmd->expectsOutput('Servidor v'.SERVIDOR_VERSION);
+        $cmd->expectsOutput('Servidor v' . SERVIDOR_VERSION);
         $cmd->assertExitCode(0);
     }
 }
