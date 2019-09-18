@@ -7,6 +7,11 @@ php:
 services:
   - mysql
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - vendor
+
 before_install:
   - composer self-update
   - composer validate
