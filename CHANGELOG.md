@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * Errors weren't being cleared between Site form submissions
 * Icon for CPU usage in the Stats Bar no longer matches Free RAM
+* Permissions weren't being loaded for hidden items in the file browser
 * Site cards in the list view now use the full container width
 * You can finally click 'Remember Me' to toggle the switch at Login
 * Login is now enforced correctly when auth tokens change or expire
