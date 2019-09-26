@@ -27,12 +27,14 @@ export default {
             if (!state.editMode) {
                 user = {
                     uid: null,
+                    gid: 0,
                     name: user,
+                    groups: [],
                 };
             }
 
             state.clean = Object.assign({}, user);
-            state.clean.groups = user.groups.slice(0);
+            state.clean.groups = user.groups ? user.groups.slice(0) : [];
 
             state.user = Object.assign({}, user);
             state.user.uid_original = user.uid;
@@ -48,9 +50,14 @@ export default {
                 uid: null,
                 uid_original: null,
                 name: '',
+                gid: 0,
+                groups: [],
             };
         },
         addUser: (state, user) => {
+            if (!user.groups) {
+                user.groups = [];
+            }
             state.users.push(user);
         },
         updateUser: (state, {uid, user}) => {
@@ -71,14 +78,16 @@ export default {
             });
         },
         editUser: ({commit, state, getters}, user) => {
+            // TODO: Add some kind of modal/confirm prompt in case
+            //  the user wants to abort any changes and continue.
             if (state.editing && getters.userIsDirty) {
                 return;
             }
 
             commit('setEditorUser', user);
         },
-        createUser: ({commit, state}) => {
-            axios.post('/api/system/users', state.user).then(response => {
+        createUser: ({commit, state}, user) => {
+            axios.post('/api/system/users', user).then(response => {
                 commit('addUser', response.data);
                 commit('unsetEditorUser');
             });
