@@ -27,7 +27,9 @@ export default {
             if (!state.editMode) {
                 user = {
                     uid: null,
+                    gid: 0,
                     name: user,
+                    groups: [],
                 };
             }
 
@@ -71,6 +73,8 @@ export default {
             });
         },
         editUser: ({commit, state, getters}, user) => {
+            // TODO: Add some kind of modal/confirm prompt in case
+            //  the user wants to abort any changes and continue.
             if (state.editing && getters.userIsDirty) {
                 return;
             }

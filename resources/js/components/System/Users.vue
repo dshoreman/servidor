@@ -31,7 +31,7 @@
                 </sui-header>
                 <div class="inline">
                     <sui-button @click="search = ''">Clear Search</sui-button>
-                    <sui-button primary @click="edit">Add User</sui-button>
+                    <sui-button primary @click="edit(search)">Add User</sui-button>
                 </div>
             </sui-segment>
         </sui-grid-column>
