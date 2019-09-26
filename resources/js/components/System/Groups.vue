@@ -31,7 +31,7 @@
                 </sui-header>
                 <div class="inline">
                     <sui-button @click="filterGroups('')">Clear Search</sui-button>
-                    <sui-button primary @click="edit">Add Group</sui-button>
+                    <sui-button primary @click="edit(search)">Add Group</sui-button>
                 </div>
             </sui-segment>
         </sui-grid-column>
