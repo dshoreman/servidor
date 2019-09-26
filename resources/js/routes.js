@@ -1,4 +1,5 @@
 import Dashboard from './pages/Dashboard.vue'
+import Databases from './pages/Databases.vue'
 import FileBrowser from './pages/Files/Browser.vue'
 import FileEditor from './pages/Files/Editor.vue'
 import Sites from './pages/Sites.vue'
@@ -40,6 +41,11 @@ const routes = [{
                 return { id: id };
             },
         }],
+    }, {
+        component: Databases,
+        name: 'databases',
+        path: '/databases',
+        meta: { auth: true },
     }, {
         component: FileEditor,
         name: 'files.edit',
