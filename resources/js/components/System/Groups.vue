@@ -30,7 +30,7 @@
                     </sui-header-subheader>
                 </sui-header>
                 <div class="inline">
-                    <sui-button @click="search = ''">Clear Search</sui-button>
+                    <sui-button @click="filterGroups('')">Clear Search</sui-button>
                     <sui-button primary @click="edit">Add Group</sui-button>
                 </div>
             </sui-segment>
