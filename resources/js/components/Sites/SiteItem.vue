@@ -1,5 +1,5 @@
 <template>
-    <sui-card>
+    <router-link is="sui-card" :to="{ name: 'apps.view', params: { id: site.id } }">
         <sui-card-content>
             <sui-card-header>{{ site.name }}</sui-card-header>
             <sui-card-meta>{{ site.primary_domain }}</sui-card-meta>
@@ -14,7 +14,7 @@
                 <sui-icon name="open folder" /> Browse Files
             </router-link>
         </sui-card-content>
-    </sui-card>
+    </router-link>
 </template>
 
 <script>
