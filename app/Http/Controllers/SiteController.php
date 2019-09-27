@@ -59,17 +59,19 @@ class SiteController extends Controller
         if (is_dir($root . '/.git')) {
             $args = $branch ? ' && git checkout "' . $branch . '"' : '';
 
-            $cmd = 'cd "' . $root . '"' . $args . ' && git pull';
-        } else {
-            if (!is_dir(dirname($root))) {
-                mkdir(dirname($root));
-            }
+            exec('cd "' . $root . '"' . $args . ' && git pull');
 
-            $args = $branch ? ' --branch "' . $branch . '"' : '';
-            $paths = ' "' . $site->source_repo . '" "' . $root . '"';
-
-            $cmd = 'git clone' . $args . $paths;
+            return response($site, Response::HTTP_OK);
         }
+
+        if (!is_dir(dirname($root))) {
+            mkdir(dirname($root));
+        }
+
+        $args = $branch ? ' --branch "' . $branch . '"' : '';
+        $paths = ' "' . $site->source_repo . '" "' . $root . '"';
+
+        $cmd = 'git clone' . $args . $paths;
 
         exec($cmd);
 

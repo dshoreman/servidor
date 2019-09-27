@@ -179,17 +179,25 @@ class SitesApiTest extends TestCase
     /** @test */
     public function authed_user_can_pull_site_files()
     {
+        // This would ideally be inside resources/test-skel somewhere, but
+        // for some reason Travis has permission issues creating in there.
+        $dir = storage_path('test-clone');
+
         $site = Site::create([
             'name' => 'Dummy Site',
             'type' => 'basic',
-            'document_root' => 'resources/test-skel/www',
+            'document_root' => $dir,
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
         ]);
 
         $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
 
         $response->assertOk();
-        $this->assertDirectoryExists('resources/test-skel/www/.git');
+        $this->assertDirectoryExists($dir . '/.git');
+
+        // If we try this in tearDown(), storage_path() complains that
+        // path.storage class can't be found. No idea why, but it does.
+        exec('rm -rf "' . $dir . '"');
     }
 
     /** @test */
