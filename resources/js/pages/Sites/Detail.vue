@@ -32,6 +32,8 @@
                         </sui-grid-column>
                         <sui-grid-column>
                             <sui-header size="tiny"> Tracking Branch
+                                <sui-button basic positive icon="download" floated="right"
+                                    content="Pull Latest Code" @click="pullFiles(site)" />
                                 <sui-header-subheader v-if="site.source_branch">
                                     {{ site.source_branch }}
                                 </sui-header-subheader>
@@ -83,8 +85,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import SiteItem from '../../components/Sites/SiteItem';
-import store from '../../store';
 
 export default {
     components: {
@@ -101,6 +103,11 @@ export default {
         site(){
             return this.sites.find(s => s.id === this.id);
         },
+    },
+    methods: {
+        ...mapActions({
+            pullFiles: 'pullSiteFiles',
+        }),
     },
 }
 </script>

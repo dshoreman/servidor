@@ -35,6 +35,48 @@ class SiteController extends Controller
     }
 
     /**
+     * Pull the latest commit from Git.
+     *
+     * @param \Servidor\Site $site
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function pull(Site $site)
+    {
+        $root = $site->document_root;
+        $branch = $site->source_branch;
+
+        if (!$site->type || 'redirect' == $site->type) {
+            $error = 'Project type does not support pull.';
+        } elseif (!$root) {
+            $error = 'Project is missing its document root!';
+        }
+
+        if (isset($error)) {
+            return response(compact('error'), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (is_dir($root . '/.git')) {
+            $args = $branch ? ' && git checkout "' . $branch . '"' : '';
+
+            $cmd = 'cd "' . $root . '"' . $args . ' && git pull';
+        } else {
+            if (!is_dir(dirname($root))) {
+                mkdir(dirname($root));
+            }
+
+            $args = $branch ? ' --branch "' . $branch . '"' : '';
+            $paths = ' "' . $site->source_repo . '" "' . $root . '"';
+
+            $cmd = 'git clone' . $args . $paths;
+        }
+
+        exec($cmd);
+
+        return response($site, Response::HTTP_OK);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param UpdateSite     $request

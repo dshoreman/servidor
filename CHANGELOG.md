@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Disk usage of the root mountpoint is now shown in Stats Bar
 * Extra information added in tooltips on the stats bar items
 * File browser now shows `-rwxrw-rw-` form permissions in a tooltip
+* Site files can now be updated from a new details page
 
 ### Changed
 * Main layout and stats bar completely redesigned
