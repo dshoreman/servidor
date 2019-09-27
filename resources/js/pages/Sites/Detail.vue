@@ -7,6 +7,9 @@
         </sui-grid-column>
         <sui-grid-column :width=12>
             <h2 is="sui-header" size="huge">
+                <router-link :to="{ name: 'apps.edit', params: { id: site.id } }"
+                             content="Manage Site" is="sui-button" floated="right"
+                             color="teal" icon="cogs" size="large" />
                 {{ site.name }}
                 <sui-header-subheader>
                     {{ site.primary_domain }}

@@ -100,7 +100,7 @@
             <sui-button negative icon="trash" type="button"
                 content="Delete" floated="right" @click="deleteSite(site.id)" />
             <sui-button-group>
-                <router-link :to="{ name: 'apps' }" is="sui-button"
+                <router-link :to="{ name: 'apps.view', params: { id: site.id } }" is="sui-button"
                     type="button" content="Cancel" />
                 <sui-button-or />
                 <sui-button type="submit" positive content="Save" />
