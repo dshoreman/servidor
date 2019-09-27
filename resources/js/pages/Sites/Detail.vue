@@ -52,6 +52,32 @@
                 </sui-header>
                 <p v-else>This project doesn't have a document root defined.</p>
             </sui-segment>
+
+            <sui-header v-if="site.type == 'redirect'" attached="top">Redirection</sui-header>
+            <sui-segment v-if="site.type == 'redirect'" attached>
+                <sui-grid>
+                    <sui-grid-row :columns="2">
+                        <sui-grid-column>
+                            <sui-header size="tiny"> Target URL
+                                <sui-header-subheader>{{ site.redirect_to }}</sui-header-subheader>
+                            </sui-header>
+                        </sui-grid-column>
+                        <sui-grid-column>
+                            <sui-header size="tiny"> Redirect Type
+                                <sui-header-subheader v-if="site.redirect_type == 301">
+                                    Permanent
+                                </sui-header-subheader>
+                                <sui-header-subheader v-else-if="site.redirect_type == 302">
+                                    Temporary
+                                </sui-header-subheader>
+                                <sui-header-subheader v-else>
+                                    {{ site.redirect_type }}
+                                </sui-header-subheader>
+                            </sui-header>
+                        </sui-grid-column>
+                    </sui-grid-row>
+                </sui-grid>
+            </sui-segment>
         </sui-grid-column>
     </sui-grid-row>
 </template>
