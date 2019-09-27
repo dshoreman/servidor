@@ -5,6 +5,7 @@ import FileEditor from './pages/Files/Editor.vue'
 import Sites from './pages/Sites.vue'
 import SiteList from './pages/Sites/List.vue'
 import SiteEditor from './pages/Sites/Edit.vue'
+import SiteViewer from './pages/Sites/Detail.vue'
 import SystemGroups from './components/System/Groups.vue'
 import SystemUsers from './components/System/Users.vue'
 import Layout from './layouts/Servidor.vue'
@@ -27,9 +28,23 @@ const routes = [{
             path: '/',
             meta: { auth: true },
         }, {
+            component: SiteViewer,
+            name: 'apps.view',
+            path: '/apps/:id',
+            meta: { auth: true },
+            props: (route) => {
+                let id = parseInt(route.params.id);
+
+                if (Number.isNaN(id) || id < 0) {
+                    return { id: 0 };
+                }
+
+                return { id: id };
+            },
+        }, {
             component: SiteEditor,
             name: 'apps.edit',
-            path: '/apps/:id',
+            path: '/apps/:id/edit',
             meta: { auth: true },
             props: (route) => {
                 let id = parseInt(route.params.id);

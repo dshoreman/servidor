@@ -107,6 +107,9 @@ export default {
                 }
             });
         },
+        pullSiteFiles: ({commit, state}, site) => {
+            return axios.post('/api/sites/'+site.id+'/pull');
+        },
         deleteSite: ({commit, state}, id) => {
             return new Promise((resolve, reject) => {
                 axios.delete('/api/sites/' + id).then(response => {

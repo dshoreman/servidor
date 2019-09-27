@@ -156,6 +156,81 @@ class SitesApiTest extends TestCase
         $response->assertJsonMissingValidationErrors(['name']);
     }
 
+    /**
+     * @test
+     * @depends authed_user_can_list_sites
+     */
+    public function guest_cannot_pull_site_files()
+    {
+        $site = Site::create([
+            'name' => 'Dummy Site',
+            'type' => 'basic',
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+        ]);
+
+        $response = $this->postJson('/api/sites/' . $site->id . '/pull');
+
+        $response->assertJsonCount(1);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+        $this->assertArraySubset($site->toArray(), Site::first()->toArray());
+    }
+
+    /** @test */
+    public function authed_user_can_pull_site_files()
+    {
+        // This would ideally be inside resources/test-skel somewhere, but
+        // for some reason Travis has permission issues creating in there.
+        $dir = storage_path('test-clone');
+
+        $site = Site::create([
+            'name' => 'Dummy Site',
+            'type' => 'basic',
+            'document_root' => $dir,
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+        ]);
+
+        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
+
+        $response->assertOk();
+        $this->assertDirectoryExists($dir . '/.git');
+
+        // If we try this in tearDown(), storage_path() complains that
+        // path.storage class can't be found. No idea why, but it does.
+        exec('rm -rf "' . $dir . '"');
+    }
+
+    /** @test */
+    public function cannot_pull_site_when_type_is_redirect()
+    {
+        $site = Site::create([
+            'name' => 'Primed for deletion',
+            'type' => 'redirect',
+        ]);
+
+        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
+
+        $response->assertJsonCount(1);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson(['error' => 'Project type does not support pull.']);
+    }
+
+    /** @test */
+    public function cannot_pull_site_when_missing_document_root()
+    {
+        $site = Site::create([
+            'name' => 'Dummy Site',
+            'type' => 'basic',
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+        ]);
+
+        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
+
+        $response->assertJsonCount(1);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson(['error' => 'Project is missing its document root!']);
+    }
+
     /** @test */
     public function guest_cannot_delete_site()
     {
