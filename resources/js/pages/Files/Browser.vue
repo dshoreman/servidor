@@ -2,9 +2,11 @@
     <sui-grid container>
         <sui-grid-column id="file-browser">
             <h2>
-                <router-link :to="{ name: 'apps.edit', params: { id: site.id }}"
+                <router-link :to="{ name: 'apps.view', params: { id: site.id }}"
                     is="sui-button" color="teal" icon="globe" floated="right"
-                    id="back2site" :content="'Edit ' + site.name" v-if="site" />
+                    id="back2site" content="View Application" v-if="site"
+                    :data-tooltip="'Open overview for ' + site.name"
+                    data-position="left center" />
 
                 <sui-button id="levelup" icon="level up" @click="upOneLevel" />
 
