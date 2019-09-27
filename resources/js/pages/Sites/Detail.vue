@@ -18,11 +18,30 @@
 
             <sui-header attached="top">Source Files</sui-header>
             <sui-segment attached>
-                <sui-header size="tiny" v-if="site.source_repo">
-                    Repository Clone URL
-                    <sui-header-subheader>{{ site.source_repo }}</sui-header-subheader>
-                </sui-header>
-                <p v-else>No source repository has been set for this project!</p>
+                <sui-grid>
+                    <sui-grid-row :columns="2">
+                        <sui-grid-column>
+                            <sui-header size="tiny"> Repository Clone URL
+                                <sui-header-subheader v-if="site.source_repo">
+                                    {{ site.source_repo }}
+                                </sui-header-subheader>
+                                <sui-header-subheader v-else>
+                                    No source repository has been set for this project!
+                                </sui-header-subheader>
+                            </sui-header>
+                        </sui-grid-column>
+                        <sui-grid-column>
+                            <sui-header size="tiny"> Tracking Branch
+                                <sui-header-subheader v-if="site.source_branch">
+                                    {{ site.source_branch }}
+                                </sui-header-subheader>
+                                <sui-header-subheader v-else>
+                                    Using default branch
+                                </sui-header-subheader>
+                            </sui-header>
+                        </sui-grid-column>
+                    </sui-grid-row>
+                </sui-grid>
 
                 <sui-header size="tiny" v-if="site.document_root">
                     <router-link :to="{ name: 'files', params: {path: site.document_root } }"
