@@ -59,7 +59,11 @@ export default {
         };
     },
     mounted () {
+        document.querySelector("footer").style = "display: none";
         document.body.classList.add('login');
+    },
+    destroyed() {
+        document.querySelector("footer").style = "display: block";
     },
     beforeRouteLeave (to, from, next) {
         document.body.classList.remove('login');
