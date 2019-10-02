@@ -12,10 +12,6 @@
     <body>
         @yield('content')
 
-        <footer>
-            <p>Servidor v{{ SERVIDOR_VERSION }}</p>
-        </footer>
-
         <script src="{{ mix('js/app.js') }}"></script>
     </body>
 </html>
