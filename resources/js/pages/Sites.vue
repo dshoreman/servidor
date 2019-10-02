@@ -17,16 +17,16 @@ import store from '../store';
 
 export default {
     beforeRouteEnter (to, from, next) {
-        store.dispatch('loadSites').then(() => next());
+        store.dispatch('Site/loadSites').then(() => next());
     },
     computed: {
         ...mapState({
             site: state => state.Site.site,
         }),
-        ...mapGetters([
-            'sites',
-            'filteredSites',
-        ]),
+        ...mapGetters({
+            sites: 'Site/sites',
+            filteredSites: 'Site/filteredSites',
+        }),
         filterIcon: function () {
             const match = this.site.name.toLowerCase();
 
@@ -43,7 +43,7 @@ export default {
     },
     methods: {
         ...mapMutations({
-            filterSites: 'setFilter',
+            filterSites: 'Site/setFilter',
         }),
         createOrEdit: function () {
             const match = this.site.name.toLowerCase();
