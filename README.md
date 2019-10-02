@@ -4,47 +4,64 @@
 [![Build Status](https://travis-ci.com/dshoreman/servidor.svg?branch=develop)](https://travis-ci.com/dshoreman/servidor)
 [![Depfu](https://badges.depfu.com/badges/2c958ee33ec51367189f2762a8814dc5/count.svg)](https://depfu.com/github/dshoreman/servidor?project_id=5912)
 
-A modern web application for managing servers.
-Built on Laravel, using Semantic-UI-Vue for the frontend.
+A modern web application for managing servers. Built on Laravel, using Semantic-UI-Vue for the frontend.
+
+Servidor is still very much a work in progress, but what has been [added so far] is mostly functional.
+
+## Table of Contents
+
+* [Introduction]
+* [Table of Contents]
+* [Installation]
+* [Development]
+  * [Running Tests]
+* [Contributing]
 
 ## What it Does
-Servidor is still very much a work in progress, so right now? Not a great deal.
 
-What it *can* do so far is help manage the users and groups on a Linux system.
-It can create new ones, edit existing ones or even add/remove users to/from groups
-and vice-versa. Oh, and it can delete them too.
+Currently there is basic support for projects and management of Linux users and groups. When sites are added, Servidor will
+take care of cloning the repository, creating the relevant NginX configs and even reloading the web server. Starting in v0.5
+you also have the ability to manually trigger a `git pull` on any given project without ever having to touch SSH.
 
 ## Installation
 
-> **Note:** For development, use Apache or Nginx.
-> Servidor will not be fully functional under the PHP/Artisan development servers
-> due to single-threaded constraints where API requests cause PHP to hang.
+> **WARNING!** Servidor is not yet ready for production use!
 
-Clone from git, create a database and setup your `.env` file with the applicable config, then:
+There's no automatic installer yet but, if you do want to test it on a real server, you'll find a lot of helpful hints in
+vagrant/bootstrap.sh. Otherwise, follow the [Development] instructions below to set up your local environment.
+
+## Development
+
+Servidor is setup to use Vagrant for development. To get started, first clone the repository and run `vagrant up`.  
+The files are mounted at `/var/servidor` within the VM, so you can open the project locally with your usual editor.
+
+Once Vagrant has finished spinning up the VM and installed everything, run `npm ci && npm run dev` to compile the assets.
+Alternatively, you can use `npm run watch` or `npm run hot` to have assets automatically rebuilt during development.
+
+By default, Vagrant is configured to listen on 192.168.10.100 which you'll need to map in your hosts file:
 ```sh
-composer install
-php artisan key:generate
-php artisan migrate --seed
-php artisan passport:install
-npm ci
+echo '192.168.10.100 servidor.local' | sudo tee -a /etc/hosts
 ```
 
-You'll also need to grant special access to some commands for the user (probably `www-data`) running your web server, be that Apache or Nginx.
+Now point your browser to http://servidor.local and use *`admin@servidor.local`* to login with the password *`servidor`*.
 
-Run `sudo visudo` and add a line that grants passwordless access:
-```
-www-data ALL=(ALL)NOPASSWD:/usr/sbin/groupadd,/usr/sbin/groupmod,/usr/sbin/gpasswd,/usr/sbin/groupdel,/usr/sbin/useradd,/usr/sbin/usermod,/usr/sbin/userdel
-```
+### Running Tests
 
-If this line has alarm bells ringing, you're right to think it's dangerous...
-*Especially* if you're also running Wordpress or any other dodgy PHP stuff
-on the same machine. Eventually it'd be nice to have some kind of daemon that handles
-all these system-level parts so PHP doesn't have to go anywhere *near* `sudo`.
+With many tests relying on certain system utilities, it's best to run them in Vagrant as the web server user to avoid any issues.  
+To run the PHPUnit tests, use `make test` which will automatically SSH into the Vagrant VM and run phpunit as www-data.
 
-If you have suggestions, I'd love to hear them! Which brings us to...
+Other make commands are available such as `make syntax` to run other CI tools. For a complete list, check the Makefile.
 
 ## Contributing
 
-As noted above, Servidor is still very young. Your ideas, code and overall feedback are all
-highly valued, so please feel free to open an issue or pull request - the latter should
-go to the develop branch. Thanks! :heart:
+As noted above, Servidor is still very young. Your ideas, code and overall feedback are all highly valued, so please feel free to
+open an issue or pull request - the latter should go to the develop branch. Thanks! :heart:
+
+[Introduction]: #servidor
+[Table of Contents]: #table-of-contents
+[What it Does]: #what-it-does
+[added so far]: #what-it-does
+[Installation]: #installation
+[Development]: #development
+[Running Tests]: #running-tests
+[Contributing]: #contributing
