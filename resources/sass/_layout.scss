@@ -10,6 +10,14 @@ body {
             #content {
                 margin-top: 1rem;
             }
+
+            .version {
+                position: absolute;
+                bottom: 0;
+                text-align: center;
+                height: 40px;
+                width: calc(100% - #{$sidebar-width});
+            }
         }
     }
 }
