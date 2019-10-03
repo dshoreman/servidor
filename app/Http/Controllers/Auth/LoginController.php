@@ -59,7 +59,7 @@ class LoginController extends Controller
 
             return response(
                 $e->getResponse()->getBody(),
-                $e->getCode(),
+                $e->getCode()
             );
         }
     }
