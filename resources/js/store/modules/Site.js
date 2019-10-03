@@ -135,6 +135,9 @@ export default {
                 return site.name.toLowerCase().includes(state.currentFilter.toLowerCase());
             });
         },
+        findById: (state) => (id) => {
+            return state.sites.find(s => s.id === id);
+        },
         findByDocroot: (state) => (path) => {
             return state.sites.find(s => s.document_root == path);
         },
