@@ -40,10 +40,10 @@ import FileList from '../../components/Files/Browser/FileList';
 export default {
     mounted () {
         this.$store.dispatch('sites/load');
-        this.$store.dispatch('loadFiles', { path: this.path });
+        this.$store.dispatch('files/load', { path: this.path });
     },
     beforeRouteUpdate (to, from, next) {
-        this.$store.dispatch('loadFiles', { path: to.params.path });
+        this.$store.dispatch('files/load', { path: to.params.path });
         next();
     },
     props: [
@@ -54,9 +54,9 @@ export default {
     },
     computed: {
         ...mapGetters({
-            currentPath: 'currentPath',
+            currentPath: 'files/currentPath',
             findSite: 'sites/findByDocroot',
-            files: 'files',
+            files: 'files/all',
         }),
         pathParts: function() {
             let parts = [],
@@ -94,7 +94,7 @@ export default {
             next = next ? next : '/';
 
             this.$router.push({ name: 'files', params: { path: next } });
-            this.$store.dispatch('loadFiles', { path: next });
+            this.$store.dispatch('files/load', { path: next });
         },
     }
 }

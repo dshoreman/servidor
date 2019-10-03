@@ -27,15 +27,15 @@ import { mapGetters } from 'vuex';
 
 export default {
     mounted () {
-        this.$store.dispatch('openFile', { file: this.filePath });
+        this.$store.dispatch('files/open', { file: this.filePath });
     },
     props: [
         'filePath',
     ],
     computed: {
-        ...mapGetters([
-            'file',
-        ]),
+        ...mapGetters({
+            file: 'files/file',
+        }),
     },
     methods: {
         backToDir: function () {
