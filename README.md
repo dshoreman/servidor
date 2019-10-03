@@ -35,10 +35,20 @@ vagrant/bootstrap.sh. Otherwise, follow the [Development] instructions below to 
 Servidor is setup to use Vagrant for development. To get started, first clone the repository and run `vagrant up`.  
 The files are mounted at `/var/servidor` within the VM, so you can open the project locally with your usual editor.
 
-Once Vagrant has finished spinning up the VM and installed everything, run `npm ci && npm run dev` to compile the assets.
+Once Vagrant has finished spinning up the VM and installed everything, you'll need to install JS deps and compile assets:
+
+```sh
+# Clean-install NPM packages from the lock file
+npm ci
+
+# Compile the frontend assets for development
+npm run dev
+```
+
 Alternatively, you can use `npm run watch` or `npm run hot` to have assets automatically rebuilt during development.
 
 By default, Vagrant is configured to listen on 192.168.10.100 which you'll need to map in your hosts file:
+
 ```sh
 echo '192.168.10.100 servidor.local' | sudo tee -a /etc/hosts
 ```
