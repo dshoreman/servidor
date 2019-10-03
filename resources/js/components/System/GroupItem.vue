@@ -1,5 +1,5 @@
 <template>
-    <sui-list-item>
+    <sui-list-item :active="active">
         <sui-list-icon name="users" size="large" vertical-align="middle" />
         <sui-list-content>
             <a is="sui-list-header" @click="edit">{{ name }}</a>
@@ -19,6 +19,7 @@
 export default {
     props: {
         group: Object,
+        active: Boolean,
     },
     data () {
         return {

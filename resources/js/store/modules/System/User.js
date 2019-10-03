@@ -144,5 +144,8 @@ export default {
                 || old.gid != now.gid
                 || !_.isEqual(old.groups, now.groups);
         },
+        userBeingEdited: state => {
+            return state.editing ? state.user.uid_original : '';
+        },
     },
 };

@@ -137,5 +137,8 @@ export default {
                 || old.gid != now.gid
                 || !_.isEqual(old.users, now.users);
         },
+        groupBeingEdited: state => {
+            return state.editing ? state.group.gid_original : '';
+        },
     },
 };

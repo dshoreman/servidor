@@ -17,7 +17,7 @@
             <sui-segment attached v-if="filteredGroups.length">
                 <sui-list divided relaxed>
                     <system-group-item v-for="group in filteredGroups"
-                        :group="group" :key="group.gid" @edit="edit" />
+                        :group="group" :key="group.gid" :active="group.gid === activeGroup" @edit="edit" />
                 </sui-list>
             </sui-segment>
 
@@ -64,6 +64,7 @@ export default {
         }),
         ...mapGetters({
             groups: 'systemGroups/all',
+            activeGroup: 'systemGroups/groupBeingEdited',
             filteredGroups: 'systemGroups/filtered',
         }),
         listWidth() {
