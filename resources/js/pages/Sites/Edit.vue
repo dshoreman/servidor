@@ -42,7 +42,7 @@ export default {
     },
     methods: {
         edit(id) {
-            return store.dispatch('editSite', parseInt(id));
+            return store.dispatch('sites/edit', parseInt(id));
         },
     },
 }

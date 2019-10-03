@@ -132,9 +132,9 @@ export default {
     },
     computed: {
         ...mapState({
-            'alerts': state => state.Site.alerts,
-            'errors': state => state.Site.errors,
-            'tmpSite': state => state.Site.current,
+            'alerts': state => state.sites.alerts,
+            'errors': state => state.sites.errors,
+            'tmpSite': state => state.sites.current,
         }),
     },
     watch: {
@@ -149,11 +149,11 @@ export default {
     },
     methods: {
         updateSite(id) {
-            this.$store.dispatch('updateSite', {id, data: this.tmpSite});
+            this.$store.dispatch('sites/update', {id, data: this.tmpSite});
         },
         deleteSite() {
             confirm("Deletion is permanent! Are you sure?") &&
-                this.$store.dispatch('deleteSite', this.site.id).then(
+                this.$store.dispatch('sites/delete', this.site.id).then(
                     response => this.$router.push({ name: 'apps' })
                 );
         },

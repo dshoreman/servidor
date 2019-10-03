@@ -39,7 +39,7 @@ import FileList from '../../components/Files/Browser/FileList';
 
 export default {
     mounted () {
-        this.$store.dispatch('loadSites');
+        this.$store.dispatch('sites/load');
         this.$store.dispatch('loadFiles', { path: this.path });
     },
     beforeRouteUpdate (to, from, next) {
@@ -53,11 +53,11 @@ export default {
         FileList,
     },
     computed: {
-        ...mapGetters([
-            'currentPath',
-            'getSiteByDocroot',
-            'files',
-        ]),
+        ...mapGetters({
+            currentPath: 'currentPath',
+            findSite: 'sites/findByDocroot',
+            files: 'files',
+        }),
         pathParts: function() {
             let parts = [],
                 path = '';
@@ -74,7 +74,7 @@ export default {
             return parts;
         },
         site: function() {
-            return this.getSiteByDocroot(this.currentPath);
+            return this.findSite(this.currentPath);
         },
     },
     methods: {

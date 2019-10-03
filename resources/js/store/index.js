@@ -11,7 +11,7 @@ Vue.use(VueX);
 export default new VueX.Store ({
     modules: {
         Auth,
-        Site,
+        sites: Site,
         Files,
         Group,
         User,

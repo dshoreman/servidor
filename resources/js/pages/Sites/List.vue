@@ -23,8 +23,8 @@ export default {
     ],
     computed: {
         ...mapState({
-            alerts: state => state.Site.alerts,
-            errors: state => state.Site.errors,
+            alerts: state => state.sites.alerts,
+            errors: state => state.sites.errors,
         }),
     },
 }

@@ -7,7 +7,7 @@
                         v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit"></sui-input>
             </sui-grid-column>
         </sui-grid-row>
-        <router-view id="sites" :sites="filteredSites" />
+        <router-view id="sites" :sites="sites" />
     </sui-grid>
 </template>
 
@@ -17,15 +17,14 @@ import store from '../store';
 
 export default {
     beforeRouteEnter (to, from, next) {
-        store.dispatch('Site/loadSites').then(() => next());
+        store.dispatch('sites/load').then(() => next());
     },
     computed: {
         ...mapState({
-            site: state => state.Site.site,
+            site: state => state.sites.site,
         }),
         ...mapGetters({
-            sites: 'Site/sites',
-            filteredSites: 'Site/filteredSites',
+            sites: 'sites/filtered',
         }),
         filterIcon: function () {
             const match = this.site.name.toLowerCase();
@@ -34,7 +33,7 @@ export default {
                 return 'search';
             }
 
-            if ('object' == typeof(this.filteredSites.find(s => s.name.toLowerCase() == match))) {
+            if ('object' == typeof(this.sites.find(s => s.name.toLowerCase() == match))) {
                 return 'cogs';
             }
 
@@ -43,7 +42,7 @@ export default {
     },
     methods: {
         ...mapMutations({
-            filterSites: 'Site/setFilter',
+            filterSites: 'sites/setFilter',
         }),
         createOrEdit: function () {
             const match = this.site.name.toLowerCase();
@@ -52,13 +51,13 @@ export default {
                 return;
             }
 
-            let result = this.filteredSites.find(s => s.name.toLowerCase() == match);
+            let result = this.sites.find(s => s.name.toLowerCase() == match);
 
             if (typeof(result) === 'object') {
                 return this.$router.push({ name: 'apps.edit', params: { id: result.id }});
             }
 
-            this.$store.dispatch('createSite');
+            this.$store.dispatch('sites/create');
         },
     }
 }

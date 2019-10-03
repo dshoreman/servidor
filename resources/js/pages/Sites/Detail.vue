@@ -106,7 +106,7 @@ export default {
     },
     methods: {
         ...mapActions({
-            pullFiles: 'pullSiteFiles',
+            pullFiles: 'sites/pull',
         }),
     },
 }
