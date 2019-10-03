@@ -78,11 +78,14 @@ export default {
             commit('setEditorSite', site);
         },
         create: ({commit, state}) => {
-            axios.post('/api/sites', state.site).then(response => {
-                commit('addSite', response.data);
-                commit('clearMessages');
-                commit('setSuccess', "The site '" + response.data.name + "' has been created.");
-            });
+            return new Promise((resolve, reject) =>
+                axios.post('/api/sites', state.site).then(response => {
+                    commit('addSite', response.data);
+                    commit('clearMessages');
+                    commit('setSuccess', "The site '" + response.data.name + "' has been created.");
+                    resolve(response);
+                }).catch(error => reject(error))
+            )
         },
         update: ({commit}, site) => {
             axios.put('/api/sites/'+site.id, site.data).then(response => {
