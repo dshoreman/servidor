@@ -1,4 +1,5 @@
 export default {
+    namespaced: true,
     state: {
         alerts: [],
         current: {},
@@ -65,7 +66,7 @@ export default {
         },
     },
     actions: {
-        loadSites: ({commit}) => {
+        load: ({commit}) => {
             return new Promise((resolve, reject) =>
                 axios.get('/api/sites') .then(response => {
                     commit('setSites', response.data);
@@ -73,17 +74,17 @@ export default {
                 }).catch(error => reject(error))
             );
         },
-        editSite: ({commit}, site) => {
+        edit: ({commit}, site) => {
             commit('setEditorSite', site);
         },
-        createSite: ({commit, state}) => {
+        create: ({commit, state}) => {
             axios.post('/api/sites', state.site).then(response => {
                 commit('addSite', response.data);
                 commit('clearMessages');
                 commit('setSuccess', "The site '" + response.data.name + "' has been created.");
             });
         },
-        updateSite: ({commit}, site) => {
+        update: ({commit}, site) => {
             axios.put('/api/sites/'+site.id, site.data).then(response => {
                 commit('clearMessages');
                 commit('updateSite', {
@@ -107,10 +108,10 @@ export default {
                 }
             });
         },
-        pullSiteFiles: ({commit, state}, site) => {
+        pull: ({commit, state}, site) => {
             return axios.post('/api/sites/'+site.id+'/pull');
         },
-        deleteSite: ({commit, state}, id) => {
+        delete: ({commit, state}, id) => {
             return new Promise((resolve, reject) => {
                 axios.delete('/api/sites/' + id).then(response => {
                     commit('removeSite', id);
@@ -126,16 +127,19 @@ export default {
         },
     },
     getters: {
-        filteredSites: state => {
+        all: state => {
+            return state.sites;
+        },
+        filtered: state => {
             return state.sites.filter(site => {
                 return site.name.toLowerCase().includes(state.currentFilter.toLowerCase());
             });
         },
-        getSiteByDocroot: (state) => (path) => {
-            return state.sites.find(s => s.document_root == path);
+        findById: (state) => (id) => {
+            return state.sites.find(s => s.id === id);
         },
-        sites: state => {
-            return state.sites;
+        findByDocroot: (state) => (path) => {
+            return state.sites.find(s => s.document_root == path);
         },
     },
 }

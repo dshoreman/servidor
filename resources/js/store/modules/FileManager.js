@@ -1,4 +1,5 @@
 export default {
+    namespaced: true,
     state: {
         currentPath: '',
         files: [],
@@ -16,7 +17,7 @@ export default {
         }
     },
     actions: {
-        loadFiles: ({commit}, {path}) => {
+        load: ({commit}, {path}) => {
             return new Promise((resolve, reject) =>
                 axios.get('/api/files', {
                     params: { path: path },
@@ -27,7 +28,7 @@ export default {
                 }).catch(error => reject(error))
             );
         },
-        openFile: ({commit}, {file}) => {
+        open: ({commit}, {file}) => {
             return new Promise((resolve, reject) =>
                 axios.get('/api/files/', {
                     params: { file: file }
@@ -51,7 +52,7 @@ export default {
         },
     },
     getters: {
-        files: state => state.files,
+        all: state => state.files,
         file: state => state.file,
         currentPath: state => state.currentPath,
     },

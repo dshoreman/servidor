@@ -27,9 +27,9 @@ export default {
         FileRow,
     },
     computed: {
-        ...mapGetters([
-            'currentPath',
-        ]),
+        ...mapGetters({
+            currentPath: 'files/currentPath',
+        }),
     },
 }
 </script>

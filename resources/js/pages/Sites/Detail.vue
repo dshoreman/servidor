@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import SiteItem from '../../components/Sites/SiteItem';
 
 export default {
@@ -100,13 +100,16 @@ export default {
         sites: Array,
     },
     computed: {
+        ...mapGetters({
+            findSite: 'sites/findById',
+        }),
         site(){
-            return this.sites.find(s => s.id === this.id);
+            return this.findSite(this.id);
         },
     },
     methods: {
         ...mapActions({
-            pullFiles: 'pullSiteFiles',
+            pullFiles: 'sites/pull',
         }),
     },
 }

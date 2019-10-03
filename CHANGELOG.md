@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Login is now enforced correctly when auth tokens change or expire
 * Clearing search now works again for System users and groups
 * Errors preventing System user/group creation are resolved
+* Filtering Sites/Users/Groups no longer affects other pages
 
 
 ## [0.4.0] - 2019-08-24
