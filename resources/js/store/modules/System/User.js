@@ -1,4 +1,5 @@
 export default {
+    namespaced: true,
     state: {
         clean: null,
         currentFilter: '',
@@ -72,12 +73,12 @@ export default {
         },
     },
     actions: {
-        loadUsers: ({commit}) => {
+        load: ({commit}) => {
             axios.get('/api/system/users').then(response => {
                 commit('setUsers', response.data);
             });
         },
-        editUser: ({commit, state, getters}, user) => {
+        edit: ({commit, state, getters}, user) => {
             // TODO: Add some kind of modal/confirm prompt in case
             //  the user wants to abort any changes and continue.
             if (state.editing && getters.userIsDirty) {
@@ -86,13 +87,13 @@ export default {
 
             commit('setEditorUser', user);
         },
-        createUser: ({commit, state}, user) => {
+        create: ({commit, state}, user) => {
             axios.post('/api/system/users', user).then(response => {
                 commit('addUser', response.data);
                 commit('unsetEditorUser');
             });
         },
-        updateUser: ({commit}, {uid, user}) => {
+        update: ({commit}, {uid, user}) => {
             axios.put('/api/system/users/'+uid, user).then(response => {
                 commit('updateUser', {
                     uid: uid,
@@ -101,7 +102,7 @@ export default {
                 commit('unsetEditorUser');
             });
         },
-        deleteUser: ({commit, state}, uid) => {
+        delete: ({commit, state}, uid) => {
             axios.delete('/api/system/users/'+uid).then(response => {
                 commit('removeUser', state.user.uid_original);
                 commit('unsetEditorUser');
@@ -109,10 +110,19 @@ export default {
         },
     },
     getters: {
-        users: state => {
+        all: state => {
             return state.users;
         },
-        userDropdown: state => {
+        filtered: state => {
+            return state.users.filter(user => {
+                if (!state.showSystem && user.uid < 1000) {
+                    return false;
+                }
+
+                return user.name.includes(state.currentFilter);
+            });
+        },
+        dropdown: state => {
             return state.users.map(user => {
                 return {
                     icon: 'user',
@@ -133,15 +143,6 @@ export default {
                 || old.uid != now.uid
                 || old.gid != now.gid
                 || !_.isEqual(old.groups, now.groups);
-        },
-        filteredUsers: state => {
-            return state.users.filter(user => {
-                if (!state.showSystem && user.uid < 1000) {
-                    return false;
-                }
-
-                return user.name.includes(state.currentFilter);
-            });
         },
     },
 };

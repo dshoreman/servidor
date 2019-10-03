@@ -13,7 +13,7 @@ export default new VueX.Store ({
         Auth,
         sites: Site,
         Files,
-        Group,
-        User,
+        systemGroups: Group,
+        systemUsers: User,
     }
 });
