@@ -1,8 +1,9 @@
 <template>
     <sui-list-item>
-        <sui-list-icon name="user" size="large" vertical-align="middle"></sui-list-icon>
+        <sui-list-icon name="user" size="large" vertical-align="middle" />
         <sui-list-content>
             <a is="sui-list-header" @click="edit">{{ name }}</a>
+            <sui-list-description>&nbsp;</sui-list-description>
         </sui-list-content>
     </sui-list-item>
 </template>

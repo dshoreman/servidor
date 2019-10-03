@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.5.0] - 2019-10-03
+### Added
+* When saving a Site you'll now see a success message
+* Disk usage of the root mountpoint is now shown in Stats Bar
+* Extra information added in tooltips on the stats bar items
+* File browser now shows `-rwxrw-rw-` form permissions in a tooltip
+* Site files can now be updated from a new details page
+
+### Changed
+* Main layout and stats bar completely redesigned
+
+### Fixed
+* Errors weren't being cleared between Site form submissions
+* Icon for CPU usage in the Stats Bar no longer matches Free RAM
+* Permissions weren't being loaded for hidden items in the file browser
+* Site cards in the list view now use the full container width
+* You can finally click 'Remember Me' to toggle the switch at Login
+* Login is now enforced correctly when auth tokens change or expire
+* Clearing search now works again for System users and groups
+* Errors preventing System user/group creation are resolved
+* Filtering Sites/Users/Groups no longer affects other pages
+
+
 ## [0.4.0] - 2019-08-24
 ### Added
 * Buttons to navigate between Sites and their files
@@ -47,7 +70,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.4.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.5.0...develop
+[0.5.0]: https://github.com/dshoreman/servidor/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/dshoreman/servidor/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/dshoreman/servidor/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/dshoreman/servidor/compare/v0.1.0...v0.2.0

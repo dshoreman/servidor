@@ -75,12 +75,11 @@ class RegisterController extends Controller
     /**
      * Output user data on successful registration.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param mixed                    $user
+     * @param mixed $user
      *
      * @return \Illuminate\Http\Response
      */
-    protected function registered(Request $request, $user)
+    protected function registered($user)
     {
         return $user;
     }

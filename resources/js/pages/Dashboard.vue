@@ -1,5 +1,5 @@
 <template>
-    <sui-container text>
+    <sui-grid container class="text">
         <p>Dashboard content will go here, probably.</p>
-    </sui-container>
+    </sui-grid>
 </template>

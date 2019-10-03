@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import SiteEditor from '../../components/Sites/Editor';
 import SiteItem from '../../components/Sites/SiteItem';
 import store from '../../store';
@@ -36,13 +37,16 @@ export default {
         next();
     },
     computed: {
+        ...mapGetters({
+            findSite: 'sites/findById',
+        }),
         site(){
-            return this.sites.find(s => s.id === this.id);
+            return this.findSite(this.id);
         },
     },
     methods: {
         edit(id) {
-            return store.dispatch('editSite', parseInt(id));
+            return store.dispatch('sites/edit', parseInt(id));
         },
     },
 }

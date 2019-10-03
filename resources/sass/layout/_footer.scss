@@ -7,15 +7,12 @@ html {
 body {
     margin-bottom: 60px;
 
-    #app {
-        padding-bottom: 20px;
-    }
-
     & > footer {
+        margin-left: $sidebar_width;
         position: absolute;
         bottom: 0;
         height: 60px;
-        width: 100%;
+        width: calc(100% - #{$sidebar-width});
 
         p {
             line-height: 60px;

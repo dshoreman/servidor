@@ -1,5 +1,5 @@
 <template>
-    <sui-grid>
+    <sui-grid container>
         <sui-grid-column :width="listWidth">
             <sui-segment attached>
                 <sui-form @submit.prevent="edit(search)">
@@ -30,8 +30,8 @@
                     </sui-header-subheader>
                 </sui-header>
                 <div class="inline">
-                    <sui-button @click="search = ''">Clear Search</sui-button>
-                    <sui-button primary @click="edit">Add Group</sui-button>
+                    <sui-button @click="filterGroups('')">Clear Search</sui-button>
+                    <sui-button primary @click="edit(search)">Add Group</sui-button>
                 </div>
             </sui-segment>
         </sui-grid-column>
@@ -53,30 +53,30 @@ export default {
         SystemGroupEditor,
     },
     mounted () {
-        this.$store.dispatch('loadGroups');
-        this.$store.dispatch('loadUsers');
+        this.$store.dispatch('systemGroups/load');
+        this.$store.dispatch('systemUsers/load');
     },
     computed: {
         ...mapState({
-            editing: state => state.Group.editing,
-            search: state => state.Group.currentFilter,
-            showSysGroups: state => state.Group.showSystem,
+            editing: state => state.systemGroups.editing,
+            search: state => state.systemGroups.currentFilter,
+            showSysGroups: state => state.systemGroups.showSystem,
         }),
-        ...mapGetters([
-            'groups',
-            'filteredGroups',
-        ]),
+        ...mapGetters({
+            groups: 'systemGroups/all',
+            filteredGroups: 'systemGroups/filtered',
+        }),
         listWidth() {
             return this.editing ? 10 : 16;
         },
     },
     methods: {
         ...mapMutations({
-            filterGroups: 'setFilter',
-            toggleSysGroups: 'toggleSystemGroups',
+            filterGroups: 'systemGroups/setFilter',
+            toggleSysGroups: 'systemGroups/toggleSystemGroups',
         }),
         ...mapActions({
-            edit: 'editGroup',
+            edit: 'systemGroups/edit',
         }),
     },
 }

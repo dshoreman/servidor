@@ -1,5 +1,5 @@
 <template>
-    <sui-grid>
+    <sui-grid container>
         <sui-grid-column :width="listWidth">
             <sui-segment attached>
                 <sui-form @submit.prevent="edit(search)">
@@ -30,8 +30,8 @@
                     </sui-header-subheader>
                 </sui-header>
                 <div class="inline">
-                    <sui-button @click="search = ''">Clear Search</sui-button>
-                    <sui-button primary @click="edit">Add User</sui-button>
+                    <sui-button @click="filterUsers('')">Clear Search</sui-button>
+                    <sui-button primary @click="edit(search)">Add User</sui-button>
                 </div>
             </sui-segment>
         </sui-grid-column>
@@ -53,30 +53,30 @@ export default {
         SystemUserEditor,
     },
     mounted () {
-        this.$store.dispatch('loadUsers');
-        this.$store.dispatch('loadGroups');
+        this.$store.dispatch('systemUsers/load');
+        this.$store.dispatch('systemGroups/load');
     },
     computed: {
         ...mapState({
-            editing: state => state.User.editing,
-            search: state => state.User.currentFilter,
-            showSysUsers: state => state.User.showSystem,
+            editing: state => state.systemUsers.editing,
+            search: state => state.systemUsers.currentFilter,
+            showSysUsers: state => state.systemUsers.showSystem,
         }),
-        ...mapGetters([
-            'users',
-            'filteredUsers',
-        ]),
+        ...mapGetters({
+            users: 'systemUsers/all',
+            filteredUsers: 'systemUsers/filtered',
+        }),
         listWidth() {
             return this.editing ? 10 : 16;
         },
     },
     methods: {
         ...mapActions({
-            edit: 'editUser',
+            edit: 'systemUsers/edit',
         }),
         ...mapMutations({
-            filterUsers: 'setFilter',
-            toggleSysUsers: 'toggleSystemUsers',
+            filterUsers: 'systemUsers/setFilter',
+            toggleSysUsers: 'systemUsers/toggleSystemUsers',
         }),
     },
 };

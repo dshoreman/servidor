@@ -73,15 +73,15 @@ import { mapState, mapGetters } from 'vuex';
 export default {
     computed: {
         ...mapState({
-            editing: state => state.User.editing,
-            editMode: state => state.User.editMode,
-            oldUser: state => state.User.clean,
-            tmpUser: state => state.User.user,
+            editing: state => state.systemUsers.editing,
+            editMode: state => state.systemUsers.editMode,
+            oldUser: state => state.systemUsers.clean,
+            tmpUser: state => state.systemUsers.user,
         }),
-        ...mapGetters([
-            'groups',
-            'groupDropdown',
-        ]),
+        ...mapGetters({
+            groups: 'systemGroups/all',
+            groupDropdown: 'systemGroups/dropdown',
+        }),
     },
     data () {
         return {
@@ -100,7 +100,7 @@ export default {
                 return;
             }
 
-            this.$store.dispatch('createUser', this.tmpUser);
+            this.$store.dispatch('systemUsers/create', this.tmpUser);
         },
         updateUser (uid) {
             if (this.deleted.length) {
@@ -111,10 +111,10 @@ export default {
                 });
             }
 
-            this.$store.dispatch('updateUser', {uid, user: this.tmpUser});
+            this.$store.dispatch('systemUsers/update', {uid, user: this.tmpUser});
         },
         deleteUser (uid) {
-            this.$store.dispatch('deleteUser', uid);
+            this.$store.dispatch('systemUsers/delete', uid);
         },
         addGroup () {
             let group = this.groups[this.groups.findIndex(
@@ -140,7 +140,7 @@ export default {
         },
         reset () {
             this.deleted = [];
-            this.$store.commit('unsetEditorUser');
+            this.$store.commit('systemUsers/unsetEditorUser');
         },
     },
 };

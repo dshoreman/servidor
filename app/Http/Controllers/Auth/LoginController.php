@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers\Auth;
 
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Servidor\Http\Controllers\Controller;
@@ -23,10 +24,10 @@ class LoginController extends Controller
     /**
      * Proxy login requests to /oauth/token with client secret.
      *
-     * @param Illuminate\Http\Request $request
-     * @param GuzzleHttp\Client       $client
+     * @param \Illuminate\Http\Request $request
+     * @param \GuzzleHttp\Client       $client
      *
-     * @return Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function login(Request $request, Client $client)
     {
@@ -39,7 +40,7 @@ class LoginController extends Controller
         }
 
         try {
-            $response = $client->post(config('app.url').'/oauth/token', [
+            $response = $client->post(config('app.url') . '/oauth/token', [
                 'form_params' => [
                     'grant_type' => 'password',
                     'client_id' => config('passport.client_id'),
@@ -73,7 +74,7 @@ class LoginController extends Controller
         $user = auth()->user();
 
         if (true !== $user->token()->delete()) {
-            throw new \Exception('Failed to delete token.');
+            throw new Exception('Failed to delete token.');
         }
 
         return response(null, 204);

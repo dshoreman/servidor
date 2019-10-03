@@ -1,6 +1,6 @@
 <template>
     <sui-container>
-        <sui-form @submit.prevent="updateSite(tmpSite.id)" :error="error != ''">
+        <sui-form @submit.prevent="updateSite(tmpSite.id)">
             <sui-form-field class="enable-switch">
                 <sui-checkbox toggle v-model="tmpSite.is_enabled"/>
             </sui-form-field>
@@ -12,9 +12,7 @@
                 </sui-header-subheader>
             </h2>
 
-            <sui-message error :header="errorHeader">
-                <p>{{ error }}</p>
-            </sui-message>
+            <alerts :alerts="alerts" />
 
             <sui-form-field :error="'name' in errors">
                 <label>App Name</label>
@@ -102,7 +100,7 @@
             <sui-button negative icon="trash" type="button"
                 content="Delete" floated="right" @click="deleteSite(site.id)" />
             <sui-button-group>
-                <router-link :to="{ name: 'apps' }" is="sui-button"
+                <router-link :to="{ name: 'apps.view', params: { id: site.id } }" is="sui-button"
                     type="button" content="Cancel" />
                 <sui-button-or />
                 <sui-button type="submit" positive content="Save" />
@@ -120,6 +118,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import Alerts from '../Alerts';
 
 export default {
     props: {
@@ -128,12 +127,14 @@ export default {
             default: () => ({}),
         },
     },
+    components: {
+        Alerts,
+    },
     computed: {
         ...mapState({
-            'error': state => state.Site.error,
-            'errors': state => state.Site.errors,
-            'errorHeader': state => state.Site.error_title,
-            'tmpSite': state => state.Site.current,
+            'alerts': state => state.sites.alerts,
+            'errors': state => state.sites.errors,
+            'tmpSite': state => state.sites.current,
         }),
     },
     watch: {
@@ -148,11 +149,11 @@ export default {
     },
     methods: {
         updateSite(id) {
-            this.$store.dispatch('updateSite', {id, data: this.tmpSite});
+            this.$store.dispatch('sites/update', {id, data: this.tmpSite});
         },
         deleteSite() {
             confirm("Deletion is permanent! Are you sure?") &&
-                this.$store.dispatch('deleteSite', this.site.id).then(
+                this.$store.dispatch('sites/delete', this.site.id).then(
                     response => this.$router.push({ name: 'apps' })
                 );
         },

@@ -1,4 +1,5 @@
 export default {
+    namespaced: true,
     state: {
         clean: null,
         currentFilter: '',
@@ -68,25 +69,25 @@ export default {
         },
     },
     actions: {
-        loadGroups: ({commit}) => {
+        load: ({commit}) => {
             axios.get('/api/system/groups').then(response => {
                 commit('setGroups', response.data);
             });
         },
-        editGroup: ({commit, state, getters}, group) => {
+        edit: ({commit, state, getters}, group) => {
             if (state.editing && getters.groupIsDirty) {
                 return;
             }
 
             commit('setEditorGroup', group);
         },
-        createGroup: ({commit, state}) => {
+        create: ({commit, state}) => {
             axios.post('/api/system/groups', state.group).then(response => {
                 commit('addGroup', response.data);
                 commit('unsetEditorGroup');
             });
         },
-        updateGroup: ({commit}, group) => {
+        update: ({commit}, group) => {
             axios.put('/api/system/groups/'+group.gid, group.data).then(response => {
                 commit('updateGroup', {
                     gid: group.gid,
@@ -95,7 +96,7 @@ export default {
                 commit('unsetEditorGroup');
             });
         },
-        deleteGroup: ({commit, state}, gid) => {
+        delete: ({commit, state}, gid) => {
             axios.delete('/api/system/groups/'+gid).then(response => {
                 commit('removeGroup', state.group.gid_original);
                 commit('unsetEditorGroup');
@@ -103,10 +104,19 @@ export default {
         },
     },
     getters: {
-        groups: state => {
+        all: state => {
             return state.groups;
         },
-        groupDropdown: state => {
+        filtered: state => {
+            return state.groups.filter(group => {
+                if (!state.showSystem && group.gid < 1000) {
+                    return false;
+                }
+
+                return group.name.includes(state.currentFilter);
+            });
+        },
+        dropdown: state => {
             return state.groups.map(group => {
                 return {
                     icon: 'users',
@@ -127,14 +137,5 @@ export default {
                 || old.gid != now.gid
                 || !_.isEqual(old.users, now.users);
         },
-        filteredGroups: state => {
-            return state.groups.filter(group => {
-                if (!state.showSystem && group.gid < 1000) {
-                    return false;
-                }
-
-                return group.name.includes(state.currentFilter);
-            });
-        }
     },
 };

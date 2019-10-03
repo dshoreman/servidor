@@ -1,32 +1,36 @@
 <template>
-    <sui-container id="file-browser">
-        <h2>
-            <router-link :to="{ name: 'apps.edit', params: { id: site.id }}"
-                is="sui-button" color="teal" icon="globe" floated="right"
-                id="back2site" :content="'Edit ' + site.name" v-if="site" />
+    <sui-grid container>
+        <sui-grid-column id="file-browser">
+            <h2>
+                <router-link :to="{ name: 'apps.view', params: { id: site.id }}"
+                    is="sui-button" color="teal" icon="globe" floated="right"
+                    id="back2site" content="View Application" v-if="site"
+                    :data-tooltip="'Open overview for ' + site.name"
+                    data-position="left center" />
 
-            <sui-button id="levelup" icon="level up" @click="upOneLevel"/>
+                <sui-button id="levelup" icon="level up" @click="upOneLevel" />
 
-            <sui-breadcrumb class="massive">
-                <template v-for="(segment, index) in pathParts">
+                <sui-breadcrumb class="massive">
+                    <template v-for="(segment, index) in pathParts">
 
-                    <sui-breadcrumb-section link @click="setPath(segment.path)"
-                        v-if="segment.path != currentPath">
-                        {{ segment.dirname }}
-                    </sui-breadcrumb-section>
-                    <sui-breadcrumb-section v-else>
-                        {{ segment.dirname }}
-                    </sui-breadcrumb-section>
+                        <sui-breadcrumb-section link @click="setPath(segment.path)"
+                            v-if="segment.path != currentPath">
+                            {{ segment.dirname }}
+                        </sui-breadcrumb-section>
+                        <sui-breadcrumb-section v-else>
+                            {{ segment.dirname }}
+                        </sui-breadcrumb-section>
 
-                    <sui-breadcrumb-divider @click="setPath(segment.path)"
-                        v-if="index < (pathParts.length - 1)" />
+                        <sui-breadcrumb-divider @click="setPath(segment.path)"
+                            v-if="index < (pathParts.length - 1)" />
 
-                </template>
-            </sui-breadcrumb>
-        </h2>
+                    </template>
+                </sui-breadcrumb>
+            </h2>
 
-        <file-list :files="files" @set-path="setPath($event)" />
-    </sui-container>
+            <file-list :files="files" @set-path="setPath($event)" />
+        </sui-grid-column>
+    </sui-grid>
 </template>
 
 <script>
@@ -35,11 +39,11 @@ import FileList from '../../components/Files/Browser/FileList';
 
 export default {
     mounted () {
-        this.$store.dispatch('loadSites');
-        this.$store.dispatch('loadFiles', { path: this.path });
+        this.$store.dispatch('sites/load');
+        this.$store.dispatch('files/load', { path: this.path });
     },
     beforeRouteUpdate (to, from, next) {
-        this.$store.dispatch('loadFiles', { path: to.params.path });
+        this.$store.dispatch('files/load', { path: to.params.path });
         next();
     },
     props: [
@@ -49,11 +53,11 @@ export default {
         FileList,
     },
     computed: {
-        ...mapGetters([
-            'currentPath',
-            'getSiteByDocroot',
-            'files',
-        ]),
+        ...mapGetters({
+            currentPath: 'files/currentPath',
+            findSite: 'sites/findByDocroot',
+            files: 'files/all',
+        }),
         pathParts: function() {
             let parts = [],
                 path = '';
@@ -70,7 +74,7 @@ export default {
             return parts;
         },
         site: function() {
-            return this.getSiteByDocroot(this.currentPath);
+            return this.findSite(this.currentPath);
         },
     },
     methods: {
@@ -90,7 +94,7 @@ export default {
             next = next ? next : '/';
 
             this.$router.push({ name: 'files', params: { path: next } });
-            this.$store.dispatch('loadFiles', { path: next });
+            this.$store.dispatch('files/load', { path: next });
         },
     }
 }

@@ -1,11 +1,8 @@
 #file-browser, #file-editor {
-    a#back2site,
-    button#levelup {
-        vertical-align: top;
+    span.pathbar {
+        vertical-align: middle;
     }
-}
 
-#file-browser {
     div.ui.breadcrumb {
         div.divider {
             color: #4183C4;
@@ -22,6 +19,9 @@
             padding-left: 2px;
         }
     }
+}
+
+#file-browser {
     table.files {
         tbody > tr {
             cursor: pointer;
@@ -31,6 +31,7 @@
 
 #file-editor {
     pre {
+        margin: 0;
         overflow: auto;
     }
 }

@@ -68,15 +68,15 @@ import { mapState, mapGetters } from 'vuex';
 export default {
     computed: {
         ...mapState({
-            editing: state => state.Group.editing,
-            editMode: state => state.Group.editMode,
-            oldGroup: state => state.Group.clean,
-            tmpGroup: state => state.Group.group,
+            editing: state => state.systemGroups.editing,
+            editMode: state => state.systemGroups.editMode,
+            oldGroup: state => state.systemGroups.clean,
+            tmpGroup: state => state.systemGroups.group,
         }),
-        ...mapGetters([
-            'users',
-            'userDropdown',
-        ]),
+        ...mapGetters({
+            users: 'systemUsers/all',
+            userDropdown: 'systemUsers/dropdown',
+        }),
     },
     data () {
         return {
@@ -95,7 +95,7 @@ export default {
                 return;
             }
 
-            this.$store.dispatch('createGroup', this.tmpGroup);
+            this.$store.dispatch('systemGroups/create', this.tmpGroup);
         },
         updateGroup (gid) {
             if (this.deleted.length) {
@@ -106,10 +106,10 @@ export default {
                 });
             }
 
-            this.$store.dispatch('updateGroup', {gid, data: this.tmpGroup});
+            this.$store.dispatch('systemGroups/update', {gid, data: this.tmpGroup});
         },
         deleteGroup (gid) {
-            this.$store.dispatch('deleteGroup', gid);
+            this.$store.dispatch('systemGroups/delete', gid);
         },
         addUser () {
             let user = this.users[this.users.findIndex(
@@ -135,7 +135,7 @@ export default {
         },
         reset () {
             this.deleted = [];
-            this.$store.commit('unsetEditorGroup');
+            this.$store.commit('systemGroups/unsetEditorGroup');
         },
     },
 };

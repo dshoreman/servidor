@@ -8,6 +8,9 @@ use Servidor\Rules\Domain;
 
 class UpdateSite extends FormRequest
 {
+    const GIT_NOT_FOUND = 128;
+    const GIT_NO_MATCHING_REFS = 2;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -31,7 +34,7 @@ class UpdateSite extends FormRequest
                 'string',
                 Rule::unique('sites', 'name')->ignore($this->route('site')),
             ],
-            'primary_domain' => ['required', new Domain],
+            'primary_domain' => ['required', new Domain()],
             'type' => 'required|in:basic,php,laravel,redirect',
             'source_repo' => 'required_unless:type,redirect|nullable|url',
             'source_branch' => 'nullable|string',
@@ -56,11 +59,16 @@ class UpdateSite extends FormRequest
                 return;
             }
 
-            exec('git ls-remote --heads --exit-code "'.$data['source_repo'].'" "'.$data['source_branch'].'"', $o, $status);
+            $stringOpts = [
+                $data['source_repo'],
+                $data['source_branch'],
+            ];
+            exec('git ls-remote --heads --exit-code "' . implode('" "', $stringOpts) . '"', $o, $status);
+            unset($o);
 
-            if (128 === $status) {
+            if (self::GIT_NOT_FOUND === $status) {
                 $validator->errors()->add('source_repo', "This repo couldn't be found. Does it require auth?");
-            } elseif (2 === $status) {
+            } elseif (self::GIT_NO_MATCHING_REFS === $status) {
                 $validator->errors()->add('source_branch', "This branch doesn't exist.");
             } elseif (0 !== $status) {
                 $validator->errors()->add('source_repo', 'Branch listing failed. Is this repo valid?');

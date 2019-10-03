@@ -13,9 +13,14 @@ class FileManager
      */
     private $finder;
 
+    /**
+     * @var array
+     */
+    private $filePerms;
+
     public function __construct()
     {
-        $this->finder = new Finder;
+        $this->finder = new Finder();
     }
 
     public function list(string $path): array
@@ -26,8 +31,10 @@ class FileManager
             $path = '/../';
         }
 
+        $this->loadPermissions($path);
+
         $files = $this->finder->depth(0)->in($path)
-                      ->sortByName($naturalSort = true)
+                      ->sortByName(true)
                       ->ignoreDotFiles(false);
 
         return array_map(
@@ -42,10 +49,37 @@ class FileManager
             return ['error' => ['code' => 404, 'msg' => 'File not found']];
         }
 
-        return $this->fileToArray($file, true);
+        $this->loadFilePermissions($file);
+
+        return $this->fileWithContents($file);
     }
 
-    private function fileToArray($file, $includeContents = false): array
+    private function loadFilePermissions(string $path): array
+    {
+        $pathParts = explode('/', $path);
+
+        $name = array_pop($pathParts);
+        $path = mb_substr($path, 0, mb_strrpos($path, '/'));
+
+        return $this->loadPermissions($path, $name);
+    }
+
+    private function loadPermissions(string $path, string $name = '.* *'): array
+    {
+        $perms = [];
+
+        exec('cd "' . $path . '" && stat -c "%n %A %a" ' . $name . ' 2>/dev/null', $files);
+
+        foreach ($files as $file) {
+            list($filename, $text, $octal) = explode(' ', $file);
+
+            $perms[$filename] = compact('text', 'octal');
+        }
+
+        return $this->filePerms = $perms;
+    }
+
+    private function loadFile($file): array
     {
         if (is_string($file)) {
             $path = explode('/', $file);
@@ -62,21 +96,43 @@ class FileManager
             'target' => $file->isLink() ? $file->getLinkTarget() : '',
             'owner' => posix_getpwuid($file->getOwner())['name'],
             'group' => posix_getgrgid($file->getGroup())['name'],
-            'perms' => mb_substr(decoct($file->getPerms()), -4),
         ];
 
-        if ($includeContents) {
-            try {
-                $data['contents'] = $file->getContents();
-            } catch (\RuntimeException $e) {
-                $msg = $e->getMessage();
-                $data['contents'] = '';
+        $data['perms'] = is_null($this->filePerms) || !isset($this->filePerms[$data['filename']])
+                       ? ['text' => '', 'octal' => mb_substr(decoct($file->getPerms()), -4)]
+                       : $this->filePerms[$data['filename']];
 
-                $data['error'] = str_contains($msg, 'Permission denied') ? [
-                    'code' => Response::HTTP_FORBIDDEN,
-                    'msg' => 'Permission denied',
-                ] : ['code' => 418, 'msg' => $msg];
-            }
+        if (intval(3) === mb_strlen($data['perms']['octal'])) {
+            $data['perms']['octal'] = '0' . $data['perms']['octal'];
+        }
+
+        return [$file, $data];
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    private function fileToArray($file): array
+    {
+        list($file, $data) = $this->loadFile($file);
+
+        return $data;
+    }
+
+    private function fileWithContents($file): array
+    {
+        list($file, $data) = $this->loadFile($file);
+
+        try {
+            $data['contents'] = $file->getContents();
+        } catch (\RuntimeException $e) {
+            $msg = $e->getMessage();
+            $data['contents'] = '';
+
+            $data['error'] = str_contains($msg, 'Permission denied') ? [
+                'code' => Response::HTTP_FORBIDDEN,
+                'msg' => 'Permission denied',
+            ] : ['code' => 418, 'msg' => $msg];
         }
 
         return $data;

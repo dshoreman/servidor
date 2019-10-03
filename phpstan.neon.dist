@@ -1,0 +1,12 @@
+includes:
+  - vendor/nunomaduro/larastan/extension.neon
+parameters:
+  level: 2
+  paths:
+    - app
+    - tests
+  ignoreErrors:
+    - message: '#Result of method .*::sendLockoutResponse\(\) \(void\) is used.#'
+      path: 'app/Http/Controllers/Auth/LoginController.php'
+    - message: '#Call to an undefined method Illuminate\\Contracts\\Auth\\Factory::user\(\).#'
+      path: 'app/Http/Controllers/Auth/LoginController.php'

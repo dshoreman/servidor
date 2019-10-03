@@ -26,6 +26,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('sites', 'SiteController', [
         'only' => ['index', 'store', 'update', 'destroy'],
     ]);
+    Route::post('sites/{site}/pull', 'SiteController@pull');
 
     Route::resource('files', 'FileController', [
         'only' => ['index'],

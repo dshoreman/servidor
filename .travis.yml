@@ -1,30 +1,47 @@
 dist: bionic
 language: php
 
-php:
-  - '7.3'
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - vendor
+
+matrix:
+  include:
+    - php: 7.3
+      env:
+        - WITH_PHP=true
+    - php: 7.3
+      env:
+        - WITH_NPM=true
 
 services:
   - mysql
 
 before_install:
-  - composer self-update
-  - composer validate
+  - phpenv config-rm xdebug.ini
 
 install:
-  - composer install --no-interaction
-  - npm clean-install
-  - npm run dev
+  - if [[ "$WITH_PHP" == true ]]; then mysql -e 'CREATE DATABASE servidor_test;'; fi
+  - if [[ "$WITH_PHP" == true ]]; then travis_retry composer install --no-interaction; fi
+  - if [[ "$WITH_NPM" == true ]]; then travis_retry npm clean-install; fi
+  - if [[ "$WITH_PHP" == true ]]; then cp .env.travis .env; fi
+  - if [[ "$WITH_PHP" == true ]]; then php artisan key:generate; fi
+  - if [[ "$WITH_PHP" == true ]]; then php artisan migrate && php artisan passport:install; fi
 
 before_script:
-  - sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"
-  - sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"
-  - sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"
-  - mysql -e 'CREATE DATABASE servidor_test;'
-  - cp .env.travis .env
-  - php artisan key:generate
-  - php artisan migrate
-  - php artisan passport:install
+  - if [[ "$WITH_PHP" == true ]]; then sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"; fi
+  - if [[ "$WITH_PHP" == true ]]; then sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"; fi
+  - if [[ "$WITH_PHP" == true ]]; then sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"; fi
+
+script:
+  - if [[ "$WITH_NPM" == true ]]; then npm run prod; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpcs app --standard=PSR12; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmd app text .phpmd.xml; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmnd . --non-zero-exit-on-violation --exclude tests; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpstan analyze -c phpstan.neon.dist; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpunit; fi
 
 after_failure:
   - cat storage/logs/laravel.log

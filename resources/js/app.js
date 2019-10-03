@@ -7,7 +7,6 @@ import store from './store'
 
 import MainMenu from './components/MainMenu.vue';
 import StatsBar from './components/StatsBar.vue';
-import SystemMenu from './components/System/Menu.vue';
 import SystemGroups from './components/System/Groups.vue';
 import SystemUsers from './components/System/Users.vue';
 import PassportClients from './components/passport/Clients.vue';
@@ -22,7 +21,6 @@ Vue.use(SuiVue);
 Vue.component('main-menu', MainMenu);
 Vue.component('stats-bar', StatsBar);
 
-Vue.component('system-menu', SystemMenu);
 Vue.component('system-groups', SystemGroups);
 Vue.component('system-users', SystemUsers);
 
@@ -36,7 +34,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    let authed = store.getters.loggedIn;
+    let authed = store.getters.loggedIn,
+        token = store.getters.token;
+
+    if (token && token !== localStorage.getItem('accessToken')) {
+        store.dispatch('forceLogin', 'Token mismatch');
+        authed = false;
+    }
 
     if (!authed && to.matched.some(route => route.meta.auth)) {
         next({ name: 'login' });
@@ -50,7 +54,8 @@ router.beforeEach((to, from, next) => {
 window.axios.interceptors.response.use(response => {
     return response;
 }, error => {
-    if (error.response.status === 401) {
+    if (error.response.status === 401 && error.response.data.error != 'invalid_credentials') {
+        store.dispatch('forceLogin', 'Session timed out');
         router.push({ name: 'login' });
     }
 

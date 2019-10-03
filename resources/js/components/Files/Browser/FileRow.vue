@@ -6,7 +6,8 @@
                 <sui-icon name="alternate long arrow right" /> {{ file.target }}
             </span>
         </sui-table-cell>
-        <td>{{ file.perms }}</td>
+        <sui-table-cell :data-tooltip="file.perms.text" data-position="right center"
+            collapsing>{{ file.perms.octal }}</sui-table-cell>
         <td>{{ file.owner }}</td>
         <td>{{ file.group }}</td>
     </tr>
