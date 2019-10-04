@@ -41,6 +41,7 @@ script:
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmd app text .phpmd.xml; fi
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmnd . --non-zero-exit-on-violation --exclude tests; fi
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpstan analyze -c phpstan.neon.dist; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/psalm; fi
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpunit; fi
 
 after_failure:

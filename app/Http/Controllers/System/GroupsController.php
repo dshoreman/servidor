@@ -17,8 +17,6 @@ class GroupsController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -39,13 +37,10 @@ class GroupsController extends Controller
 
     /**
      * Create a new group on the host system.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
+        $options = [];
         $data = $request->validate($this->validationRules());
 
         if ((int) ($data['gid'] ?? null) > 0) {
@@ -96,14 +91,10 @@ class GroupsController extends Controller
 
     /**
      * Update the specified group on the system.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $gid
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $gid)
+    public function update(Request $request, int $gid)
     {
+        $options = [];
         $data = $request->validate($this->validationRules());
         $data['gid'] = (int) ($data['gid'] ?? $gid);
 
@@ -124,17 +115,17 @@ class GroupsController extends Controller
             $members = implode(',', $data['users']);
         }
 
-        if (empty($options ?? null) && !isset($members)) {
+        if (empty($options) && !isset($members)) {
             throw $this->failed('Nothing to update!');
         }
 
-        if (count($options ?? [])) {
+        if (count($options)) {
             $options[] = $original['name'];
 
             exec('sudo groupmod ' . implode(' ', $options), $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException('Something went wrong. Exit code: ' . $retval);
+                throw $this->failed('Something went wrong. Exit code: ' . $retval, 'exec');
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -146,7 +137,7 @@ class GroupsController extends Controller
             exec("sudo gpasswd -M '" . ($members ?? null) . "' {$group}", $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException('Something went wrong. Exit code: ' . $retval);
+                throw $this->failed('Something went wrong. Exit code: ' . $retval, 'exec');
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -161,12 +152,8 @@ class GroupsController extends Controller
 
     /**
      * Remove the specified group from the system.
-     *
-     * @param int $gid
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function destroy($gid)
+    public function destroy(int $gid)
     {
         if ($group = posix_getgrgid($gid)) {
             exec('sudo groupdel ' . $group['name']);
@@ -177,10 +164,8 @@ class GroupsController extends Controller
 
     /**
      * Get the validation rules for system groups.
-     *
-     * @return array
      */
-    protected function validationRules()
+    protected function validationRules(): array
     {
         return [
             'name' => [

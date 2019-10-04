@@ -12,8 +12,6 @@ class SiteController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -24,8 +22,6 @@ class SiteController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CreateSite $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(CreateSite $request)
     {
@@ -38,8 +34,6 @@ class SiteController extends Controller
      * Pull the latest commit from Git.
      *
      * @param \Servidor\Site $site
-     *
-     * @return \Illuminate\Http\Response
      */
     public function pull(Site $site)
     {
@@ -61,7 +55,7 @@ class SiteController extends Controller
 
             exec('cd "' . $root . '"' . $args . ' && git pull');
 
-            return response($site, Response::HTTP_OK);
+            return response((string) $site, Response::HTTP_OK);
         }
 
         if (!is_dir(dirname($root))) {
@@ -75,7 +69,7 @@ class SiteController extends Controller
 
         exec($cmd);
 
-        return response($site, Response::HTTP_OK);
+        return response((string) $site, Response::HTTP_OK);
     }
 
     /**
@@ -83,22 +77,18 @@ class SiteController extends Controller
      *
      * @param UpdateSite     $request
      * @param \Servidor\Site $site
-     *
-     * @return \Illuminate\Http\Response
      */
     public function update(UpdateSite $request, Site $site)
     {
         $site->update($request->validated());
 
-        return response($site, Response::HTTP_OK);
+        return response((string) $site, Response::HTTP_OK);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param \Servidor\Site $site
-     *
-     * @return \Illuminate\Http\Response
      */
     public function destroy(Site $site)
     {

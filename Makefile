@@ -25,6 +25,9 @@ reports: coverage-html metrics-html
 phpstan:
 	vendor/bin/phpstan analyze
 
+psalm:
+	vendor/bin/psalm
+
 phpcsf:
 	vendor/bin/php-cs-fixer fix --diff --dry-run --using-cache=no
 	@echo
@@ -42,4 +45,4 @@ phpmnd:
 
 syntax: phpcsf phpcs phpmd phpmnd
 
-kitchen-sink: syntax phpstan coverage metrics
+kitchen-sink: syntax phpstan psalm coverage metrics

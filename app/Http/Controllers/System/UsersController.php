@@ -12,8 +12,6 @@ class UsersController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -54,14 +52,11 @@ class UsersController extends Controller
 
     /**
      * Create a new user on the host system.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $data = $request->validate($this->validationRules());
+        $options = [];
 
         if ((int) ($data['uid'] ?? null) > 0) {
             $options[] = '-u ' . (int) $data['uid'];
@@ -87,15 +82,11 @@ class UsersController extends Controller
 
     /**
      * Update the specified user on the system.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $uid
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $uid)
+    public function update(Request $request, int $uid)
     {
         $newUid = $uid;
+        $options = [];
         $data = $request->validate($this->validationRules());
 
         if (!$original = posix_getpwuid($uid)) {
@@ -121,7 +112,7 @@ class UsersController extends Controller
             $options[] = '-G "' . implode(',', $data['groups']) . '"';
         }
 
-        if (empty($options ?? null)) {
+        if (empty($options)) {
             throw $this->failed('Nothing to update!');
         }
 
@@ -141,8 +132,6 @@ class UsersController extends Controller
      * Remove the specified user from the system.
      *
      * @param int $uid
-     *
-     * @return \Illuminate\Http\Response
      */
     public function destroy($uid)
     {

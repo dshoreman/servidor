@@ -32,7 +32,7 @@ class Domain implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match($this->match, $value);
+        return (bool) preg_match($this->match, $value);
     }
 
     /**

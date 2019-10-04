@@ -5,6 +5,7 @@ namespace Servidor\FileManager;
 use Illuminate\Http\Response;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use InvalidArgumentException;
 
 class FileManager
 {
@@ -33,6 +34,13 @@ class FileManager
 
         $this->loadPermissions($path);
 
+        /**
+         * sortByName has no Parameter in current Symfony,
+         * but this this will be introduced in Symfony 5
+         * and is already annotated in the finder.
+         *
+         * @psalm-suppress TooManyArguments
+         */
         $files = $this->finder->depth(0)->in($path)
                       ->sortByName(true)
                       ->ignoreDotFiles(false);
@@ -59,7 +67,12 @@ class FileManager
         $pathParts = explode('/', $path);
 
         $name = array_pop($pathParts);
-        $path = mb_substr($path, 0, mb_strrpos($path, '/'));
+        $pos = mb_strrpos($path, '/');
+        if (false === $pos) {
+            throw new InvalidArgumentException();
+        }
+
+        $path = mb_substr($path, 0, $pos);
 
         return $this->loadPermissions($path, $name);
     }

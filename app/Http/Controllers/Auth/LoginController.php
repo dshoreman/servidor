@@ -23,11 +23,6 @@ class LoginController extends Controller
 
     /**
      * Proxy login requests to /oauth/token with client secret.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \GuzzleHttp\Client       $client
-     *
-     * @return \Illuminate\Http\Response
      */
     public function login(Request $request, Client $client)
     {
@@ -56,10 +51,11 @@ class LoginController extends Controller
             return $response->getBody();
         } catch (BadResponseException $e) {
             $this->incrementLoginAttempts($request);
+            $response = $e->getResponse();
 
             return response(
-                $e->getResponse()->getBody(),
-                $e->getCode(),
+                is_object($response) ? (string) $response->getBody() : '',
+                (int) $e->getCode(),
             );
         }
     }
@@ -69,11 +65,18 @@ class LoginController extends Controller
         return 'username';
     }
 
+    /**
+     * Laravel magic.
+     *
+     * @psalm-suppress UndefinedInterfaceMethod
+     */
     public function logout()
     {
-        $user = auth()->user();
+        /** @var \Illuminate\Contracts\Auth\Guard */
+        $auth = auth();
+        $user = $auth->user();
 
-        if (true !== $user->token()->delete()) {
+        if (is_object($user) && is_object($user->token()) && true !== $user->token()->delete()) {
             throw new Exception('Failed to delete token.');
         }
 
