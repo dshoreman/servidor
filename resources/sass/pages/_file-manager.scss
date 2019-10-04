@@ -30,6 +30,9 @@
 }
 
 #file-editor {
+    .ui.segment.loading {
+        min-height: 500px;
+    }
     pre {
         margin: 0;
         overflow: auto;

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* There's now a loading spinner while files load in the viewer
+
+### Fixed
+* Previous file no longer flickers when loading the next
+* Version information is no longer shown on public pages
 
 
 ## [0.5.0] - 2019-10-03
