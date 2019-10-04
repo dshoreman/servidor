@@ -37,6 +37,9 @@
 
             <router-view id="content" />
         </section>
+        <footer>
+            <p>Servidor v{{ version }}</p>
+        </footer>
     </div>
 </template>
 
@@ -44,6 +47,12 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 
 export default {
+    props: {
+        version: {
+            type: String,
+            default: "0.0.0",
+        },
+    },
     computed: {
         ...mapGetters([
             'loggedIn',

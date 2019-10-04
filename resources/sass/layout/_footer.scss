@@ -4,8 +4,8 @@ html {
     height: unset;
 }
 
-body {
-    margin-bottom: 60px;
+#app {
+    padding-bottom: 60px;
 
     & > footer {
         margin-left: $sidebar_width;
