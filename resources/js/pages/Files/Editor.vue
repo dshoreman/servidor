@@ -7,7 +7,22 @@
             </h2>
 
             <sui-segment v-if="file.error == undefined" :loading="loading">
-                <pre>{{ file.contents }}</pre>
+                <sui-dropdown class="icon" icon="paint brush"
+                              labeled floating button search
+                              v-model="theme"
+                              :options="cmThemes">
+                </sui-dropdown>
+
+                <sui-dropdown class="icon" icon="code"
+                              labeled floating button search
+                              v-model="mode"
+                              :options="cmMappedModes">
+                </sui-dropdown>
+                <sui-checkbox label="Line Wrapping" toggle v-model="wrap"/>
+            </sui-segment>
+
+            <sui-segment v-if="file.error == undefined" :loading="loading">
+                <codemirror v-model="file.contents" :options="cmOptions"></codemirror>
             </sui-segment>
 
             <sui-segment class="placeholder" v-else>
@@ -24,12 +39,19 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { codemirror } from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/dracula.css'
 
 export default {
+    components: {
+        codemirror,
+    },
     async mounted () {
         this.loading = true;
         await this.$store.dispatch('files/open', { file: this.filePath })
             .finally(() => this.loading = false );
+        this.$store.dispatch('editor/setMode', this.filePath);
     },
     props: [
         'filePath',
@@ -42,7 +64,39 @@ export default {
     computed: {
         ...mapGetters({
             file: 'files/file',
+            cmOptions: 'editor/cmOptions',
+            cmThemes: 'editor/cmThemes',
+            cmModes: 'editor/cmModes',
         }),
+        cmMappedModes() {
+          return this.cmModes.map(o => {
+            return { text: o.name, value: o.mime };
+          });
+        },
+        theme: {
+            get () {
+                return this.$store.state.editor.cmOptions.theme
+            },
+            set (value) {
+                this.$store.dispatch('editor/setTheme', value)
+            }
+        },
+        mode: {
+            get () {
+                return this.$store.state.editor.cmSelectedMode
+            },
+            set (value) {
+                this.$store.dispatch('editor/setMode', value)
+            }
+        },
+        wrap: {
+            get () {
+                return this.$store.state.editor.cmOptions.lineWrapping
+            },
+            set (value) {
+                this.$store.dispatch('editor/setLineWrapping', value)
+            }
+        }
     },
     methods: {
         backToDir: function () {
