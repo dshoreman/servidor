@@ -52,13 +52,39 @@ export default {
     data () {
         return {
             loaded: false,
-            hostname: '',
+            cpu_usage: 0,
+            disk: {},
             distro: '',
+            hostname: '',
+            load_avg: {},
+            ram: {},
             version: '',
         };
     },
     mounted () {
         this.initStatsBar();
+
+        const refreshStatsBar = () => {
+            return setInterval(
+                () => this.initStatsBar(),
+                1000 * 60
+            );
+        };
+
+        const startStopRefreshStatsBar = () => {
+            if(document.hidden) {
+                clearInterval(refreshStatsBarIntervalId);
+            } else {
+                refreshStatsBarIntervalId = refreshStatsBar();
+            }
+        };
+
+        let refreshStatsBarIntervalId = refreshStatsBar();
+        document.addEventListener("visibilitychange", startStopRefreshStatsBar, false);
+
+        this.$once("hook:beforeDestroy", () => {
+            document.removeEventListener("visibilitychange", startStopRefreshStatsBar);
+        });
     },
     methods: {
         initStatsBar () {

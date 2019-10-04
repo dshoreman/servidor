@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * There's now a loading spinner while files load in the viewer
 
+### Changed
+* Stats bar updated to refresh every 60s while the tab is visible
+
 ### Fixed
 * Previous file no longer flickers when loading the next
 * Version information is no longer shown on public pages
