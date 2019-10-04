@@ -6,7 +6,7 @@
                 <span class="pathbar">{{ filePath }}</span>
             </h2>
 
-            <sui-segment v-if="file.error == undefined">
+            <sui-segment v-if="file.error == undefined" :loading="loading">
                 <pre>{{ file.contents }}</pre>
             </sui-segment>
 
@@ -26,12 +26,19 @@
 import { mapGetters } from 'vuex';
 
 export default {
-    mounted () {
-        this.$store.dispatch('files/open', { file: this.filePath });
+    async mounted () {
+        this.loading = true;
+        await this.$store.dispatch('files/open', { file: this.filePath })
+            .finally(() => this.loading = false );
     },
     props: [
         'filePath',
     ],
+    data: () => {
+        return {
+            loading: false,
+        };
+    },
     computed: {
         ...mapGetters({
             file: 'files/file',

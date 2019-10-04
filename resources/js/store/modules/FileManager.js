@@ -12,6 +12,9 @@ export default {
         setFile: (state, file) => {
             state.file = file;
         },
+        clearFile: (state) => {
+            state.file = [];
+        },
         setPath: (state, path) => {
             state.currentPath = path;
         }
@@ -29,7 +32,8 @@ export default {
             );
         },
         open: ({commit}, {file}) => {
-            return new Promise((resolve, reject) =>
+            return new Promise((resolve, reject) => {
+                commit('clearFile');
                 axios.get('/api/files/', {
                     params: { file: file }
                 }).then(response => {
@@ -47,8 +51,8 @@ export default {
 
                     commit('setFile', data);
                     reject(error);
-                })
-            );
+                });
+            });
         },
     },
     getters: {
