@@ -57,7 +57,9 @@ export default {
                 return this.$router.push({ name: 'apps.edit', params: { id: result.id }});
             }
 
-            this.$store.dispatch('sites/create');
+            this.$store.dispatch('sites/create').then(({data})=>{
+                this.$router.push({ name: 'apps.edit', params: {id: data.id}})
+            });
         },
     }
 }
