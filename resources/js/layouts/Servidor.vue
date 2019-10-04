@@ -36,11 +36,10 @@
             <stats-bar id="stats-bar" />
 
             <router-view id="content" />
-
-            <div class="version">
-                <p>Servidor v{{ version }}</p>
-            </div>
         </section>
+        <footer>
+            <p>Servidor v{{ version }}</p>
+        </footer>
     </div>
 </template>
 
