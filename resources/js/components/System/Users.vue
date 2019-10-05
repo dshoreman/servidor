@@ -61,10 +61,10 @@ export default {
             editing: state => state.systemUsers.editing,
             search: state => state.systemUsers.currentFilter,
             showSysUsers: state => state.systemUsers.showSystem,
+            activeUser: state => state.systemUsers.clean.uid,
         }),
         ...mapGetters({
             users: 'systemUsers/all',
-            activeUser: 'systemUsers/userBeingEdited',
             filteredUsers: 'systemUsers/filtered',
         }),
         listWidth() {

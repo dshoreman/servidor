@@ -61,10 +61,10 @@ export default {
             editing: state => state.systemGroups.editing,
             search: state => state.systemGroups.currentFilter,
             showSysGroups: state => state.systemGroups.showSystem,
+            activeGroup: state => state.systemGroups.clean.gid,
         }),
         ...mapGetters({
             groups: 'systemGroups/all',
-            activeGroup: 'systemGroups/groupBeingEdited',
             filteredGroups: 'systemGroups/filtered',
         }),
         listWidth() {
