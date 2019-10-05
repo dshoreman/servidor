@@ -17,7 +17,7 @@
             <sui-segment attached v-if="filteredUsers.length">
                 <sui-list divided relaxed>
                     <system-user-item v-for="user in filteredUsers"
-                        :user="user" :key="user.uid" @edit="edit" />
+                        :user="user" :key="user.uid" :active="user.uid === activeUser" @edit="edit" />
                 </sui-list>
             </sui-segment>
 
@@ -61,6 +61,7 @@ export default {
             editing: state => state.systemUsers.editing,
             search: state => state.systemUsers.currentFilter,
             showSysUsers: state => state.systemUsers.showSystem,
+            activeUser: state => state.systemUsers.clean.uid,
         }),
         ...mapGetters({
             users: 'systemUsers/all',
