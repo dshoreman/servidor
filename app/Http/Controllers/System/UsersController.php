@@ -118,7 +118,13 @@ class UsersController extends Controller
         $original['groups'] = $this->loadSecondaryGroups($original);
 
         if (isset($data['groups']) && $data['groups'] != $original['groups']) {
-            $options[] = '-G "' . implode(',', $data['groups']) . '"';
+            $filteredGroups = array_filter(
+                $data['groups'],
+                function ($group) {
+                    return ':' !== $group;
+                }
+            );
+            $options[] = '-G "' . implode(',', $filteredGroups) . '"';
         }
 
         if (empty($options ?? null)) {
@@ -134,7 +140,10 @@ class UsersController extends Controller
             throw new Exception('Something went wrong. Exit code: ' . $retval);
         }
 
-        return response(posix_getpwuid($newUid), Response::HTTP_OK);
+        $userData = posix_getpwuid($newUid);
+        $userData['groups'] = $this->loadSecondaryGroups($userData);
+
+        return response($userData, Response::HTTP_OK);
     }
 
     /**

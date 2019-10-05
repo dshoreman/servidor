@@ -67,4 +67,29 @@ class UpdateUserTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
+    /**
+     * @test
+     * @group issue154
+     */
+    public function group_should_be_set_after_updating_an_user()
+    {
+        $user = $this->authed()->postJson($this->endpoint, [
+            'name' => 'updatetestuser',
+            'gid' => 0,
+        ])->json();
+
+        $response = $this->authed()->putJson($this->endpoint($user['uid']), [
+            'name' => 'updatetestuser',
+            'gid' => 0,
+            'groups' => ['adm'],
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment(['groups' => [':', 'adm']]);
+        $response->assertJsonStructure($this->expectedKeys);
+
+        $this->addDeletable('user', $response);
+        $this->addDeletable('group', $response);
+    }
 }
