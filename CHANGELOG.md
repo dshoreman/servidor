@@ -9,13 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 * There's now a loading spinner while files load in the viewer
+* Highlight for current item in the list when editing a system user/group
 
 ### Changed
 * Stats bar updated to refresh every 60s while the tab is visible
+* Creating a site now opens it in the editor instead of just filtering the list
 
 ### Fixed
 * Previous file no longer flickers when loading the next
 * Version information is no longer shown on public pages
+* Opening a user after updating its groups no longer throws an undefined error
 
 
 ## [0.5.0] - 2019-10-03
