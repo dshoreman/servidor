@@ -3,11 +3,20 @@
 namespace Tests\Feature\Api\System\Users;
 
 use Illuminate\Http\Response;
+use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
 
 class ListUsersTest extends TestCase
 {
+    use PrunesDeletables;
     use RequiresAuth;
+
+    protected function tearDown()
+    {
+        $this->pruneDeletable('users');
+
+        parent::tearDown();
+    }
 
     /** @test */
     public function guest_cannot_list_users()
@@ -49,6 +58,30 @@ class ListUsersTest extends TestCase
     public function list_includes_system_users($response)
     {
         $response->assertJsonFragment(['name' => 'root']);
+    }
+
+    /** @test */
+    public function listed_user_groups_should_not_include_colon()
+    {
+        $user = $this->authed()->postJson($this->endpoint, [
+            'name' => 'nocolon',
+            'gid' => 0,
+        ])->json();
+
+        $user = $this->authed()->putJson(
+            $this->endpoint($user['uid']),
+            array_merge($user, ['groups' => ['games']]),
+        );
+
+        $response = $this->authed()->getJson($this->endpoint);
+        $json = $response->json();
+
+        $updated = end($json);
+        $this->addDeletable('user', (int) $updated['uid']);
+
+        $response->assertOk();
+        $this->assertArraySubset(['groups' => ['games']], $updated);
+        $this->assertNotContains(':', $updated['groups']);
     }
 
     /**

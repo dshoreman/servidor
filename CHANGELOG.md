@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Previous file no longer flickers when loading the next
 * Version information is no longer shown on public pages
 * Opening a user after updating its groups no longer throws an undefined error
+* The rogue `:` group in the User editor on Ubuntu machines is now gone, along
+   with the bugs it caused such as being unable to update the groups
 
 
 ## [0.5.0] - 2019-10-03

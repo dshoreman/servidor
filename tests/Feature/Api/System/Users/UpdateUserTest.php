@@ -75,18 +75,18 @@ class UpdateUserTest extends TestCase
     public function group_should_be_set_after_updating_an_user()
     {
         $user = $this->authed()->postJson($this->endpoint, [
-            'name' => 'updatetestuser',
+            'name' => 'userhasgroups',
             'gid' => 0,
         ])->json();
 
         $response = $this->authed()->putJson($this->endpoint($user['uid']), [
-            'name' => 'updatetestuser',
+            'name' => 'userhasgroups',
             'gid' => 0,
             'groups' => ['adm'],
         ]);
 
         $response->assertOk();
-        $response->assertJsonFragment(['groups' => [':', 'adm']]);
+        $response->assertJsonFragment(['groups' => ['adm']]);
         $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('user', $response);

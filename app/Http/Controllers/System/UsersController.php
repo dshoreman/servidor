@@ -36,7 +36,7 @@ class UsersController extends Controller
     {
         $groups = [];
         $primary = explode(':', exec('getent group ' . $user['gid']));
-        $effective = explode(' ', exec('groups ' . $user['name']));
+        $effective = explode(' ', exec('groups ' . $user['name'] . " | sed 's/.* : //'"));
 
         $primaryName = reset($primary);
         $primaryMembers = explode(',', end($primary));
@@ -70,6 +70,8 @@ class UsersController extends Controller
         if ((int) ($data['gid'] ?? null) > 0) {
             $options[] = '-g ' . (int) $data['gid'];
         }
+
+        // TODO: Add handling for secondary groups (`-G group1 group2 ...`)
 
         $options[] = $data['name'];
 
@@ -118,13 +120,7 @@ class UsersController extends Controller
         $original['groups'] = $this->loadSecondaryGroups($original);
 
         if (isset($data['groups']) && $data['groups'] != $original['groups']) {
-            $filteredGroups = array_filter(
-                $data['groups'],
-                function ($group) {
-                    return ':' !== $group;
-                }
-            );
-            $options[] = '-G "' . implode(',', $filteredGroups) . '"';
+            $options[] = '-G "' . implode(',', $data['groups']) . '"';
         }
 
         if (empty($options ?? null)) {
