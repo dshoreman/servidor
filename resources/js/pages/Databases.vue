@@ -1,6 +1,11 @@
 <template>
     <sui-grid container>
         <sui-grid-column>
+
+            <sui-input placeholder="Type a name for your database..."
+                    icon="search" class="fluid massive"
+                    v-model="search"></sui-input>
+
             <sui-table selectable>
                 <sui-table-row v-for="db, key in databases" :key="key">
                     <sui-table-cell>
@@ -8,6 +13,7 @@
                     </sui-table-cell>
                 </sui-table-row>
             </sui-table>
+
         </sui-grid-column>
     </sui-grid>
 </template>
@@ -21,8 +27,16 @@ export default {
     },
     computed: {
         ...mapGetters({
-            databases: 'databases/all',
+            databases: 'databases/filtered',
         }),
+        search: {
+            get () {
+                return this.$store.state.databases.search;
+            },
+            set (value) {
+                this.$store.dispatch('databases/filter', value);
+            },
+        },
     },
 };
 </script>
