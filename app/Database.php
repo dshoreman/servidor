@@ -5,7 +5,7 @@ namespace Servidor;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Schema\MysqlSchemaManager;
+use Doctrine\DBAL\Schema\MySqlSchemaManager;
 
 class Database
 {
@@ -14,7 +14,7 @@ class Database
      */
     private $connection;
 
-    public function dbal(): MysqlSchemaManager
+    public function dbal(): MySqlSchemaManager
     {
         if (!$this->connection) {
             $this->connect();
