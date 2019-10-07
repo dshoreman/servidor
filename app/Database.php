@@ -27,9 +27,9 @@ class Database
     {
         if (!$this->connection) {
             $this->connection = DriverManager::getConnection([
-                'user' => env('DB_ADMIN_USER'),
-                'password' => env('DB_ADMIN_PASS'),
-                'host' => 'localhost',
+                'user' => config('database.dbal.user'),
+                'password' => config('database.dbal.password'),
+                'host' => config('database.connections.mysql.host'),
                 'driver' => 'pdo_mysql',
             ], new Configuration());
         }
