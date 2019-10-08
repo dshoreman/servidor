@@ -4,6 +4,7 @@ import Auth from './modules/Auth';
 import Site from './modules/Site';
 import Database from './modules/Database';
 import FileManager from './modules/FileManager';
+import FileEditor from './modules/FileEditor';
 import Group from './modules/System/Group';
 import User from './modules/System/User';
 
@@ -15,6 +16,7 @@ export default new VueX.Store ({
         sites: Site,
         databases: Database,
         files: FileManager,
+        editor: FileEditor,
         systemGroups: Group,
         systemUsers: User,
     }
