@@ -6,22 +6,22 @@
                 <span class="pathbar">{{ filePath }}</span>
             </h2>
 
-            <sui-segment v-if="file.error == undefined" :loading="loading">
-                <sui-dropdown class="icon" icon="paint brush"
-                              labeled floating button search
-                              v-model="theme"
-                              :options="themes">
-                </sui-dropdown>
+            <sui-menu attached="top" v-if="file.error == undefined">
+                <sui-dropdown item class="icon" icon="paint brush"
+                              labeled floating search button
+                              v-model="theme" :options="themes" />
 
-                <sui-dropdown class="icon" icon="code"
-                              labeled floating button search
-                              v-model="mode"
-                              :options="mappedModes">
-                </sui-dropdown>
-                <sui-checkbox label="Line Wrapping" toggle v-model="wrap"/>
-            </sui-segment>
+                <sui-dropdown item class="icon" icon="code"
+                              labeled floating search button
+                              v-model="mode" :options="mappedModes" />
 
-            <sui-segment v-if="file.error == undefined" :loading="loading">
+                <sui-menu-menu position="right">
+                    <sui-menu-item right>
+                        <sui-checkbox label="Line Wrapping" toggle v-model="wrap"/>
+                    </sui-menu-item>
+                </sui-menu-menu>
+            </sui-menu>
+            <sui-segment v-if="file.error == undefined" class="code" attached="bottom" :loading="loading">
                 <codemirror v-model="file.contents" :options="options"></codemirror>
             </sui-segment>
 

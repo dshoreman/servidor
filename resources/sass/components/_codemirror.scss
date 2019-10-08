@@ -1,7 +1,22 @@
-.CodeMirror {
-    height: 100% !important;
-}
+#file-editor {
+    .top.menu .button.dropdown.item {
+        padding-left: 2.5em !important;
 
-.vue-codemirror {
-    height: calc(100vh - 310px);
+        &> i {
+            background: transparent;
+            width: 2.57142em;
+        }
+    }
+
+    &> .attached.code.segment {
+        padding: 0;
+    }
+
+    .CodeMirror {
+        height: 100% !important;
+    }
+
+    .vue-codemirror {
+        height: calc(100vh - 310px);
+    }
 }
