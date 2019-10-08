@@ -10,19 +10,19 @@
                 <sui-dropdown class="icon" icon="paint brush"
                               labeled floating button search
                               v-model="theme"
-                              :options="cmThemes">
+                              :options="themes">
                 </sui-dropdown>
 
                 <sui-dropdown class="icon" icon="code"
                               labeled floating button search
                               v-model="mode"
-                              :options="cmMappedModes">
+                              :options="mappedModes">
                 </sui-dropdown>
                 <sui-checkbox label="Line Wrapping" toggle v-model="wrap"/>
             </sui-segment>
 
             <sui-segment v-if="file.error == undefined" :loading="loading">
-                <codemirror v-model="file.contents" :options="cmOptions"></codemirror>
+                <codemirror v-model="file.contents" :options="options"></codemirror>
             </sui-segment>
 
             <sui-segment class="placeholder" v-else>
@@ -64,18 +64,18 @@ export default {
     computed: {
         ...mapGetters({
             file: 'files/file',
-            cmOptions: 'editor/cmOptions',
-            cmThemes: 'editor/cmThemes',
-            cmModes: 'editor/cmModes',
+            options: 'editor/options',
+            themes: 'editor/themes',
+            modes: 'editor/modes',
         }),
-        cmMappedModes() {
-          return this.cmModes.map(o => {
+        mappedModes() {
+          return this.modes.map(o => {
             return { text: o.name, value: o.mime };
           });
         },
         theme: {
             get () {
-                return this.$store.state.editor.cmOptions.theme
+                return this.$store.state.editor.options.theme
             },
             set (value) {
                 this.$store.dispatch('editor/setTheme', value)
@@ -83,7 +83,7 @@ export default {
         },
         mode: {
             get () {
-                return this.$store.state.editor.cmSelectedMode
+                return this.$store.state.editor.selectedMode
             },
             set (value) {
                 this.$store.dispatch('editor/setMode', value)
@@ -91,7 +91,7 @@ export default {
         },
         wrap: {
             get () {
-                return this.$store.state.editor.cmOptions.lineWrapping
+                return this.$store.state.editor.options.lineWrapping
             },
             set (value) {
                 this.$store.dispatch('editor/setLineWrapping', value)
