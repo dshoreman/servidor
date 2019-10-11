@@ -9,6 +9,11 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network",
     ip: "192.168.10.100"
 
+  if Vagrant.has_plugin?("vagrant-hostmanager")
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+  end
+
   config.vm.provider "virtualbox" do |vb|
     vb.name = "servidor-dev"
     vb.linked_clone = true
