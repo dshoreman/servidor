@@ -28,4 +28,12 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, path: "vagrant/bootstrap.sh"
 
+  if Vagrant.has_plugin?("vagrant-hostsupdater")
+    config.hostsupdater.aliases = ["servidor.local"]
+  elsif Vagrant.has_plugin?("vagrant-hostmanager")
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.aliases = ["servidor.local"]
+  end
+
 end
