@@ -162,7 +162,7 @@ export default {
             let val = '';
 
             if (['basic', 'php', 'laravel'].includes(site.type)) {
-                val = '/var/www/' + site.primary_domain;
+                val = '/var/www/' + (site.primary_domain || '');
 
                 if (site.type == 'laravel') {
                     val += '/public';
