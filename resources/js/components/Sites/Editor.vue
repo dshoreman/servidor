@@ -74,7 +74,7 @@
             <sui-form-fields v-if="tmpSite.type && tmpSite.type != 'redirect'">
                 <sui-form-field :width="12" :error="'source_repo' in errors">
                     <label>Clone URL</label>
-                    <sui-input v-model="tmpSite.source_repo" />
+                    <sui-input v-model="tmpSite.source_repo" @change="refreshBranches(tmpSite.source_repo)" />
                     <sui-label basic color="red" pointing v-if="'source_repo' in errors">
                         {{ errors.source_repo[0] }}
                     </sui-label>
@@ -118,7 +118,7 @@
 </style>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import Alerts from '../Alerts';
 
 export default {
@@ -152,6 +152,9 @@ export default {
         };
     },
     methods: {
+        ...mapActions({
+            refreshBranches: 'sites/loadBranches',
+        }),
         updateSite(id) {
             this.$store.dispatch('sites/update', {id, data: this.tmpSite});
         },

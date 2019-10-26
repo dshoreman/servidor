@@ -78,15 +78,23 @@ export default {
                 }).catch(error => reject(error))
             );
         },
-        edit: ({commit, state}, site) => {
-            commit('setEditorSite', site);
+        loadBranches: ({commit, state}, repo = '') => {
+            let url = '/api/sites/' + state.current.id + '/branches';
+
+            if (repo != '') {
+                url += '?repo=' + repo;
+            }
 
             return new Promise((resolve, reject) =>
-                axios.get('/api/sites/'+state.current.id+'/branches').then(response => {
+                axios.get(url).then(response => {
                     commit('setSiteBranches', response.data);
                     resolve(response);
                 }).catch(error => reject(error))
             );
+        },
+        edit: ({commit, dispatch, state}, site) => {
+            commit('setEditorSite', site);
+            dispatch('loadBranches');
         },
         create: ({commit, state}) => {
             return new Promise((resolve, reject) =>

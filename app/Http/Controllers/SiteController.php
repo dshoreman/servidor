@@ -37,15 +37,17 @@ class SiteController extends Controller
     /**
      * Display a list of branches on the given site's repository.
      *
-     * @param Site $site
+     * @param Request $request
+     * @param Site    $site
      *
      * @return Response
      */
-    public function branches(Site $site)
+    public function branches(Request $request, Site $site)
     {
         $cmd = "git ls-remote --heads '%s' | sed 's^.*refs/heads/^^'";
+        $repo = $request->query('repo', $site->source_repo);
 
-        exec(sprintf($cmd, $site->source_repo), $branches);
+        exec(sprintf($cmd, $repo), $branches);
 
         return $branches;
     }
