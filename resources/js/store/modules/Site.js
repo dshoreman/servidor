@@ -2,10 +2,7 @@ export default {
     namespaced: true,
     state: {
         alerts: [],
-        branches: [
-            'master',
-            'develop',
-        ],
+        branches: [],
         current: {},
         currentFilter: '',
         errors: [],
@@ -54,6 +51,9 @@ export default {
 
             state.current = site;
         },
+        setSiteBranches: (state, branches) => {
+            state.branches = branches;
+        },
         addSite: (state, site) => {
             state.sites.push(site);
             state.site.name = '';
@@ -78,8 +78,15 @@ export default {
                 }).catch(error => reject(error))
             );
         },
-        edit: ({commit}, site) => {
+        edit: ({commit, state}, site) => {
             commit('setEditorSite', site);
+
+            return new Promise((resolve, reject) =>
+                axios.get('/api/sites/'+state.current.id+'/branches').then(response => {
+                    commit('setSiteBranches', response.data);
+                    resolve(response);
+                }).catch(error => reject(error))
+            );
         },
         create: ({commit, state}) => {
             return new Promise((resolve, reject) =>

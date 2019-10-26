@@ -35,6 +35,22 @@ class SiteController extends Controller
     }
 
     /**
+     * Display a list of branches on the given site's repository.
+     *
+     * @param Site $site
+     *
+     * @return Response
+     */
+    public function branches(Site $site)
+    {
+        $cmd = "git ls-remote --heads '%s' | sed 's^.*refs/heads/^^'";
+
+        exec(sprintf($cmd, $site->source_repo), $branches);
+
+        return $branches;
+    }
+
+    /**
      * Pull the latest commit from Git.
      *
      * @param \Servidor\Site $site
