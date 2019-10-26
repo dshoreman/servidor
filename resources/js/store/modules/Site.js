@@ -3,6 +3,7 @@ export default {
     state: {
         alerts: [],
         branches: [],
+        branchesLoading: false,
         current: {},
         currentFilter: '',
         errors: [],
@@ -53,6 +54,10 @@ export default {
         },
         setSiteBranches: (state, branches) => {
             state.branches = branches;
+            state.branchesLoading = false;
+        },
+        branchesLoading: (state) => {
+            state.branchesLoading = true;
         },
         addSite: (state, site) => {
             state.sites.push(site);
@@ -79,6 +84,7 @@ export default {
             );
         },
         loadBranches: ({commit, state}, repo = '') => {
+            commit('branchesLoading');
             let url = '/api/sites/' + state.current.id + '/branches';
 
             if (repo != '') {

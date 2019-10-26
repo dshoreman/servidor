@@ -81,7 +81,7 @@
                 </sui-form-field>
                 <sui-form-field :width="4" :error="'source_branch' in errors">
                     <label>Branch</label>
-                    <sui-dropdown selection placeholder="Select branch..."
+                    <sui-dropdown selection placeholder="Select branch..." :loading="loadingBranches"
                         :options="branches" v-model="tmpSite.source_branch" />
                     <sui-label basic color="red" pointing v-if="'source_branch' in errors">
                         {{ errors.source_branch[0] }}
@@ -136,6 +136,7 @@ export default {
             'alerts': state => state.sites.alerts,
             'errors': state => state.sites.errors,
             'tmpSite': state => state.sites.current,
+            'loadingBranches': state => state.sites.branchesLoading,
         }),
         ...mapGetters({
             'branches': 'sites/branchOptions',
