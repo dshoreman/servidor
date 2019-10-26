@@ -2,6 +2,10 @@ export default {
     namespaced: true,
     state: {
         alerts: [],
+        branches: [
+            'master',
+            'develop',
+        ],
         current: {},
         currentFilter: '',
         errors: [],
@@ -143,6 +147,11 @@ export default {
         },
         findByDocroot: (state) => (path) => {
             return state.sites.find(s => s.document_root == path);
+        },
+        branchOptions: (state) => {
+            return state.branches.map(b => {
+                return { text: b, value: b };
+            });
         },
     },
 }

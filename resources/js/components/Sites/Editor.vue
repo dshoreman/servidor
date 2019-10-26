@@ -81,7 +81,7 @@
                 </sui-form-field>
                 <sui-form-field :width="4" :error="'source_branch' in errors">
                     <label>Branch</label>
-                    <sui-input v-model="tmpSite.source_branch" />
+                    <sui-dropdown selection placeholder="Select branch..." :options="branches" />
                     <sui-label basic color="red" pointing v-if="'source_branch' in errors">
                         {{ errors.source_branch[0] }}
                     </sui-label>
@@ -117,7 +117,7 @@
 </style>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import Alerts from '../Alerts';
 
 export default {
@@ -135,6 +135,9 @@ export default {
             'alerts': state => state.sites.alerts,
             'errors': state => state.sites.errors,
             'tmpSite': state => state.sites.current,
+        }),
+        ...mapGetters({
+            'branches': 'sites/branchOptions',
         }),
     },
     watch: {
