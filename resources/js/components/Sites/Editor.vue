@@ -81,8 +81,9 @@
                 </sui-form-field>
                 <sui-form-field :width="4" :error="'source_branch' in errors">
                     <label>Branch</label>
-                    <sui-dropdown selection placeholder="Select branch..." :loading="loadingBranches"
-                        :options="branches" v-model="tmpSite.source_branch" />
+                    <sui-dropdown search selection :loading="loadingBranches"
+                        :options="branches" v-model="tmpSite.source_branch"
+                        placeholder="Select branch..." />
                     <sui-label basic color="red" pointing v-if="'source_branch' in errors">
                         {{ errors.source_branch[0] }}
                     </sui-label>
