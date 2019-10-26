@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Highlight for current item in the list when editing a system user/group
 * Brand-spanking new file viewer using CodeMirror for themes etc
 * Databases can finally be listed on the Databases page
+* Current branches for a Site's repo are now listed in a dropdown
 
 ### Changed
 * Stats bar updated to refresh every 60s while the tab is visible
