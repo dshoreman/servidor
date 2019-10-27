@@ -28,4 +28,20 @@ class DatabaseTest extends TestCase
         $this->assertContains('performance_schema', $list);
         $this->assertContains('mysql', $list);
     }
+
+    /** @test */
+    public function it_can_create_a_database()
+    {
+        $db = new Database();
+        $before = $db->listDatabases();
+
+        $created = $db->create('testdb');
+        $after = array_merge($before, ['testdb']);
+        sort($after);
+
+        $this->assertTrue($created);
+        $this->assertSame($db->listDatabases(), $after);
+
+        $db->dbal()->dropDatabase('testdb');
+    }
 }

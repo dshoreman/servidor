@@ -8,6 +8,9 @@ export default {
         setDatabases: (state, databases) => {
             state.databases = databases;
         },
+        addDatabase: (state, database) => {
+            state.databases.push(database);
+        },
         setFilter: (state, value) => {
             state.search = value;
         },
@@ -15,8 +18,18 @@ export default {
     actions: {
         load: ({commit, state}) => {
             return new Promise((resolve, reject) =>
-                axios.get('/api/databases') .then(response => {
+                axios.get('/api/databases').then(response => {
                     commit('setDatabases', response.data);
+                    resolve(response);
+                }).catch(error => reject(error))
+            );
+        },
+        create: ({commit, state}) => {
+            return new Promise((resolve, reject) =>
+                axios.post('/api/databases', {
+                    database: state.search,
+                }).then(response => {
+                    commit('addDatabase', response.data);
                     resolve(response);
                 }).catch(error => reject(error))
             );

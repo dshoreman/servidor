@@ -4,7 +4,7 @@
 
             <sui-input placeholder="Type a name for your database..."
                     icon="search" class="fluid massive"
-                    v-model="search"></sui-input>
+                    v-model="search" @keydown.enter="create"></sui-input>
 
             <sui-table selectable>
                 <sui-table-row v-for="db, key in databases" :key="key">
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     mounted () {
@@ -37,6 +37,11 @@ export default {
                 this.$store.dispatch('databases/filter', value);
             },
         },
+    },
+    methods: {
+        ...mapActions({
+            create: 'databases/create',
+        }),
     },
 };
 </script>

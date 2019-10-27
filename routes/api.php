@@ -30,7 +30,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('sites/{site}/pull', 'SiteController@pull');
 
     Route::resource('databases', 'DatabaseController', [
-        'only' => ['index'],
+        'only' => ['index', 'store'],
     ]);
 
     Route::resource('files', 'FileController', [

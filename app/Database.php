@@ -14,6 +14,11 @@ class Database
      */
     private $connection;
 
+    /**
+     * Access the underlying database schema manager.
+     *
+     * @return MySqlSchemaManager
+     */
     public function dbal(): MySqlSchemaManager
     {
         if (!$this->connection) {
@@ -37,8 +42,31 @@ class Database
         return $this->connection;
     }
 
+    /**
+     * Get a list of all existing databases.
+     *
+     * @return array
+     */
     public function listDatabases(): array
     {
         return $this->dbal()->listDatabases();
+    }
+
+    /**
+     * Create a database if it doesn't already exist.
+     *
+     * @param string $dbname
+     *
+     * @return bool
+     */
+    public function create(string $dbname): bool
+    {
+        if (in_array($dbname, $this->listDatabases())) {
+            return true;
+        }
+
+        $this->dbal()->createDatabase($dbname);
+
+        return in_array($dbname, $this->listDatabases());
     }
 }
