@@ -5,8 +5,9 @@ namespace Servidor\Http\Controllers\System;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Servidor\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
+use Servidor\Http\Controllers\Controller;
+use Servidor\System\User as SystemUser;
 
 class UsersController extends Controller
 {
@@ -63,28 +64,19 @@ class UsersController extends Controller
     {
         $data = $request->validate($this->validationRules());
 
-        if ((int) ($data['uid'] ?? null) > 0) {
-            $options[] = '-u ' . (int) $data['uid'];
-        }
-
-        if ((int) ($data['gid'] ?? null) > 0) {
-            $options[] = '-g ' . (int) $data['gid'];
-        }
-
-        // TODO: Add handling for secondary groups (`-G group1 group2 ...`)
-
-        $options[] = $data['name'];
-
-        exec('sudo useradd ' . implode(' ', $options), $output, $retval);
-        unset($output);
-
-        if (0 !== $retval) {
-            $data['error'] = "Something went wrong (Exit code: {$retval})";
+        try {
+            $user = SystemUser::create(
+                $data['name'],
+                $data['uid'] ?? null,
+                $data['gid'] ?? null,
+            );
+        } catch (Exception $e) {
+            $data['error'] = $e->getMessage();
 
             return response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(posix_getpwnam($data['name']), Response::HTTP_CREATED);
+        return response($user, Response::HTTP_CREATED);
     }
 
     /**
