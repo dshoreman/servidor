@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+* Servidor gets Dark Mode! Toggle the theme with the light bulb
 * There's now a loading spinner while files load in the viewer
 * Highlight for current item in the list when editing a system user/group
 * Brand-spanking new file viewer using CodeMirror for themes etc

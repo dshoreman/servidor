@@ -1,6 +1,7 @@
 import './bootstrap';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import DarkMode from './plugins/darkmode';
 import SuiVue from 'semantic-ui-vue';
 import routes from './routes'
 import store from './store'
@@ -17,6 +18,7 @@ window.Vue = Vue;
 
 Vue.use(VueRouter);
 Vue.use(SuiVue);
+Vue.use(DarkMode);
 
 Vue.component('main-menu', MainMenu);
 Vue.component('stats-bar', StatsBar);

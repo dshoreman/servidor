@@ -1,0 +1,17 @@
+#app {
+    #stats-bar {
+        background: rgba(27, 28, 39, 0.8) !important;
+    }
+
+    .ui.inverted.sidebar.menu {
+        background: rgba(27, 28, 39, 0.8);
+
+        #user-menu {
+            background: rgba(27, 28, 39, 0.9) !important;
+
+            a:first-child {
+                background: rgba(27, 28, 39, 0.5) !important;
+            }
+        }
+    }
+}

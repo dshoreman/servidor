@@ -7,7 +7,7 @@
 
         <title>{{ config('app.name', '') }}</title>
 
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
+        <link href="{{ asset('css/core.css') }}" rel="stylesheet" type="text/css">
     </head>
     <body>
         @yield('content')
