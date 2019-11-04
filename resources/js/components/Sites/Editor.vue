@@ -1,6 +1,6 @@
 <template>
     <sui-container>
-        <sui-form @submit.prevent="updateSite(tmpSite.id)">
+        <sui-form @submit.prevent="updateSite(tmpSite.id)" :inverted="darkMode">
             <sui-form-field class="enable-switch">
                 <sui-checkbox toggle v-model="tmpSite.is_enabled"/>
             </sui-form-field>

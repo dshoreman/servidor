@@ -1,16 +1,56 @@
+#content {
+    opacity: 0.8;
+}
 #app {
     #stats-bar {
         background: rgba(27, 28, 39, 0.8) !important;
     }
 
-    .ui.inverted.sidebar.menu {
-        background: rgba(27, 28, 39, 0.8);
+    .ui.inverted {
+        &.sidebar.menu {
+            background: rgba(27, 28, 39, 0.8);
 
-        #user-menu {
-            background: rgba(27, 28, 39, 0.9) !important;
+            #user-menu {
+                background: rgba(27, 28, 39, 0.9) !important;
 
-            a:first-child {
-                background: rgba(27, 28, 39, 0.5) !important;
+                a:first-child {
+                    background: rgba(27, 28, 39, 0.5) !important;
+                }
+            }
+        }
+
+        &.massive.transparent.input input {
+            padding-top: 0.62619048em !important;
+            padding-bottom: 0.62619048em !important;
+        }
+
+        &.card {
+            background: #1b1c1d !important;
+            box-shadow: 0 1px 3px 0 #555, 0 0 0 1px #555 !important;
+            * {color: rgba(255, 255, 255, 0.9) !important;}
+        }
+
+        &.form {
+            h2.ui.header > .sub.header {
+                color: rgba(255, 255, 255, 0.6) !important;
+            }
+            input, .selection.dropdown, .selection.dropdown .menu {
+                background: #1b1c1d;
+                color: rgba(255, 255, 255, 0.67);
+            }
+            .selection.dropdown .menu,
+            .selection.dropdown.active {
+                border-color: #555;
+            }
+            .selection.dropdown .menu > .item {
+                border-top-color: #555;
+            }
+            .selection.dropdown .menu > .item:hover {
+                background: #0b0c0d;
+            }
+            .selection.visible.dropdown > .text,
+            .selection.dropdown .menu > .item {
+                color: rgba(255, 255, 255, 0.67);
             }
         }
     }
