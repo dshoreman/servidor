@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Brand-spanking new file viewer using CodeMirror for themes etc
 * Databases can finally be created and listed on the Databases page
 * Current branches for a Site's repo are now listed in a dropdown
+* Files are now checked for a text MIME type before loading contents
 
 ### Changed
 * Stats bar updated to refresh every 60s while the tab is visible

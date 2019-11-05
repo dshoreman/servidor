@@ -125,10 +125,10 @@ class FileManager
         list($file, $data) = $this->loadFile($file);
 
         if ('text/' != mb_substr($data['mimetype'], 0, 5)) {
-            return array_merge($data, [
+            return array_merge($data, ['error' => [
                 'code' => 415,
                 'msg' => 'Unsupported filetype',
-            ]);
+            ]]);
         }
 
         try {
