@@ -23,7 +23,7 @@
             </sui-menu>
             <sui-segment v-if="file.error == undefined" class="code"
                 attached="bottom" :inverted="darkMode" :loading="loading">
-                <codemirror v-model="file.contents" :options="options"></codemirror>
+                <codemirror v-model="file.contents" :options="options" v-if="!loading" />
             </sui-segment>
 
             <sui-segment class="placeholder" :inverted="darkMode" v-else>
