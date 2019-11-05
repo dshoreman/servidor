@@ -4,6 +4,7 @@
             <h2>
                 <sui-button id="levelup" icon="chevron left" @click="backToDir" />
                 <span class="pathbar">{{ filePath }}</span>
+                <sui-button positive floated="right" content="Save" @click="save(filePath)" />
             </h2>
 
             <sui-menu attached="top" v-if="file.error == undefined" :inverted="darkMode">
@@ -40,7 +41,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/dracula.css'
@@ -101,6 +102,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions({
+            save: 'files/save',
+        }),
         backToDir: function () {
             let path = this.filePath;
 

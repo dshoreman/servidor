@@ -54,6 +54,18 @@ export default {
                 });
             });
         },
+        save: ({state}) => {
+            return new Promise((resolve, reject) => {
+                axios.put('/api/files', {
+                    filepath: state.currentPath + '/' + state.file.filename,
+                    contents: state.file.contents,
+                }).then(response => {
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        },
     },
     getters: {
         all: state => state.files,
