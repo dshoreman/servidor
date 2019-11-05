@@ -1,10 +1,11 @@
 <template>
     <sui-grid container>
-        <sui-grid-column :width="listWidth">
+        <sui-grid-column class="grouplist" :width="listWidth">
             <sui-segment attached>
-                <sui-form @submit.prevent="edit(search)">
+                <sui-form @submit.prevent="edit(search)" :inverted="darkMode">
                     <sui-form-field>
                         <sui-input placeholder="Search Groups..." class="huge fluid"
+                            :inverted="darkMode" :transparent="darkMode"
                             :value="search" @input="filterGroups" />
                     </sui-form-field>
                     <sui-form-field>
@@ -21,7 +22,7 @@
                 </sui-list>
             </sui-segment>
 
-            <sui-segment attached class="placeholder" v-else>
+            <sui-segment attached :inverted="darkMode" class="placeholder" v-else>
                 <sui-header icon>
                     <sui-icon name="search" />
                     We couldn't find any groups matching your search

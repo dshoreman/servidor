@@ -1,5 +1,5 @@
 <template>
-    <sui-table compact selectable class="files">
+    <sui-table compact selectable :inverted="darkMode" class="files">
         <thead>
             <tr>
                 <th>Filename</th>

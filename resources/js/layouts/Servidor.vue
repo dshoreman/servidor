@@ -1,10 +1,12 @@
 <template>
     <div>
+        <darkmode-special />
         <sui-menu inverted vertical class="visible sidebar" fixed="left">
             <sui-menu-item>
                 <router-link :to="{ name: 'dashboard' }">
                     <sui-icon name="server" size="big"></sui-icon> Servidor
                 </router-link>
+                <darkmode-toggle />
             </sui-menu-item>
 
             <main-menu use_new=true />
@@ -40,6 +42,9 @@
         <footer>
             <p>Servidor v{{ version }}</p>
         </footer>
+        <link v-if="darkMode" href="/css/dark-theme.css" rel="stylesheet" type="text/css">
+        <link href="/css/app.css" rel="stylesheet" type="text/css">
+        <link v-if="darkMode" href="/css/dark-theme.custom.css" rel="stylesheet" type="text/css">
     </div>
 </template>
 
