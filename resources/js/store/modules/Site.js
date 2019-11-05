@@ -2,6 +2,8 @@ export default {
     namespaced: true,
     state: {
         alerts: [],
+        branches: [],
+        branchesLoading: false,
         current: {},
         currentFilter: '',
         errors: [],
@@ -50,6 +52,13 @@ export default {
 
             state.current = site;
         },
+        setSiteBranches: (state, branches) => {
+            state.branches = branches;
+            state.branchesLoading = false;
+        },
+        branchesLoading: (state) => {
+            state.branchesLoading = true;
+        },
         addSite: (state, site) => {
             state.sites.push(site);
             state.site.name = '';
@@ -74,15 +83,34 @@ export default {
                 }).catch(error => reject(error))
             );
         },
-        edit: ({commit}, site) => {
+        loadBranches: ({commit, state}, repo = '') => {
+            commit('branchesLoading');
+            let url = '/api/sites/' + state.current.id + '/branches';
+
+            if (repo != '') {
+                url += '?repo=' + repo;
+            }
+
+            return new Promise((resolve, reject) =>
+                axios.get(url).then(response => {
+                    commit('setSiteBranches', response.data);
+                    resolve(response);
+                }).catch(error => reject(error))
+            );
+        },
+        edit: ({commit, dispatch, state}, site) => {
             commit('setEditorSite', site);
+            dispatch('loadBranches');
         },
         create: ({commit, state}) => {
-            axios.post('/api/sites', state.site).then(response => {
-                commit('addSite', response.data);
-                commit('clearMessages');
-                commit('setSuccess', "The site '" + response.data.name + "' has been created.");
-            });
+            return new Promise((resolve, reject) =>
+                axios.post('/api/sites', state.site).then(response => {
+                    commit('addSite', response.data);
+                    commit('clearMessages');
+                    commit('setSuccess', "The site '" + response.data.name + "' has been created.");
+                    resolve(response);
+                }).catch(error => reject(error))
+            )
         },
         update: ({commit}, site) => {
             axios.put('/api/sites/'+site.id, site.data).then(response => {
@@ -140,6 +168,11 @@ export default {
         },
         findByDocroot: (state) => (path) => {
             return state.sites.find(s => s.document_root == path);
+        },
+        branchOptions: (state) => {
+            return state.branches.map(b => {
+                return { text: b, value: b };
+            });
         },
     },
 }

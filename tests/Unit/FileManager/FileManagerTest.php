@@ -27,6 +27,7 @@ class FileManagerTest extends TestCase
 
         $this->assertSame([
             'filename' => 'another-dir',
+            'mimetype' => 'directory',
             'isDir' => true,
             'isFile' => false,
             'isLink' => false,
@@ -154,6 +155,7 @@ class FileManagerTest extends TestCase
 
         $this->assertSame([
             'filename' => 'hello.md',
+            'mimetype' => 'text/plain',
             'isDir' => false,
             'isFile' => true,
             'isLink' => false,

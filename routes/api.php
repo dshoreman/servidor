@@ -26,7 +26,12 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('sites', 'SiteController', [
         'only' => ['index', 'store', 'update', 'destroy'],
     ]);
+    Route::get('sites/{site}/branches', 'SiteController@branches');
     Route::post('sites/{site}/pull', 'SiteController@pull');
+
+    Route::resource('databases', 'DatabaseController', [
+        'only' => ['index', 'store'],
+    ]);
 
     Route::resource('files', 'FileController', [
         'only' => ['index'],

@@ -1,11 +1,11 @@
 <template>
-    <sui-list-item>
+    <sui-list-item :active="active">
         <sui-list-icon name="users" size="large" vertical-align="middle" />
         <sui-list-content>
-            <a is="sui-list-header" @click="edit">{{ name }}</a>
+            <a is="sui-list-header" @click="edit">{{ group.name }}</a>
             <sui-list-description>
                 <sui-list bulleted horizontal>
-                    <span v-for="(user, index) in users"
+                    <span v-for="(user, index) in group.users"
                         :key="index" is="sui-list-item">
                         {{ user }}
                     </span>
@@ -19,12 +19,7 @@
 export default {
     props: {
         group: Object,
-    },
-    data () {
-        return {
-            'name': this.group.name,
-            'users': this.group.users,
-        };
+        active: Boolean,
     },
     methods: {
         edit () {

@@ -36,7 +36,7 @@ class UsersController extends Controller
     {
         $groups = [];
         $primary = explode(':', exec('getent group ' . $user['gid']));
-        $effective = explode(' ', exec('groups ' . $user['name']));
+        $effective = explode(' ', exec('groups ' . $user['name'] . " | sed 's/.* : //'"));
 
         $primaryName = reset($primary);
         $primaryMembers = explode(',', end($primary));
@@ -70,6 +70,8 @@ class UsersController extends Controller
         if ((int) ($data['gid'] ?? null) > 0) {
             $options[] = '-g ' . (int) $data['gid'];
         }
+
+        // TODO: Add handling for secondary groups (`-G group1 group2 ...`)
 
         $options[] = $data['name'];
 
@@ -134,7 +136,10 @@ class UsersController extends Controller
             throw new Exception('Something went wrong. Exit code: ' . $retval);
         }
 
-        return response(posix_getpwuid($newUid), Response::HTTP_OK);
+        $userData = posix_getpwuid($newUid);
+        $userData['groups'] = $this->loadSecondaryGroups($userData);
+
+        return response($userData, Response::HTTP_OK);
     }
 
     /**

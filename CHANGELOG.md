@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.6.0] - 2019-11-05
+### Added
+* Servidor gets Dark Mode! Toggle the theme with the light bulb
+* There's now a loading spinner while files load in the viewer
+* Highlight for current item in the list when editing a system user/group
+* Brand-spanking new file viewer using CodeMirror for themes etc
+* Databases can finally be created and listed on the Databases page
+* Current branches for a Site's repo are now listed in a dropdown
+* Files are now checked for a text MIME type before loading contents
+
+### Changed
+* Stats bar updated to refresh every 60s while the tab is visible
+* Creating a site now opens it in the editor instead of just filtering the list
+
+### Fixed
+* Previous file no longer flickers when loading the next
+* Version information is no longer shown on public pages
+* Opening a user after updating its groups no longer throws an undefined error
+* The rogue `:` group in the User editor on Ubuntu machines is now gone, along
+   with the bugs it caused such as being unable to update the groups
+
+
 ## [0.5.0] - 2019-10-03
 ### Added
 * When saving a Site you'll now see a success message
@@ -70,7 +92,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.5.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.6.0...develop
+[0.6.0]: https://github.com/dshoreman/servidor/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/dshoreman/servidor/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/dshoreman/servidor/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/dshoreman/servidor/compare/v0.2.0...v0.3.0

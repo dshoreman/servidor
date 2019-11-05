@@ -1,10 +1,11 @@
 <template>
     <sui-grid container>
-        <sui-grid-column :width="listWidth">
+        <sui-grid-column class="grouplist" :width="listWidth">
             <sui-segment attached>
-                <sui-form @submit.prevent="edit(search)">
+                <sui-form @submit.prevent="edit(search)" :inverted="darkMode">
                     <sui-form-field>
                         <sui-input placeholder="Search Groups..." class="huge fluid"
+                            :inverted="darkMode" :transparent="darkMode"
                             :value="search" @input="filterGroups" />
                     </sui-form-field>
                     <sui-form-field>
@@ -17,11 +18,11 @@
             <sui-segment attached v-if="filteredGroups.length">
                 <sui-list divided relaxed>
                     <system-group-item v-for="group in filteredGroups"
-                        :group="group" :key="group.gid" @edit="edit" />
+                        :group="group" :key="group.gid" :active="group.gid === activeGroup" @edit="edit" />
                 </sui-list>
             </sui-segment>
 
-            <sui-segment attached class="placeholder" v-else>
+            <sui-segment attached :inverted="darkMode" class="placeholder" v-else>
                 <sui-header icon>
                     <sui-icon name="search" />
                     We couldn't find any groups matching your search
@@ -61,6 +62,7 @@ export default {
             editing: state => state.systemGroups.editing,
             search: state => state.systemGroups.currentFilter,
             showSysGroups: state => state.systemGroups.showSystem,
+            activeGroup: state => state.systemGroups.clean.gid,
         }),
         ...mapGetters({
             groups: 'systemGroups/all',

@@ -30,8 +30,8 @@
 }
 
 #file-editor {
-    pre {
-        margin: 0;
-        overflow: auto;
+    .ui.code.segment {
+        height: calc(100vh - 310px);
+        min-height: 310px;
     }
 }

@@ -1,5 +1,6 @@
 <template>
-    <sui-form @submit.prevent="editMode ? updateUser(tmpUser.uid_original) : createUser()">
+    <sui-form @submit.prevent="editMode ? updateUser(tmpUser.uid_original) : createUser()"
+        :inverted="darkMode">
         <sui-form-fields>
             <sui-form-field width="ten">
                 <label>Name</label>
@@ -60,8 +61,8 @@
         </sui-button-group>
 
         <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
-        <sui-segment class="red" v-show="editMode">
-            <sui-button negative icon="trash" type="button"
+        <sui-segment class="red" v-show="editMode" :inverted="darkMode">
+            <sui-button negative :inverted="darkMode" icon="trash" type="button"
                 content="Delete User" @click="deleteUser(tmpUser.uid)" />
         </sui-segment>
     </sui-form>

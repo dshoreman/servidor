@@ -1,10 +1,11 @@
 <template>
     <sui-grid container>
-        <sui-grid-column :width="listWidth">
+        <sui-grid-column class="userlist" :width="listWidth">
             <sui-segment attached>
-                <sui-form @submit.prevent="edit(search)">
+                <sui-form @submit.prevent="edit(search)" :inverted="darkMode">
                     <sui-form-field>
                         <sui-input placeholder="Search Users..." class="huge fluid"
+                            :inverted="darkMode" :transparent="darkMode"
                             :value="search" @input="filterUsers" />
                     </sui-form-field>
                     <sui-form-field>
@@ -17,11 +18,11 @@
             <sui-segment attached v-if="filteredUsers.length">
                 <sui-list divided relaxed>
                     <system-user-item v-for="user in filteredUsers"
-                        :user="user" :key="user.uid" @edit="edit" />
+                        :user="user" :key="user.uid" :active="user.uid === activeUser" @edit="edit" />
                 </sui-list>
             </sui-segment>
 
-            <sui-segment attached class="placeholder" v-else>
+            <sui-segment attached :inverted="darkMode" class="placeholder" v-else>
                 <sui-header icon>
                     <sui-icon name="search" />
                     We couldn't find any users matching your search
@@ -61,6 +62,7 @@ export default {
             editing: state => state.systemUsers.editing,
             search: state => state.systemUsers.currentFilter,
             showSysUsers: state => state.systemUsers.showSystem,
+            activeUser: state => state.systemUsers.clean.uid,
         }),
         ...mapGetters({
             users: 'systemUsers/all',

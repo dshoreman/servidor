@@ -1,6 +1,6 @@
 <template>
     <sui-container>
-        <sui-form @submit.prevent="updateSite(tmpSite.id)">
+        <sui-form @submit.prevent="updateSite(tmpSite.id)" :inverted="darkMode">
             <sui-form-field class="enable-switch">
                 <sui-checkbox toggle v-model="tmpSite.is_enabled"/>
             </sui-form-field>
@@ -74,14 +74,16 @@
             <sui-form-fields v-if="tmpSite.type && tmpSite.type != 'redirect'">
                 <sui-form-field :width="12" :error="'source_repo' in errors">
                     <label>Clone URL</label>
-                    <sui-input v-model="tmpSite.source_repo" />
+                    <sui-input v-model="tmpSite.source_repo" @change="refreshBranches(tmpSite.source_repo)" />
                     <sui-label basic color="red" pointing v-if="'source_repo' in errors">
                         {{ errors.source_repo[0] }}
                     </sui-label>
                 </sui-form-field>
                 <sui-form-field :width="4" :error="'source_branch' in errors">
                     <label>Branch</label>
-                    <sui-input v-model="tmpSite.source_branch" />
+                    <sui-dropdown search selection :loading="loadingBranches"
+                        :options="branches" v-model="tmpSite.source_branch"
+                        placeholder="Select branch..." />
                     <sui-label basic color="red" pointing v-if="'source_branch' in errors">
                         {{ errors.source_branch[0] }}
                     </sui-label>
@@ -117,7 +119,7 @@
 </style>
 
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import Alerts from '../Alerts';
 
 export default {
@@ -135,6 +137,10 @@ export default {
             'alerts': state => state.sites.alerts,
             'errors': state => state.sites.errors,
             'tmpSite': state => state.sites.current,
+            'loadingBranches': state => state.sites.branchesLoading,
+        }),
+        ...mapGetters({
+            'branches': 'sites/branchOptions',
         }),
     },
     watch: {
@@ -148,6 +154,9 @@ export default {
         };
     },
     methods: {
+        ...mapActions({
+            refreshBranches: 'sites/loadBranches',
+        }),
         updateSite(id) {
             this.$store.dispatch('sites/update', {id, data: this.tmpSite});
         },
@@ -162,7 +171,7 @@ export default {
             let val = '';
 
             if (['basic', 'php', 'laravel'].includes(site.type)) {
-                val = '/var/www/' + site.primary_domain;
+                val = '/var/www/' + (site.primary_domain || '');
 
                 if (site.type == 'laravel') {
                     val += '/public';

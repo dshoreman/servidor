@@ -1,7 +1,7 @@
 export default {
     namespaced: true,
     state: {
-        clean: null,
+        clean: {},
         currentFilter: '',
         groups: [],
         group: {
@@ -43,7 +43,7 @@ export default {
             state.editing = true;
         },
         unsetEditorGroup: (state) => {
-            state.clean = null;
+            state.clean = {};
             state.editing = false;
             state.editMode = false;
 

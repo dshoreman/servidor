@@ -7,14 +7,10 @@
 
         <title>{{ config('app.name', '') }}</title>
 
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
+        <link href="{{ asset('css/core.css') }}" rel="stylesheet" type="text/css">
     </head>
     <body>
         @yield('content')
-
-        <footer>
-            <p>Servidor v{{ SERVIDOR_VERSION }}</p>
-        </footer>
 
         <script src="{{ mix('js/app.js') }}"></script>
     </body>

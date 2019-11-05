@@ -1,16 +1,5 @@
 const mix = require('laravel-mix');
 
-/*
- |--------------------------------------------------------------------------
- | Mix Asset Management
- |--------------------------------------------------------------------------
- |
- | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel application. By default, we are compiling the Sass
- | file for the application as well as bundling up all the JS files.
- |
- */
-
 mix.options({
     webpackConfig: {
         devServer: {
@@ -20,5 +9,8 @@ mix.options({
 });
 
 mix.js('resources/js/app.js', 'public/js')
+   .sass('resources/sass/core.scss', 'public/css').options({ processCssUrls: false })
    .sass('resources/sass/app.scss', 'public/css').options({ processCssUrls: false })
+   .sass('resources/sass/themes/darkmode.scss', 'public/css/dark-theme.css')
+   .sass('resources/sass/themes/darkmode-custom.scss', 'public/css/dark-theme.custom.css')
    .copy('node_modules/semantic-ui-sass/icons', 'public/fonts')
