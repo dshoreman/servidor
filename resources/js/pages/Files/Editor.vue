@@ -6,7 +6,7 @@
                 <span class="pathbar">{{ filePath }}</span>
             </h2>
 
-            <sui-menu attached="top" v-if="file.error == undefined">
+            <sui-menu attached="top" v-if="file.error == undefined" :inverted="darkMode">
                 <sui-dropdown item class="icon" icon="paint brush"
                               labeled floating search button
                               v-model="theme" :options="themes" />
@@ -21,11 +21,12 @@
                     </sui-menu-item>
                 </sui-menu-menu>
             </sui-menu>
-            <sui-segment v-if="file.error == undefined" class="code" attached="bottom" :loading="loading">
+            <sui-segment v-if="file.error == undefined" class="code"
+                attached="bottom" :inverted="darkMode" :loading="loading">
                 <codemirror v-model="file.contents" :options="options"></codemirror>
             </sui-segment>
 
-            <sui-segment class="placeholder" v-else>
+            <sui-segment class="placeholder" :inverted="darkMode" v-else>
                 <sui-header icon>
                     <sui-icon v-if="file.error.code == 403" name="ban" color="red" />
                     <sui-icon v-else-if="file.error.code == 404" name="search" color="teal" />

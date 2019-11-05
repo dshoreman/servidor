@@ -4,12 +4,13 @@
 
             <sui-input placeholder="Type a name for your database..."
                     icon="search" class="fluid massive"
+                    :inverted="darkMode" :transparent="darkMode"
                     v-model="search" @keydown.enter="create"></sui-input>
 
-            <sui-table selectable>
+            <sui-table selectable :inverted="darkMode">
                 <sui-table-row v-for="db, key in databases" :key="key">
                     <sui-table-cell>
-                        <sui-icon color="violet" name="database" /> {{ db }}
+                        <sui-icon :color="darkMode ? 'orange' : 'violet'" name="database" /> {{ db }}
                     </sui-table-cell>
                 </sui-table-row>
             </sui-table>
