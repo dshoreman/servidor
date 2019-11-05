@@ -30,9 +30,13 @@
             * {color: rgba(255, 255, 255, 0.9) !important;}
         }
 
+        .ui.header > .sub.header {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
         &.form {
-            h2.ui.header > .sub.header {
-                color: rgba(255, 255, 255, 0.6) !important;
+            input:focus {
+                color: rgba(255, 255, 255, 0.95);
             }
             input, .selection.dropdown, .selection.dropdown .menu {
                 background: #1b1c1d;
@@ -52,6 +56,36 @@
             .selection.dropdown .menu > .item {
                 color: rgba(255, 255, 255, 0.67);
             }
+            .divided.list {
+                background: transparent;
+            }
+        }
+    }
+
+    .grouplist, .userlist {
+        &> .segment {
+            &, .item {
+                background: #1b1c1d;
+                border-color: #555;
+            }
+            .item.active {
+                background: rgba(0, 0, 0, 0.6);
+                .large.icon {
+                    color: #fff;
+                }
+            }
+
+            &> .divided.relaxed.list {
+                &:hover {
+                    background: #4e5d6c;
+                }
+                .item:hover {
+                    background: rgba(0, 0, 0, 0.6);
+                }
+            }
+        }
+        .toggle.checkbox label {
+            color: #ebebeb !important;
         }
     }
 }
