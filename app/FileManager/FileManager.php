@@ -90,7 +90,7 @@ class FileManager
 
         $data = [
             'filename' => $file->getFilename(),
-            'mimetype' => mime_content_type($file->getRealPath()),
+            'mimetype' => @mime_content_type($file->getRealPath()),
             'isDir' => $file->isDir(),
             'isFile' => $file->isFile(),
             'isLink' => $file->isLink(),
@@ -124,7 +124,7 @@ class FileManager
     {
         list($file, $data) = $this->loadFile($file);
 
-        if ('text/' != mb_substr($data['mimetype'], 0, 5)) {
+        if ($data['mimetype'] && 'text/' != mb_substr($data['mimetype'], 0, 5)) {
             return array_merge($data, ['error' => [
                 'code' => 415,
                 'msg' => 'Unsupported filetype',
