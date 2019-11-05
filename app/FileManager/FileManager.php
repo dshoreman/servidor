@@ -90,6 +90,7 @@ class FileManager
 
         $data = [
             'filename' => $file->getFilename(),
+            'mimetype' => mime_content_type($file->getRealPath()),
             'isDir' => $file->isDir(),
             'isFile' => $file->isFile(),
             'isLink' => $file->isLink(),
@@ -122,6 +123,13 @@ class FileManager
     private function fileWithContents($file): array
     {
         list($file, $data) = $this->loadFile($file);
+
+        if ('text/' != mb_substr($data['mimetype'], 0, 5)) {
+            return array_merge($data, [
+                'code' => 415,
+                'msg' => 'Unsupported filetype',
+            ]);
+        }
 
         try {
             $data['contents'] = $file->getContents();
