@@ -13,7 +13,6 @@ export default {
             theme: 'dracula',
             lineNumbers: true,
             line: true,
-            readOnly: 'nocursor',
             lineWrapping: true,
         },
         themes: [
@@ -61,6 +60,7 @@ export default {
             { text: 'Paraiso Dark', value: 'paraiso-dark' },
             { text: 'Paraiso Light', value: 'paraiso-light' },
             { text: 'Pastel on Dark', value: 'pastel-on-dark' },
+            { text: 'Railscasts', value: 'railscasts' },
             { text: 'Rubyblue', value: 'rubyblue' },
             { text: 'Seti', value: 'seti' },
             { text: 'Shadowfox', value: 'shadowfox' },
