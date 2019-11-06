@@ -54,6 +54,11 @@ class FileManager
         return $this->fileWithContents($file);
     }
 
+    public function save($file, $contents): bool
+    {
+        return false !== file_put_contents($file, $contents);
+    }
+
     private function loadFilePermissions(string $path): array
     {
         $pathParts = explode('/', $path);
@@ -90,6 +95,7 @@ class FileManager
 
         $data = [
             'filename' => $file->getFilename(),
+            'filepath' => $file->getPath(),
             'mimetype' => @mime_content_type($file->getRealPath()),
             'isDir' => $file->isDir(),
             'isFile' => $file->isFile(),

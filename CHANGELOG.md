@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* Files can now actually be edited and saved in the editor
 
 
 ## [0.6.0] - 2019-11-05

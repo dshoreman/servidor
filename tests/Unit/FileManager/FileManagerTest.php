@@ -27,6 +27,7 @@ class FileManagerTest extends TestCase
 
         $this->assertSame([
             'filename' => 'another-dir',
+            'filepath' => $this->dummy('mixed'),
             'mimetype' => 'directory',
             'isDir' => true,
             'isFile' => false,
@@ -155,6 +156,7 @@ class FileManagerTest extends TestCase
 
         $this->assertSame([
             'filename' => 'hello.md',
+            'filepath' => $this->dummy('mixed'),
             'mimetype' => 'text/plain',
             'isDir' => false,
             'isFile' => true,
