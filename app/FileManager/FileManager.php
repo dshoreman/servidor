@@ -54,6 +54,11 @@ class FileManager
         return $this->fileWithContents($file);
     }
 
+    public function save($file, $contents): bool
+    {
+        return false !== file_put_contents($file, $contents);
+    }
+
     private function loadFilePermissions(string $path): array
     {
         $pathParts = explode('/', $path);

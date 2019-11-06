@@ -33,9 +33,8 @@ Route::middleware('auth:api')->group(function () {
         'only' => ['index', 'store'],
     ]);
 
-    Route::resource('files', 'FileController', [
-        'only' => ['index'],
-    ]);
+    Route::get('files', 'FileController@index');
+    Route::put('files', 'FileController@update');
 
     Route::name('system')->prefix('/system')->namespace('System')->group(function () {
         Route::resource('groups', 'GroupsController', [

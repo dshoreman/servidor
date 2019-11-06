@@ -3,6 +3,7 @@
 namespace Servidor\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use InvalidArgumentException;
 use Servidor\FileManager\FileManager;
 
@@ -50,5 +51,31 @@ class FileController extends Controller
         $path = $request->get('path');
 
         return response()->json($this->fm->list($path));
+    }
+
+    public function update(Request $request)
+    {
+        if (!$filepath = $request->query('file')) {
+            throw new InvalidArgumentException('File path must be specified.');
+        }
+
+        $data = $request->validate([
+            'file' => 'required',
+            'contents' => 'required|nullable',
+        ]);
+
+        $file = $this->fm->open($filepath);
+
+        if (array_key_exists('error', $file)) {
+            return response($file, $file['error']['code']);
+        }
+
+        if ($file['contents'] == $data['contents']) {
+            return response(null, Response::HTTP_NOT_MODIFIED);
+        }
+
+        $this->fm->save($filepath, $data['contents']);
+
+        return response()->json($this->fm->open($filepath));
     }
 }

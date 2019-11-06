@@ -54,12 +54,14 @@ export default {
                 });
             });
         },
-        save: ({state}) => {
+        save: ({commit, state}) => {
             return new Promise((resolve, reject) => {
-                axios.put('/api/files', {
-                    filepath: state.currentPath + '/' + state.file.filename,
+                let fullpath = state.currentPath + '/' + state.file.filename;
+
+                axios.put('/api/files?file=' + fullpath, {
                     contents: state.file.contents,
                 }).then(response => {
+                    commit('setFile', response.data);
                     resolve(response);
                 }).catch(error => {
                     reject(error);
