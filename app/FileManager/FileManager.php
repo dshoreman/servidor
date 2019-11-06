@@ -95,6 +95,7 @@ class FileManager
 
         $data = [
             'filename' => $file->getFilename(),
+            'filepath' => $file->getPath(),
             'mimetype' => @mime_content_type($file->getRealPath()),
             'isDir' => $file->isDir(),
             'isFile' => $file->isFile(),

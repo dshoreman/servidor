@@ -34,9 +34,11 @@ export default {
         open: ({commit}, {file}) => {
             return new Promise((resolve, reject) => {
                 commit('clearFile');
+
                 axios.get('/api/files/', {
                     params: { file: file }
                 }).then(response => {
+                    commit('setPath', response.data.filepath);
                     commit('setFile', response.data);
                     resolve(response);
                 }).catch(error => {
