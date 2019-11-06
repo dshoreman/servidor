@@ -10,7 +10,7 @@
         </thead>
         <tbody>
             <file-row v-for="file in files" :key="file.id" :file="file"
-                :path="currentPath" @cd="$emit('set-path', $event)" />
+                :path="currentPath" @cd="$emit('cd', $event)" />
         </tbody>
     </sui-table>
 </template>

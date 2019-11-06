@@ -10,25 +10,10 @@
 
                 <sui-button id="levelup" icon="level up" @click="upOneLevel" />
 
-                <sui-breadcrumb class="massive">
-                    <template v-for="(segment, index) in pathParts">
-
-                        <sui-breadcrumb-section link @click="setPath(segment.path)"
-                            v-if="segment.path != currentPath">
-                            {{ segment.dirname }}
-                        </sui-breadcrumb-section>
-                        <sui-breadcrumb-section v-else>
-                            {{ segment.dirname }}
-                        </sui-breadcrumb-section>
-
-                        <sui-breadcrumb-divider @click="setPath(segment.path)"
-                            v-if="index < (pathParts.length - 1)" />
-
-                    </template>
-                </sui-breadcrumb>
+                <path-bar :path="currentPath" @cd="setPath($event)" />
             </h2>
 
-            <file-list :files="files" @set-path="setPath($event)" />
+            <file-list :files="files" @cd="setPath($event)" />
         </sui-grid-column>
     </sui-grid>
 </template>
@@ -36,6 +21,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex';
 import FileList from '../../components/Files/Browser/FileList';
+import PathBar from '../../components/Files/PathBar';
 
 export default {
     mounted () {
@@ -51,6 +37,7 @@ export default {
     ],
     components: {
         FileList,
+        PathBar,
     },
     computed: {
         ...mapGetters({
@@ -58,21 +45,6 @@ export default {
             findSite: 'sites/findByDocroot',
             files: 'files/all',
         }),
-        pathParts: function() {
-            let parts = [],
-                path = '';
-
-            for (let part of this.currentPath.split('/')) {
-                path = path + part + '/';
-
-                parts.push({
-                    'path': path.replace(/\/+$/, ''),
-                    'dirname': part,
-                });
-            }
-
-            return parts;
-        },
         site: function() {
             return this.findSite(this.currentPath);
         },
