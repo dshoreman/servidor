@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * Files can now actually be edited and saved in the editor
 
+### Fixed
+* Version info in footer no longer scrolls with content on long pages
+
 
 ## [0.6.0] - 2019-11-05
 ### Added

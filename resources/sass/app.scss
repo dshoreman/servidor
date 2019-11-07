@@ -1,5 +1,9 @@
 @import 'variables';
 
+@import 'layout';
+@import 'layout/sidebar';
+@import 'layout/footer';
+
 @import 'components/alerts';
 @import 'components/statsbar';
 @import 'components/listitem';
