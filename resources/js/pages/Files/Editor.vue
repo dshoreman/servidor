@@ -1,7 +1,7 @@
 <template>
     <sui-grid container>
         <sui-grid-column id="file-editor">
-            <path-bar :path="filePath" upIcon="chevron left" @back="backToDir">
+            <path-bar :path="filePath" upIcon="chevron left">
                 <sui-button positive floated="right" content="Save" @click="save(filePath)" />
             </path-bar>
 
@@ -105,14 +105,6 @@ export default {
         ...mapActions({
             save: 'files/save',
         }),
-        backToDir: function () {
-            let path = this.filePath;
-
-            this.$router.push({
-                name: 'files',
-                params: { path: path.substr(0, path.lastIndexOf('/')) },
-            });
-        },
     },
 }
 </script>

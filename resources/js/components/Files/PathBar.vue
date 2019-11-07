@@ -1,6 +1,6 @@
 <template>
     <h2>
-        <sui-button id="levelup" :icon="upIcon" @click="$emit('back')" />
+        <sui-button id="levelup" :icon="upIcon" @click="goUp()" />
 
         <sui-breadcrumb class="massive">
             <template v-for="(segment, index) in pathParts">
@@ -54,8 +54,12 @@ export default {
     },
     methods: {
         goTo: function (path) {
-            path = path == '' ? '/' : path;
-            this.$router.push({ name: 'files', params: { path } });
+            this.$router.push({ name: 'files', params: {
+                path: path ? path : '/',
+            }});
+        },
+        goUp: function () {
+            this.goTo(this.path.substr(0, this.path.lastIndexOf('/')));
         },
     },
 }

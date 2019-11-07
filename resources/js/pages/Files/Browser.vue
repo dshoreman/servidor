@@ -1,7 +1,7 @@
 <template>
     <sui-grid container>
         <sui-grid-column id="file-browser">
-            <path-bar :path="currentPath" @back="upOneLevel">
+            <path-bar :path="currentPath">
                 <router-link :to="{ name: 'apps.view', params: { id: site.id }}"
                     is="sui-button" color="teal" icon="globe" floated="right"
                     id="back2site" content="View Application" v-if="site"
@@ -45,15 +45,5 @@ export default {
             return this.findSite(this.currentPath);
         },
     },
-    methods: {
-        upOneLevel: function () {
-            let path = this.currentPath;
-            let next = path.substr(0, path.lastIndexOf('/'));
-            next = next ? next : '/';
-
-            this.$router.push({ name: 'files', params: { path: next } });
-            this.$store.dispatch('files/load', { path: next });
-        },
-    }
 }
 </script>
