@@ -1,17 +1,13 @@
 <template>
     <sui-grid container>
         <sui-grid-column id="file-browser">
-            <h2>
+            <path-bar :path="currentPath" @back="upOneLevel" @cd="setPath($event)">
                 <router-link :to="{ name: 'apps.view', params: { id: site.id }}"
                     is="sui-button" color="teal" icon="globe" floated="right"
                     id="back2site" content="View Application" v-if="site"
                     :data-tooltip="'Open overview for ' + site.name"
                     data-position="left center" />
-
-                <sui-button id="levelup" icon="level up" @click="upOneLevel" />
-
-                <path-bar :path="currentPath" @cd="setPath($event)" />
-            </h2>
+            </path-bar>
 
             <file-list :files="files" @cd="setPath($event)" />
         </sui-grid-column>

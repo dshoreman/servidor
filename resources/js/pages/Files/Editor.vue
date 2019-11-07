@@ -1,11 +1,9 @@
 <template>
     <sui-grid container>
         <sui-grid-column id="file-editor">
-            <h2>
-                <sui-button id="levelup" icon="chevron left" @click="backToDir" />
-                <path-bar :path="filePath" @cd="browse($event)" />
+            <path-bar :path="filePath" upIcon="chevron left" @back="backToDir" @cd="browse($event)">
                 <sui-button positive floated="right" content="Save" @click="save(filePath)" />
-            </h2>
+            </path-bar>
 
             <sui-menu attached="top" v-if="file.error == undefined" :inverted="darkMode">
                 <sui-dropdown item class="icon" icon="paint brush"

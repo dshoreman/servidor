@@ -1,25 +1,35 @@
 <template>
-    <sui-breadcrumb class="massive">
-        <template v-for="(segment, index) in pathParts">
+    <h2>
+        <sui-button id="levelup" :icon="upIcon" @click="$emit('back')" />
 
-            <sui-breadcrumb-section link @click="$emit('cd', segment.path)"
-                v-if="segment.path != path">
-                {{ segment.dirname }}
-            </sui-breadcrumb-section>
-            <sui-breadcrumb-section v-else>
-                {{ segment.dirname }}
-            </sui-breadcrumb-section>
+        <sui-breadcrumb class="massive">
+            <template v-for="(segment, index) in pathParts">
 
-            <sui-breadcrumb-divider @click="$emit('cd', segment.path)"
-                v-if="index < (pathParts.length - 1)" />
+                <sui-breadcrumb-section v-if="segment.path != path"
+                    link @click="$emit('cd', segment.path)">
+                    {{ segment.dirname }}
+                </sui-breadcrumb-section>
+                <sui-breadcrumb-section v-else>
+                    {{ segment.dirname }}
+                </sui-breadcrumb-section>
 
-        </template>
-    </sui-breadcrumb>
+                <sui-breadcrumb-divider @click="$emit('cd', segment.path)"
+                    v-if="index < (pathParts.length - 1)" />
+
+            </template>
+        </sui-breadcrumb>
+
+        <slot />
+    </h2>
 </template>
 
 <script>
 export default {
     props: {
+        upIcon: {
+            type: String,
+            default: 'level up',
+        },
         path: {
             type: String,
             default: '',
