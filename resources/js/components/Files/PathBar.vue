@@ -6,14 +6,14 @@
             <template v-for="(segment, index) in pathParts">
 
                 <sui-breadcrumb-section v-if="segment.path != path"
-                    link @click="$emit('cd', segment.path)">
+                    link @click="goTo(segment.path)">
                     {{ segment.dirname }}
                 </sui-breadcrumb-section>
                 <sui-breadcrumb-section v-else>
                     {{ segment.dirname }}
                 </sui-breadcrumb-section>
 
-                <sui-breadcrumb-divider @click="$emit('cd', segment.path)"
+                <sui-breadcrumb-divider @click="goTo(segment.path)"
                     v-if="index < (pathParts.length - 1)" />
 
             </template>
@@ -50,6 +50,12 @@ export default {
             }
 
             return parts;
+        },
+    },
+    methods: {
+        goTo: function (path) {
+            path = path == '' ? '/' : path;
+            this.$router.push({ name: 'files', params: { path } });
         },
     },
 }

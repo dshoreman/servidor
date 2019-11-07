@@ -1,7 +1,7 @@
 <template>
     <sui-grid container>
         <sui-grid-column id="file-browser">
-            <path-bar :path="currentPath" @back="upOneLevel" @cd="setPath($event)">
+            <path-bar :path="currentPath" @back="upOneLevel">
                 <router-link :to="{ name: 'apps.view', params: { id: site.id }}"
                     is="sui-button" color="teal" icon="globe" floated="right"
                     id="back2site" content="View Application" v-if="site"
@@ -9,7 +9,7 @@
                     data-position="left center" />
             </path-bar>
 
-            <file-list :files="files" @cd="setPath($event)" />
+            <file-list :files="files" :path="currentPath" />
         </sui-grid-column>
     </sui-grid>
 </template>
@@ -46,16 +46,6 @@ export default {
         },
     },
     methods: {
-        setPath: function (target) {
-            if (typeof target == 'string') {
-                target = '' == target ? '/' : target;
-            } else {
-                target = this.currentPath == '/' ? '/' + target.filename
-                     : this.currentPath + '/' + target.filename
-            }
-
-            this.$router.push({ name: 'files', params: { path: target } });
-        },
         upOneLevel: function () {
             let path = this.currentPath;
             let next = path.substr(0, path.lastIndexOf('/'));

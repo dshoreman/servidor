@@ -9,27 +9,22 @@
             </tr>
         </thead>
         <tbody>
-            <file-row v-for="file in files" :key="file.id" :file="file"
-                :path="currentPath" @cd="$emit('cd', $event)" />
+            <file-row v-for="file in files" :key="file.id"
+                :file="file" :path="path" />
         </tbody>
     </sui-table>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import FileRow from './FileRow';
 
 export default {
     props: [
         'files',
+        'path',
     ],
     components: {
         FileRow,
-    },
-    computed: {
-        ...mapGetters({
-            currentPath: 'files/currentPath',
-        }),
     },
 }
 </script>

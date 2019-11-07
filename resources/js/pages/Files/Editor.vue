@@ -1,7 +1,7 @@
 <template>
     <sui-grid container>
         <sui-grid-column id="file-editor">
-            <path-bar :path="filePath" upIcon="chevron left" @back="backToDir" @cd="browse($event)">
+            <path-bar :path="filePath" upIcon="chevron left" @back="backToDir">
                 <sui-button positive floated="right" content="Save" @click="save(filePath)" />
             </path-bar>
 
@@ -112,11 +112,6 @@ export default {
                 name: 'files',
                 params: { path: path.substr(0, path.lastIndexOf('/')) },
             });
-        },
-        browse: function (to) {
-            this.$router.push({ name: 'files', params: {
-                path: to == '' ? '/' : to,
-            }});
         },
     },
 }
