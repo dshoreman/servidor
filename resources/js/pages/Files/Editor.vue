@@ -3,7 +3,7 @@
         <sui-grid-column id="file-editor">
             <h2>
                 <sui-button id="levelup" icon="chevron left" @click="backToDir" />
-                <span class="pathbar">{{ filePath }}</span>
+                <path-bar :path="filePath" @cd="browse($event)" />
                 <sui-button positive floated="right" content="Save" @click="save(filePath)" />
             </h2>
 
@@ -43,12 +43,14 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { codemirror } from 'vue-codemirror'
+import PathBar from '../../components/Files/PathBar';
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/dracula.css'
 
 export default {
     components: {
         codemirror,
+        PathBar,
     },
     async mounted () {
         this.loading = true;
@@ -112,6 +114,11 @@ export default {
                 name: 'files',
                 params: { path: path.substr(0, path.lastIndexOf('/')) },
             });
+        },
+        browse: function (to) {
+            this.$router.push({ name: 'files', params: {
+                path: to == '' ? '/' : to,
+            }});
         },
     },
 }
