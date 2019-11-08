@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 * Files can now actually be edited and saved in the editor
+* Path bar sections are now also clickable in the file viewer
 
 ### Fixed
 * Version info in footer no longer scrolls with content on long pages
