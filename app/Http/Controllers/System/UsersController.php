@@ -143,8 +143,8 @@ class UsersController extends Controller
      */
     public function destroy($uid)
     {
-        if ($user = posix_getpwuid($uid)) {
-            exec('sudo userdel ' . $user['name']);
+        if ($user = SystemUser::find($uid)) {
+            $user->delete();
         }
 
         return response(null, Response::HTTP_NO_CONTENT);
