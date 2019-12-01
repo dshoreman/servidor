@@ -18,39 +18,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        exec('cat /etc/passwd', $lines);
-
-        $keys = ['name', 'passwd', 'uid', 'gid', 'gecos', 'dir', 'shell'];
-        $users = collect();
-
-        foreach ($lines as $line) {
-            $user = array_combine($keys, explode(':', $line));
-            $user['groups'] = $this->loadSecondaryGroups($user);
-
-            $users->push($user);
-        }
-
-        return $users;
-    }
-
-    protected function loadSecondaryGroups(array $user)
-    {
-        $groups = [];
-        $primary = explode(':', exec('getent group ' . $user['gid']));
-        $effective = explode(' ', exec('groups ' . $user['name'] . " | sed 's/.* : //'"));
-
-        $primaryName = reset($primary);
-        $primaryMembers = explode(',', end($primary));
-
-        foreach ($effective as $group) {
-            if ($group == $primaryName && !in_array($group, $primaryMembers)) {
-                continue;
-            }
-
-            $groups[] = $group;
-        }
-
-        return $groups;
+        return SystemUser::list();
     }
 
     /**
@@ -109,7 +77,7 @@ class UsersController extends Controller
             $options[] = '-g ' . (int) $data['gid'];
         }
 
-        $original['groups'] = $this->loadSecondaryGroups($original);
+        $original['groups'] = (new SystemUser($original))->secondaryGroups();
 
         if (isset($data['groups']) && $data['groups'] != $original['groups']) {
             $options[] = '-G "' . implode(',', $data['groups']) . '"';
@@ -129,7 +97,7 @@ class UsersController extends Controller
         }
 
         $userData = posix_getpwuid($newUid);
-        $userData['groups'] = $this->loadSecondaryGroups($userData);
+        $userData['groups'] = (new SystemUser($userData))->secondaryGroups();
 
         return response($userData, Response::HTTP_OK);
     }

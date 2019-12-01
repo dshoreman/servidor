@@ -3,6 +3,7 @@
 namespace Servidor\System;
 
 use Exception;
+use Illuminate\Support\Collection;
 
 class User
 {
@@ -22,6 +23,23 @@ class User
         }
 
         return new self($user);
+    }
+
+    public static function list(): Collection
+    {
+        exec('cat /etc/passwd', $lines);
+
+        $keys = ['name', 'passwd', 'uid', 'gid', 'gecos', 'dir', 'shell'];
+        $users = collect();
+
+        foreach ($lines as $line) {
+            $user = array_combine($keys, explode(':', $line));
+            $user['groups'] = (new self($user))->secondaryGroups();
+
+            $users->push($user);
+        }
+
+        return $users;
     }
 
     public static function create(string $name, int $uid = null, int $gid = null): array
@@ -51,5 +69,25 @@ class User
     public function delete(): void
     {
         exec('sudo userdel ' . $this->user['name']);
+    }
+
+    public function secondaryGroups(): array
+    {
+        $groups = [];
+        $primary = explode(':', exec('getent group ' . $this->user['gid']));
+        $effective = explode(' ', exec('groups ' . $this->user['name'] . " | sed 's/.* : //'"));
+
+        $primaryName = reset($primary);
+        $primaryMembers = explode(',', end($primary));
+
+        foreach ($effective as $group) {
+            if ($group == $primaryName && !in_array($group, $primaryMembers)) {
+                continue;
+            }
+
+            $groups[] = $group;
+        }
+
+        return $groups;
     }
 }
