@@ -2,37 +2,25 @@
 
 namespace Servidor\Http\Controllers\System;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Exceptions\System\UserNotModifiedException;
 use Servidor\Exceptions\System\UserSaveException;
 use Servidor\Http\Controllers\Controller;
+use Servidor\Http\Requests\System\SaveUser;
 use Servidor\System\User as SystemUser;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): Response
     {
-        return SystemUser::list();
+        return response(SystemUser::list());
     }
 
-    /**
-     * Create a new user on the host system.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(SaveUser $request): Response
     {
-        $data = $request->validate($this->validationRules());
+        $data = $request->validated();
 
         try {
             $user = SystemUser::create(
@@ -49,20 +37,12 @@ class UsersController extends Controller
         return response($user, Response::HTTP_CREATED);
     }
 
-    /**
-     * Update the specified user on the system.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $uid
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $uid): Response
+    public function update(SaveUser $request, int $uid): Response
     {
         try {
-            $data = $request->validate($this->validationRules());
-
-            $user = SystemUser::find($uid)->update($data);
+            $user = SystemUser::find($uid)->update(
+                $request->validated(),
+            );
 
             return response(
                 $user->toArray(),
@@ -75,14 +55,7 @@ class UsersController extends Controller
         }
     }
 
-    /**
-     * Remove the specified user from the system.
-     *
-     * @param int $uid
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($uid)
+    public function destroy(int $uid): Response
     {
         if ($user = SystemUser::find($uid)) {
             $user->delete();
@@ -91,41 +64,8 @@ class UsersController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * Get the validation rules for system users.
-     *
-     * @return array
-     */
-    protected function validationRules()
+    protected function fail(string $message, string $key = 'uid'): void
     {
-        return [
-            'name' => [
-                'required', 'max:32', 'bail',
-                function ($attribute, $value, $fail) {
-                    if (str_contains($value, ':')) {
-                        $fail("The {$attribute} cannot contain a colon.");
-                    }
-
-                    if (str_contains($value, ',')) {
-                        $fail("The {$attribute} cannot contain a comma.");
-                    }
-
-                    if (str_contains($value, ["\t", "\n", ' '])) {
-                        $fail("The {$attribute} cannot contain whitespace or newlines.");
-                    }
-                },
-                'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
-            ],
-            'uid' => 'integer|nullable',
-            'gid' => 'integer|required',
-            'groups' => 'array|nullable',
-        ];
-    }
-
-    protected function fail($message, $key = 'uid')
-    {
-        throw ValidationException::withMessages([
-            $key => $message,
-        ]);
+        throw ValidationException::withMessages([$key => $message]);
     }
 }

@@ -125,7 +125,7 @@ class CreateUserTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name cannot contain a colon.']);
+        $response->assertJsonFragment(['The name contains invalid characters.']);
     }
 
     /** @test */
@@ -137,7 +137,7 @@ class CreateUserTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name cannot contain a comma.']);
+        $response->assertJsonFragment(['The name contains invalid characters.']);
     }
 
     /** @test */
@@ -149,7 +149,7 @@ class CreateUserTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
+        $response->assertJsonFragment(['The name contains invalid characters.']);
     }
 
     /** @test */
@@ -161,7 +161,7 @@ class CreateUserTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
+        $response->assertJsonFragment(['The name contains invalid characters.']);
     }
 
     /** @test */
@@ -173,7 +173,7 @@ class CreateUserTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
+        $response->assertJsonFragment(['The name contains invalid characters.']);
     }
 
     /** @test */
