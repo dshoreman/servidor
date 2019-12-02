@@ -29,8 +29,6 @@ class WriteSiteConfig
 
     /**
      * Handle the event.
-     *
-     * @param SiteUpdated $event
      */
     public function handle(SiteUpdated $event)
     {

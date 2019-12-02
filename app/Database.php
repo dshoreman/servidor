@@ -16,8 +16,6 @@ class Database
 
     /**
      * Access the underlying database schema manager.
-     *
-     * @return MySqlSchemaManager
      */
     public function dbal(): MySqlSchemaManager
     {
@@ -44,8 +42,6 @@ class Database
 
     /**
      * Get a list of all existing databases.
-     *
-     * @return array
      */
     public function listDatabases(): array
     {
@@ -54,10 +50,6 @@ class Database
 
     /**
      * Create a database if it doesn't already exist.
-     *
-     * @param string $dbname
-     *
-     * @return bool
      */
     public function create(string $dbname): bool
     {

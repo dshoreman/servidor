@@ -4,10 +4,10 @@ namespace Servidor\Http\Controllers\Auth;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Servidor\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use GuzzleHttp\Exception\BadResponseException;
 
 class LoginController extends Controller
 {
@@ -23,9 +23,6 @@ class LoginController extends Controller
 
     /**
      * Proxy login requests to /oauth/token with client secret.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \GuzzleHttp\Client       $client
      *
      * @return \Illuminate\Http\Response
      */

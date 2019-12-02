@@ -4,8 +4,8 @@ namespace Servidor\Http\Controllers\System;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Servidor\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
+use Servidor\Http\Controllers\Controller;
 
 class GroupsController extends Controller
 {
@@ -39,8 +39,6 @@ class GroupsController extends Controller
 
     /**
      * Create a new group on the host system.
-     *
-     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
@@ -97,8 +95,7 @@ class GroupsController extends Controller
     /**
      * Update the specified group on the system.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $gid
+     * @param int $gid
      *
      * @return \Illuminate\Http\Response
      */

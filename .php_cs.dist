@@ -25,7 +25,6 @@ return PhpCsFixer\Config::create()
 
         // Other Rules
         'array_indentation' => true,
-        'array_syntax' => ['syntax' => 'short'],
         'backtick_to_shell_exec' => true,
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,

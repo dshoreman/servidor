@@ -181,10 +181,6 @@ class FileManagerTest extends TestCase
 
     /**
      * Get the path to a file within the test skeleton.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     private function dummy(string $path): string
     {

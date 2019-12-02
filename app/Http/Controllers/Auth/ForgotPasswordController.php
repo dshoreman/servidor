@@ -2,8 +2,8 @@
 
 namespace Servidor\Http\Controllers\Auth;
 
-use Servidor\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Servidor\Http\Controllers\Controller;
 
 class ForgotPasswordController extends Controller
 {

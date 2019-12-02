@@ -2,8 +2,8 @@
 
 namespace Servidor\Http\Controllers\Auth;
 
-use Servidor\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Servidor\Http\Controllers\Controller;
 
 class ResetPasswordController extends Controller
 {
