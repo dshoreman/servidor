@@ -2,10 +2,12 @@
 
 namespace Servidor\Http\Controllers\System;
 
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use Servidor\Exceptions\System\UserNotFoundException;
+use Servidor\Exceptions\System\UserNotModifiedException;
+use Servidor\Exceptions\System\UserSaveException;
 use Servidor\Http\Controllers\Controller;
 use Servidor\System\User as SystemUser;
 
@@ -38,7 +40,7 @@ class UsersController extends Controller
                 $data['uid'] ?? null,
                 $data['gid'] ?? null,
             );
-        } catch (Exception $e) {
+        } catch (UserSaveException $e) {
             $data['error'] = $e->getMessage();
 
             return response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -55,51 +57,22 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $uid)
+    public function update(Request $request, $uid): Response
     {
-        $newUid = $uid;
-        $data = $request->validate($this->validationRules());
+        try {
+            $data = $request->validate($this->validationRules());
 
-        if (!$original = posix_getpwuid($uid)) {
-            throw $this->failed('No user found matching the given criteria.');
+            $user = SystemUser::find($uid)->update($data);
+
+            return response(
+                $user->toArray(),
+                Response::HTTP_OK,
+            );
+        } catch (UserNotFoundException $e) {
+            $this->fail('No user found matching the given criteria.');
+        } catch (UserNotModifiedException $e) {
+            $this->fail('Nothing to update!');
         }
-
-        if ($data['name'] != $original['name']) {
-            $options[] = '-l ' . $data['name'];
-        }
-
-        if (isset($data['uid']) && $data['uid'] != $uid && (int) $data['uid'] > 0) {
-            $newUid = (int) $data['uid'];
-            $options[] = '-u ' . $newUid;
-        }
-
-        if ($data['gid'] != $original['gid'] && (int) $data['gid'] > 0) {
-            $options[] = '-g ' . (int) $data['gid'];
-        }
-
-        $original['groups'] = (new SystemUser($original))->secondaryGroups();
-
-        if (isset($data['groups']) && $data['groups'] != $original['groups']) {
-            $options[] = '-G "' . implode(',', $data['groups']) . '"';
-        }
-
-        if (empty($options ?? null)) {
-            throw $this->failed('Nothing to update!');
-        }
-
-        $options[] = $original['name'];
-
-        exec('sudo usermod ' . implode(' ', $options), $output, $retval);
-        unset($output);
-
-        if (0 !== $retval) {
-            throw new Exception('Something went wrong. Exit code: ' . $retval);
-        }
-
-        $userData = posix_getpwuid($newUid);
-        $userData['groups'] = (new SystemUser($userData))->secondaryGroups();
-
-        return response($userData, Response::HTTP_OK);
     }
 
     /**
@@ -149,9 +122,9 @@ class UsersController extends Controller
         ];
     }
 
-    protected function failed($message, $key = 'uid')
+    protected function fail($message, $key = 'uid')
     {
-        return ValidationException::withMessages([
+        throw ValidationException::withMessages([
             $key => $message,
         ]);
     }
