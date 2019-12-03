@@ -17,11 +17,8 @@ class User
 
     public function __construct($user)
     {
-        if ($user instanceof LinuxUser) {
-            $this->user = $user;
-        } else {
-            $this->user = new LinuxUser($user, true);
-        }
+        $this->user = $user instanceof LinuxUser
+                    ? $user : new LinuxUser($user, true);
     }
 
     public static function find(int $uid): self
@@ -98,6 +95,7 @@ class User
         $name = $this->user->getOriginal('name');
 
         exec("sudo {$cmd} {$this->user->toArgs()} {$name}", $output, $retval);
+        unset($output);
 
         if (0 !== $retval) {
             throw new UserSaveException("Something went wrong (exit code: {$retval})");

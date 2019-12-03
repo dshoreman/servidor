@@ -14,6 +14,8 @@ class ValidLinuxUser implements Rule
      */
     public function passes($attribute, $value): bool
     {
+        unset($attribute);
+
         return !str_contains($value, [':', ',', "\t", "\n", ' ']);
     }
 
