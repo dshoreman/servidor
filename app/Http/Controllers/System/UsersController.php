@@ -40,13 +40,11 @@ class UsersController extends Controller
     public function update(SaveUser $request, int $uid): Response
     {
         try {
-            $user = SystemUser::find($uid)->update(
-                $request->validated(),
-            );
+            $user = SystemUser::find($uid);
 
             return response(
-                $user->toArray(),
-                Response::HTTP_OK,
+                $user->update($request->validated()),
+                Response::HTTP_OK
             );
         } catch (UserNotFoundException $e) {
             $this->fail('No user found matching the given criteria.');

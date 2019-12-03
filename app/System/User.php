@@ -6,14 +6,22 @@ use Illuminate\Support\Collection;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Exceptions\System\UserNotModifiedException;
 use Servidor\Exceptions\System\UserSaveException;
+use Servidor\System\Users\LinuxUser;
 
 class User
 {
-    private $user = [];
+    /**
+     * @var LinuxUser
+     */
+    private $user;
 
-    public function __construct(array $user)
+    public function __construct($user)
     {
-        $this->user = $user;
+        if ($user instanceof LinuxUser) {
+            $this->user = $user;
+        } else {
+            $this->user = new LinuxUser($user, true);
+        }
     }
 
     public static function find(int $uid): self
@@ -27,9 +35,13 @@ class User
         return new self($user);
     }
 
-    private function refresh($uid): self
+    private function refresh($nameOrUid): self
     {
-        $this->user = posix_getpwuid($uid);
+        $arr = is_int($nameOrUid)
+             ? posix_getpwuid($nameOrUid)
+             : posix_getpwnam($nameOrUid);
+
+        $this->user = new LinuxUser($arr, true);
 
         return $this;
     }
@@ -42,10 +54,11 @@ class User
         $users = collect();
 
         foreach ($lines as $line) {
-            $user = array_combine($keys, explode(':', $line));
-            $user['groups'] = (new self($user))->secondaryGroups();
+            $user = new self(
+                array_combine($keys, explode(':', $line)),
+            );
 
-            $users->push($user);
+            $users->push($user->toArray());
         }
 
         return $users;
@@ -53,104 +66,53 @@ class User
 
     public static function create(string $name, int $uid = null, int $gid = null): array
     {
-        if ($uid > 0) {
-            $options[] = '-u ' . $uid;
-        }
+        $user = new self(
+            (new LinuxUser(['name' => $name]))
+                ->setUid($uid ?: null)
+                ->setGid($gid ?: null),
+        );
 
-        if ($gid > 0) {
-            $options[] = '-g ' . $gid;
-        }
+        $user->commit('useradd');
 
-        // TODO: Add handling for secondary groups (`-G group1 group2 ...`)
-
-        $options[] = $name;
-
-        exec('sudo useradd ' . implode(' ', $options), $output, $retval);
-        unset($output);
-
-        if (0 !== $retval) {
-            throw new UserSaveException("Something went wrong (exit code: {$retval})");
-        }
-
-        return posix_getpwnam($name);
+        return $user->refresh($name)->toArray();
     }
 
-    public function update(array $data): self
+    public function update(array $data): array
     {
-        $options = [];
-        $uid = $this->user['uid'];
+        $this->user->setName($data['name'])
+                   ->setUid($data['uid'] ?? null)
+                   ->setGid($data['gid'] ?? null)
+                   ->setGroups($data['groups'] ?? null);
 
-        if ($data['name'] != $this->user['name']) {
-            $options[] = '-l ' . $data['name'];
-        }
-
-        if (isset($data['uid']) && $data['uid'] != $this->user['uid'] && (int) $data['uid'] > 0) {
-            $uid = (int) $data['uid'];
-            $options[] = '-u ' . $uid;
-        }
-
-        if ($data['gid'] != $this->user['gid'] && (int) $data['gid'] > 0) {
-            $options[] = '-g ' . (int) $data['gid'];
-        }
-
-        $this->loadSecondaryGroups();
-
-        if (isset($data['groups']) && $data['groups'] != $this->user['groups']) {
-            $options[] = '-G "' . implode(',', $data['groups']) . '"';
-        }
-
-        if (empty($options)) {
+        if (!$this->user->isDirty()) {
             throw new UserNotModifiedException();
         }
 
-        $options[] = $this->user['name'];
+        $this->commit('usermod');
 
-        exec('sudo usermod ' . implode(' ', $options), $output, $retval);
-        unset($output);
+        return $this->refresh($data['uid'] ?? $this->user->uid)->toArray();
+    }
+
+    private function commit(string $cmd): self
+    {
+        $name = $this->user->getOriginal('name');
+
+        exec("sudo {$cmd} {$this->user->toArgs()} {$name}", $output, $retval);
 
         if (0 !== $retval) {
             throw new UserSaveException("Something went wrong (exit code: {$retval})");
         }
-
-        $this->refresh($uid)->loadSecondaryGroups();
 
         return $this;
     }
 
     public function delete(): void
     {
-        exec('sudo userdel ' . $this->user['name']);
-    }
-
-    private function loadSecondaryGroups(): self
-    {
-        $this->user['groups'] = $this->secondaryGroups();
-
-        return $this;
-    }
-
-    public function secondaryGroups(): array
-    {
-        $groups = [];
-        $primary = explode(':', exec('getent group ' . $this->user['gid']));
-        $effective = explode(' ', exec('groups ' . $this->user['name'] . " | sed 's/.* : //'"));
-
-        $primaryName = reset($primary);
-        $primaryMembers = explode(',', end($primary));
-
-        foreach ($effective as $group) {
-            if ($group == $primaryName && !in_array($group, $primaryMembers)) {
-                continue;
-            }
-
-            $groups[] = $group;
-        }
-
-        return $groups;
+        exec('sudo userdel ' . $this->user->name);
     }
 
     public function toArray(): array
     {
-        return $this->user;
+        return $this->user->toArray();
     }
 }
