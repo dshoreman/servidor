@@ -22,7 +22,7 @@ class FileController extends Controller
     /**
      * Output a file or list of files from the local filesystem.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function index(Request $request)
     {

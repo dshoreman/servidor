@@ -55,9 +55,7 @@ class UsersController extends Controller
 
     public function destroy(int $uid): Response
     {
-        if ($user = SystemUser::find($uid)) {
-            $user->delete();
-        }
+        SystemUser::find($uid)->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
     }

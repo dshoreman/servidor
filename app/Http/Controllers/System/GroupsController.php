@@ -34,7 +34,7 @@ class GroupsController extends Controller
             $groups->push($group);
         }
 
-        return $groups;
+        return response($groups);
     }
 
     /**
@@ -131,7 +131,7 @@ class GroupsController extends Controller
             exec('sudo groupmod ' . implode(' ', $options), $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException('Something went wrong. Exit code: ' . $retval);
+                throw $this->failed('Something went wrong. Exit code: ' . $retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -143,7 +143,7 @@ class GroupsController extends Controller
             exec("sudo gpasswd -M '" . ($members ?? null) . "' {$group}", $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException('Something went wrong. Exit code: ' . $retval);
+                throw $this->failed('Something went wrong. Exit code: ' . $retval);
             }
 
             $updated = posix_getgrgid($data['gid']);

@@ -33,7 +33,7 @@ class LoginController extends Controller
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
 
-            return $this->sendLockoutResponse($request);
+            $this->sendLockoutResponse($request);
         }
 
         try {
@@ -50,7 +50,7 @@ class LoginController extends Controller
 
             $this->clearLoginAttempts($request);
 
-            return $response->getBody();
+            return response($response->getBody());
         } catch (BadResponseException $e) {
             $this->incrementLoginAttempts($request);
 
