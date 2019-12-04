@@ -66,7 +66,7 @@ class SitesApiTest extends TestCase
             'is_enabled' => true,
         ]);
 
-        $site = Site::first();
+        $site = Site::firstOrFail();
         $this->assertEquals('Test Site', $site->name);
         $this->assertEquals('example.com', $site->primary_domain);
         $this->assertTrue($site->is_enabled);
@@ -112,7 +112,7 @@ class SitesApiTest extends TestCase
             'document_root' => '/var/www/blog',
         ]);
 
-        $updated = Site::find($site->id);
+        $updated = Site::findOrFail($site->id);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $this->assertEquals('My Blog', $updated->name);
@@ -134,7 +134,7 @@ class SitesApiTest extends TestCase
             'primary_domain' => 'test.com',
         ]);
 
-        $updated = Site::find($site->id);
+        $updated = Site::findOrFail($site->id);
 
         $response->assertOk();
         $this->assertEquals('My Updated Blog', $updated->name);
@@ -173,7 +173,7 @@ class SitesApiTest extends TestCase
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $response->assertJson(['message' => 'Unauthenticated.']);
-        $this->assertArraySubset($site->toArray(), Site::first()->toArray());
+        $this->assertArraySubset($site->toArray(), Site::firstOrFail()->toArray());
     }
 
     /** @test */
@@ -241,7 +241,7 @@ class SitesApiTest extends TestCase
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $response->assertJson(['message' => 'Unauthenticated.']);
-        $this->assertArraySubset($site->toArray(), Site::first()->toArray());
+        $this->assertArraySubset($site->toArray(), Site::firstOrFail()->toArray());
     }
 
     /** @test */

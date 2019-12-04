@@ -6,7 +6,10 @@ parameters:
     - app
     - tests
   ignoreErrors:
+    - '#Access to an undefined property Servidor\\(Site|User)::\$[A-Za-z_]+.#'
     - message: '#Result of method .*::sendLockoutResponse\(\) \(void\) is used.#'
       path: 'app/Http/Controllers/Auth/LoginController.php'
     - message: '#Call to an undefined method Illuminate\\Contracts\\Auth\\Factory::user\(\).#'
       path: 'app/Http/Controllers/Auth/LoginController.php'
+    - message: '#Function factory invoked with 1 parameter, 0 required.#'
+      path: 'tests/RequiresAuth.php'

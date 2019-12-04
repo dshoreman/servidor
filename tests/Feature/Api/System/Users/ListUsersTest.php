@@ -47,7 +47,7 @@ class ListUsersTest extends TestCase
         // Vagrant has a vagrant (and ubuntu) user but PHP could be running as
         // www-data instead, so we use the SUDO_USER value that it also sets.
         $response->assertJsonFragment([
-            'name' => getenv('TRAVIS') ? 'travis' : getenv('SUDO_USER') ?: exec('whoami'),
+            'name' => getenv('TRAVIS') ? 'travis' : (getenv('SUDO_USER') ?: exec('whoami')),
         ]);
     }
 

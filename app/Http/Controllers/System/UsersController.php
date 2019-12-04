@@ -47,9 +47,9 @@ class UsersController extends Controller
                 Response::HTTP_OK
             );
         } catch (UserNotFoundException $e) {
-            $this->fail('No user found matching the given criteria.');
+            throw $this->fail('No user found matching the given criteria.');
         } catch (UserNotModifiedException $e) {
-            $this->fail('Nothing to update!');
+            throw $this->fail('Nothing to update!');
         }
     }
 
@@ -62,8 +62,8 @@ class UsersController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    protected function fail(string $message, string $key = 'uid'): void
+    protected function fail(string $message, string $key = 'uid'): ValidationException
     {
-        throw ValidationException::withMessages([$key => $message]);
+        return ValidationException::withMessages([$key => $message]);
     }
 }
