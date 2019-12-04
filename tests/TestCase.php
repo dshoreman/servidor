@@ -8,7 +8,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected function assertValidationErrors($response, $keys)
+    protected function assertValidationErrors($response, $keys): void
     {
         $response->assertStatus(422);
         $response->assertJsonValidationErrors($keys);

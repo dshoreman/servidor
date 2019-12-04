@@ -22,7 +22,7 @@ class CreateSiteRequestTest extends TestCase
      */
     private $validator;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -31,14 +31,14 @@ class CreateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_name_is_required()
+    public function site_name_is_required(): void
     {
         $this->assertFalse($this->validateField('name', ''));
         $this->assertTrue($this->validateField('name', 'A name'));
     }
 
     /** @test */
-    public function site_name_must_be_a_string()
+    public function site_name_must_be_a_string(): void
     {
         $this->assertFalse($this->validateField('name', true));
         $this->assertFalse($this->validateField('name', 42));
@@ -46,7 +46,7 @@ class CreateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_name_must_be_unique()
+    public function site_name_must_be_unique(): void
     {
         Site::create(['name' => 'Duplicate me!']);
 
@@ -55,14 +55,14 @@ class CreateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_primary_domain_must_be_a_valid_domain()
+    public function site_primary_domain_must_be_a_valid_domain(): void
     {
         $this->assertFalse($this->validateField('primary_domain', 'not a url'));
         $this->assertTrue($this->validateField('primary_domain', 'example.com'));
     }
 
     /** @test */
-    public function site_is_enabled_must_be_a_boolean()
+    public function site_is_enabled_must_be_a_boolean(): void
     {
         $this->assertFalse($this->validateField('is_enabled', 'yes'));
         $this->assertTrue($this->validateField('is_enabled', true));

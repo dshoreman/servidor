@@ -11,7 +11,7 @@ class CreateGroupTest extends TestCase
     use PrunesDeletables;
     use RequiresAuth;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->pruneDeletable('groups');
 
@@ -19,7 +19,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_create_group()
+    public function guest_cannot_create_group(): void
     {
         $response = $this->postJson($this->endpoint, [
             'name' => 'guesttestgroup',
@@ -34,7 +34,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_create_user_with_minimum_data()
+    public function authed_user_can_create_user_with_minimum_data(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestgroup',
@@ -48,7 +48,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function cannot_create_group_without_required_fields()
+    public function cannot_create_group_without_required_fields(): void
     {
         $response = $this->authed()->postJson($this->endpoint, ['gid' => 1337]);
 
@@ -60,7 +60,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function cannot_create_group_with_invalid_data()
+    public function cannot_create_group_with_invalid_data(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '',
@@ -78,7 +78,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_start_with_dash()
+    public function name_cannot_start_with_dash(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '-test-dash-prefix',
@@ -89,7 +89,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_start_with_plus()
+    public function name_cannot_start_with_plus(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '+test-plus-prefix',
@@ -100,7 +100,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_start_with_tilde()
+    public function name_cannot_start_with_tilde(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '~test-tilde-prefix',
@@ -111,7 +111,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_contain_colon()
+    public function name_cannot_contain_colon(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test-contains-:',
@@ -122,7 +122,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_contain_comma()
+    public function name_cannot_contain_comma(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test,contains,comma',
@@ -133,7 +133,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_contain_tab()
+    public function name_cannot_contain_tab(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\tcontains\ttab",
@@ -144,7 +144,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_contain_newline()
+    public function name_cannot_contain_newline(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\ncontains\nnewline",
@@ -155,7 +155,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_contain_whitespace()
+    public function name_cannot_contain_whitespace(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test contains space',
@@ -166,7 +166,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_ending_with_whitespace_gets_trimmed()
+    public function name_ending_with_whitespace_gets_trimmed(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'testgroup ',
@@ -179,7 +179,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function name_cannot_be_too_long()
+    public function name_cannot_be_too_long(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '_im-a-name-that-is-over-32-chars-',

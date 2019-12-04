@@ -8,7 +8,7 @@ use Tests\TestCase;
 class StatsBarTest extends TestCase
 {
     /** @test */
-    public function stats_contains_all_expected_keys()
+    public function stats_contains_all_expected_keys(): void
     {
         $data = StatsBar::stats();
 
@@ -46,7 +46,7 @@ class StatsBarTest extends TestCase
     }
 
     /** @test */
-    public function hostname_matches_the_one_returned_by_php()
+    public function hostname_matches_the_one_returned_by_php(): void
     {
         $data = StatsBar::stats();
 
@@ -54,7 +54,7 @@ class StatsBarTest extends TestCase
     }
 
     /** @test */
-    public function os_name_is_linux()
+    public function os_name_is_linux(): void
     {
         $data = StatsBar::stats();
 
@@ -62,7 +62,7 @@ class StatsBarTest extends TestCase
     }
 
     /** @test */
-    public function free_memory_matches_total_minus_used()
+    public function free_memory_matches_total_minus_used(): void
     {
         $this->markTestSkipped(
             'Skipping for now due to random off-by-one errors in the rounding.'

@@ -10,7 +10,7 @@ class ListGroupsTest extends TestCase
     use RequiresAuth;
 
     /** @test */
-    public function guest_cannot_list_groups()
+    public function guest_cannot_list_groups(): void
     {
         $response = $this->getJson($this->endpoint);
 
@@ -33,7 +33,7 @@ class ListGroupsTest extends TestCase
      * @test
      * @depends authed_user_can_list_groups
      */
-    public function list_response_contains_expected_data($response)
+    public function list_response_contains_expected_data($response): void
     {
         $responseJson = json_decode($response->getContent());
 
@@ -46,7 +46,7 @@ class ListGroupsTest extends TestCase
      * @test
      * @depends authed_user_can_list_groups
      */
-    public function list_results_include_default_groups($response)
+    public function list_results_include_default_groups($response): void
     {
         $response->assertJsonFragment(['name' => 'root']);
         $response->assertJsonFragment(['name' => 'users']);

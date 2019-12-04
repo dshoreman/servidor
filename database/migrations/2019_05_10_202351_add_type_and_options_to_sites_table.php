@@ -9,7 +9,7 @@ class AddTypeAndOptionsToSitesTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         $types = [
             'basic',
@@ -18,7 +18,7 @@ class AddTypeAndOptionsToSitesTable extends Migration
             'redirect',
         ];
 
-        Schema::table('sites', function (Blueprint $table) use ($types) {
+        Schema::table('sites', function (Blueprint $table) use ($types): void {
             $table->enum('type', $types)->nullable();
             $table->string('source_repo')->nullable();
             $table->string('document_root')->nullable();
@@ -30,9 +30,9 @@ class AddTypeAndOptionsToSitesTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('sites', function (Blueprint $table) {
+        Schema::table('sites', function (Blueprint $table): void {
             $table->dropColumn([
                 'redirect_to',
                 'redirect_type',

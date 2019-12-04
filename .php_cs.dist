@@ -36,7 +36,11 @@ return PhpCsFixer\Config::create()
         'no_useless_else' => true,
         'nullable_type_declaration_for_default_null_value' => true,
         'phpdoc_order' => true,
-        'ternary_to_null_coalescing' => true,
+
+        // New PHP Functionality
+        '@PHP73Migration' => true,
+        '@PHP71Migration:risky' => true,
+        'declare_strict_types' => false,
     ]);
 
 // vim: ft=php

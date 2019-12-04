@@ -9,11 +9,11 @@ use Servidor\Http\Controllers\Controller;
 
 class GroupsController extends Controller
 {
-    const GROUP_NAME_TAKEN = 9;
-    const GROUP_GID_TAKEN = 4;
-    const GROUP_SYNTAX_INVALID = 2;
-    const GROUP_OPTION_INVALID = 3;
-    const GROUP_UPDATE_FAILED = 10;
+    private const GROUP_NAME_TAKEN = 9;
+    private const GROUP_GID_TAKEN = 4;
+    private const GROUP_SYNTAX_INVALID = 2;
+    private const GROUP_OPTION_INVALID = 3;
+    private const GROUP_UPDATE_FAILED = 10;
 
     /**
      * Display a listing of the resource.
@@ -182,7 +182,7 @@ class GroupsController extends Controller
         return [
             'name' => [
                 'required', 'max:32', 'bail',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if (str_contains($value, ':')) {
                         $fail("The {$attribute} cannot contain a colon.");
                     }
