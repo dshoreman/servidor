@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Servidor\Rules\Domain;
 use Tests\TestCase;
+use Validator;
 
 class DomainValidationTest extends TestCase
 {
@@ -13,7 +14,7 @@ class DomainValidationTest extends TestCase
     private $rules;
 
     /**
-     * @var \Validator
+     * @var Validator
      */
     private $validator;
 

@@ -61,7 +61,7 @@ class User
         return $users;
     }
 
-    public static function create(string $name, int $uid = null, int $gid = null): array
+    public static function create(string $name, ?int $uid = null, ?int $gid = null): array
     {
         $user = new self(
             (new LinuxUser(['name' => $name]))

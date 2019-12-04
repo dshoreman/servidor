@@ -14,7 +14,7 @@ abstract class TestCase extends BaseCase
         'gid',
     ];
 
-    protected function endpoint(int $id = null): string
+    protected function endpoint(?int $id = null): string
     {
         $endpoint = $this->endpoint;
 

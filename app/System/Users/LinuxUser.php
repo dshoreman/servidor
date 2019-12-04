@@ -69,7 +69,7 @@ class LinuxUser
         return $this;
     }
 
-    public function setUid(int $uid = null): self
+    public function setUid(?int $uid = null): self
     {
         if (isset($uid) && $uid > 0) {
             $this->uid = $uid;
@@ -82,7 +82,7 @@ class LinuxUser
         return $this;
     }
 
-    public function setGid(int $gid = null): self
+    public function setGid(?int $gid = null): self
     {
         if (isset($gid) && $gid > 0) {
             $this->gid = $gid;
@@ -95,7 +95,7 @@ class LinuxUser
         return $this;
     }
 
-    public function setGroups(array $groups = null): self
+    public function setGroups(?array $groups = null): self
     {
         if (is_array($groups)) {
             $this->groups = $groups;

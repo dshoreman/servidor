@@ -3,6 +3,7 @@
 namespace Servidor\FileManager;
 
 use Illuminate\Http\Response;
+use RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -139,7 +140,7 @@ class FileManager
 
         try {
             $data['contents'] = $file->getContents();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $msg = $e->getMessage();
             $data['contents'] = '';
 
