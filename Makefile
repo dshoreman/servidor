@@ -33,7 +33,7 @@ phpcs:
 	vendor/bin/phpcs app -p --standard=PSR12
 
 phpmd:
-	vendor/bin/phpmd app text .phpmd.xml
+	vendor/bin/phpmd app ansi .phpmd.xml
 	@echo
 
 phpmnd:

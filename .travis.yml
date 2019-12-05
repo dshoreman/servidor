@@ -38,7 +38,7 @@ script:
   - if [[ "$WITH_NPM" == true ]]; then npm run prod; fi
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no; fi
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpcs app --standard=PSR12; fi
-  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmd app text .phpmd.xml; fi
+  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmd app ansi .phpmd.xml; fi
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmnd . --non-zero-exit-on-violation --exclude tests; fi
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpstan analyze -c phpstan.neon.dist; fi
   - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpunit; fi

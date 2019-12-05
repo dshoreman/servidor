@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "98500124363280869f90a30e74ff8039",
+    "content-hash": "ff4dd5efe8ed301525066a9335131c5d",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -6041,19 +6041,20 @@
         },
         {
             "name": "phpmd/phpmd",
-            "version": "2.7.0",
+            "version": "2.8.0-beta.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpmd/phpmd.git",
-                "reference": "a05a999c644f4bc9a204846017db7bb7809fbe4c"
+                "reference": "f5f1bc85ae0651bc071bbd389a15ba46229f55db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpmd/phpmd/zipball/a05a999c644f4bc9a204846017db7bb7809fbe4c",
-                "reference": "a05a999c644f4bc9a204846017db7bb7809fbe4c",
+                "url": "https://api.github.com/repos/phpmd/phpmd/zipball/f5f1bc85ae0651bc071bbd389a15ba46229f55db",
+                "reference": "f5f1bc85ae0651bc071bbd389a15ba46229f55db",
                 "shasum": ""
             },
             "require": {
+                "composer/xdebug-handler": "^1.0",
                 "ext-xml": "*",
                 "pdepend/pdepend": "^2.5",
                 "php": ">=5.3.9"
@@ -6105,7 +6106,7 @@
                 "phpmd",
                 "pmd"
             ],
-            "time": "2019-07-30T21:13:32+00:00"
+            "time": "2019-12-02T20:59:45+00:00"
         },
         {
             "name": "phpmetrics/phpmetrics",
