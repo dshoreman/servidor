@@ -10,7 +10,7 @@ coverage:
 	@echo
 
 coverage-html:
-	vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit --coverage-html tests/reports/coverage/latest"
+	vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -Qrr vendor/bin/phpunit --coverage-html tests/reports/coverage/latest"
 	@mv tests/reports/coverage/latest tests/reports/coverage/$(now)/ && xdg-open ./tests/reports/coverage/$(now)/index.html
 	@echo
 
