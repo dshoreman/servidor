@@ -1,0 +1,46 @@
+os: linux
+dist: bionic
+language: php
+
+services:
+  - mysql
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - vendor
+
+jobs:
+  include:
+    - php: 7.3
+      env: RUN_MODE=php
+    - php: 7.4
+      env: RUN_MODE=php-latest
+    - node_js: 12
+      language: node_js
+      env: RUN_MODE=npm
+
+before_install:
+  - if [[ "${RUN_MODE}" != "npm" ]]; then phpenv config-rm xdebug.ini; fi
+
+install:
+  - build/travis/install.sh
+
+before_script:
+  - build/travis/prepare.sh
+
+script:
+  - build/travis/script.sh
+
+after_failure:
+  - if [[ "${RUN_MODE}" != "npm" ]]; then cat storage/logs/laravel.log; fi
+
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#servidor"
+    on_success: change
+    on_failure: always
+    template:
+      - "Build #%{build_number} (%{branch} @ %{commit} by %{author}) - %{message}"
+      - "Details: %{build_url}"

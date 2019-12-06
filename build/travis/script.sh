@@ -19,15 +19,15 @@ test_php() {
         run_php_cs "${scriptDir}"
     fi
 
-    "${scriptDir}/phpunit"
+    phpdbg -qrr "${scriptDir}/phpunit" -c build/phpunit/config.xml
 }
 
 run_php_cs() {
-    "${1}/php-cs-fixer" fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no
+    "${1}/php-cs-fixer" fix --config=build/php-cs-fixer/config.php --verbose --diff --dry-run
     "${1}/phpcs" app --standard=PSR12
-    "${1}/phpmd" app ansi .phpmd.xml
+    "${1}/phpmd" app ansi build/phpmd/rules.xml
     "${1}/phpmnd" . --non-zero-exit-on-violation --exclude tests
-    "${1}/phpstan" analyze -c phpstan.neon.dist
+    "${1}/phpstan" analyze -c build/phpstan/config.neon
 }
 
 main

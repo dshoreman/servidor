@@ -26,8 +26,8 @@ install_software() {
 }
 
 configure_nginx() {
-    cp -v /var/servidor/vagrant/nginx/servidor.conf /etc/nginx/sites-enabled/
-    cp -v /var/servidor/vagrant/nginx/index.default.html /var/www/html/index.html
+    cp -v /var/servidor/build/vagrant/nginx/servidor.conf /etc/nginx/sites-enabled/
+    cp -v /var/servidor/build/vagrant/nginx/index.default.html /var/www/html/index.html
     rm -v /var/www/html/index.nginx-debian.html
 
     # NOTE: This should be much more restrictive in a live environment!
@@ -52,7 +52,7 @@ configure_shell() {
 
     chsh -s /bin/zsh && chsh -s /bin/zsh vagrant
 
-    cp -v /var/servidor/vagrant/zsh.rc /home/vagrant/.zshrc && \
+    cp -v /var/servidor/build/vagrant/zsh.rc /home/vagrant/.zshrc && \
         chown vagrant:vagrant /home/vagrant/.zshrc
 }
 
@@ -95,9 +95,9 @@ edit_line() {
     local file="$1" match="$2" replace="$3"
 
     # Bail out if exact match is found
-    grep -qP "^${match}=${replace}$" .env && return
+    grep -qP "^${match}=${replace}$" "${file}" && return
 
-    if grep -qP "^${match}=$" .env; then
+    if grep -qP "^${match}=$" "${file}"; then
         # Option is unset, edit line in-place
         sed -i "s/^\(${match}\)=$/\1=${replace}/" "$file"
     else

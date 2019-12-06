@@ -4,10 +4,11 @@ $finder = (new PhpCsFixer\Finder)
     ->notName('*.blade.php')
     ->notPath('bootstrap/cache')
     ->notPath('storage')
-    ->in(__DIR__);
+    ->in(dirname(__DIR__, 2));
 
 return PhpCsFixer\Config::create()
     ->setFinder($finder)
+    ->setUsingCache(false)
     ->setLineEnding("\n")
     ->setRiskyAllowed(true)
     ->setRules([

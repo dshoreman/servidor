@@ -20,7 +20,7 @@ php_install() {
 
     travis_retry composer install --no-interaction
 
-    cp .env.travis .env
+    cp build/travis/dotenv ./.env
     php artisan key:generate
     php artisan migrate && php artisan passport:install
 }

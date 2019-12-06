@@ -1,17 +1,17 @@
 includes:
-  - vendor/nunomaduro/larastan/extension.neon
+  - ../../vendor/nunomaduro/larastan/extension.neon
 parameters:
   level: 5
   paths:
-    - app
-    - tests
+    - ../../app
+    - ../../tests
   ignoreErrors:
     - '#Access to an undefined property Servidor\\(Site|User)::\$[A-Za-z_]+.#'
     - message: '#Result of method .*::sendLockoutResponse\(\) \(void\) is used.#'
-      path: 'app/Http/Controllers/Auth/LoginController.php'
+      path: '../../app/Http/Controllers/Auth/LoginController.php'
     - message: '#Call to an undefined method Illuminate\\Contracts\\Auth\\Factory::user\(\).#'
-      path: 'app/Http/Controllers/Auth/LoginController.php'
+      path: '../../app/Http/Controllers/Auth/LoginController.php'
     - message: '#Parameter \#1 \$abstract of method Illuminate\\Foundation\\Application::make\(\) expects\.*#'
-      path: 'tests/Unit/Http/Requests/'
+      path: '../../tests/Unit/Http/Requests/'
     - message: '#Function factory invoked with 1 parameter, 0 required.#'
-      path: 'tests/RequiresAuth.php'
+      path: '../../tests/RequiresAuth.php'
