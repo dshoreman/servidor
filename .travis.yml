@@ -1,50 +1,39 @@
+os: linux
 dist: bionic
 language: php
+
+services:
+  - mysql
 
 cache:
   directories:
     - $HOME/.composer/cache
     - vendor
 
-matrix:
+jobs:
   include:
     - php: 7.3
-      env:
-        - WITH_PHP=true
-    - php: 7.3
-      env:
-        - WITH_NPM=true
-
-services:
-  - mysql
+      env: RUN_MODE=php
+    - php: 7.4
+      env: RUN_MODE=php-latest
+    - node_js: 12
+      language: node_js
+      env: RUN_MODE=npm
 
 before_install:
-  - phpenv config-rm xdebug.ini
+  - if [[ "${RUN_MODE}" != "npm" ]]; then phpenv config-rm xdebug.ini; fi
 
 install:
-  - if [[ "$WITH_PHP" == true ]]; then mysql -e 'CREATE DATABASE servidor_test;'; fi
-  - if [[ "$WITH_PHP" == true ]]; then travis_retry composer install --no-interaction; fi
-  - if [[ "$WITH_NPM" == true ]]; then travis_retry npm clean-install; fi
-  - if [[ "$WITH_PHP" == true ]]; then cp .env.travis .env; fi
-  - if [[ "$WITH_PHP" == true ]]; then php artisan key:generate; fi
-  - if [[ "$WITH_PHP" == true ]]; then php artisan migrate && php artisan passport:install; fi
+  - build/travis/install.sh
 
 before_script:
-  - if [[ "$WITH_PHP" == true ]]; then sudo chown -R www-data:www-data "$TRAVIS_BUILD_DIR/resources/test-skel"; fi
-  - if [[ "$WITH_PHP" == true ]]; then sudo chown -R root:root "$TRAVIS_BUILD_DIR/resources/test-skel/protected"; fi
-  - if [[ "$WITH_PHP" == true ]]; then sudo chmod 600 "$TRAVIS_BUILD_DIR/resources/test-skel/protected/forbidden"; fi
+  - build/travis/prepare.sh
 
 script:
-  - if [[ "$WITH_NPM" == true ]]; then npm run prod; fi
-  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/php-cs-fixer fix --config=.php_cs.dist --verbose --diff --dry-run --using-cache=no; fi
-  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpcs app --standard=PSR12; fi
-  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmd app ansi .phpmd.xml; fi
-  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpmnd . --non-zero-exit-on-violation --exclude tests; fi
-  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpstan analyze -c phpstan.neon.dist; fi
-  - if [[ "$WITH_PHP" == true ]]; then vendor/bin/phpunit; fi
+  - build/travis/script.sh
 
 after_failure:
-  - cat storage/logs/laravel.log
+  - if [[ "${RUN_MODE}" != "npm" ]]; then cat storage/logs/laravel.log; fi
 
 notifications:
   irc:
