@@ -1,0 +1,66 @@
+<template>
+    <h2>
+        <sui-button id="levelup" :icon="upIcon" @click="goUp()" />
+
+        <sui-breadcrumb class="massive">
+            <template v-for="(segment, index) in pathParts">
+
+                <sui-breadcrumb-section v-if="segment.path != path"
+                    link @click="goTo(segment.path)">
+                    {{ segment.dirname }}
+                </sui-breadcrumb-section>
+                <sui-breadcrumb-section v-else>
+                    {{ segment.dirname }}
+                </sui-breadcrumb-section>
+
+                <sui-breadcrumb-divider @click="goTo(segment.path)"
+                    v-if="index < (pathParts.length - 1)" />
+
+            </template>
+        </sui-breadcrumb>
+
+        <slot />
+    </h2>
+</template>
+
+<script>
+export default {
+    props: {
+        upIcon: {
+            type: String,
+            default: 'level up',
+        },
+        path: {
+            type: String,
+            default: '',
+        },
+    },
+    computed: {
+        pathParts: function() {
+            let parts = [],
+                path = '';
+
+            for (let part of this.path.split('/')) {
+                path = path + part + '/';
+
+                parts.push({
+                    'path': path.replace(/\/+$/, ''),
+                    'dirname': part,
+                });
+            }
+
+            return parts;
+        },
+    },
+    methods: {
+        goTo: function (path) {
+            this.$router.push({ name: 'files', params: {
+                path: path ? path : '/',
+            }});
+        },
+        goUp: function () {
+            this.goTo(this.path.substr(0, this.path.lastIndexOf('/')));
+        },
+    },
+}
+</script>

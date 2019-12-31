@@ -8,7 +8,7 @@ class DefaultUserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
         $user = new User;
         $user->name = 'Servidor Admin';

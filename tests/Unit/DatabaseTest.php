@@ -9,7 +9,7 @@ use Tests\TestCase;
 class DatabaseTest extends TestCase
 {
     /** @test */
-    public function it_can_connect()
+    public function it_can_connect(): void
     {
         $db = new Database();
 
@@ -17,7 +17,7 @@ class DatabaseTest extends TestCase
     }
 
     /** @test */
-    public function it_can_list_databases()
+    public function it_can_list_databases(): void
     {
         $db = config('database.connections.mysql.database');
         $list = (new Database())->listDatabases();
@@ -30,7 +30,7 @@ class DatabaseTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_a_database()
+    public function it_can_create_a_database(): void
     {
         $db = new Database();
         $before = $db->listDatabases();

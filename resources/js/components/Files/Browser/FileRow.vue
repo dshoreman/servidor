@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
 export default {
     props: [
         'file',
@@ -42,20 +40,18 @@ export default {
             }
         },
         open: function () {
+            let prefix = this.path == '/' ? '' : this.path,
+                target = prefix + '/' + this.file.filename,
+                route = { name: 'files' };
+
             if (this.file.isFile) {
-                return this.$router.push({
-                    name: 'files.edit',
-                    query: {
-                        f: this.path + '/' + this.file.filename,
-                    },
-                });
+                route.name = 'files.edit';
+                route.query = { f: target };
+            } else {
+                route.params = { path: target };
             }
 
-            if (!this.file.isDir) {
-                return;
-            }
-
-            this.$emit('cd', this.file)
+            this.$router.push(route);
         },
     },
 }

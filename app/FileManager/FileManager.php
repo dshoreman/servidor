@@ -3,6 +3,7 @@
 namespace Servidor\FileManager;
 
 use Illuminate\Http\Response;
+use RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -54,6 +55,11 @@ class FileManager
         return $this->fileWithContents($file);
     }
 
+    public function save($file, $contents): bool
+    {
+        return false !== file_put_contents($file, $contents);
+    }
+
     private function loadFilePermissions(string $path): array
     {
         $pathParts = explode('/', $path);
@@ -90,6 +96,7 @@ class FileManager
 
         $data = [
             'filename' => $file->getFilename(),
+            'filepath' => $file->getPath(),
             'mimetype' => @mime_content_type($file->getRealPath()),
             'isDir' => $file->isDir(),
             'isFile' => $file->isFile(),
@@ -99,7 +106,7 @@ class FileManager
             'group' => posix_getgrgid($file->getGroup())['name'],
         ];
 
-        $data['perms'] = is_null($this->filePerms) || !isset($this->filePerms[$data['filename']])
+        $data['perms'] = empty($this->filePerms) || !isset($this->filePerms[$data['filename']])
                        ? ['text' => '', 'octal' => mb_substr(decoct($file->getPerms()), -4)]
                        : $this->filePerms[$data['filename']];
 
@@ -133,7 +140,7 @@ class FileManager
 
         try {
             $data['contents'] = $file->getContents();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $msg = $e->getMessage();
             $data['contents'] = '';
 

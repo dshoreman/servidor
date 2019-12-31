@@ -12,13 +12,13 @@ class FileManagerTest extends TestCase
      */
     private $manager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->manager = new FileManager;
     }
 
     /** @test */
-    public function list_returns_items_in_given_path()
+    public function list_returns_items_in_given_path(): void
     {
         $list = $this->manager->list($this->dummy('mixed'));
 
@@ -27,6 +27,7 @@ class FileManagerTest extends TestCase
 
         $this->assertSame([
             'filename' => 'another-dir',
+            'filepath' => $this->dummy('mixed'),
             'mimetype' => 'directory',
             'isDir' => true,
             'isFile' => false,
@@ -42,7 +43,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function list_correctly_identifies_symlinks()
+    public function list_correctly_identifies_symlinks(): void
     {
         $list = $this->manager->list($this->dummy('mixed/another-dir'));
 
@@ -55,7 +56,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function list_includes_hidden_files()
+    public function list_includes_hidden_files(): void
     {
         $list = $this->manager->list($this->dummy('hidden'));
 
@@ -66,7 +67,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function permissions_are_loaded_for_hidden_files()
+    public function permissions_are_loaded_for_hidden_files(): void
     {
         $list = $this->manager->list($this->dummy('hidden'));
 
@@ -78,7 +79,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function list_can_show_files_in_system_root()
+    public function list_can_show_files_in_system_root(): void
     {
         $list = $this->manager->list('/');
 
@@ -106,7 +107,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function open_returns_contents_of_given_file()
+    public function open_returns_contents_of_given_file(): void
     {
         $file = $this->manager->open($this->dummy('mixed/hello.md'));
 
@@ -119,7 +120,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function open_catches_permission_denied_errors()
+    public function open_catches_permission_denied_errors(): void
     {
         $file = $this->manager->open($this->dummy('protected/forbidden'));
 
@@ -134,7 +135,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function open_catches_stat_failed_error_when_file_does_not_exist()
+    public function open_catches_stat_failed_error_when_file_does_not_exist(): void
     {
         $file = $this->manager->open($this->dummy('invalid/file'));
 
@@ -148,13 +149,14 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function open_includes_details_about_the_file()
+    public function open_includes_details_about_the_file(): void
     {
         $file = $this->manager->open($this->dummy('mixed/hello.md'));
         unset($file['contents']);
 
         $this->assertSame([
             'filename' => 'hello.md',
+            'filepath' => $this->dummy('mixed'),
             'mimetype' => 'text/plain',
             'isDir' => false,
             'isFile' => true,
@@ -170,7 +172,7 @@ class FileManagerTest extends TestCase
     }
 
     /** @test */
-    public function open_follows_symlinks()
+    public function open_follows_symlinks(): void
     {
         $file = $this->manager->open($this->dummy('mixed/another-dir/baz-link'));
 
@@ -179,10 +181,6 @@ class FileManagerTest extends TestCase
 
     /**
      * Get the path to a file within the test skeleton.
-     *
-     * @param string $path
-     *
-     * @return string
      */
     private function dummy(string $path): string
     {

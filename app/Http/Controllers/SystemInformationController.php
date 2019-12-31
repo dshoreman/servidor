@@ -2,8 +2,8 @@
 
 namespace Servidor\Http\Controllers;
 
-use Servidor\StatsBar;
 use Illuminate\Http\Request;
+use Servidor\StatsBar;
 
 class SystemInformationController extends Controller
 {

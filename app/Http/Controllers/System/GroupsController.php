@@ -4,16 +4,16 @@ namespace Servidor\Http\Controllers\System;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Servidor\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
+use Servidor\Http\Controllers\Controller;
 
 class GroupsController extends Controller
 {
-    const GROUP_NAME_TAKEN = 9;
-    const GROUP_GID_TAKEN = 4;
-    const GROUP_SYNTAX_INVALID = 2;
-    const GROUP_OPTION_INVALID = 3;
-    const GROUP_UPDATE_FAILED = 10;
+    private const GROUP_NAME_TAKEN = 9;
+    private const GROUP_GID_TAKEN = 4;
+    private const GROUP_SYNTAX_INVALID = 2;
+    private const GROUP_OPTION_INVALID = 3;
+    private const GROUP_UPDATE_FAILED = 10;
 
     /**
      * Display a listing of the resource.
@@ -34,13 +34,11 @@ class GroupsController extends Controller
             $groups->push($group);
         }
 
-        return $groups;
+        return response($groups);
     }
 
     /**
      * Create a new group on the host system.
-     *
-     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
@@ -97,8 +95,7 @@ class GroupsController extends Controller
     /**
      * Update the specified group on the system.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $gid
+     * @param int $gid
      *
      * @return \Illuminate\Http\Response
      */
@@ -134,7 +131,7 @@ class GroupsController extends Controller
             exec('sudo groupmod ' . implode(' ', $options), $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException('Something went wrong. Exit code: ' . $retval);
+                throw $this->failed('Something went wrong. Exit code: ' . $retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -146,7 +143,7 @@ class GroupsController extends Controller
             exec("sudo gpasswd -M '" . ($members ?? null) . "' {$group}", $output, $retval);
 
             if (0 !== $retval) {
-                throw new ValidationException('Something went wrong. Exit code: ' . $retval);
+                throw $this->failed('Something went wrong. Exit code: ' . $retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
@@ -185,7 +182,7 @@ class GroupsController extends Controller
         return [
             'name' => [
                 'required', 'max:32', 'bail',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if (str_contains($value, ':')) {
                         $fail("The {$attribute} cannot contain a colon.");
                     }

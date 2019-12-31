@@ -2,197 +2,66 @@
 
 namespace Servidor\Http\Controllers\System;
 
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Servidor\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
+use Servidor\Exceptions\System\UserNotFoundException;
+use Servidor\Exceptions\System\UserNotModifiedException;
+use Servidor\Exceptions\System\UserSaveException;
+use Servidor\Http\Controllers\Controller;
+use Servidor\Http\Requests\System\SaveUser;
+use Servidor\System\User as SystemUser;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): Response
     {
-        exec('cat /etc/passwd', $lines);
-
-        $keys = ['name', 'passwd', 'uid', 'gid', 'gecos', 'dir', 'shell'];
-        $users = collect();
-
-        foreach ($lines as $line) {
-            $user = array_combine($keys, explode(':', $line));
-            $user['groups'] = $this->loadSecondaryGroups($user);
-
-            $users->push($user);
-        }
-
-        return $users;
+        return response(SystemUser::list());
     }
 
-    protected function loadSecondaryGroups(array $user)
+    public function store(SaveUser $request): Response
     {
-        $groups = [];
-        $primary = explode(':', exec('getent group ' . $user['gid']));
-        $effective = explode(' ', exec('groups ' . $user['name'] . " | sed 's/.* : //'"));
+        $data = $request->validated();
 
-        $primaryName = reset($primary);
-        $primaryMembers = explode(',', end($primary));
-
-        foreach ($effective as $group) {
-            if ($group == $primaryName && !in_array($group, $primaryMembers)) {
-                continue;
-            }
-
-            $groups[] = $group;
-        }
-
-        return $groups;
-    }
-
-    /**
-     * Create a new user on the host system.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $data = $request->validate($this->validationRules());
-
-        if ((int) ($data['uid'] ?? null) > 0) {
-            $options[] = '-u ' . (int) $data['uid'];
-        }
-
-        if ((int) ($data['gid'] ?? null) > 0) {
-            $options[] = '-g ' . (int) $data['gid'];
-        }
-
-        // TODO: Add handling for secondary groups (`-G group1 group2 ...`)
-
-        $options[] = $data['name'];
-
-        exec('sudo useradd ' . implode(' ', $options), $output, $retval);
-        unset($output);
-
-        if (0 !== $retval) {
-            $data['error'] = "Something went wrong (Exit code: {$retval})";
+        try {
+            $user = SystemUser::create(
+                $data['name'],
+                $data['uid'] ?? null,
+                $data['gid'] ?? null,
+            );
+        } catch (UserSaveException $e) {
+            $data['error'] = $e->getMessage();
 
             return response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(posix_getpwnam($data['name']), Response::HTTP_CREATED);
+        return response($user, Response::HTTP_CREATED);
     }
 
-    /**
-     * Update the specified user on the system.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $uid
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $uid)
+    public function update(SaveUser $request, int $uid): Response
     {
-        $newUid = $uid;
-        $data = $request->validate($this->validationRules());
+        try {
+            $user = SystemUser::find($uid);
 
-        if (!$original = posix_getpwuid($uid)) {
-            throw $this->failed('No user found matching the given criteria.');
+            return response(
+                $user->update($request->validated()),
+                Response::HTTP_OK
+            );
+        } catch (UserNotFoundException $e) {
+            throw $this->fail('No user found matching the given criteria.');
+        } catch (UserNotModifiedException $e) {
+            throw $this->fail('Nothing to update!');
         }
-
-        if ($data['name'] != $original['name']) {
-            $options[] = '-l ' . $data['name'];
-        }
-
-        if (isset($data['uid']) && $data['uid'] != $uid && (int) $data['uid'] > 0) {
-            $newUid = (int) $data['uid'];
-            $options[] = '-u ' . $newUid;
-        }
-
-        if ($data['gid'] != $original['gid'] && (int) $data['gid'] > 0) {
-            $options[] = '-g ' . (int) $data['gid'];
-        }
-
-        $original['groups'] = $this->loadSecondaryGroups($original);
-
-        if (isset($data['groups']) && $data['groups'] != $original['groups']) {
-            $options[] = '-G "' . implode(',', $data['groups']) . '"';
-        }
-
-        if (empty($options ?? null)) {
-            throw $this->failed('Nothing to update!');
-        }
-
-        $options[] = $original['name'];
-
-        exec('sudo usermod ' . implode(' ', $options), $output, $retval);
-        unset($output);
-
-        if (0 !== $retval) {
-            throw new Exception('Something went wrong. Exit code: ' . $retval);
-        }
-
-        $userData = posix_getpwuid($newUid);
-        $userData['groups'] = $this->loadSecondaryGroups($userData);
-
-        return response($userData, Response::HTTP_OK);
     }
 
-    /**
-     * Remove the specified user from the system.
-     *
-     * @param int $uid
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($uid)
+    public function destroy(int $uid): Response
     {
-        if ($user = posix_getpwuid($uid)) {
-            exec('sudo userdel ' . $user['name']);
-        }
+        SystemUser::find($uid)->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * Get the validation rules for system users.
-     *
-     * @return array
-     */
-    protected function validationRules()
+    protected function fail(string $message, string $key = 'uid'): ValidationException
     {
-        return [
-            'name' => [
-                'required', 'max:32', 'bail',
-                function ($attribute, $value, $fail) {
-                    if (str_contains($value, ':')) {
-                        $fail("The {$attribute} cannot contain a colon.");
-                    }
-
-                    if (str_contains($value, ',')) {
-                        $fail("The {$attribute} cannot contain a comma.");
-                    }
-
-                    if (str_contains($value, ["\t", "\n", ' '])) {
-                        $fail("The {$attribute} cannot contain whitespace or newlines.");
-                    }
-                },
-                'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
-            ],
-            'uid' => 'integer|nullable',
-            'gid' => 'integer|required',
-            'groups' => 'array|nullable',
-        ];
-    }
-
-    protected function failed($message, $key = 'uid')
-    {
-        return ValidationException::withMessages([
-            $key => $message,
-        ]);
+        return ValidationException::withMessages([$key => $message]);
     }
 }

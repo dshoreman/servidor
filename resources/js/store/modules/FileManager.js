@@ -34,9 +34,11 @@ export default {
         open: ({commit}, {file}) => {
             return new Promise((resolve, reject) => {
                 commit('clearFile');
+
                 axios.get('/api/files/', {
                     params: { file: file }
                 }).then(response => {
+                    commit('setPath', response.data.filepath);
                     commit('setFile', response.data);
                     resolve(response);
                 }).catch(error => {
@@ -50,6 +52,20 @@ export default {
                     }
 
                     commit('setFile', data);
+                    reject(error);
+                });
+            });
+        },
+        save: ({commit, state}) => {
+            return new Promise((resolve, reject) => {
+                let fullpath = state.currentPath + '/' + state.file.filename;
+
+                axios.put('/api/files?file=' + fullpath, {
+                    contents: state.file.contents,
+                }).then(response => {
+                    commit('setFile', response.data);
+                    resolve(response);
+                }).catch(error => {
                     reject(error);
                 });
             });

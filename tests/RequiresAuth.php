@@ -13,7 +13,7 @@ trait RequiresAuth
 
     protected function authed()
     {
-        if (!$this->user) {
+        if (!isset($this->user)) {
             $this->user = factory(User::class)->create();
         }
 

@@ -11,7 +11,7 @@ class DeleteGroupTest extends TestCase
     use PrunesDeletables;
     use RequiresAuth;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->pruneDeletable('groups');
 
@@ -19,7 +19,7 @@ class DeleteGroupTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_delete_group()
+    public function guest_cannot_delete_group(): void
     {
         exec('sudo groupadd -g 333 guestdeletetest');
         $this->addDeletable('group', 333);
@@ -53,7 +53,7 @@ class DeleteGroupTest extends TestCase
      * @test
      * @depends authed_user_can_delete_group
      */
-    public function group_does_not_exist_after_deletion($group)
+    public function group_does_not_exist_after_deletion($group): void
     {
         $response = $this->authed()->getJson($this->endpoint($group['gid']));
 

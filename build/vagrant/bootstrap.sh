@@ -20,20 +20,20 @@ install_software() {
     add-apt-repository ppa:ondrej/php
 
     $update && $install mariadb-server nginx openssl sysstat unzip zsh \
-        php7.3-fpm php7.3-bcmath php7.3-json php7.3-mbstring php7.3-mysql php7.3-xml php7.3-zip
+        php7.4-fpm php7.4-bcmath php7.4-json php7.4-mbstring php7.4-mysql php7.4-xml php7.4-zip
 
     start_service mariadb
 }
 
 configure_nginx() {
-    cp -v /var/servidor/vagrant/nginx/servidor.conf /etc/nginx/sites-enabled/
-    cp -v /var/servidor/vagrant/nginx/index.default.html /var/www/html/index.html
+    cp -v /var/servidor/build/vagrant/nginx/servidor.conf /etc/nginx/sites-enabled/
+    cp -v /var/servidor/build/vagrant/nginx/index.default.html /var/www/html/index.html
     rm -v /var/www/html/index.nginx-debian.html
 
     # NOTE: This should be much more restrictive in a live environment!
     echo "www-data ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/www-data
 
-    start_service php7.3-fpm
+    start_service php7.4-fpm
     start_service nginx
 }
 
@@ -52,7 +52,7 @@ configure_shell() {
 
     chsh -s /bin/zsh && chsh -s /bin/zsh vagrant
 
-    cp -v /var/servidor/vagrant/zsh.rc /home/vagrant/.zshrc && \
+    cp -v /var/servidor/build/vagrant/zsh.rc /home/vagrant/.zshrc && \
         chown vagrant:vagrant /home/vagrant/.zshrc
 }
 
@@ -95,9 +95,9 @@ edit_line() {
     local file="$1" match="$2" replace="$3"
 
     # Bail out if exact match is found
-    grep -qP "^${match}=${replace}$" .env && return
+    grep -qP "^${match}=${replace}$" "${file}" && return
 
-    if grep -qP "^${match}=$" .env; then
+    if grep -qP "^${match}=$" "${file}"; then
         # Option is unset, edit line in-place
         sed -i "s/^\(${match}\)=$/\1=${replace}/" "$file"
     else

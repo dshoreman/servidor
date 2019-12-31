@@ -1,10 +1,9 @@
 <template>
     <sui-grid container>
         <sui-grid-column id="file-editor">
-            <h2>
-                <sui-button id="levelup" icon="chevron left" @click="backToDir" />
-                <span class="pathbar">{{ filePath }}</span>
-            </h2>
+            <path-bar :path="filePath" upIcon="chevron left">
+                <sui-button positive floated="right" content="Save" @click="save(filePath)" />
+            </path-bar>
 
             <sui-menu attached="top" v-if="file.error == undefined" :inverted="darkMode">
                 <sui-dropdown item class="icon" icon="paint brush"
@@ -40,14 +39,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { codemirror } from 'vue-codemirror'
+import PathBar from '../../components/Files/PathBar';
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/dracula.css'
 
 export default {
     components: {
         codemirror,
+        PathBar,
     },
     async mounted () {
         this.loading = true;
@@ -101,14 +102,9 @@ export default {
         }
     },
     methods: {
-        backToDir: function () {
-            let path = this.filePath;
-
-            this.$router.push({
-                name: 'files',
-                params: { path: path.substr(0, path.lastIndexOf('/')) },
-            });
-        },
+        ...mapActions({
+            save: 'files/save',
+        }),
     },
 }
 </script>

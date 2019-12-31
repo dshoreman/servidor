@@ -2,11 +2,11 @@
 
 namespace Servidor\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Servidor\Http\Requests\CreateSite;
 use Servidor\Http\Requests\UpdateSite;
 use Servidor\Site;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class SiteController extends Controller
 {
@@ -23,8 +23,6 @@ class SiteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param CreateSite $request
-     *
      * @return \Illuminate\Http\Response
      */
     public function store(CreateSite $request)
@@ -36,9 +34,6 @@ class SiteController extends Controller
 
     /**
      * Display a list of branches on the given site's repository.
-     *
-     * @param Request $request
-     * @param Site    $site
      *
      * @return Response
      */
@@ -54,8 +49,6 @@ class SiteController extends Controller
 
     /**
      * Pull the latest commit from Git.
-     *
-     * @param \Servidor\Site $site
      *
      * @return \Illuminate\Http\Response
      */
@@ -99,9 +92,6 @@ class SiteController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateSite     $request
-     * @param \Servidor\Site $site
-     *
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateSite $request, Site $site)
@@ -113,8 +103,6 @@ class SiteController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \Servidor\Site $site
      *
      * @return \Illuminate\Http\Response
      */

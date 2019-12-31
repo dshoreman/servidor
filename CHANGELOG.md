@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.7.0] - 2019-12-31
+### Added
+* Files can now actually be edited and saved in the editor
+* Path bar sections are now also clickable in the file viewer
+
+### Changed
+* Upgraded PHP and supporting tools to support 7.4
+* Updated symfony/http-foundation to fix CVE-2019-18888
+
+### Fixed
+* Version info in footer no longer scrolls with content on long pages
+
+
 ## [0.6.0] - 2019-11-05
 ### Added
 * Servidor gets Dark Mode! Toggle the theme with the light bulb
@@ -92,7 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.6.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.7.0...develop
+[0.7.0]: https://github.com/dshoreman/servidor/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/dshoreman/servidor/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/dshoreman/servidor/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/dshoreman/servidor/compare/v0.3.0...v0.4.0
