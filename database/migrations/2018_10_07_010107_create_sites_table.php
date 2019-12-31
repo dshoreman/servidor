@@ -1,17 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSitesTable extends Migration
 {
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('sites', function (Blueprint $table) {
+        Schema::create('sites', function (Blueprint $table): void {
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('primary_domain')->nullable();
@@ -23,7 +23,7 @@ class CreateSitesTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('sites');
     }

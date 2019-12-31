@@ -22,7 +22,7 @@ class UpdateSiteRequestTest extends TestCase
      */
     private $validator;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -31,14 +31,14 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_name_is_required()
+    public function site_name_is_required(): void
     {
         $this->assertFalse($this->validateField('name', ''));
         $this->assertTrue($this->validateField('name', 'A name'));
     }
 
     /** @test */
-    public function site_name_must_be_a_string()
+    public function site_name_must_be_a_string(): void
     {
         $this->assertFalse($this->validateField('name', true));
         $this->assertFalse($this->validateField('name', 42));
@@ -46,7 +46,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_name_must_be_unique()
+    public function site_name_must_be_unique(): void
     {
         Site::create(['name' => 'Duplicate me!']);
 
@@ -55,20 +55,20 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_primary_domain_must_be_a_valid_domain()
+    public function site_primary_domain_must_be_a_valid_domain(): void
     {
         $this->assertFalse($this->validateField('primary_domain', 'not a url'));
         $this->assertTrue($this->validateField('primary_domain', 'example.com'));
     }
 
     /** @test */
-    public function site_type_is_required()
+    public function site_type_is_required(): void
     {
         $this->assertFalse($this->validateField('type', ''));
     }
 
     /** @test */
-    public function site_type_must_be_a_valid_type()
+    public function site_type_must_be_a_valid_type(): void
     {
         $this->assertTrue($this->validateField('type', 'basic'));
         $this->assertTrue($this->validateField('type', 'php'));
@@ -78,7 +78,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_source_repo_is_required_when_type_is_not_redirect()
+    public function site_source_repo_is_required_when_type_is_not_redirect(): void
     {
         $error = 'The source repo field is required unless type is in redirect.';
         $types = ['basic', 'php', 'laravel'];
@@ -107,7 +107,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_source_repo_is_not_required_when_type_is_redirect()
+    public function site_source_repo_is_not_required_when_type_is_redirect(): void
     {
         $data = [
             'name' => 'Test Site',
@@ -124,7 +124,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_source_repo_must_be_a_valid_url()
+    public function site_source_repo_must_be_a_valid_url(): void
     {
         $this->assertTrue($this->validateField('source_repo', 'https://github.com/foo/bar'));
         $this->assertFalse($this->validateField('source_repo', 'localhost'));
@@ -134,7 +134,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_document_root_is_required_when_type_is_not_redirect()
+    public function site_document_root_is_required_when_type_is_not_redirect(): void
     {
         $v = $this->getValidator(['type' => 'php']);
 
@@ -154,7 +154,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_document_root_is_not_required_when_type_is_redirect()
+    public function site_document_root_is_not_required_when_type_is_redirect(): void
     {
         $data = [
             'name' => 'Test Site',
@@ -171,7 +171,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_document_root_must_be_a_string()
+    public function site_document_root_must_be_a_string(): void
     {
         $this->assertTrue($this->validateField('document_root', '/'));
         $this->assertFalse($this->validateField('document_root', 42));
@@ -181,7 +181,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_redirect_type_is_required_when_type_is_redirect()
+    public function site_redirect_type_is_required_when_type_is_redirect(): void
     {
         $data = [
             'type' => 'redirect',
@@ -193,7 +193,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_redirect_type_must_be_an_integer()
+    public function site_redirect_type_must_be_an_integer(): void
     {
         $this->assertTrue($this->validateField('redirect_type', 301));
         $this->assertFalse($this->validateField('redirect_type', ['a']));
@@ -202,7 +202,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_redirect_to_is_required_when_type_is_redirect()
+    public function site_redirect_to_is_required_when_type_is_redirect(): void
     {
         $v = $this->getValidator(['type' => 'redirect']);
 
@@ -210,7 +210,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_redirect_to_must_be_a_string()
+    public function site_redirect_to_must_be_a_string(): void
     {
         $this->assertTrue($this->validateField('redirect_to', '/'));
         $this->assertFalse($this->validateField('redirect_to', 42));
@@ -220,7 +220,7 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_is_enabled_must_be_a_boolean()
+    public function site_is_enabled_must_be_a_boolean(): void
     {
         $this->assertFalse($this->validateField('is_enabled', 'yes'));
         $this->assertTrue($this->validateField('is_enabled', true));

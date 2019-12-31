@@ -4,10 +4,10 @@ namespace Servidor\Http\Controllers\Auth;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Servidor\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use GuzzleHttp\Exception\BadResponseException;
 
 class LoginController extends Controller
 {
@@ -24,9 +24,6 @@ class LoginController extends Controller
     /**
      * Proxy login requests to /oauth/token with client secret.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \GuzzleHttp\Client       $client
-     *
      * @return \Illuminate\Http\Response
      */
     public function login(Request $request, Client $client)
@@ -36,7 +33,7 @@ class LoginController extends Controller
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
 
-            return $this->sendLockoutResponse($request);
+            $this->sendLockoutResponse($request);
         }
 
         try {
@@ -53,7 +50,7 @@ class LoginController extends Controller
 
             $this->clearLoginAttempts($request);
 
-            return $response->getBody();
+            return response($response->getBody());
         } catch (BadResponseException $e) {
             $this->incrementLoginAttempts($request);
 

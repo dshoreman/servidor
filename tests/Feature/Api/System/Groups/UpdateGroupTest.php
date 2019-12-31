@@ -11,7 +11,7 @@ class UpdateGroupTest extends TestCase
     use PrunesDeletables;
     use RequiresAuth;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->pruneDeletable('groups');
 
@@ -19,7 +19,7 @@ class UpdateGroupTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_update_group()
+    public function guest_cannot_update_group(): void
     {
         exec('sudo groupadd -g 334 guestupdgrp');
         $this->addDeletable('group', 334);
@@ -37,7 +37,7 @@ class UpdateGroupTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_update_group()
+    public function authed_user_can_update_group(): void
     {
         $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'updatetestgroup',
@@ -55,7 +55,7 @@ class UpdateGroupTest extends TestCase
     }
 
     /** @test */
-    public function cannot_update_nonexistant_group()
+    public function cannot_update_nonexistant_group(): void
     {
         $response = $this->authed()->putJson($this->endpoint(9032), [
             'name' => 'nogrouptest',

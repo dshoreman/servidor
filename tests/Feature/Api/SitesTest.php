@@ -14,7 +14,7 @@ class SitesApiTest extends TestCase
     use RequiresAuth;
 
     /** @test */
-    public function guest_cannot_list_sites()
+    public function guest_cannot_list_sites(): void
     {
         $response = $this->getJson('/api/sites');
 
@@ -24,7 +24,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_list_sites()
+    public function authed_user_can_list_sites(): void
     {
         Site::create(['name' => 'Blog 1']);
         Site::create(['name' => 'Blog 2']);
@@ -37,7 +37,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_create_site()
+    public function guest_cannot_create_site(): void
     {
         $response = $this->postJson('/api/sites', [
             'name' => 'Test Site',
@@ -51,7 +51,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_create_site()
+    public function authed_user_can_create_site(): void
     {
         $response = $this->authed()->postJson('/api/sites', [
             'name' => 'Test Site',
@@ -66,14 +66,14 @@ class SitesApiTest extends TestCase
             'is_enabled' => true,
         ]);
 
-        $site = Site::first();
+        $site = Site::firstOrFail();
         $this->assertEquals('Test Site', $site->name);
         $this->assertEquals('example.com', $site->primary_domain);
         $this->assertTrue($site->is_enabled);
     }
 
     /** @test */
-    public function cannot_create_site_without_required_fields()
+    public function cannot_create_site_without_required_fields(): void
     {
         $response = $this->authed()->postJson('/api/sites', []);
 
@@ -83,7 +83,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function cannot_create_site_with_invalid_data()
+    public function cannot_create_site_with_invalid_data(): void
     {
         $response = $this->authed()->postJson('/api/sites', [
             'name' => '',
@@ -101,7 +101,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_update_site()
+    public function guest_cannot_update_site(): void
     {
         $site = Site::create(['name' => 'My Blog']);
 
@@ -112,7 +112,7 @@ class SitesApiTest extends TestCase
             'document_root' => '/var/www/blog',
         ]);
 
-        $updated = Site::find($site->id);
+        $updated = Site::findOrFail($site->id);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $this->assertEquals('My Blog', $updated->name);
@@ -122,7 +122,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_update_site()
+    public function authed_user_can_update_site(): void
     {
         $site = Site::create(['name' => 'My Other Blog']);
 
@@ -134,7 +134,7 @@ class SitesApiTest extends TestCase
             'primary_domain' => 'test.com',
         ]);
 
-        $updated = Site::find($site->id);
+        $updated = Site::findOrFail($site->id);
 
         $response->assertOk();
         $this->assertEquals('My Updated Blog', $updated->name);
@@ -144,7 +144,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function can_update_site_while_retaining_the_same_name()
+    public function can_update_site_while_retaining_the_same_name(): void
     {
         $site = Site::create(['name' => 'My New Blog']);
 
@@ -160,7 +160,7 @@ class SitesApiTest extends TestCase
      * @test
      * @depends authed_user_can_list_sites
      */
-    public function guest_cannot_pull_site_files()
+    public function guest_cannot_pull_site_files(): void
     {
         $site = Site::create([
             'name' => 'Dummy Site',
@@ -173,11 +173,11 @@ class SitesApiTest extends TestCase
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $response->assertJson(['message' => 'Unauthenticated.']);
-        $this->assertArraySubset($site->toArray(), Site::first()->toArray());
+        $this->assertArraySubset($site->toArray(), Site::firstOrFail()->toArray());
     }
 
     /** @test */
-    public function authed_user_can_pull_site_files()
+    public function authed_user_can_pull_site_files(): void
     {
         // This would ideally be inside resources/test-skel somewhere, but
         // for some reason Travis has permission issues creating in there.
@@ -201,7 +201,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function cannot_pull_site_when_type_is_redirect()
+    public function cannot_pull_site_when_type_is_redirect(): void
     {
         $site = Site::create([
             'name' => 'Primed for deletion',
@@ -216,7 +216,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function cannot_pull_site_when_missing_document_root()
+    public function cannot_pull_site_when_missing_document_root(): void
     {
         $site = Site::create([
             'name' => 'Dummy Site',
@@ -232,7 +232,7 @@ class SitesApiTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_delete_site()
+    public function guest_cannot_delete_site(): void
     {
         $site = Site::create(['name' => 'Primed for deletion']);
 
@@ -241,11 +241,11 @@ class SitesApiTest extends TestCase
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $response->assertJson(['message' => 'Unauthenticated.']);
-        $this->assertArraySubset($site->toArray(), Site::first()->toArray());
+        $this->assertArraySubset($site->toArray(), Site::firstOrFail()->toArray());
     }
 
     /** @test */
-    public function authed_user_can_delete_site()
+    public function authed_user_can_delete_site(): void
     {
         $site = Site::create(['name' => 'Delete me!']);
 

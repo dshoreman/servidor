@@ -11,7 +11,7 @@ class ListUsersTest extends TestCase
     use PrunesDeletables;
     use RequiresAuth;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->pruneDeletable('users');
 
@@ -19,7 +19,7 @@ class ListUsersTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_list_users()
+    public function guest_cannot_list_users(): void
     {
         $response = $this->getJson($this->endpoint);
 
@@ -42,12 +42,12 @@ class ListUsersTest extends TestCase
      * @test
      * @depends authed_user_can_list_users
      */
-    public function list_includes_normal_users($response)
+    public function list_includes_normal_users($response): void
     {
         // Vagrant has a vagrant (and ubuntu) user but PHP could be running as
         // www-data instead, so we use the SUDO_USER value that it also sets.
         $response->assertJsonFragment([
-            'name' => getenv('TRAVIS') ? 'travis' : getenv('SUDO_USER') ?: exec('whoami'),
+            'name' => getenv('TRAVIS') ? 'travis' : (getenv('SUDO_USER') ?: exec('whoami')),
         ]);
     }
 
@@ -55,13 +55,13 @@ class ListUsersTest extends TestCase
      * @test
      * @depends authed_user_can_list_users
      */
-    public function list_includes_system_users($response)
+    public function list_includes_system_users($response): void
     {
         $response->assertJsonFragment(['name' => 'root']);
     }
 
     /** @test */
-    public function listed_user_groups_should_not_include_colon()
+    public function listed_user_groups_should_not_include_colon(): void
     {
         $user = $this->authed()->postJson($this->endpoint, [
             'name' => 'nocolon',
@@ -88,7 +88,7 @@ class ListUsersTest extends TestCase
      * @test
      * @depends authed_user_can_list_users
      */
-    public function list_response_contains_expected_data($response)
+    public function list_response_contains_expected_data($response): void
     {
         $responseJson = json_decode($response->getContent());
 

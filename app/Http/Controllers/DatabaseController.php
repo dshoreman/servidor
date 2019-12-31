@@ -18,7 +18,7 @@ class DatabaseController extends Controller
     {
         $db = new Database();
 
-        return $db->listDatabases();
+        return response($db->listDatabases());
     }
 
     /**

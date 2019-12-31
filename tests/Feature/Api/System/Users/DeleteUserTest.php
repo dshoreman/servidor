@@ -13,7 +13,7 @@ class DeleteUserTest extends TestCase
     use RefreshDatabase;
     use RequiresAuth;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->pruneDeletable('users');
 
@@ -21,7 +21,7 @@ class DeleteUserTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_delete_user()
+    public function guest_cannot_delete_user(): void
     {
         exec('sudo useradd -u 4269 guestdeleteuser');
         $this->addDeletable('user', 4269);
@@ -57,7 +57,7 @@ class DeleteUserTest extends TestCase
      * @test
      * @depends authed_user_can_delete_user
      */
-    public function user_does_not_exist_after_deletion($user)
+    public function user_does_not_exist_after_deletion($user): void
     {
         $response = $this->authed()->getJson($this->endpoint($user['uid']));
 

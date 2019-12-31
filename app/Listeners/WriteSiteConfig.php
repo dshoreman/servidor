@@ -29,10 +29,8 @@ class WriteSiteConfig
 
     /**
      * Handle the event.
-     *
-     * @param SiteUpdated $event
      */
-    public function handle(SiteUpdated $event)
+    public function handle(SiteUpdated $event): void
     {
         if (!is_dir('/etc/nginx/sites-available')) {
             return;
@@ -53,7 +51,7 @@ class WriteSiteConfig
         exec('sudo systemctl reload-or-restart nginx.service');
     }
 
-    private function updateConfig()
+    private function updateConfig(): void
     {
         $view = 'laravel' == $this->site->type
             ? view('sites.server-templates.php')
@@ -65,7 +63,7 @@ class WriteSiteConfig
         exec('sudo cp "' . $file . '" "' . $this->configPath . '"');
     }
 
-    private function pullSite()
+    private function pullSite(): void
     {
         $root = $this->site->document_root;
         $branch = $this->site->source_branch;
@@ -88,7 +86,7 @@ class WriteSiteConfig
         exec($cloneCmd . ' "' . $this->site->source_repo . '" "' . $root . '"');
     }
 
-    private function createSymlink()
+    private function createSymlink(): void
     {
         if (is_link($symlink = $this->symlink) && readlink($symlink) == $this->configPath) {
             return;
@@ -101,7 +99,7 @@ class WriteSiteConfig
         exec('sudo ln -s "' . $this->configPath . '" "' . $symlink . '"');
     }
 
-    private function removeSymlink()
+    private function removeSymlink(): void
     {
         if (!is_link($symlink = $this->symlink) || readlink($symlink) != $this->configPath) {
             return;

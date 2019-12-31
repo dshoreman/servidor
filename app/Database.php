@@ -5,7 +5,7 @@ namespace Servidor;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Schema\MySqlSchemaManager;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
 class Database
 {
@@ -16,12 +16,10 @@ class Database
 
     /**
      * Access the underlying database schema manager.
-     *
-     * @return MySqlSchemaManager
      */
-    public function dbal(): MySqlSchemaManager
+    public function dbal(): AbstractSchemaManager
     {
-        if (!$this->connection) {
+        if (!isset($this->connection)) {
             $this->connect();
         }
 
@@ -30,7 +28,7 @@ class Database
 
     private function connect(): Connection
     {
-        if (!$this->connection) {
+        if (!isset($this->connection)) {
             $this->connection = DriverManager::getConnection([
                 'user' => config('database.dbal.user'),
                 'password' => config('database.dbal.password'),
@@ -44,8 +42,6 @@ class Database
 
     /**
      * Get a list of all existing databases.
-     *
-     * @return array
      */
     public function listDatabases(): array
     {
@@ -54,10 +50,6 @@ class Database
 
     /**
      * Create a database if it doesn't already exist.
-     *
-     * @param string $dbname
-     *
-     * @return bool
      */
     public function create(string $dbname): bool
     {

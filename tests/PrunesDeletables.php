@@ -34,7 +34,7 @@ trait PrunesDeletables
         return $this->deletables[$key]['items'][] = $data->json()[$filter];
     }
 
-    private function pruneDeletable($types = [])
+    private function pruneDeletable($types = []): void
     {
         if (!is_array($types)) {
             $types = [$types];

@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 Route::post('login', 'Auth\LoginController@login');
 Route::post('register', 'Auth\RegisterController@register');
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:api')->group(function (): void {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -36,7 +36,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('files', 'FileController@index');
     Route::put('files', 'FileController@update');
 
-    Route::name('system')->prefix('/system')->namespace('System')->group(function () {
+    Route::name('system')->prefix('/system')->namespace('System')->group(function (): void {
         Route::resource('groups', 'GroupsController', [
             'only' => ['index', 'store', 'update', 'destroy'],
         ]);
@@ -49,6 +49,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('system-info', 'SystemInformationController');
 });
 
-Route::any('/{all?}', function () {
+Route::any('/{all?}', function (): void {
     abort(404);
 })->where('all', '.*');

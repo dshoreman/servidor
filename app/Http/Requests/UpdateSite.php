@@ -8,8 +8,8 @@ use Servidor\Rules\Domain;
 
 class UpdateSite extends FormRequest
 {
-    const GIT_NOT_FOUND = 128;
-    const GIT_NO_MATCHING_REFS = 2;
+    private const GIT_NOT_FOUND = 128;
+    private const GIT_NO_MATCHING_REFS = 2;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -50,9 +50,9 @@ class UpdateSite extends FormRequest
      *
      * @param \Illuminate\Validation\Validator $validator
      */
-    public function withValidator($validator)
+    public function withValidator($validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function ($validator): void {
             $data = $validator->getData();
 
             if (!isset($data['source_branch'], $data['source_repo'])) {
