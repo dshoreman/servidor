@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Files can now actually be edited and saved in the editor
 * Path bar sections are now also clickable in the file viewer
 
+### Changed
+* Upgraded PHP and supporting tools to support 7.4
+* Updated symfony/http-foundation to fix CVE-2019-18888
+
 ### Fixed
 * Version info in footer no longer scrolls with content on long pages
 
