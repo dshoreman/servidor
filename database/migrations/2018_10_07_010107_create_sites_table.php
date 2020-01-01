@@ -12,7 +12,7 @@ class CreateSitesTable extends Migration
     public function up(): void
     {
         Schema::create('sites', function (Blueprint $table): void {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->string('primary_domain')->nullable();
             $table->boolean('is_enabled')->default(false);

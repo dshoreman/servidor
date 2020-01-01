@@ -67,5 +67,5 @@ window.axios.interceptors.response.use(response => {
 const app = new Vue({
     el: '#app',
     router,
-    store
+    store,
 });
