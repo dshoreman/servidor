@@ -3,6 +3,7 @@
 namespace Servidor\FileManager;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -144,7 +145,7 @@ class FileManager
             $msg = $e->getMessage();
             $data['contents'] = '';
 
-            $data['error'] = str_contains($msg, 'Permission denied') ? [
+            $data['error'] = Str::contains($msg, 'Permission denied') ? [
                 'code' => Response::HTTP_FORBIDDEN,
                 'msg' => 'Permission denied',
             ] : ['code' => 418, 'msg' => $msg];

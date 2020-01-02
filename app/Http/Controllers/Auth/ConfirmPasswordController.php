@@ -2,16 +2,16 @@
 
 namespace Servidor\Http\Controllers\Auth;
 
-use Illuminate\Foundation\Auth\VerifiesEmails;
-use Illuminate\Routing\Controller;
+use Illuminate\Foundation\Auth\ConfirmsPasswords;
+use Servidor\Http\Controllers\Controller;
 use Servidor\Providers\RouteServiceProvider;
 
-class VerificationController extends Controller
+class ConfirmPasswordController extends Controller
 {
-    use VerifiesEmails;
+    use ConfirmsPasswords;
 
     /**
-     * Where to redirect users after verification.
+     * Where to redirect users when the intended url fails.
      *
      * @var string
      */
@@ -19,11 +19,11 @@ class VerificationController extends Controller
 
     /**
      * Create a new controller instance.
+     *
+     * @return void
      */
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('signed')->only('verify');
-        $this->middleware('throttle:6,1')->only('verify', 'resend');
     }
 }

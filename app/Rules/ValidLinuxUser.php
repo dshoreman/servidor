@@ -3,6 +3,7 @@
 namespace Servidor\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Str;
 
 class ValidLinuxUser implements Rule
 {
@@ -16,7 +17,7 @@ class ValidLinuxUser implements Rule
     {
         unset($attribute);
 
-        return !str_contains($value, [':', ',', "\t", "\n", ' ']);
+        return !Str::contains($value, [':', ',', "\t", "\n", ' ']);
     }
 
     public function message(): string

@@ -2,12 +2,14 @@
 
 namespace Tests\Feature\Api\System\Users;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Http\Response;
 use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
 
 class ListUsersTest extends TestCase
 {
+    use ArraySubsetAsserts;
     use PrunesDeletables;
     use RequiresAuth;
 

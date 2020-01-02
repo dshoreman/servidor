@@ -4,6 +4,7 @@ namespace Servidor\Http\Controllers\System;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Servidor\Http\Controllers\Controller;
 
@@ -183,15 +184,15 @@ class GroupsController extends Controller
             'name' => [
                 'required', 'max:32', 'bail',
                 function ($attribute, $value, $fail): void {
-                    if (str_contains($value, ':')) {
+                    if (Str::contains($value, ':')) {
                         $fail("The {$attribute} cannot contain a colon.");
                     }
 
-                    if (str_contains($value, ',')) {
+                    if (Str::contains($value, ',')) {
                         $fail("The {$attribute} cannot contain a comma.");
                     }
 
-                    if (str_contains($value, ["\t", "\n", ' '])) {
+                    if (Str::contains($value, ["\t", "\n", ' '])) {
                         $fail("The {$attribute} cannot contain whitespace or newlines.");
                     }
                 },

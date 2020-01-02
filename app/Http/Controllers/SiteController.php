@@ -17,7 +17,7 @@ class SiteController extends Controller
      */
     public function index()
     {
-        return Site::all();
+        return response(Site::all()->toArray());
     }
 
     /**
