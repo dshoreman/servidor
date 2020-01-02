@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use Servidor\StatsBar;
-use Tests\TestCase;
 
 class StatsBarTest extends TestCase
 {

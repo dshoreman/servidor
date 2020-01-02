@@ -3,8 +3,8 @@
 namespace Tests\Unit\FileManager;
 
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\TestCase;
 use Servidor\FileManager\FileManager;
-use Tests\TestCase;
 
 class FileManagerTest extends TestCase
 {

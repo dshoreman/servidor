@@ -1,6 +1,8 @@
 <?php
 
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogUdpHandler;
 
 return [
     /*
@@ -35,6 +37,7 @@ return [
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],
+            'ignore_exceptions' => false,
         ],
 
         'single' => [
@@ -58,6 +61,15 @@ return [
             'level' => 'critical',
         ],
 
+        'papertrail' => [
+            'driver' => 'monolog',
+            'handler' => SyslogUdpHandler::class,
+            'handler_with' => [
+                'host' => env('PAPERTRAIL_URL'),
+                'port' => env('PAPERTRAIL_PORT'),
+            ],
+        ],
+
         'stderr' => [
             'driver' => 'monolog',
             'handler' => StreamHandler::class,
@@ -74,6 +86,15 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
+        ],
+
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+
+        'emergency' => [
+            'path' => storage_path('logs/laravel.log'),
         ],
     ],
 ];

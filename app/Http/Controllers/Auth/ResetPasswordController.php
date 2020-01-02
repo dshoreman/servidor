@@ -4,6 +4,7 @@ namespace Servidor\Http\Controllers\Auth;
 
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Servidor\Http\Controllers\Controller;
+use Servidor\Providers\RouteServiceProvider;
 
 class ResetPasswordController extends Controller
 {
@@ -14,13 +15,5 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
-
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
+    protected $redirectTo = RouteServiceProvider::HOME;
 }

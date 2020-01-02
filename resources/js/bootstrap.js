@@ -1,5 +1,4 @@
 window._ = require('lodash');
-window.Popper = require('popper.js').default;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -30,5 +29,5 @@ if (accessToken) {
 //     broadcaster: 'pusher',
 //     key: process.env.MIX_PUSHER_APP_KEY,
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     encrypted: true
+//     forceTLS: true
 // });
