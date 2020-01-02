@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Servidor\Site;
@@ -10,6 +11,7 @@ use Tests\TestCase;
 
 class SitesApiTest extends TestCase
 {
+    use ArraySubsetAsserts;
     use RefreshDatabase;
     use RequiresAuth;
 
