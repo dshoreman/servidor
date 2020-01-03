@@ -5,8 +5,8 @@ body.login {
     .grid {
         height: 100%;
     }
-    .column {
-        max-width: 450px;
+    .ui.grid > .column:not(.row) {
+        width: 450px;
     }
 
     .field[class*="left aligned"] {
