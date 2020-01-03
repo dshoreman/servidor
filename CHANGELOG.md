@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 * Login form no longer breaks out of the layout to full page width
+* Stats bar no longer polls for data after logging out
 
 
 ## [0.7.0] - 2019-12-31

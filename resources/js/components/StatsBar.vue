@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     data () {
         return {
@@ -86,8 +88,16 @@ export default {
             document.removeEventListener("visibilitychange", startStopRefreshStatsBar);
         });
     },
+    computed: {
+        ...mapGetters([
+            'loggedIn',
+        ]),
+    },
     methods: {
         initStatsBar () {
+            if (!this.loggedIn) {
+                return;
+            }
             axios.get('/api/system-info').then(response => {
                 let data = response.data;
 
