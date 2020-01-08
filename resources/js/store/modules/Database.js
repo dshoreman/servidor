@@ -16,7 +16,7 @@ export default {
         },
     },
     actions: {
-        load: ({commit, state}) => {
+        load: ({commit}) => {
             return new Promise((resolve, reject) =>
                 axios.get('/api/databases').then(response => {
                     commit('setDatabases', response.data);
@@ -34,7 +34,7 @@ export default {
                 }).catch(error => reject(error))
             );
         },
-        filter: ({commit, state}, value) => {
+        filter: ({commit}, value) => {
             commit('setFilter', value);
         },
     },

@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
     props: {
@@ -71,7 +71,7 @@ export default {
     },
     methods: {
         logout () {
-            this.$store.dispatch('logout').then(response => {
+            this.$store.dispatch('logout').then(() => {
                 this.$nextTick(() => {
                     this.$router.push({ name: 'login' });
                 });

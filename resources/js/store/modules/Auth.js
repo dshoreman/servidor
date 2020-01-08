@@ -29,7 +29,7 @@ export default {
         },
     },
     actions: {
-        register: ({commit}, data) => {
+        register: (data) => {
             return new Promise((resolve, reject) => {
                 axios.post('/api/register', {
                     name: data.name,

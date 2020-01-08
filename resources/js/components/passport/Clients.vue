@@ -312,7 +312,7 @@
                 form.errors = [];
 
                 axios[method](uri, form)
-                    .then(response => {
+                    .then(() => {
                         this.getClients();
 
                         form.name = '';
@@ -335,7 +335,7 @@
              */
             destroy(client) {
                 axios.delete('/oauth/clients/' + client.id)
-                        .then(response => {
+                        .then(() => {
                             this.getClients();
                         });
             }

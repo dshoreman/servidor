@@ -98,7 +98,7 @@ export default {
                 }).catch(error => reject(error))
             );
         },
-        edit: ({commit, dispatch, state}, site) => {
+        edit: ({commit, dispatch}, site) => {
             commit('setEditorSite', site);
             dispatch('loadBranches');
         },
@@ -136,10 +136,10 @@ export default {
                 }
             });
         },
-        pull: ({commit, state}, site) => {
+        pull: (site) => {
             return axios.post('/api/sites/'+site.id+'/pull');
         },
-        delete: ({commit, state}, id) => {
+        delete: ({commit}, id) => {
             return new Promise((resolve, reject) => {
                 axios.delete('/api/sites/' + id).then(response => {
                     commit('removeSite', id);

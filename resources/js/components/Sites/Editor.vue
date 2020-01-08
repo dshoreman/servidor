@@ -164,7 +164,7 @@ export default {
             /* eslint-disable no-alert */
             confirm('Deletion is permanent! Are you sure?') &&
                 this.$store.dispatch('sites/delete', this.site.id).then(
-                    response => this.$router.push({ name: 'apps' })
+                    () => this.$router.push({ name: 'apps' })
                 );
         },
         setDocroot() {

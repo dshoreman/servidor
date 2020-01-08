@@ -117,7 +117,9 @@
         "no-shadow": "error",
         "no-undef-init": "error",
         "no-undefined": "error",
-        "no-unused-vars": "off",
+        "no-unused-vars": [ "error", {
+            "varsIgnorePattern": "app"
+        }],
         "no-use-before-define": "off",
 
         /* Node/CommonJS */

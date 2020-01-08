@@ -1,5 +1,5 @@
 export default {
-    install (vue, options = {}) {
+    install (vue) {
         vue.mixin({
             computed: {
                 darkMode: function() {

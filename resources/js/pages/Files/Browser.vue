@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 import FileList from '../../components/Files/Browser/FileList';
 import PathBar from '../../components/Files/PathBar';
 

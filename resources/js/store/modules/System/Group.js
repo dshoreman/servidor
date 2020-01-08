@@ -97,7 +97,7 @@ export default {
             });
         },
         delete: ({commit, state}, gid) => {
-            axios.delete('/api/system/groups/'+gid).then(response => {
+            axios.delete('/api/system/groups/'+gid).then(() => {
                 commit('removeGroup', state.group.gid_original);
                 commit('unsetEditorGroup');
             });

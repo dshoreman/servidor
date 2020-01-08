@@ -87,7 +87,7 @@ export default {
 
             commit('setEditorUser', user);
         },
-        create: ({commit, state}, user) => {
+        create: ({commit}, user) => {
             axios.post('/api/system/users', user).then(response => {
                 commit('addUser', response.data);
                 commit('unsetEditorUser');
@@ -103,7 +103,7 @@ export default {
             });
         },
         delete: ({commit, state}, uid) => {
-            axios.delete('/api/system/users/'+uid).then(response => {
+            axios.delete('/api/system/users/'+uid).then(() => {
                 commit('removeUser', state.user.uid_original);
                 commit('unsetEditorUser');
             });

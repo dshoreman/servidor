@@ -99,7 +99,7 @@ export default {
             await require('codemirror/theme/' + theme + '.css');
             commit('setTheme', theme);
         },
-        async setMode ({ commit, state }, value) {
+        async setMode ({ commit }, value) {
             var val = value, m, mode, spec;
 
             if (m = /.+\.([^.]+)$/.exec(val)) {
@@ -107,7 +107,7 @@ export default {
                 if (info) {
                     mode = info.mode;
                     spec = info.mime;
-                    commit('setSelectedMode', info.mime);
+                    commit('setSelectedMode', spec);
                 }
             } else {
                 var info = CodeMirror.findModeByMIME(val);
@@ -128,7 +128,7 @@ export default {
                 commit('setMode', null);
             }
         },
-        setLineWrapping ({ commit, state }, value) {
+        setLineWrapping ({ commit }, value) {
             commit('setLineWrapping', value);
         }
     },

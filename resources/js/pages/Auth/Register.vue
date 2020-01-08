@@ -81,7 +81,7 @@ export default {
                 email: this.email,
                 password: this.password,
                 passwordConfirmation: this.passwordConfirm,
-            }).then(response => {
+            }).then(() => {
                 this.$router.push({ name: 'login' });
             });
         },
