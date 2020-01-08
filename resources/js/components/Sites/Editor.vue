@@ -182,5 +182,5 @@ export default {
             site.document_root = val;
         },
     },
-}
+};
 </script>

@@ -45,5 +45,5 @@ export default {
             return this.findSite(this.currentPath);
         },
     },
-}
+};
 </script>

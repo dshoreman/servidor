@@ -119,5 +119,5 @@ export default {
             pullFiles: 'sites/pull',
         }),
     },
-}
+};
 </script>

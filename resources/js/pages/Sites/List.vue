@@ -27,5 +27,5 @@ export default {
             errors: state => state.sites.errors,
         }),
     },
-}
+};
 </script>

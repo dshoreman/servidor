@@ -54,5 +54,5 @@ export default {
             this.$router.push(route);
         },
     },
-}
+};
 </script>

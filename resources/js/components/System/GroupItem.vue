@@ -26,5 +26,5 @@ export default {
             this.$emit('edit', this.group);
         }
     }
-}
+};
 </script>

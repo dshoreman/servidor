@@ -59,5 +59,5 @@ export default {
             return this.$route.path.startsWith(href);
         },
     },
-}
+};
 </script>

@@ -40,10 +40,10 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { codemirror } from 'vue-codemirror'
+import { codemirror } from 'vue-codemirror';
 import PathBar from '../../components/Files/PathBar';
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/dracula.css'
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/dracula.css';
 
 export default {
     components: {
@@ -78,26 +78,26 @@ export default {
         },
         theme: {
             get () {
-                return this.$store.state.editor.options.theme
+                return this.$store.state.editor.options.theme;
             },
             set (value) {
-                this.$store.dispatch('editor/setTheme', value)
+                this.$store.dispatch('editor/setTheme', value);
             }
         },
         mode: {
             get () {
-                return this.$store.state.editor.selectedMode
+                return this.$store.state.editor.selectedMode;
             },
             set (value) {
-                this.$store.dispatch('editor/setMode', value)
+                this.$store.dispatch('editor/setMode', value);
             }
         },
         wrap: {
             get () {
-                return this.$store.state.editor.options.lineWrapping
+                return this.$store.state.editor.options.lineWrapping;
             },
             set (value) {
-                this.$store.dispatch('editor/setLineWrapping', value)
+                this.$store.dispatch('editor/setLineWrapping', value);
             }
         }
     },
@@ -106,5 +106,5 @@ export default {
             save: 'files/save',
         }),
     },
-}
+};
 </script>

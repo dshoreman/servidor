@@ -62,5 +62,5 @@ export default {
             this.goTo(this.path.substr(0, this.path.lastIndexOf('/')));
         },
     },
-}
+};
 </script>

@@ -215,7 +215,7 @@
             "avoidEscape": true
         }],
         "semi": [ "error", "always" ],
-        "semi-spacing": "off",
+        "semi-spacing": "error",
         "semi-style": [ "error", "last" ],
         "sort-keys": "off",
         "sort-vars": "off",

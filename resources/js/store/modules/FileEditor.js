@@ -1,5 +1,5 @@
-import CodeMirror from 'codemirror'
-import 'codemirror/mode/meta.js'
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/meta.js';
 
 export default {
     namespaced: true,
@@ -82,22 +82,22 @@ export default {
     },
     mutations: {
         setTheme (state, theme) {
-            state.options.theme = theme
+            state.options.theme = theme;
         },
         setMode (state, mode) {
-            state.options.mode = mode
+            state.options.mode = mode;
         },
         setSelectedMode(state, name) {
-            state.selectedMode = name
+            state.selectedMode = name;
         },
         setLineWrapping(state, value) {
-            state.options.lineWrapping = value
+            state.options.lineWrapping = value;
         }
     },
     actions: {
         async setTheme ({ commit }, theme) {
             await require('codemirror/theme/' + theme + '.css');
-            commit('setTheme', theme)
+            commit('setTheme', theme);
         },
         async setMode ({ commit, state }, value) {
             var val = value, m, mode, spec;
@@ -107,14 +107,14 @@ export default {
                 if (info) {
                     mode = info.mode;
                     spec = info.mime;
-                    commit('setSelectedMode', info.mime)
+                    commit('setSelectedMode', info.mime);
                 }
             } else {
                 var info = CodeMirror.findModeByMIME(val);
                 if (info) {
                     mode = info.mode;
                     spec = val;
-                    commit('setSelectedMode', info.mime)
+                    commit('setSelectedMode', info.mime);
                 }
             }
 
@@ -122,10 +122,10 @@ export default {
                 if (mode !== "null") {
                     await require('codemirror/mode/' + mode + '/' + mode + '.js');
                 }
-                commit('setMode', mode)
+                commit('setMode', mode);
             } else {
-                commit('setSelectedMode', 'text/plain')
-                commit('setMode', null)
+                commit('setSelectedMode', 'text/plain');
+                commit('setMode', null);
             }
         },
         setLineWrapping ({ commit, state }, value) {
@@ -138,4 +138,4 @@ export default {
         modes: state => state.modes,
         selectedMode: state => state.selectedMode,
     },
-}
+};

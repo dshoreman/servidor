@@ -3,8 +3,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import DarkMode from './plugins/darkmode';
 import SuiVue from 'semantic-ui-vue';
-import routes from './routes'
-import store from './store'
+import routes from './routes';
+import store from './store';
 
 import MainMenu from './components/MainMenu.vue';
 import StatsBar from './components/StatsBar.vue';

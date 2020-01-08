@@ -288,7 +288,7 @@
                         });
             }
         }
-    }
+    };
 </script>
 
 <style scoped>

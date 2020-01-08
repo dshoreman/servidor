@@ -26,5 +26,5 @@ export default {
     components: {
         FileRow,
     },
-}
+};
 </script>

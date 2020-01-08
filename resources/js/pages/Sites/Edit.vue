@@ -49,5 +49,5 @@ export default {
             return store.dispatch('sites/edit', parseInt(id));
         },
     },
-}
+};
 </script>

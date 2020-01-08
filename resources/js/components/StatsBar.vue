@@ -120,8 +120,8 @@ export default {
             return 'Using ' + this.ram.used + 'M of ' + this.ram.total + 'M';
         },
         diskTooltip () {
-            return this.disk.used + 'G used; ' + this.disk.free + 'G free' ;
+            return this.disk.used + 'G used; ' + this.disk.free + 'G free';
         },
     },
-}
+};
 </script>

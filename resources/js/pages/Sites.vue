@@ -58,9 +58,9 @@ export default {
             }
 
             this.$store.dispatch('sites/create').then(({data})=>{
-                this.$router.push({ name: 'apps.edit', params: {id: data.id}})
+                this.$router.push({ name: 'apps.edit', params: {id: data.id}});
             });
         },
     }
-}
+};
 </script>

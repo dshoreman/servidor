@@ -110,7 +110,7 @@ export default {
                     commit('setSuccess', "The site '" + response.data.name + "' has been created.");
                     resolve(response);
                 }).catch(error => reject(error))
-            )
+            );
         },
         update: ({commit}, site) => {
             axios.put('/api/sites/'+site.id, site.data).then(response => {
@@ -175,4 +175,4 @@ export default {
             });
         },
     },
-}
+};

@@ -76,4 +76,4 @@ export default {
         file: state => state.file,
         currentPath: state => state.currentPath,
     },
-}
+};

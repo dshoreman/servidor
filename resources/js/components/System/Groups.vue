@@ -81,5 +81,5 @@ export default {
             edit: 'systemGroups/edit',
         }),
     },
-}
+};
 </script>

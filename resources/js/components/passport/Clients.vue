@@ -340,7 +340,7 @@
                         });
             }
         }
-    }
+    };
 </script>
 
 <style scoped>
