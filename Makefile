@@ -22,6 +22,9 @@ metrics-html:
 
 reports: coverage-html metrics-html
 
+eslint:
+	node_modules/.bin/eslint -c build/eslint/config.json "resources/js/**/*.{js,vue}"
+
 phpstan:
 	vendor/bin/phpstan analyze -c build/phpstan/config.neon
 
@@ -40,6 +43,6 @@ phpmnd:
 	vendor/bin/phpmnd . --progress --exclude tests
 	@echo
 
-syntax: phpcsf phpcs phpmd phpmnd
+syntax: eslint phpcsf phpcs phpmd phpmnd
 
 kitchen-sink: syntax phpstan coverage metrics

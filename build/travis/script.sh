@@ -10,6 +10,10 @@ main() {
 
 test_npm() {
     npm run prod
+
+    "${TRAVIS_BUILD_DIR}/node_modules/.bin/eslint" \
+        -c build/eslint/config.json "resources/js/**/*.{js,vue}" \
+        && echo "Eslint ran without errors"
 }
 
 test_php() {
