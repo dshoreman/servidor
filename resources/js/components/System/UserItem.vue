@@ -16,7 +16,7 @@ export default {
     },
     data () {
         return {
-            'name': this.user.name,
+            name: this.user.name,
         };
     },
     methods: {

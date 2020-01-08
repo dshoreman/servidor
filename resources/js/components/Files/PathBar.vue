@@ -44,8 +44,8 @@ export default {
                 path = path + part + '/';
 
                 parts.push({
-                    'path': path.replace(/\/+$/, ''),
-                    'dirname': part,
+                    path: path.replace(/\/+$/, ''),
+                    dirname: part,
                 });
             }
 

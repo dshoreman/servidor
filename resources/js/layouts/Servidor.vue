@@ -55,7 +55,7 @@ export default {
     props: {
         version: {
             type: String,
-            default: "0.0.0",
+            default: '0.0.0',
         },
     },
     computed: {

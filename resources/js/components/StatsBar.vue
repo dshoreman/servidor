@@ -82,10 +82,10 @@ export default {
         };
 
         let refreshStatsBarIntervalId = refreshStatsBar();
-        document.addEventListener("visibilitychange", startStopRefreshStatsBar, false);
+        document.addEventListener('visibilitychange', startStopRefreshStatsBar, false);
 
-        this.$once("hook:beforeDestroy", () => {
-            document.removeEventListener("visibilitychange", startStopRefreshStatsBar);
+        this.$once('hook:beforeDestroy', () => {
+            document.removeEventListener('visibilitychange', startStopRefreshStatsBar);
         });
     },
     computed: {

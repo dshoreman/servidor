@@ -134,13 +134,13 @@ export default {
     },
     computed: {
         ...mapState({
-            'alerts': state => state.sites.alerts,
-            'errors': state => state.sites.errors,
-            'tmpSite': state => state.sites.current,
-            'loadingBranches': state => state.sites.branchesLoading,
+            alerts: state => state.sites.alerts,
+            errors: state => state.sites.errors,
+            tmpSite: state => state.sites.current,
+            loadingBranches: state => state.sites.branchesLoading,
         }),
         ...mapGetters({
-            'branches': 'sites/branchOptions',
+            branches: 'sites/branchOptions',
         }),
     },
     watch: {
@@ -162,7 +162,7 @@ export default {
         },
         deleteSite() {
             /* eslint-disable no-alert */
-            confirm("Deletion is permanent! Are you sure?") &&
+            confirm('Deletion is permanent! Are you sure?') &&
                 this.$store.dispatch('sites/delete', this.site.id).then(
                     response => this.$router.push({ name: 'apps' })
                 );

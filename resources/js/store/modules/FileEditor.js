@@ -119,7 +119,7 @@ export default {
             }
 
             if (mode) {
-                if (mode !== "null") {
+                if (mode !== 'null') {
                     await require('codemirror/mode/' + mode + '/' + mode + '.js');
                 }
                 commit('setMode', mode);
