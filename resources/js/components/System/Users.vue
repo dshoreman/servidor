@@ -44,9 +44,9 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
-import SystemUserItem from './UserItem';
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 import SystemUserEditor from './UserEditor';
+import SystemUserItem from './UserItem';
 
 export default {
     components: {

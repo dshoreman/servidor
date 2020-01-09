@@ -174,7 +174,7 @@ export default {
             if (['basic', 'php', 'laravel'].includes(site.type)) {
                 val = '/var/www/' + (site.primary_domain || '');
 
-                if (site.type == 'laravel') {
+                if ('laravel' === site.type) {
                     val += '/public';
                 }
             }

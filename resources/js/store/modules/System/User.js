@@ -23,7 +23,7 @@ export default {
             state.showSystem = value;
         },
         setEditorUser: (state, user) => {
-            state.editMode = typeof user == 'object';
+            state.editMode = 'object' === typeof user;
 
             if (!state.editMode) {
                 user = {
@@ -115,7 +115,7 @@ export default {
         },
         filtered: state => {
             return state.users.filter(user => {
-                if (!state.showSystem && user.uid < 1000) {
+                if (!state.showSystem && 1000 > user.uid) {
                     return false;
                 }
 
@@ -132,16 +132,16 @@ export default {
             });
         },
         userIsDirty: state => {
-            let old = state.clean,
-                now = state.user;
+            let now = state.user,
+                old = state.clean;
 
-            if (old === null) {
+            if (null === old) {
                 return false;
             }
 
-            return old.name != now.name
-                || old.uid != now.uid
-                || old.gid != now.gid
+            return old.name !== now.name
+                || old.uid !== now.uid
+                || old.gid !== now.gid
                 || !_.isEqual(old.groups, now.groups);
         },
     },

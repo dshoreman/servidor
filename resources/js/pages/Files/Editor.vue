@@ -39,11 +39,11 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import { codemirror } from 'vue-codemirror';
-import PathBar from '../../components/Files/PathBar';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/dracula.css';
+import { mapActions, mapGetters } from 'vuex';
+import PathBar from '../../components/Files/PathBar';
+import { codemirror } from 'vue-codemirror';
 
 export default {
     components: {

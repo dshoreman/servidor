@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import SiteEditor from '../../components/Sites/Editor';
 import SiteItem from '../../components/Sites/SiteItem';
+import { mapGetters } from 'vuex';
 import store from '../../store';
 
 export default {

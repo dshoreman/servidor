@@ -87,7 +87,7 @@ export default {
             commit('branchesLoading');
             let url = '/api/sites/' + state.current.id + '/branches';
 
-            if (repo != '') {
+            if ('' !== repo) {
                 url += '?repo=' + repo;
             }
 
@@ -124,7 +124,7 @@ export default {
                 const res = error.response;
                 commit('clearMessages');
 
-                if (res && res.status === 422) {
+                if (res && 422 === res.status) {
                     commit('setErrors', {
                         message: 'Fix the validation errors below and try again.',
                         errors: res.data.errors
@@ -167,7 +167,7 @@ export default {
             return state.sites.find(s => s.id === id);
         },
         findByDocroot: (state) => (path) => {
-            return state.sites.find(s => s.document_root == path);
+            return state.sites.find(s => s.document_root === path);
         },
         branchOptions: (state) => {
             return state.branches.map(b => {

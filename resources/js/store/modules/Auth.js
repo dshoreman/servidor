@@ -87,7 +87,7 @@ export default {
         authMsg: state => state.alert,
         token: state => state.token,
         loggedIn: state => {
-            return state.token !== null;
+            return null !== state.token;
         },
     },
 };

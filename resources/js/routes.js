@@ -2,16 +2,16 @@ import Dashboard from './pages/Dashboard.vue';
 import Databases from './pages/Databases.vue';
 import FileBrowser from './pages/Files/Browser.vue';
 import FileEditor from './pages/Files/Editor.vue';
-import Sites from './pages/Sites.vue';
-import SiteList from './pages/Sites/List.vue';
-import SiteEditor from './pages/Sites/Edit.vue';
-import SiteViewer from './pages/Sites/Detail.vue';
-import SystemGroups from './components/System/Groups.vue';
-import SystemUsers from './components/System/Users.vue';
 import Layout from './layouts/Servidor.vue';
 import Login from './pages/Auth/Login.vue';
-import Register from './pages/Auth/Register.vue';
 import NotFound from './pages/NotFound.vue';
+import Register from './pages/Auth/Register.vue';
+import SiteEditor from './pages/Sites/Edit.vue';
+import SiteList from './pages/Sites/List.vue';
+import SiteViewer from './pages/Sites/Detail.vue';
+import Sites from './pages/Sites.vue';
+import SystemGroups from './components/System/Groups.vue';
+import SystemUsers from './components/System/Users.vue';
 
 const routes = [{
     path: '/', component: Layout,
@@ -35,7 +35,7 @@ const routes = [{
             props: (route) => {
                 let id = parseInt(route.params.id);
 
-                if (Number.isNaN(id) || id < 0) {
+                if (Number.isNaN(id) || 0 > id) {
                     return { id: 0 };
                 }
 
@@ -49,7 +49,7 @@ const routes = [{
             props: (route) => {
                 let id = parseInt(route.params.id);
 
-                if (Number.isNaN(id) || id < 0) {
+                if (Number.isNaN(id) || 0 > id) {
                     return { id: 0 };
                 }
 

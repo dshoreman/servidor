@@ -23,7 +23,7 @@ export default {
             state.showSystem = value;
         },
         setEditorGroup: (state, group) => {
-            state.editMode = typeof group == 'object';
+            state.editMode = 'object' === typeof group;
 
             if (!state.editMode) {
                 group = {
@@ -109,7 +109,7 @@ export default {
         },
         filtered: state => {
             return state.groups.filter(group => {
-                if (!state.showSystem && group.gid < 1000) {
+                if (!state.showSystem && 1000 > group.gid) {
                     return false;
                 }
 
@@ -126,15 +126,15 @@ export default {
             });
         },
         groupIsDirty: state => {
-            let old = state.clean,
-                now = state.group;
+            let now = state.group,
+                old = state.clean;
 
-            if (old === null) {
+            if (null === old) {
                 return false;
             }
 
-            return old.name != now.name
-                || old.gid != now.gid
+            return old.name !== now.name
+                || old.gid !== now.gid
                 || !_.isEqual(old.users, now.users);
         },
     },

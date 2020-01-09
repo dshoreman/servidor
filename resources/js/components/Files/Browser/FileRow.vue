@@ -40,9 +40,9 @@ export default {
             }
         },
         open: function () {
-            let prefix = this.path == '/' ? '' : this.path,
-                target = prefix + '/' + this.file.filename,
-                route = { name: 'files' };
+            let prefix = '/' === this.path ? '' : this.path,
+                route = { name: 'files' },
+                target = prefix + '/' + this.file.filename;
 
             if (this.file.isFile) {
                 route.name = 'files.edit';

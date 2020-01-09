@@ -3,7 +3,7 @@ export default {
         vue.mixin({
             computed: {
                 darkMode: function() {
-                    return this.currentTheme == 'dark';
+                    return 'dark' === this.currentTheme;
                 },
             },
             data() {
@@ -13,7 +13,7 @@ export default {
             },
             methods: {
                 toggleDarkMode: function() {
-                    this.currentTheme = this.currentTheme == 'light' ? 'dark' : 'light';
+                    this.currentTheme = 'light' === this.currentTheme ? 'dark' : 'light';
 
                     localStorage.setItem('theme', this.currentTheme);
 
@@ -27,8 +27,8 @@ export default {
                 const today = new Date();
 
                 // Month is zero-indexed, date starts at one. Javascript!
-                if (today.getMonth() != 10 || today.getDate() != 5 ||
-                    today.getHours() < 20 || today.getHours() >= 23) {
+                if (10 !== today.getMonth() || 5 !== today.getDate() ||
+                    20 > today.getHours() || 23 <= today.getHours()) {
                     return;
                 }
 

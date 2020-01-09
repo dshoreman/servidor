@@ -51,7 +51,7 @@ export default {
     methods: {
         isActive (item, absolute = false) {
             if (absolute) {
-                return this.$route.path == '/' + item.href.replace('.', '/');
+                return this.$route.path === '/' + item.href.replace('.', '/');
             }
 
             let href = '/' + item.href.split('.')[0];

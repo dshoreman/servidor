@@ -1,5 +1,5 @@
-import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta.js';
+import CodeMirror from 'codemirror';
 
 export default {
     namespaced: true,
@@ -100,8 +100,8 @@ export default {
             commit('setTheme', theme);
         },
         async setMode ({ commit }, value) {
-            var info, mode, spec,
-                filename = /.+\.([^.]+)$/.exec(value);
+            var filename = /.+\.([^.]+)$/.exec(value),
+                info, mode, spec;
 
             if (filename) {
                 info = CodeMirror.findModeByExtension(filename[1]);
@@ -120,7 +120,7 @@ export default {
             }
 
             if (mode) {
-                if (mode !== 'null') {
+                if ('null' !== mode) {
                     await require('codemirror/mode/' + mode + '/' + mode + '.js');
                 }
                 commit('setMode', mode);

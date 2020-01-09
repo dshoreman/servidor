@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
     data () {

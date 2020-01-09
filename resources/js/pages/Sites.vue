@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 import store from '../store';
 
 export default {
@@ -29,11 +29,11 @@ export default {
         filterIcon: function () {
             const match = this.site.name.toLowerCase();
 
-            if (match == '') {
+            if ('' === match) {
                 return 'search';
             }
 
-            if ('object' == typeof(this.sites.find(s => s.name.toLowerCase() == match))) {
+            if ('object' === typeof(this.sites.find(s => s.name.toLowerCase() === match))) {
                 return 'cogs';
             }
 
@@ -47,13 +47,13 @@ export default {
         createOrEdit: function () {
             const match = this.site.name.toLowerCase();
 
-            if (match == '') {
+            if ('' === match) {
                 return;
             }
 
-            let result = this.sites.find(s => s.name.toLowerCase() == match);
+            let result = this.sites.find(s => s.name.toLowerCase() === match);
 
-            if (typeof(result) === 'object') {
+            if ('object' === typeof(result)) {
                 return this.$router.push({ name: 'apps.edit', params: { id: result.id }});
             }
 

@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import FileList from '../../components/Files/Browser/FileList';
 import PathBar from '../../components/Files/PathBar';
+import { mapGetters } from 'vuex';
 
 export default {
     mounted () {

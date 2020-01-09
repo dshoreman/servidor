@@ -44,9 +44,9 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
-import SystemGroupItem from './GroupItem';
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 import SystemGroupEditor from './GroupEditor';
+import SystemGroupItem from './GroupItem';
 
 export default {
     components: {

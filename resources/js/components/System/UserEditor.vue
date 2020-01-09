@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
     computed: {
@@ -97,7 +97,7 @@ export default {
     },
     methods: {
         createUser () {
-            if (this.tmpUser.name.trim().length == 0) {
+            if (0 === this.tmpUser.name.trim().length) {
                 return;
             }
 
@@ -119,7 +119,7 @@ export default {
         },
         addGroup () {
             let group = this.groups[this.groups.findIndex(
-                g => g.gid == this.newGroup
+                g => g.gid === this.newGroup
             )];
 
             if (!this.tmpUser.groups.includes(group.name)) {

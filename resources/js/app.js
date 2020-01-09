@@ -1,18 +1,17 @@
 import './bootstrap';
-import Vue from 'vue';
-import VueRouter from 'vue-router';
 import DarkMode from './plugins/darkmode';
-import SuiVue from 'semantic-ui-vue';
-import routes from './routes';
-import store from './store';
-
 import MainMenu from './components/MainMenu.vue';
+import PassportAccessTokens from './components/passport/PersonalAccessTokens.vue';
+import PassportAuthorizedClients from './components/passport/AuthorizedClients.vue';
+import PassportClients from './components/passport/Clients.vue';
 import StatsBar from './components/StatsBar.vue';
+import SuiVue from 'semantic-ui-vue';
 import SystemGroups from './components/System/Groups.vue';
 import SystemUsers from './components/System/Users.vue';
-import PassportClients from './components/passport/Clients.vue';
-import PassportAuthorizedClients from './components/passport/AuthorizedClients.vue';
-import PassportAccessTokens from './components/passport/PersonalAccessTokens.vue';
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import routes from './routes';
+import store from './store';
 
 window.Vue = Vue;
 
@@ -56,7 +55,7 @@ router.beforeEach((to, from, next) => {
 window.axios.interceptors.response.use(response => {
     return response;
 }, error => {
-    if (error.response.status === 401 && error.response.data.error != 'invalid_credentials') {
+    if (401 === error.response.status && 'invalid_credentials' !== error.response.data.error) {
         store.dispatch('forceLogin', 'Session timed out');
         router.push({ name: 'login' });
     }
