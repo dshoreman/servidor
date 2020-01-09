@@ -100,20 +100,21 @@ export default {
             commit('setTheme', theme);
         },
         async setMode ({ commit }, value) {
-            var val = value, m, mode, spec;
+            var info, mode, spec,
+                filename = /.+\.([^.]+)$/.exec(value);
 
-            if (m = /.+\.([^.]+)$/.exec(val)) {
-                var info = CodeMirror.findModeByExtension(m[1]);
+            if (filename) {
+                info = CodeMirror.findModeByExtension(filename[1]);
                 if (info) {
                     mode = info.mode;
                     spec = info.mime;
                     commit('setSelectedMode', spec);
                 }
             } else {
-                var info = CodeMirror.findModeByMIME(val);
+                info = CodeMirror.findModeByMIME(value);
                 if (info) {
                     mode = info.mode;
-                    spec = val;
+                    spec = value;
                     commit('setSelectedMode', info.mime);
                 }
             }
