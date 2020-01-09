@@ -161,6 +161,7 @@ export default {
             this.$store.dispatch('sites/update', {id, data: this.tmpSite});
         },
         deleteSite() {
+            /* eslint-disable no-alert */
             confirm("Deletion is permanent! Are you sure?") &&
                 this.$store.dispatch('sites/delete', this.site.id).then(
                     response => this.$router.push({ name: 'apps' })
