@@ -73,6 +73,8 @@ export default {
             );
         };
 
+        let refreshStatsBarIntervalId = refreshStatsBar();
+
         const startStopRefreshStatsBar = () => {
             if(document.hidden) {
                 clearInterval(refreshStatsBarIntervalId);
@@ -81,7 +83,6 @@ export default {
             }
         };
 
-        let refreshStatsBarIntervalId = refreshStatsBar();
         document.addEventListener('visibilitychange', startStopRefreshStatsBar, false);
 
         this.$once('hook:beforeDestroy', () => {
@@ -99,7 +100,7 @@ export default {
                 return;
             }
             axios.get('/api/system-info').then(response => {
-                let data = response.data;
+                const data = response.data;
 
                 this.hostname = data.hostname;
                 this.cpu_usage = data.cpu;

@@ -103,7 +103,7 @@
         "radix": [ "error", "as-needed" ],
         "require-await": "error",
         "require-unicode-regexp": "off",
-        "vars-on-top": "off",
+        "vars-on-top": "error",
         "wrap-iife": "error",
         "yoda": [ "error", "always" ],
 
@@ -120,7 +120,7 @@
         "no-unused-vars": [ "error", {
             "varsIgnorePattern": "app"
         }],
-        "no-use-before-define": "off",
+        "no-use-before-define": "error",
 
         /* Node/CommonJS */
         "callback-return": "off",
@@ -207,7 +207,7 @@
         "object-curly-newline": "error",
         "object-curly-spacing": "off",
         "object-property-newline": "off",
-        "one-var": "off",
+        "one-var": ["error", "consecutive"],
         "one-var-declaration-per-line": "off",
         "operator-assignment": [ "error", "always" ],
         "operator-linebreak": "off",
@@ -246,10 +246,10 @@
         "no-useless-computed-key": "error",
         "no-useless-constructor": "error",
         "no-useless-rename": "error",
-        "no-var": "off",
+        "no-var": "error",
         "object-shorthand": "off",
         "prefer-arrow-callback": "error",
-        "prefer-const": "off",
+        "prefer-const": "error",
         "prefer-destructuring": "off",
         "prefer-numeric-literals": "error",
         "prefer-rest-params": "error",

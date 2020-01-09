@@ -35,8 +35,8 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    let authed = store.getters.loggedIn,
-        token = store.getters.token;
+    const token = store.getters.token;
+    let authed = store.getters.loggedIn;
 
     if (token && token !== localStorage.getItem('accessToken')) {
         store.dispatch('forceLogin', 'Token mismatch');

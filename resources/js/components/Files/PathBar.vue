@@ -37,10 +37,10 @@ export default {
     },
     computed: {
         pathParts: function() {
-            let parts = [],
-                path = '';
+            const parts = [];
+            let path = '';
 
-            for (let part of this.path.split('/')) {
+            for (const part of this.path.split('/')) {
                 path = path + part + '/';
 
                 parts.push({

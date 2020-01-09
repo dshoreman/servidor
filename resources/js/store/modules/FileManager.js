@@ -58,7 +58,7 @@ export default {
         },
         save: ({commit, state}) => {
             return new Promise((resolve, reject) => {
-                let fullpath = state.currentPath + '/' + state.file.filename;
+                const fullpath = state.currentPath + '/' + state.file.filename;
 
                 axios.put('/api/files?file=' + fullpath, {
                     contents: state.file.contents,

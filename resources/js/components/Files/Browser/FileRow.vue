@@ -40,7 +40,7 @@ export default {
             }
         },
         open: function () {
-            let prefix = '/' === this.path ? '' : this.path,
+            const prefix = '/' === this.path ? '' : this.path,
                 route = { name: 'files' },
                 target = prefix + '/' + this.file.filename;
 

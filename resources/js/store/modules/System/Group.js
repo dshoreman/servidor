@@ -58,12 +58,12 @@ export default {
             state.groups.push(group);
         },
         updateGroup: (state, {gid, group}) => {
-            let index = state.groups.findIndex(g => g.gid === gid);
+            const index = state.groups.findIndex(g => g.gid === gid);
 
             Vue.set(state.groups, index, group);
         },
         removeGroup: (state, gid) => {
-            let index = state.groups.findIndex(g => g.gid === gid);
+            const index = state.groups.findIndex(g => g.gid === gid);
 
             state.groups.splice(index, 1);
         },
@@ -126,7 +126,7 @@ export default {
             });
         },
         groupIsDirty: state => {
-            let now = state.group,
+            const now = state.group,
                 old = state.clean;
 
             if (null === old) {

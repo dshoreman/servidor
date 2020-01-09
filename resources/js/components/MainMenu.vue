@@ -54,7 +54,7 @@ export default {
                 return this.$route.path === '/' + item.href.replace('.', '/');
             }
 
-            let href = '/' + item.href.split('.')[0];
+            const href = '/' + item.href.split('.')[0];
 
             return this.$route.path.startsWith(href);
         },

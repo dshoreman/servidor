@@ -100,8 +100,8 @@ export default {
             commit('setTheme', theme);
         },
         async setMode ({ commit }, value) {
-            var filename = /.+\.([^.]+)$/.exec(value),
-                info, mode, spec;
+            const filename = /.+\.([^.]+)$/.exec(value);
+            let info, mode, spec;
 
             if (filename) {
                 info = CodeMirror.findModeByExtension(filename[1]);

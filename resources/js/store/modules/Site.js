@@ -64,12 +64,12 @@ export default {
             state.site.name = '';
         },
         updateSite: (state, {id, site}) => {
-            let index = state.sites.findIndex(s => s.id === id);
+            const index = state.sites.findIndex(s => s.id === id);
 
             Vue.set(state.sites, index, site);
         },
         removeSite: (state, id) => {
-            let index = state.sites.findIndex(s => s.id === id);
+            const index = state.sites.findIndex(s => s.id === id);
 
             state.sites.splice(index, 1);
         },

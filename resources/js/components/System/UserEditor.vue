@@ -106,7 +106,7 @@ export default {
         updateUser (uid) {
             if (this.deleted.length) {
                 this.deleted.forEach(group => {
-                    let i = this.tmpUser.groups.indexOf(group);
+                    const i = this.tmpUser.groups.indexOf(group);
 
                     this.tmpUser.groups.splice(i, 1);
                 });
@@ -118,7 +118,7 @@ export default {
             this.$store.dispatch('systemUsers/delete', uid);
         },
         addGroup () {
-            let group = this.groups[this.groups.findIndex(
+            const group = this.groups[this.groups.findIndex(
                 g => g.gid === this.newGroup
             )];
 

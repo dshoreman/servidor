@@ -62,12 +62,12 @@ export default {
             state.users.push(user);
         },
         updateUser: (state, {uid, user}) => {
-            let index = state.users.findIndex(u => u.uid === uid);
+            const index = state.users.findIndex(u => u.uid === uid);
 
             Vue.set(state.users, index, user);
         },
         removeUser: (state, uid) => {
-            let index = state.users.findIndex(u => u.uid === uid);
+            const index = state.users.findIndex(u => u.uid === uid);
 
             state.users.splice(index, 1);
         },
@@ -132,7 +132,7 @@ export default {
             });
         },
         userIsDirty: state => {
-            let now = state.user,
+            const now = state.user,
                 old = state.clean;
 
             if (null === old) {

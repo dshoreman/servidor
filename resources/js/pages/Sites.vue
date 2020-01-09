@@ -51,7 +51,7 @@ export default {
                 return;
             }
 
-            let result = this.sites.find(s => s.name.toLowerCase() === match);
+            const result = this.sites.find(s => s.name.toLowerCase() === match);
 
             if ('object' === typeof(result)) {
                 return this.$router.push({ name: 'apps.edit', params: { id: result.id }});

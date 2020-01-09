@@ -33,7 +33,7 @@ const routes = [{
             path: '/apps/:id',
             meta: { auth: true },
             props: (route) => {
-                let id = parseInt(route.params.id);
+                const id = parseInt(route.params.id);
 
                 if (Number.isNaN(id) || 0 > id) {
                     return { id: 0 };
@@ -47,7 +47,7 @@ const routes = [{
             path: '/apps/:id/edit',
             meta: { auth: true },
             props: (route) => {
-                let id = parseInt(route.params.id);
+                const id = parseInt(route.params.id);
 
                 if (Number.isNaN(id) || 0 > id) {
                     return { id: 0 };
