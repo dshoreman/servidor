@@ -29,10 +29,10 @@ export default {
         },
         sites: Array,
     },
-    beforeRouteEnter (to, from, next) {
+    beforeRouteEnter(to, from, next) {
         next(vm => vm.edit(to.params.id));
     },
-    beforeRouteUpdate (to, from, next) {
+    beforeRouteUpdate(to, from, next) {
         this.edit(to.params.id);
         next();
     },
@@ -40,7 +40,7 @@ export default {
         ...mapGetters({
             findSite: 'sites/findById',
         }),
-        site(){
+        site() {
             return this.findSite(this.id);
         },
     },

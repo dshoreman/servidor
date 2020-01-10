@@ -50,10 +50,12 @@ export default {
         codemirror,
         PathBar,
     },
-    async mounted () {
+    async mounted() {
         this.loading = true;
         await this.$store.dispatch('files/open', { file: this.filePath })
-            .finally(() => this.loading = false );
+            .finally(() => {
+                this.loading = false;
+            });
         this.$store.dispatch('editor/setMode', this.filePath);
     },
     props: [
@@ -77,26 +79,26 @@ export default {
           });
         },
         theme: {
-            get () {
+            get() {
                 return this.$store.state.editor.options.theme;
             },
-            set (value) {
+            set(value) {
                 this.$store.dispatch('editor/setTheme', value);
             },
         },
         mode: {
-            get () {
+            get() {
                 return this.$store.state.editor.selectedMode;
             },
-            set (value) {
+            set(value) {
                 this.$store.dispatch('editor/setMode', value);
             },
         },
         wrap: {
-            get () {
+            get() {
                 return this.$store.state.editor.options.lineWrapping;
             },
-            set (value) {
+            set(value) {
                 this.$store.dispatch('editor/setLineWrapping', value);
             },
         },

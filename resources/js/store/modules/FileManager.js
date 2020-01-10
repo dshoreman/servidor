@@ -21,15 +21,15 @@ export default {
     },
     actions: {
         load: ({ commit }, { path }) => {
-            return new Promise((resolve, reject) =>
+            return new Promise((resolve, reject) => {
                 axios.get('/api/files', {
                     params: { path: path },
-                }) .then(response => {
+                }).then(response => {
                     commit('setPath', path);
                     commit('setFiles', response.data);
                     resolve(response);
-                }).catch(error => reject(error)),
-            );
+                }).catch(error => reject(error));
+            });
         },
         open: ({ commit }, { file }) => {
             return new Promise((resolve, reject) => {

@@ -51,7 +51,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-    data () {
+    data() {
         return {
             loaded: false,
             cpu_usage: 0,
@@ -63,7 +63,7 @@ export default {
             version: '',
         };
     },
-    mounted () {
+    mounted() {
         this.initStatsBar();
 
         const refreshStatsBar = () => {
@@ -95,7 +95,7 @@ export default {
         ]),
     },
     methods: {
-        initStatsBar () {
+        initStatsBar() {
             if (!this.loggedIn) {
                 return;
             }
@@ -113,14 +113,14 @@ export default {
                 this.loaded = true;
             });
         },
-        cpuTooltip () {
+        cpuTooltip() {
             return 'Load average: ' + this.load_avg['1m'] + ', '
                  + this.load_avg['5m'] + ', ' + this.load_avg['15m'];
         },
-        ramTooltip () {
+        ramTooltip() {
             return 'Using ' + this.ram.used + 'M of ' + this.ram.total + 'M';
         },
-        diskTooltip () {
+        diskTooltip() {
             return this.disk.used + 'G used; ' + this.disk.free + 'G free';
         },
     },

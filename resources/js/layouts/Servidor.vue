@@ -66,11 +66,11 @@ export default {
             user: state => state.Auth.user,
         }),
     },
-    created () {
+    created() {
         this.$store.dispatch('fetchProfile');
     },
     methods: {
-        logout () {
+        logout() {
             this.$store.dispatch('logout').then(() => {
                 this.$nextTick(() => {
                     this.$router.push({ name: 'login' });

@@ -36,7 +36,7 @@ export default {
         },
     },
     computed: {
-        pathParts: function() {
+        pathParts: function () {
             const parts = [];
             let path = '';
 

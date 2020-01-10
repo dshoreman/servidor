@@ -23,7 +23,7 @@
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-    mounted () {
+    mounted() {
         this.$store.dispatch('databases/load');
     },
     computed: {
@@ -31,10 +31,10 @@ export default {
             databases: 'databases/filtered',
         }),
         search: {
-            get () {
+            get() {
                 return this.$store.state.databases.search;
             },
-            set (value) {
+            set(value) {
                 this.$store.dispatch('databases/filter', value);
             },
         },

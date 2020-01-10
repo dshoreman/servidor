@@ -24,7 +24,7 @@
 
 <script>
 export default {
-    data () {
+    data() {
         return {
             menu: [{
                 name: 'Applications',
@@ -49,7 +49,7 @@ export default {
         };
     },
     methods: {
-        isActive (item, absolute = false) {
+        isActive(item, absolute = false) {
             if (absolute) {
                 return this.$route.path === '/' + item.href.replace('.', '/');
             }

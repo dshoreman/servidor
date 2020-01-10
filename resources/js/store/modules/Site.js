@@ -76,12 +76,12 @@ export default {
     },
     actions: {
         load: ({ commit }) => {
-            return new Promise((resolve, reject) =>
+            return new Promise((resolve, reject) => {
                 axios.get('/api/sites') .then(response => {
                     commit('setSites', response.data);
                     resolve(response);
-                }).catch(error => reject(error)),
-            );
+                }).catch(error => reject(error));
+            });
         },
         loadBranches: ({ commit, state }, repo = '') => {
             commit('branchesLoading');
@@ -91,26 +91,26 @@ export default {
                 url += '?repo=' + repo;
             }
 
-            return new Promise((resolve, reject) =>
+            return new Promise((resolve, reject) => {
                 axios.get(url).then(response => {
                     commit('setSiteBranches', response.data);
                     resolve(response);
-                }).catch(error => reject(error)),
-            );
+                }).catch(error => reject(error));
+            });
         },
         edit: ({ commit, dispatch }, site) => {
             commit('setEditorSite', site);
             dispatch('loadBranches');
         },
         create: ({ commit, state }) => {
-            return new Promise((resolve, reject) =>
+            return new Promise((resolve, reject) => {
                 axios.post('/api/sites', state.site).then(response => {
                     commit('addSite', response.data);
                     commit('clearMessages');
                     commit('setSuccess', "The site '" + response.data.name + "' has been created.");
                     resolve(response);
-                }).catch(error => reject(error)),
-            );
+                }).catch(error => reject(error));
+            });
         },
         update: ({ commit }, site) => {
             axios.put('/api/sites/'+site.id, site.data).then(response => {

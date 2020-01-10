@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import 'codemirror/mode/meta.js';
 import CodeMirror from 'codemirror';
 
@@ -81,10 +82,10 @@ export default {
         ],
     },
     mutations: {
-        setTheme (state, theme) {
+        setTheme(state, theme) {
             state.options.theme = theme;
         },
-        setMode (state, mode) {
+        setMode(state, mode) {
             state.options.mode = mode;
         },
         setSelectedMode(state, name) {
@@ -95,11 +96,11 @@ export default {
         },
     },
     actions: {
-        async setTheme ({ commit }, theme) {
+        async setTheme({ commit }, theme) {
             await require('codemirror/theme/' + theme + '.css');
             commit('setTheme', theme);
         },
-        async setMode ({ commit }, value) {
+        async setMode({ commit }, value) {
             const filename = /.+\.([^.]+)$/.exec(value);
             let info, mode, spec;
 
@@ -129,7 +130,7 @@ export default {
                 commit('setMode', null);
             }
         },
-        setLineWrapping ({ commit }, value) {
+        setLineWrapping({ commit }, value) {
             commit('setLineWrapping', value);
         },
     },

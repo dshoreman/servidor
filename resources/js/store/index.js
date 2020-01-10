@@ -10,7 +10,7 @@ import VueX from 'vuex';
 
 Vue.use(VueX);
 
-export default new VueX.Store ({
+export default new VueX.Store({
     modules: {
         Auth,
         sites: Site,

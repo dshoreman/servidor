@@ -14,13 +14,13 @@ export default {
         user: Object,
         active: Boolean,
     },
-    data () {
+    data() {
         return {
             name: this.user.name,
         };
     },
     methods: {
-        edit () {
+        edit() {
             this.$emit('edit', this.user);
         },
     },

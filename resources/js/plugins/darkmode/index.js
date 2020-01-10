@@ -1,8 +1,8 @@
 export default {
-    install (vue) {
+    install(vue) {
         vue.mixin({
             computed: {
-                darkMode: function() {
+                darkMode: function () {
                     return 'dark' === this.currentTheme;
                 },
             },
@@ -12,7 +12,7 @@ export default {
                 };
             },
             methods: {
-                toggleDarkMode: function() {
+                toggleDarkMode: function () {
                     this.currentTheme = 'light' === this.currentTheme ? 'dark' : 'light';
 
                     localStorage.setItem('theme', this.currentTheme);
@@ -29,7 +29,7 @@ export default {
                 // Month is zero-indexed, date starts at one. Javascript!
                 if (10 !== today.getMonth() || 5 !== today.getDate() ||
                     20 > today.getHours() || 23 <= today.getHours()) {
-                    return;
+                    return '';
                 }
 
                 return createElement('div', { class: 'guy-with-forks' }, [
@@ -41,7 +41,7 @@ export default {
 
         vue.component('darkmode-toggle', {
             computed: {
-                icon: function() {
+                icon: function () {
                     return this.darkMode ? 'lightbulb outline' : 'lightbulb';
                 },
             },

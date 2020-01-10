@@ -30,6 +30,7 @@ export default {
             if (this.file.isFile) {
                 return 'file';
             }
+            return 'question circle';
         },
         iconColour: function () {
             if (this.file.isDir) {
@@ -38,6 +39,7 @@ export default {
             if (this.file.isFile) {
                 return 'violet';
             }
+            return 'red';
         },
         open: function () {
             const prefix = '/' === this.path ? '' : this.path,

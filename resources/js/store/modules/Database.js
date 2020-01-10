@@ -17,22 +17,22 @@ export default {
     },
     actions: {
         load: ({ commit }) => {
-            return new Promise((resolve, reject) =>
+            return new Promise((resolve, reject) => {
                 axios.get('/api/databases').then(response => {
                     commit('setDatabases', response.data);
                     resolve(response);
-                }).catch(error => reject(error)),
-            );
+                }).catch(error => reject(error));
+            });
         },
         create: ({ commit, state }) => {
-            return new Promise((resolve, reject) =>
+            return new Promise((resolve, reject) => {
                 axios.post('/api/databases', {
                     database: state.search,
                 }).then(response => {
                     commit('addDatabase', response.data);
                     resolve(response);
-                }).catch(error => reject(error)),
-            );
+                }).catch(error => reject(error));
+            });
         },
         filter: ({ commit }, value) => {
             commit('setFilter', value);

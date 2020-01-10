@@ -16,7 +16,7 @@ import { mapGetters, mapMutations, mapState } from 'vuex';
 import store from '../store';
 
 export default {
-    beforeRouteEnter (to, from, next) {
+    beforeRouteEnter(to, from, next) {
         store.dispatch('sites/load').then(() => next());
     },
     computed: {
@@ -54,7 +54,9 @@ export default {
             const result = this.sites.find(s => s.name.toLowerCase() === match);
 
             if ('object' === typeof(result)) {
-                return this.$router.push({ name: 'apps.edit', params: { id: result.id }});
+                this.$router.push({ name: 'apps.edit', params: { id: result.id }});
+
+                return;
             }
 
             this.$store.dispatch('sites/create').then(({ data })=>{

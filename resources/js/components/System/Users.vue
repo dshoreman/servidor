@@ -53,7 +53,7 @@ export default {
         SystemUserItem,
         SystemUserEditor,
     },
-    mounted () {
+    mounted() {
         this.$store.dispatch('systemUsers/load');
         this.$store.dispatch('systemGroups/load');
     },

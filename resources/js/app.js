@@ -36,7 +36,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     const token = store.getters.token;
-    let authed = store.getters.loggedIn;
+    let authed = store.getters.loggedIn, nextpage;
 
     if (token && token !== localStorage.getItem('accessToken')) {
         store.dispatch('forceLogin', 'Token mismatch');
@@ -44,12 +44,12 @@ router.beforeEach((to, from, next) => {
     }
 
     if (!authed && to.matched.some(route => route.meta.auth)) {
-        next({ name: 'login' });
+        nextpage = { name: 'login' };
     } else if (authed && to.matched.some(route => route.meta.guest)) {
-        next({ name: 'dashboard' });
-    } else {
-        next();
+        nextpage = { name: 'dashboard' };
     }
+
+    next(nextpage);
 });
 
 window.axios.interceptors.response.use(response => {

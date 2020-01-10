@@ -55,16 +55,16 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 export default {
-    data () {
+    data() {
         return {
             username: '',
             password: '',
         };
     },
-    mounted () {
+    mounted() {
         document.body.classList.add('login');
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
         document.body.classList.remove('login');
 
         return next();
@@ -78,7 +78,7 @@ export default {
         ...mapMutations([
             'setAlert',
         ]),
-        login () {
+        login() {
             this.$store.dispatch('login', {
                 username: this.username,
                 password: this.password,
