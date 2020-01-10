@@ -22,7 +22,8 @@ export default {
         toggleSystemGroups: (state, value) => {
             state.showSystem = value;
         },
-        setEditorGroup: (state, group) => {
+        setEditorGroup: (state, groupOrName) => {
+            let group = groupOrName;
             state.editMode = 'object' === typeof group;
 
             if (!state.editMode) {

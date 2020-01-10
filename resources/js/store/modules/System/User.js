@@ -22,7 +22,8 @@ export default {
         toggleSystemUsers: (state, value) => {
             state.showSystem = value;
         },
-        setEditorUser: (state, user) => {
+        setEditorUser: (state, userOrName) => {
+            let user = userOrName;
             state.editMode = 'object' === typeof user;
 
             if (!state.editMode) {
@@ -96,7 +97,7 @@ export default {
         update: ({ commit }, { uid, user }) => {
             axios.put('/api/system/users/'+uid, user).then(response => {
                 commit('updateUser', {
-                    uid: uid,
+                    uid,
                     user: response.data,
                 });
                 commit('unsetEditorUser');

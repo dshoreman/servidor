@@ -41,7 +41,7 @@ export default {
             findSite: 'sites/findByDocroot',
             files: 'files/all',
         }),
-        site: function () {
+        site() {
             return this.findSite(this.currentPath);
         },
     },

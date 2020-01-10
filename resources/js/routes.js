@@ -41,7 +41,7 @@ const routes = [{
                     return { id: 0 };
                 }
 
-                return { id: id };
+                return { id };
             },
         }, {
             component: SiteEditor,
@@ -55,7 +55,7 @@ const routes = [{
                     return { id: 0 };
                 }
 
-                return { id: id };
+                return { id };
             },
         }],
     }, {

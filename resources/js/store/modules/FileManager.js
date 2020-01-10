@@ -23,7 +23,7 @@ export default {
         load: ({ commit }, { path }) => {
             return new Promise((resolve, reject) => {
                 axios.get('/api/files', {
-                    params: { path: path },
+                    params: { path },
                 }).then(response => {
                     commit('setPath', path);
                     commit('setFiles', response.data);
@@ -36,7 +36,7 @@ export default {
                 commit('clearFile');
 
                 axios.get('/api/files/', {
-                    params: { file: file },
+                    params: { file },
                 }).then(response => {
                     commit('setPath', response.data.filepath);
                     commit('setFile', response.data);

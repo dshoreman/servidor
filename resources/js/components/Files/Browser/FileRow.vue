@@ -20,7 +20,7 @@ export default {
         'path',
     ],
     methods: {
-        icon: function () {
+        icon() {
             if (this.file.isLink) {
                 return 'linkify';
             }
@@ -32,7 +32,7 @@ export default {
             }
             return 'question circle';
         },
-        iconColour: function () {
+        iconColour() {
             if (this.file.isDir) {
                 return 'blue';
             }
@@ -41,7 +41,7 @@ export default {
             }
             return 'red';
         },
-        open: function () {
+        open() {
             const prefix = '/' === this.path ? '' : this.path,
                 route = { name: 'files' },
                 target = prefix + '/' + this.file.filename;

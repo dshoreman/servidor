@@ -36,7 +36,7 @@ export default {
         },
     },
     computed: {
-        pathParts: function () {
+        pathParts() {
             const parts = [];
             let path = '';
 
@@ -53,13 +53,13 @@ export default {
         },
     },
     methods: {
-        goTo: function (path) {
+        goTo(path) {
             this.$router.push({
                 name: 'files',
                 params: { path: path ? path : '/' },
             });
         },
-        goUp: function () {
+        goUp() {
             this.goTo(this.path.substr(0, this.path.lastIndexOf('/')));
         },
     },

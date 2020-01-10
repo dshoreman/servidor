@@ -16,14 +16,14 @@ export default {
         setSuccess: (state, message) => {
             state.alerts.push({
                 title: 'Success!',
-                message: message,
+                message,
                 isSuccess: true,
             });
         },
         setErrors: (state, { message, errors, action = 'save' }) => {
             state.alerts.push({
                 title: 'Could not ' + action + ' Site!',
-                message: message,
+                message,
                 isSuccess: false,
             });
 
@@ -77,7 +77,7 @@ export default {
     actions: {
         load: ({ commit }) => {
             return new Promise((resolve, reject) => {
-                axios.get('/api/sites') .then(response => {
+                axios.get('/api/sites').then(response => {
                     commit('setSites', response.data);
                     resolve(response);
                 }).catch(error => reject(error));

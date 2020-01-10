@@ -144,7 +144,7 @@ export default {
         }),
     },
     watch: {
-        'tmpSite.type'() {
+        'tmpSite.type': function () {
             this.setDocroot();
         },
     },

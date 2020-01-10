@@ -2,7 +2,7 @@ export default {
     install(vue) {
         vue.mixin({
             computed: {
-                darkMode: function () {
+                darkMode() {
                     return 'dark' === this.currentTheme;
                 },
             },
@@ -12,7 +12,7 @@ export default {
                 };
             },
             methods: {
-                toggleDarkMode: function () {
+                toggleDarkMode() {
                     this.currentTheme = 'light' === this.currentTheme ? 'dark' : 'light';
 
                     localStorage.setItem('theme', this.currentTheme);
@@ -23,7 +23,7 @@ export default {
         });
 
         vue.component('darkmode-special', {
-            render: function (createElement) {
+            render(createElement) {
                 const today = new Date();
 
                 // Month is zero-indexed, date starts at one. Javascript!
@@ -41,11 +41,11 @@ export default {
 
         vue.component('darkmode-toggle', {
             computed: {
-                icon: function () {
+                icon() {
                     return this.darkMode ? 'lightbulb outline' : 'lightbulb';
                 },
             },
-            render: function (createElement) {
+            render(createElement) {
                 return createElement('sui-icon', {
                     props: {
                         name: this.icon,

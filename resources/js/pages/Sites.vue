@@ -26,7 +26,7 @@ export default {
         ...mapGetters({
             sites: 'sites/filtered',
         }),
-        filterIcon: function () {
+        filterIcon() {
             const match = this.site.name.toLowerCase();
 
             if ('' === match) {
@@ -44,7 +44,7 @@ export default {
         ...mapMutations({
             filterSites: 'sites/setFilter',
         }),
-        createOrEdit: function () {
+        createOrEdit() {
             const match = this.site.name.toLowerCase();
 
             if ('' === match) {

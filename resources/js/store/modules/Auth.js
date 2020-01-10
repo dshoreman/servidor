@@ -16,7 +16,7 @@ export default {
             state.alert = {};
         },
         setToken: (state, token) => {
-            window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
+            window.axios.defaults.headers.common.Authorization = 'Bearer '+token;
             localStorage.setItem('accessToken', token);
             state.token = token;
         },
