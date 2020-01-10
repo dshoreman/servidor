@@ -97,15 +97,15 @@ export default {
     },
     actions: {
         async setTheme({ commit }, theme) {
-            await require('codemirror/theme/' + theme + '.css');
+            await require(`codemirror/theme/${theme}.css`);
             commit('setTheme', theme);
         },
         async setMode({ commit }, value) {
-            const filename = /.+\.([^.]+)$/.exec(value);
+            const filename = (/.+\.(?<ext>[^.]+)$/u).exec(value);
             let info, mode, spec;
 
             if (filename) {
-                info = CodeMirror.findModeByExtension(filename[1]);
+                info = CodeMirror.findModeByExtension(filename.groups.ext);
                 if (info) {
                     mode = info.mode;
                     spec = info.mime;
@@ -122,7 +122,7 @@ export default {
 
             if (mode) {
                 if ('null' !== mode) {
-                    await require('codemirror/mode/' + mode + '/' + mode + '.js');
+                    await require(`codemirror/mode/${mode}/${mode}.js`);
                 }
                 commit('setMode', mode);
             } else {

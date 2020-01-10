@@ -114,14 +114,14 @@ export default {
             });
         },
         cpuTooltip() {
-            return 'Load average: ' + this.load_avg['1m'] + ', '
-                 + this.load_avg['5m'] + ', ' + this.load_avg['15m'];
+            return `Load average: ${this.load_avg['1m']}, ${
+                  this.load_avg['5m']}, ${this.load_avg['15m']}`;
         },
         ramTooltip() {
-            return 'Using ' + this.ram.used + 'M of ' + this.ram.total + 'M';
+            return `Using ${this.ram.used}M of ${this.ram.total}M`;
         },
         diskTooltip() {
-            return this.disk.used + 'G used; ' + this.disk.free + 'G free';
+            return `${this.disk.used}G used; ${this.disk.free}G free`;
         },
     },
 };

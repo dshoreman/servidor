@@ -22,7 +22,7 @@ export default {
         },
         setErrors: (state, { message, errors, action = 'save' }) => {
             state.alerts.push({
-                title: 'Could not ' + action + ' Site!',
+                title: `Could not ${action} Site!`,
                 message,
                 isSuccess: false,
             });
@@ -85,10 +85,10 @@ export default {
         },
         loadBranches: ({ commit, state }, repo = '') => {
             commit('branchesLoading');
-            let url = '/api/sites/' + state.current.id + '/branches';
+            let url = `/api/sites/${state.current.id}/branches`;
 
             if ('' !== repo) {
-                url += '?repo=' + repo;
+                url += `?repo=${repo}`;
             }
 
             return new Promise((resolve, reject) => {
@@ -107,19 +107,19 @@ export default {
                 axios.post('/api/sites', state.site).then(response => {
                     commit('addSite', response.data);
                     commit('clearMessages');
-                    commit('setSuccess', "The site '" + response.data.name + "' has been created.");
+                    commit('setSuccess', `The site '${response.data.name}' has been created.`);
                     resolve(response);
                 }).catch(error => reject(error));
             });
         },
         update: ({ commit }, site) => {
-            axios.put('/api/sites/'+site.id, site.data).then(response => {
+            axios.put(`/api/sites/${site.id}`, site.data).then(response => {
                 commit('clearMessages');
                 commit('updateSite', {
                     id: site.id,
                     site: response.data,
                 });
-                commit('setSuccess', "The site '" + site.data.name + "' has been saved.");
+                commit('setSuccess', `The site '${site.data.name}' has been saved.`);
             }).catch(error => {
                 const res = error.response;
                 commit('clearMessages');
@@ -137,11 +137,11 @@ export default {
             });
         },
         pull: site => {
-            return axios.post('/api/sites/'+site.id+'/pull');
+            return axios.post(`/api/sites/${site.id}/pull`);
         },
         delete: ({ commit }, id) => {
             return new Promise((resolve, reject) => {
-                axios.delete('/api/sites/' + id).then(response => {
+                axios.delete(`/api/sites/${id}`).then(response => {
                     commit('removeSite', id);
                     resolve(response);
                 }).catch(error => {

@@ -89,7 +89,7 @@ export default {
             });
         },
         update: ({ commit }, group) => {
-            axios.put('/api/system/groups/'+group.gid, group.data).then(response => {
+            axios.put(`/api/system/groups/${group.gid}`, group.data).then(response => {
                 commit('updateGroup', {
                     gid: group.gid,
                     group: response.data,
@@ -98,7 +98,7 @@ export default {
             });
         },
         delete: ({ commit, state }, gid) => {
-            axios.delete('/api/system/groups/'+gid).then(() => {
+            axios.delete(`/api/system/groups/${gid}`).then(() => {
                 commit('removeGroup', state.group.gid_original);
                 commit('unsetEditorGroup');
             });
@@ -121,7 +121,7 @@ export default {
             return state.groups.map(group => {
                 return {
                     icon: 'users',
-                    text: group.gid+' - '+group.name,
+                    text: `${group.gid} - ${group.name}`,
                     value: group.gid,
                 };
             });

@@ -44,7 +44,7 @@ export default {
         open() {
             const prefix = '/' === this.path ? '' : this.path,
                 route = { name: 'files' },
-                target = prefix + '/' + this.file.filename;
+                target = `${prefix}/${this.file.filename}`;
 
             if (this.file.isFile) {
                 route.name = 'files.edit';

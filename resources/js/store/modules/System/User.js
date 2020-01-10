@@ -80,6 +80,7 @@ export default {
             });
         },
         edit: ({ commit, state, getters }, user) => {
+            /* eslint-disable no-warning-comments */
             // TODO: Add some kind of modal/confirm prompt in case
             //  the user wants to abort any changes and continue.
             if (state.editing && getters.userIsDirty) {
@@ -95,7 +96,7 @@ export default {
             });
         },
         update: ({ commit }, { uid, user }) => {
-            axios.put('/api/system/users/'+uid, user).then(response => {
+            axios.put(`/api/system/users/${uid}`, user).then(response => {
                 commit('updateUser', {
                     uid,
                     user: response.data,
@@ -104,7 +105,7 @@ export default {
             });
         },
         delete: ({ commit, state }, uid) => {
-            axios.delete('/api/system/users/'+uid).then(() => {
+            axios.delete(`/api/system/users/${uid}`).then(() => {
                 commit('removeUser', state.user.uid_original);
                 commit('unsetEditorUser');
             });
@@ -127,7 +128,7 @@ export default {
             return state.users.map(user => {
                 return {
                     icon: 'user',
-                    text: user.uid+' - '+user.name,
+                    text: `${user.uid} - ${user.name}`,
                     value: user.uid,
                 };
             });

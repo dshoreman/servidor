@@ -51,10 +51,10 @@ export default {
     methods: {
         isActive(item, absolute = false) {
             if (absolute) {
-                return this.$route.path === '/' + item.href.replace('.', '/');
+                return this.$route.path === `/${item.href.replace('.', '/')}`;
             }
 
-            const href = '/' + item.href.split('.')[0];
+            const href = `/${item.href.split('.')[0]}`;
 
             return this.$route.path.startsWith(href);
         },

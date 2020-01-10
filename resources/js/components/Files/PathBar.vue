@@ -41,10 +41,10 @@ export default {
             let path = '';
 
             for (const part of this.path.split('/')) {
-                path = path + part + '/';
+                path = `${path + part}/`;
 
                 parts.push({
-                    path: path.replace(/\/+$/, ''),
+                    path: path.replace(/\/+$/u, ''),
                     dirname: part,
                 });
             }
