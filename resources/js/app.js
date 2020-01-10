@@ -31,7 +31,7 @@ Vue.component('passport-personal-access-tokens', PassportAccessTokens);
 
 const router = new VueRouter({
     mode: 'history',
-    routes
+    routes,
 });
 
 router.beforeEach((to, from, next) => {

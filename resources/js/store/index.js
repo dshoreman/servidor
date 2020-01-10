@@ -19,5 +19,5 @@ export default new VueX.Store ({
         editor: FileEditor,
         systemGroups: Group,
         systemUsers: User,
-    }
+    },
 });

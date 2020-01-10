@@ -14,14 +14,16 @@ import SystemGroups from './components/System/Groups.vue';
 import SystemUsers from './components/System/Users.vue';
 
 const routes = [{
-    path: '/', component: Layout,
+    path: '/',
+    component: Layout,
     children: [{
         component: Dashboard,
         name: 'dashboard',
         path: '/',
         meta: { auth: true },
     }, {
-        path: '/apps', component: Sites,
+        path: '/apps',
+        component: Sites,
         children: [{
             component: SiteList,
             name: 'apps',
@@ -73,7 +75,7 @@ const routes = [{
         path: '/files/:path?',
         meta: { auth: true },
         props: (route) => ({
-            path: route.params.path ? route.params.path : '/var/www'
+            path: route.params.path ? route.params.path : '/var/www',
         }),
     }, {
         component: SystemGroups,

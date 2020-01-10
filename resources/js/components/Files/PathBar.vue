@@ -54,9 +54,10 @@ export default {
     },
     methods: {
         goTo: function (path) {
-            this.$router.push({ name: 'files', params: {
-                path: path ? path : '/',
-            }});
+            this.$router.push({
+                name: 'files',
+                params: { path: path ? path : '/' },
+            });
         },
         goUp: function () {
             this.goTo(this.path.substr(0, this.path.lastIndexOf('/')));

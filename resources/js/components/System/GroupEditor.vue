@@ -107,14 +107,14 @@ export default {
                 });
             }
 
-            this.$store.dispatch('systemGroups/update', {gid, data: this.tmpGroup});
+            this.$store.dispatch('systemGroups/update', { gid, data: this.tmpGroup });
         },
         deleteGroup (gid) {
             this.$store.dispatch('systemGroups/delete', gid);
         },
         addUser () {
             const user = this.users[this.users.findIndex(
-                u => u.uid === this.newUser
+                u => u.uid === this.newUser,
             )];
 
             if (!this.tmpGroup.users.includes(user.name)) {

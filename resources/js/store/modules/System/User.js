@@ -61,7 +61,7 @@ export default {
             }
             state.users.push(user);
         },
-        updateUser: (state, {uid, user}) => {
+        updateUser: (state, { uid, user }) => {
             const index = state.users.findIndex(u => u.uid === uid);
 
             Vue.set(state.users, index, user);
@@ -73,12 +73,12 @@ export default {
         },
     },
     actions: {
-        load: ({commit}) => {
+        load: ({ commit }) => {
             axios.get('/api/system/users').then(response => {
                 commit('setUsers', response.data);
             });
         },
-        edit: ({commit, state, getters}, user) => {
+        edit: ({ commit, state, getters }, user) => {
             // TODO: Add some kind of modal/confirm prompt in case
             //  the user wants to abort any changes and continue.
             if (state.editing && getters.userIsDirty) {
@@ -87,13 +87,13 @@ export default {
 
             commit('setEditorUser', user);
         },
-        create: ({commit}, user) => {
+        create: ({ commit }, user) => {
             axios.post('/api/system/users', user).then(response => {
                 commit('addUser', response.data);
                 commit('unsetEditorUser');
             });
         },
-        update: ({commit}, {uid, user}) => {
+        update: ({ commit }, { uid, user }) => {
             axios.put('/api/system/users/'+uid, user).then(response => {
                 commit('updateUser', {
                     uid: uid,
@@ -102,7 +102,7 @@ export default {
                 commit('unsetEditorUser');
             });
         },
-        delete: ({commit, state}, uid) => {
+        delete: ({ commit, state }, uid) => {
             axios.delete('/api/system/users/'+uid).then(() => {
                 commit('removeUser', state.user.uid_original);
                 commit('unsetEditorUser');

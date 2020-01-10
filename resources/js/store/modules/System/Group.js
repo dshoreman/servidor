@@ -57,7 +57,7 @@ export default {
         addGroup: (state, group) => {
             state.groups.push(group);
         },
-        updateGroup: (state, {gid, group}) => {
+        updateGroup: (state, { gid, group }) => {
             const index = state.groups.findIndex(g => g.gid === gid);
 
             Vue.set(state.groups, index, group);
@@ -69,34 +69,34 @@ export default {
         },
     },
     actions: {
-        load: ({commit}) => {
+        load: ({ commit }) => {
             axios.get('/api/system/groups').then(response => {
                 commit('setGroups', response.data);
             });
         },
-        edit: ({commit, state, getters}, group) => {
+        edit: ({ commit, state, getters }, group) => {
             if (state.editing && getters.groupIsDirty) {
                 return;
             }
 
             commit('setEditorGroup', group);
         },
-        create: ({commit, state}) => {
+        create: ({ commit, state }) => {
             axios.post('/api/system/groups', state.group).then(response => {
                 commit('addGroup', response.data);
                 commit('unsetEditorGroup');
             });
         },
-        update: ({commit}, group) => {
+        update: ({ commit }, group) => {
             axios.put('/api/system/groups/'+group.gid, group.data).then(response => {
                 commit('updateGroup', {
                     gid: group.gid,
-                    group: response.data
+                    group: response.data,
                 });
                 commit('unsetEditorGroup');
             });
         },
-        delete: ({commit, state}, gid) => {
+        delete: ({ commit, state }, gid) => {
             axios.delete('/api/system/groups/'+gid).then(() => {
                 commit('removeGroup', state.group.gid_original);
                 commit('unsetEditorGroup');

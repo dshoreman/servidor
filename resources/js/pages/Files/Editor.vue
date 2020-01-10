@@ -82,7 +82,7 @@ export default {
             },
             set (value) {
                 this.$store.dispatch('editor/setTheme', value);
-            }
+            },
         },
         mode: {
             get () {
@@ -90,7 +90,7 @@ export default {
             },
             set (value) {
                 this.$store.dispatch('editor/setMode', value);
-            }
+            },
         },
         wrap: {
             get () {
@@ -98,8 +98,8 @@ export default {
             },
             set (value) {
                 this.$store.dispatch('editor/setLineWrapping', value);
-            }
-        }
+            },
+        },
     },
     methods: {
         ...mapActions({

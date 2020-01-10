@@ -92,7 +92,7 @@ export default {
         },
         setLineWrapping(state, value) {
             state.options.lineWrapping = value;
-        }
+        },
     },
     actions: {
         async setTheme ({ commit }, theme) {
@@ -131,7 +131,7 @@ export default {
         },
         setLineWrapping ({ commit }, value) {
             commit('setLineWrapping', value);
-        }
+        },
     },
     getters: {
         options: state => state.options,

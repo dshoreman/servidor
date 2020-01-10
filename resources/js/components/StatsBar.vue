@@ -69,7 +69,7 @@ export default {
         const refreshStatsBar = () => {
             return setInterval(
                 () => this.initStatsBar(),
-                1000 * 60
+                1000 * 60,
             );
         };
 

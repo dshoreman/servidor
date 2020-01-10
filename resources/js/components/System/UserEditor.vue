@@ -112,14 +112,14 @@ export default {
                 });
             }
 
-            this.$store.dispatch('systemUsers/update', {uid, user: this.tmpUser});
+            this.$store.dispatch('systemUsers/update', { uid, user: this.tmpUser });
         },
         deleteUser (uid) {
             this.$store.dispatch('systemUsers/delete', uid);
         },
         addGroup () {
             const group = this.groups[this.groups.findIndex(
-                g => g.gid === this.newGroup
+                g => g.gid === this.newGroup,
             )];
 
             if (!this.tmpUser.groups.includes(group.name)) {

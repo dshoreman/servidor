@@ -24,7 +24,7 @@ export default {
     methods: {
         edit () {
             this.$emit('edit', this.group);
-        }
-    }
+        },
+    },
 };
 </script>

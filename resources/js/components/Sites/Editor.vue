@@ -158,13 +158,13 @@ export default {
             refreshBranches: 'sites/loadBranches',
         }),
         updateSite(id) {
-            this.$store.dispatch('sites/update', {id, data: this.tmpSite});
+            this.$store.dispatch('sites/update', { id, data: this.tmpSite });
         },
         deleteSite() {
             /* eslint-disable no-alert */
             confirm('Deletion is permanent! Are you sure?') &&
                 this.$store.dispatch('sites/delete', this.site.id).then(
-                    () => this.$router.push({ name: 'apps' })
+                    () => this.$router.push({ name: 'apps' }),
                 );
         },
         setDocroot() {

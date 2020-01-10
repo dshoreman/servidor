@@ -28,13 +28,13 @@ export default {
         return {
             menu: [{
                 name: 'Applications',
-                href: 'apps'
+                href: 'apps',
             }, {
                 name: 'Databases',
-                href: 'databases'
+                href: 'databases',
             }, {
                 name: 'File Browser',
-                href: 'files'
+                href: 'files',
             }, {
                 name: 'System',
                 href: 'system.groups',
