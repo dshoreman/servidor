@@ -14,7 +14,7 @@ export default {
     props: {
         alerts: {
             type: Array,
-            default: () => ([]),
+            default: () => [],
         },
     },
 };

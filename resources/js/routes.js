@@ -34,7 +34,7 @@ const routes = [{
             name: 'apps.view',
             path: '/apps/:id',
             meta: { auth: true },
-            props: (route) => {
+            props: route => {
                 const id = parseInt(route.params.id);
 
                 if (Number.isNaN(id) || 0 > id) {
@@ -48,7 +48,7 @@ const routes = [{
             name: 'apps.edit',
             path: '/apps/:id/edit',
             meta: { auth: true },
-            props: (route) => {
+            props: route => {
                 const id = parseInt(route.params.id);
 
                 if (Number.isNaN(id) || 0 > id) {
@@ -68,13 +68,13 @@ const routes = [{
         name: 'files.edit',
         path: '/files/edit',
         meta: { auth: true },
-        props: (route) => ({ filePath: route.query.f }),
+        props: route => ({ filePath: route.query.f }),
     }, {
         component: FileBrowser,
         name: 'files',
         path: '/files/:path?',
         meta: { auth: true },
-        props: (route) => ({
+        props: route => ({
             path: route.params.path ? route.params.path : '/var/www',
         }),
     }, {

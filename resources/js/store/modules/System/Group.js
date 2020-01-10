@@ -42,7 +42,7 @@ export default {
 
             state.editing = true;
         },
-        unsetEditorGroup: (state) => {
+        unsetEditorGroup: state => {
             state.clean = {};
             state.editing = false;
             state.editMode = false;

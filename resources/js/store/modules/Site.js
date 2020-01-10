@@ -56,7 +56,7 @@ export default {
             state.branches = branches;
             state.branchesLoading = false;
         },
-        branchesLoading: (state) => {
+        branchesLoading: state => {
             state.branchesLoading = true;
         },
         addSite: (state, site) => {
@@ -136,7 +136,7 @@ export default {
                 }
             });
         },
-        pull: (site) => {
+        pull: site => {
             return axios.post('/api/sites/'+site.id+'/pull');
         },
         delete: ({ commit }, id) => {
@@ -163,13 +163,13 @@ export default {
                 return site.name.toLowerCase().includes(state.currentFilter.toLowerCase());
             });
         },
-        findById: (state) => (id) => {
+        findById: state => id => {
             return state.sites.find(s => s.id === id);
         },
-        findByDocroot: (state) => (path) => {
+        findByDocroot: state => path => {
             return state.sites.find(s => s.document_root === path);
         },
-        branchOptions: (state) => {
+        branchOptions: state => {
             return state.branches.map(b => {
                 return { text: b, value: b };
             });

@@ -33,7 +33,7 @@ export default {
                 return 'search';
             }
 
-            if ('object' === typeof(this.sites.find(s => s.name.toLowerCase() === match))) {
+            if ('object' === typeof this.sites.find(s => s.name.toLowerCase() === match)) {
                 return 'cogs';
             }
 
@@ -53,13 +53,13 @@ export default {
 
             const result = this.sites.find(s => s.name.toLowerCase() === match);
 
-            if ('object' === typeof(result)) {
+            if ('object' === typeof result) {
                 this.$router.push({ name: 'apps.edit', params: { id: result.id }});
 
                 return;
             }
 
-            this.$store.dispatch('sites/create').then(({ data })=>{
+            this.$store.dispatch('sites/create').then(({ data }) => {
                 this.$router.push({ name: 'apps.edit', params: { id: data.id }});
             });
         },

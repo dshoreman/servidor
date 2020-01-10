@@ -92,7 +92,7 @@ export default {
     },
     watch: {
         editing(editing) {
-            (!editing) || this.$nextTick(() => this.$refs.name.focus());
+            !editing || this.$nextTick(() => this.$refs.name.focus());
         },
     },
     methods: {

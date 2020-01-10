@@ -12,7 +12,7 @@ export default {
             state.alert.title = title;
             state.alert.msg = msg;
         },
-        clearAlert: (state) => {
+        clearAlert: state => {
             state.alert = {};
         },
         setToken: (state, token) => {
@@ -20,7 +20,7 @@ export default {
             localStorage.setItem('accessToken', token);
             state.token = token;
         },
-        clearToken: (state) => {
+        clearToken: state => {
             localStorage.removeItem('accessToken');
             state.token = null;
         },
@@ -29,7 +29,7 @@ export default {
         },
     },
     actions: {
-        register: (data) => {
+        register: data => {
             return new Promise((resolve, reject) => {
                 axios.post('/api/register', {
                     name: data.name,

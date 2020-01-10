@@ -42,7 +42,7 @@ export default {
 
             state.editing = true;
         },
-        unsetEditorUser: (state) => {
+        unsetEditorUser: state => {
             state.clean = {};
             state.editing = false;
             state.editMode = false;

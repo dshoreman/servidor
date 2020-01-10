@@ -12,7 +12,7 @@ export default {
         setFile: (state, file) => {
             state.file = file;
         },
-        clearFile: (state) => {
+        clearFile: state => {
             state.file = [];
         },
         setPath: (state, path) => {
