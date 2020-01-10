@@ -1,3 +1,5 @@
+const SYSTEM_GID_THRESHOLD = 1000;
+
 export default {
     namespaced: true,
     state: {
@@ -24,6 +26,7 @@ export default {
         },
         setEditorGroup: (state, groupOrName) => {
             let group = groupOrName;
+
             state.editMode = 'object' === typeof group;
 
             if (!state.editMode) {
@@ -110,7 +113,7 @@ export default {
         },
         filtered: state => {
             return state.groups.filter(group => {
-                if (!state.showSystem && 1000 > group.gid) {
+                if (!state.showSystem && SYSTEM_GID_THRESHOLD > group.gid) {
                     return false;
                 }
 

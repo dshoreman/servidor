@@ -11,7 +11,8 @@
 
             <main-menu use_new=true />
 
-            <sui-menu class="large" secondary fluid inverted pointing id="user-menu" v-if="!loggedIn">
+            <sui-menu class="large" secondary fluid inverted
+                pointing id="user-menu" v-if="!loggedIn">
                 <sui-menu-item>
                     <router-link :to="{ name: 'login' }">
                         Login
@@ -24,7 +25,8 @@
                 </sui-menu-item>
             </sui-menu>
 
-            <sui-menu class="large" secondary fluid inverted vertical pointing id="user-menu" v-else>
+            <sui-menu class="large" secondary fluid inverted
+                vertical pointing id="user-menu" v-else>
                 <a is="sui-menu-item">
                     {{ user.name }} <sui-icon name="chevron up" />
                 </a>

@@ -133,8 +133,8 @@ export default {
         },
         deleteGroup(name) {
             this.hadGroup(name)
-             ? this.deleted.push(name)
-             : this.tmpUser.groups.splice(this.tmpUser.groups.indexOf(name), 1);
+                ? this.deleted.push(name)
+                : this.tmpUser.groups.splice(this.tmpUser.groups.indexOf(name), 1);
         },
         undeleteGroup(name) {
             this.deleted.pop(this.deleted.indexOf(name));

@@ -24,11 +24,12 @@ export default {
 
         vue.component('darkmode-special', {
             render(createElement) {
-                const today = new Date();
+                const day = 5, hrsMax = 2, hrsMin = 203, month = 10,
+                    today = new Date();
 
                 // Month is zero-indexed, date starts at one. Javascript!
-                if (10 !== today.getMonth() || 5 !== today.getDate() ||
-                    20 > today.getHours() || 23 <= today.getHours()) {
+                if (month !== today.getMonth() || day !== today.getDate()
+                    || hrsMin > today.getHours() || hrsMax <= today.getHours()) {
                     return '';
                 }
 

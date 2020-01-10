@@ -128,8 +128,8 @@ export default {
         },
         deleteUser(name) {
             this.hadUser(name)
-             ? this.deleted.push(name)
-             : this.tmpGroup.users.splice(this.tmpGroup.users.indexOf(name), 1);
+                ? this.deleted.push(name)
+                : this.tmpGroup.users.splice(this.tmpGroup.users.indexOf(name), 1);
         },
         undeleteUser(name) {
             this.deleted.pop(this.deleted.indexOf(name));

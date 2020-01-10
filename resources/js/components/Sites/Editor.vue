@@ -74,7 +74,8 @@
             <sui-form-fields v-if="tmpSite.type && tmpSite.type != 'redirect'">
                 <sui-form-field :width="12" :error="'source_repo' in errors">
                     <label>Clone URL</label>
-                    <sui-input v-model="tmpSite.source_repo" @change="refreshBranches(tmpSite.source_repo)" />
+                    <sui-input v-model="tmpSite.source_repo"
+                        @change="refreshBranches(tmpSite.source_repo)" />
                     <sui-label basic color="red" pointing v-if="'source_repo' in errors">
                         {{ errors.source_repo[0] }}
                     </sui-label>
@@ -162,8 +163,8 @@ export default {
         },
         deleteSite() {
             /* eslint-disable no-alert */
-            confirm('Deletion is permanent! Are you sure?') &&
-                this.$store.dispatch('sites/delete', this.site.id).then(
+            confirm('Deletion is permanent! Are you sure?')
+                && this.$store.dispatch('sites/delete', this.site.id).then(
                     () => this.$router.push({ name: 'apps' }),
                 );
         },

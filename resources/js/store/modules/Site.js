@@ -1,3 +1,5 @@
+const HTTP_UNPROCESSABLE_ENTITY = 422;
+
 export default {
     namespaced: true,
     state: {
@@ -122,9 +124,10 @@ export default {
                 commit('setSuccess', `The site '${site.data.name}' has been saved.`);
             }).catch(error => {
                 const res = error.response;
+
                 commit('clearMessages');
 
-                if (res && 422 === res.status) {
+                if (res && HTTP_UNPROCESSABLE_ENTITY === res.status) {
                     commit('setErrors', {
                         message: 'Fix the validation errors below and try again.',
                         errors: res.data.errors,

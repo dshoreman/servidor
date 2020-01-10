@@ -30,6 +30,7 @@ export default {
             if (this.file.isFile) {
                 return 'file';
             }
+
             return 'question circle';
         },
         iconColour() {
@@ -39,6 +40,7 @@ export default {
             if (this.file.isFile) {
                 return 'violet';
             }
+
             return 'red';
         },
         open() {

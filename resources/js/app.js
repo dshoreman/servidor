@@ -13,6 +13,8 @@ import VueRouter from 'vue-router';
 import routes from './routes';
 import store from './store';
 
+const HTTP_UNAUTHORISED = 401;
+
 window.Vue = Vue;
 
 Vue.use(VueRouter);
@@ -55,7 +57,8 @@ router.beforeEach((to, from, next) => {
 window.axios.interceptors.response.use(response => {
     return response;
 }, error => {
-    if (401 === error.response.status && 'invalid_credentials' !== error.response.data.error) {
+    if (HTTP_UNAUTHORISED === error.response.status
+        && 'invalid_credentials' !== error.response.data.error) {
         store.dispatch('forceLogin', 'Session timed out');
         router.push({ name: 'login' });
     }

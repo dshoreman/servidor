@@ -102,33 +102,24 @@ export default {
         },
         async setMode({ commit }, value) {
             const filename = (/.+\.(?<ext>[^.]+)$/u).exec(value);
-            let info, mode, spec;
+            let mode;
 
-            if (filename) {
-                info = CodeMirror.findModeByExtension(filename.groups.ext);
-                if (info) {
-                    mode = info.mode;
-                    spec = info.mime;
-                    commit('setSelectedMode', spec);
-                }
-            } else {
-                info = CodeMirror.findModeByMIME(value);
-                if (info) {
-                    mode = info.mode;
-                    spec = value;
-                    commit('setSelectedMode', info.mime);
-                }
+            const info = filename
+                ? CodeMirror.findModeByExtension(filename.groups.ext)
+                : CodeMirror.findModeByMIME(value);
+
+            if (info) {
+                mode = info.mode;
+                commit('setSelectedMode', info.mime);
             }
 
-            if (mode) {
-                if ('null' !== mode) {
-                    await require(`codemirror/mode/${mode}/${mode}.js`);
-                }
-                commit('setMode', mode);
-            } else {
+            if (!mode) {
                 commit('setSelectedMode', 'text/plain');
-                commit('setMode', null);
+            } else if ('null' !== mode) {
+                await require(`codemirror/mode/${mode}/${mode}.js`);
             }
+
+            commit('setMode', mode ? mode : null);
         },
         setLineWrapping({ commit }, value) {
             commit('setLineWrapping', value);

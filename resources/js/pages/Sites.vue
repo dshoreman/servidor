@@ -4,7 +4,7 @@
             <sui-grid-column>
                 <sui-input placeholder="Type a name for your Application..." :icon="filterIcon"
                            class="fluid massive" :inverted="darkMode" :transparent="darkMode"
-                           v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit"></sui-input>
+                           v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit" />
             </sui-grid-column>
         </sui-grid-row>
         <router-view id="sites" :sites="sites" />

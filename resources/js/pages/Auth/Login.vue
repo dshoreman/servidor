@@ -12,7 +12,8 @@
                         :content="error.msg" />
 
                     <div class="field">
-                        <div class="ui left inverted transparent icon input" type="email" placeholder="Email address">
+                        <div class="ui left inverted transparent icon input"
+                            type="email" placeholder="Email address">
                             <input id="email" type="email" name="email"
                                 v-model="username" placeholder="E-mail address"
                                 required autofocus>
@@ -20,7 +21,8 @@
                         </div>
                     </div>
                     <div class="field">
-                        <div class="ui left inverted transparent icon input" type="password" placeholder="Password">
+                        <div class="ui left inverted transparent icon input"
+                            type="password" placeholder="Password">
                             <input id="password" type="password" name="password"
                                 v-model="password" required
                                 placeholder="Password" />

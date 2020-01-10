@@ -50,6 +50,8 @@
 <script>
 import { mapGetters } from 'vuex';
 
+const REFRESH_INTERVAL_MS = 60000;
+
 export default {
     data() {
         return {
@@ -69,14 +71,14 @@ export default {
         const refreshStatsBar = () => {
             return setInterval(
                 () => this.initStatsBar(),
-                1000 * 60,
+                REFRESH_INTERVAL_MS,
             );
         };
 
         let refreshStatsBarIntervalId = refreshStatsBar();
 
         const startStopRefreshStatsBar = () => {
-            if(document.hidden) {
+            if (document.hidden) {
                 clearInterval(refreshStatsBarIntervalId);
             } else {
                 refreshStatsBarIntervalId = refreshStatsBar();
@@ -115,7 +117,7 @@ export default {
         },
         cpuTooltip() {
             return `Load average: ${this.load_avg['1m']}, ${
-                  this.load_avg['5m']}, ${this.load_avg['15m']}`;
+                this.load_avg['5m']}, ${this.load_avg['15m']}`;
         },
         ramTooltip() {
             return `Using ${this.ram.used}M of ${this.ram.total}M`;

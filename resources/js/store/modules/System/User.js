@@ -1,3 +1,5 @@
+const SYSTEM_UID_THRESHOLD = 1000;
+
 export default {
     namespaced: true,
     state: {
@@ -24,6 +26,7 @@ export default {
         },
         setEditorUser: (state, userOrName) => {
             let user = userOrName;
+
             state.editMode = 'object' === typeof user;
 
             if (!state.editMode) {
@@ -117,7 +120,7 @@ export default {
         },
         filtered: state => {
             return state.users.filter(user => {
-                if (!state.showSystem && 1000 > user.uid) {
+                if (!state.showSystem && SYSTEM_UID_THRESHOLD > user.uid) {
                     return false;
                 }
 

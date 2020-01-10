@@ -11,8 +11,9 @@
                 <sui-menu-header :content="item.name" />
 
                 <sui-menu secondary fluid inverted vertical pointing>
-                    <router-link :to="{ name: subitem.href }" is="sui-menu-item" :active="isActive(subitem, true)"
-                        v-for="subitem in item.menu" :key="subitem.href" class="submenu-item">
+                    <router-link :to="{ name: subitem.href }" is="sui-menu-item"
+                        class="submenu-item" :active="isActive(subitem, true)"
+                        v-for="subitem in item.menu" :key="subitem.href">
                         {{ subitem.name }}
                     </router-link>
                 </sui-menu>

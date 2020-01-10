@@ -18,7 +18,8 @@
             <sui-segment attached v-if="filteredGroups.length">
                 <sui-list divided relaxed>
                     <system-group-item v-for="group in filteredGroups"
-                        :group="group" :key="group.gid" :active="group.gid === activeGroup" @edit="edit" />
+                        :group="group" :key="group.gid" @edit="edit"
+                        :active="group.gid === activeGroup" />
                 </sui-list>
             </sui-segment>
 
@@ -48,6 +49,8 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 import SystemGroupEditor from './GroupEditor';
 import SystemGroupItem from './GroupItem';
 
+const EDIT_COLS = 10, READ_COLS = 16;
+
 export default {
     components: {
         SystemGroupItem,
@@ -69,7 +72,7 @@ export default {
             filteredGroups: 'systemGroups/filtered',
         }),
         listWidth() {
-            return this.editing ? 10 : 16;
+            return this.editing ? EDIT_COLS : READ_COLS;
         },
     },
     methods: {
