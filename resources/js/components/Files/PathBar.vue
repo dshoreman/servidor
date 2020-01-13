@@ -6,15 +6,15 @@
             <template v-for="(segment, index) in pathParts">
 
                 <sui-breadcrumb-section v-if="segment.path != path"
-                    link @click="goTo(segment.path)">
+                    link :key="index" @click="goTo(segment.path)">
                     {{ segment.dirname }}
                 </sui-breadcrumb-section>
-                <sui-breadcrumb-section v-else>
+                <sui-breadcrumb-section :key="index" v-else>
                     {{ segment.dirname }}
                 </sui-breadcrumb-section>
 
                 <sui-breadcrumb-divider @click="goTo(segment.path)"
-                    v-if="index < (pathParts.length - 1)" />
+                    v-if="index < (pathParts.length - 1)" :key="'divider' + index" />
 
             </template>
         </sui-breadcrumb>

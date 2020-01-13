@@ -1,12 +1,12 @@
 <template>
     <sui-menu class="large" secondary fluid inverted vertical pointing>
-        <router-link :to="{ name: item.href }" is="sui-menu-item" v-if="!item.menu"
-            v-for="item in menu" :key="item.href" :active="isActive(item)">
-            {{ item.name }}
-        </router-link>
+        <template v-for="item in menu">
+            <router-link :to="{ name: item.href }" is="sui-menu-item"
+                v-if="!item.menu" :active="isActive(item)" :key="item.href">
+                {{ item.name }}
+            </router-link>
 
-        <template v-else>
-            <sui-menu-item class="link" :active="isActive(item)">
+            <sui-menu-item class="link" :active="isActive(item)" :key="item.href" v-else>
 
                 <sui-menu-header :content="item.name" />
 

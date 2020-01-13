@@ -8,7 +8,7 @@
                     v-model="search" @keydown.enter="create"></sui-input>
 
             <sui-table selectable :inverted="darkMode">
-                <sui-table-row v-for="db, key in databases" :key="key">
+                <sui-table-row v-for="(db, key) in databases" :key="key">
                     <sui-table-cell>
                         <sui-icon :color="darkMode ? 'orange' : 'violet'" name="database" />
                         {{ db }}
