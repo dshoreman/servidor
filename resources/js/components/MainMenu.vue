@@ -1,18 +1,19 @@
 <template>
     <sui-menu class="large" secondary fluid inverted vertical pointing>
-        <router-link :to="{ name: item.href }" is="sui-menu-item" v-if="!item.menu"
-            v-for="item in menu" :key="item.href" :active="isActive(item)">
-            {{ item.name }}
-        </router-link>
+        <template v-for="item in menu">
+            <router-link :to="{ name: item.href }" is="sui-menu-item"
+                v-if="!item.menu" :active="isActive(item)" :key="item.href">
+                {{ item.name }}
+            </router-link>
 
-        <template v-else>
-            <sui-menu-item class="link" :active="isActive(item)">
+            <sui-menu-item class="link" :active="isActive(item)" :key="item.href" v-else>
 
                 <sui-menu-header :content="item.name" />
 
                 <sui-menu secondary fluid inverted vertical pointing>
-                    <router-link :to="{ name: subitem.href }" is="sui-menu-item" :active="isActive(subitem, true)"
-                        v-for="subitem in item.menu" :key="subitem.href" class="submenu-item">
+                    <router-link :to="{ name: subitem.href }" is="sui-menu-item"
+                        class="submenu-item" :active="isActive(subitem, true)"
+                        v-for="subitem in item.menu" :key="subitem.href">
                         {{ subitem.name }}
                     </router-link>
                 </sui-menu>
@@ -24,17 +25,17 @@
 
 <script>
 export default {
-    data () {
+    data() {
         return {
             menu: [{
                 name: 'Applications',
-                href: 'apps'
+                href: 'apps',
             }, {
                 name: 'Databases',
-                href: 'databases'
+                href: 'databases',
             }, {
                 name: 'File Browser',
-                href: 'files'
+                href: 'files',
             }, {
                 name: 'System',
                 href: 'system.groups',
@@ -49,15 +50,15 @@ export default {
         };
     },
     methods: {
-        isActive (item, absolute = false) {
+        isActive(item, absolute = false) {
             if (absolute) {
-                return this.$route.path == '/' + item.href.replace('.', '/');
+                return this.$route.path === `/${item.href.replace('.', '/')}`;
             }
 
-            let href = '/' + item.href.split('.')[0];
+            const href = `/${item.href.split('.')[0]}`;
 
             return this.$route.path.startsWith(href);
         },
     },
-}
+};
 </script>

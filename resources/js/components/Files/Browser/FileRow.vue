@@ -20,7 +20,7 @@ export default {
         'path',
     ],
     methods: {
-        icon: function () {
+        icon() {
             if (this.file.isLink) {
                 return 'linkify';
             }
@@ -30,19 +30,23 @@ export default {
             if (this.file.isFile) {
                 return 'file';
             }
+
+            return 'question circle';
         },
-        iconColour: function () {
+        iconColour() {
             if (this.file.isDir) {
                 return 'blue';
             }
             if (this.file.isFile) {
                 return 'violet';
             }
+
+            return 'red';
         },
-        open: function () {
-            let prefix = this.path == '/' ? '' : this.path,
-                target = prefix + '/' + this.file.filename,
-                route = { name: 'files' };
+        open() {
+            const prefix = '/' === this.path ? '' : this.path,
+                route = { name: 'files' },
+                target = `${prefix}/${this.file.filename}`;
 
             if (this.file.isFile) {
                 route.name = 'files.edit';
@@ -54,5 +58,5 @@ export default {
             this.$router.push(route);
         },
     },
-}
+};
 </script>

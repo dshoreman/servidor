@@ -10,9 +10,10 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-let accessToken = localStorage.getItem('accessToken');
+const accessToken = localStorage.getItem('accessToken');
+
 if (accessToken) {
-    window.axios.defaults.headers.common['Authorization'] = 'Bearer '+accessToken;
+    window.axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 }
 
 /**

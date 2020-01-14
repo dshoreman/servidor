@@ -1,9 +1,8 @@
 <template>
     <div v-if="alerts.length" class="alerts">
-        <sui-message v-for="alert in alerts" :key="alert.message"
-                     :header="alert.title" v-if="alert.message"
+        <sui-message v-for="alert in filteredAlerts()" :key="alert.message"
                      :success="alert.isSuccess" :error="!alert.isSuccess"
-                     class="visible">
+                     :header="alert.title" class="visible">
             <p>{{ alert.message }}</p>
         </sui-message>
     </div>
@@ -14,8 +13,13 @@ export default {
     props: {
         alerts: {
             type: Array,
-            default: () => ([]),
+            default: () => [],
         },
     },
-}
+    methods: {
+        filteredAlerts() {
+            return this.alerts.filter(alert => !!alert.message);
+        },
+    },
+};
 </script>

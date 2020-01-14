@@ -1,3 +1,5 @@
+const SYSTEM_GID_THRESHOLD = 1000;
+
 export default {
     namespaced: true,
     state: {
@@ -22,8 +24,10 @@ export default {
         toggleSystemGroups: (state, value) => {
             state.showSystem = value;
         },
-        setEditorGroup: (state, group) => {
-            state.editMode = typeof group == 'object';
+        setEditorGroup: (state, groupOrName) => {
+            let group = groupOrName;
+
+            state.editMode = 'object' === typeof group;
 
             if (!state.editMode) {
                 group = {
@@ -42,7 +46,7 @@ export default {
 
             state.editing = true;
         },
-        unsetEditorGroup: (state) => {
+        unsetEditorGroup: state => {
             state.clean = {};
             state.editing = false;
             state.editMode = false;
@@ -57,47 +61,47 @@ export default {
         addGroup: (state, group) => {
             state.groups.push(group);
         },
-        updateGroup: (state, {gid, group}) => {
-            let index = state.groups.findIndex(g => g.gid === gid);
+        updateGroup: (state, { gid, group }) => {
+            const index = state.groups.findIndex(g => g.gid === gid);
 
             Vue.set(state.groups, index, group);
         },
         removeGroup: (state, gid) => {
-            let index = state.groups.findIndex(g => g.gid === gid);
+            const index = state.groups.findIndex(g => g.gid === gid);
 
             state.groups.splice(index, 1);
         },
     },
     actions: {
-        load: ({commit}) => {
+        load: ({ commit }) => {
             axios.get('/api/system/groups').then(response => {
                 commit('setGroups', response.data);
             });
         },
-        edit: ({commit, state, getters}, group) => {
+        edit: ({ commit, state, getters }, group) => {
             if (state.editing && getters.groupIsDirty) {
                 return;
             }
 
             commit('setEditorGroup', group);
         },
-        create: ({commit, state}) => {
+        create: ({ commit, state }) => {
             axios.post('/api/system/groups', state.group).then(response => {
                 commit('addGroup', response.data);
                 commit('unsetEditorGroup');
             });
         },
-        update: ({commit}, group) => {
-            axios.put('/api/system/groups/'+group.gid, group.data).then(response => {
+        update: ({ commit }, group) => {
+            axios.put(`/api/system/groups/${group.gid}`, group.data).then(response => {
                 commit('updateGroup', {
                     gid: group.gid,
-                    group: response.data
+                    group: response.data,
                 });
                 commit('unsetEditorGroup');
             });
         },
-        delete: ({commit, state}, gid) => {
-            axios.delete('/api/system/groups/'+gid).then(response => {
+        delete: ({ commit, state }, gid) => {
+            axios.delete(`/api/system/groups/${gid}`).then(() => {
                 commit('removeGroup', state.group.gid_original);
                 commit('unsetEditorGroup');
             });
@@ -109,7 +113,7 @@ export default {
         },
         filtered: state => {
             return state.groups.filter(group => {
-                if (!state.showSystem && group.gid < 1000) {
+                if (!state.showSystem && SYSTEM_GID_THRESHOLD > group.gid) {
                     return false;
                 }
 
@@ -120,21 +124,21 @@ export default {
             return state.groups.map(group => {
                 return {
                     icon: 'users',
-                    text: group.gid+' - '+group.name,
+                    text: `${group.gid} - ${group.name}`,
                     value: group.gid,
                 };
             });
         },
         groupIsDirty: state => {
-            let old = state.clean,
-                now = state.group;
+            const now = state.group,
+                old = state.clean;
 
-            if (old === null) {
+            if (null === old) {
                 return false;
             }
 
-            return old.name != now.name
-                || old.gid != now.gid
+            return old.name !== now.name
+                || old.gid !== now.gid
                 || !_.isEqual(old.users, now.users);
         },
     },

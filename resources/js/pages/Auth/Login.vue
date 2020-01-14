@@ -12,7 +12,8 @@
                         :content="error.msg" />
 
                     <div class="field">
-                        <div class="ui left inverted transparent icon input" type="email" placeholder="Email address">
+                        <div class="ui left inverted transparent icon input"
+                            type="email" placeholder="Email address">
                             <input id="email" type="email" name="email"
                                 v-model="username" placeholder="E-mail address"
                                 required autofocus>
@@ -20,7 +21,8 @@
                         </div>
                     </div>
                     <div class="field">
-                        <div class="ui left inverted transparent icon input" type="password" placeholder="Password">
+                        <div class="ui left inverted transparent icon input"
+                            type="password" placeholder="Password">
                             <input id="password" type="password" name="password"
                                 v-model="password" required
                                 placeholder="Password" />
@@ -52,19 +54,19 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
-    data () {
+    data() {
         return {
             username: '',
             password: '',
         };
     },
-    mounted () {
+    mounted() {
         document.body.classList.add('login');
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
         document.body.classList.remove('login');
 
         return next();
@@ -78,11 +80,11 @@ export default {
         ...mapMutations([
             'setAlert',
         ]),
-        login () {
+        login() {
             this.$store.dispatch('login', {
                 username: this.username,
                 password: this.password,
-            }).then(response => {
+            }).then(() => {
                 this.$router.push({ name: 'dashboard' });
             });
         },

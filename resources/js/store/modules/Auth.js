@@ -8,19 +8,19 @@ export default {
         user: {},
     },
     mutations: {
-        setAlert: (state, {msg, title}) => {
+        setAlert: (state, { msg, title }) => {
             state.alert.title = title;
             state.alert.msg = msg;
         },
-        clearAlert: (state) => {
+        clearAlert: state => {
             state.alert = {};
         },
         setToken: (state, token) => {
-            window.axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
+            window.axios.defaults.headers.common.Authorization = `Bearer ${token}`;
             localStorage.setItem('accessToken', token);
             state.token = token;
         },
-        clearToken: (state) => {
+        clearToken: state => {
             localStorage.removeItem('accessToken');
             state.token = null;
         },
@@ -29,7 +29,7 @@ export default {
         },
     },
     actions: {
-        register: ({commit}, data) => {
+        register: data => {
             return new Promise((resolve, reject) => {
                 axios.post('/api/register', {
                     name: data.name,
@@ -40,10 +40,10 @@ export default {
                     resolve(response);
                 }).catch(error => {
                     reject(error);
-                });;
+                });
             });
         },
-        login: ({commit}, data) => {
+        login: ({ commit }, data) => {
             return new Promise((resolve, reject) => {
                 axios.post('/api/login', {
                     username: data.username,
@@ -56,13 +56,13 @@ export default {
                     commit('clearAlert');
                     commit('setAlert', {
                         title: "We couldn't get you logged in :(",
-                        msg: error.response.data.message
+                        msg: error.response.data.message,
                     });
                     reject(error);
                 });
             });
         },
-        logout: ({commit}) => {
+        logout: ({ commit }) => {
             return new Promise((resolve, reject) => {
                 axios.post('/api/logout').then(response => {
                     resolve(response);
@@ -73,12 +73,12 @@ export default {
                 });
             });
         },
-        fetchProfile: ({commit}) => {
+        fetchProfile: ({ commit }) => {
             axios.get('/api/user').then(response => {
                 commit('setUser', response.data);
             });
         },
-        forceLogin: ({commit}, reason) => {
+        forceLogin: ({ commit }, reason) => {
             commit('setAlert', { title: reason, msg: 'Please login again.' });
             commit('clearToken');
         },
@@ -87,7 +87,7 @@ export default {
         authMsg: state => state.alert,
         token: state => state.token,
         loggedIn: state => {
-            return state.token !== null;
+            return null !== state.token;
         },
     },
 };

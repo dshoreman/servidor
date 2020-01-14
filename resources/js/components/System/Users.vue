@@ -18,7 +18,8 @@
             <sui-segment attached v-if="filteredUsers.length">
                 <sui-list divided relaxed>
                     <system-user-item v-for="user in filteredUsers"
-                        :user="user" :key="user.uid" :active="user.uid === activeUser" @edit="edit" />
+                        :user="user" :key="user.uid" @edit="edit"
+                        :active="user.uid === activeUser" />
                 </sui-list>
             </sui-segment>
 
@@ -44,16 +45,18 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
-import SystemUserItem from './UserItem';
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 import SystemUserEditor from './UserEditor';
+import SystemUserItem from './UserItem';
+
+const EDIT_COLS = 10, READ_COLS = 16;
 
 export default {
     components: {
         SystemUserItem,
         SystemUserEditor,
     },
-    mounted () {
+    mounted() {
         this.$store.dispatch('systemUsers/load');
         this.$store.dispatch('systemGroups/load');
     },
@@ -69,7 +72,7 @@ export default {
             filteredUsers: 'systemUsers/filtered',
         }),
         listWidth() {
-            return this.editing ? 10 : 16;
+            return this.editing ? EDIT_COLS : READ_COLS;
         },
     },
     methods: {

@@ -20,5 +20,5 @@ export default {
     props: {
         site: Object,
     },
-}
+};
 </script>

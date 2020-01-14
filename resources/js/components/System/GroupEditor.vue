@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
     computed: {
@@ -79,42 +79,42 @@ export default {
             userDropdown: 'systemUsers/dropdown',
         }),
     },
-    data () {
+    data() {
         return {
             deleted: [],
             newUser: null,
         };
     },
     watch: {
-        editing (editing) {
-            (!editing) || this.$nextTick(() => this.$refs.name.focus());
+        editing(editing) {
+            !editing || this.$nextTick(() => this.$refs.name.focus());
         },
     },
     methods: {
-        createGroup () {
-            if (this.tmpGroup.name.trim().length == 0) {
+        createGroup() {
+            if (0 === this.tmpGroup.name.trim().length) {
                 return;
             }
 
             this.$store.dispatch('systemGroups/create', this.tmpGroup);
         },
-        updateGroup (gid) {
+        updateGroup(gid) {
             if (this.deleted.length) {
                 this.deleted.forEach(user => {
-                    let i = this.tmpGroup.users.indexOf(user);
+                    const i = this.tmpGroup.users.indexOf(user);
 
                     this.tmpGroup.users.splice(i, 1);
                 });
             }
 
-            this.$store.dispatch('systemGroups/update', {gid, data: this.tmpGroup});
+            this.$store.dispatch('systemGroups/update', { gid, data: this.tmpGroup });
         },
-        deleteGroup (gid) {
+        deleteGroup(gid) {
             this.$store.dispatch('systemGroups/delete', gid);
         },
-        addUser () {
-            let user = this.users[this.users.findIndex(
-                u => u.uid == this.newUser
+        addUser() {
+            const user = this.users[this.users.findIndex(
+                u => u.uid === this.newUser,
             )];
 
             if (!this.tmpGroup.users.includes(user.name)) {
@@ -123,18 +123,18 @@ export default {
 
             this.newUser = null;
         },
-        hadUser (name) {
+        hadUser(name) {
             return this.oldGroup.users.includes(name);
         },
-        deleteUser (name) {
+        deleteUser(name) {
             this.hadUser(name)
-             ? this.deleted.push(name)
-             : this.tmpGroup.users.splice(this.tmpGroup.users.indexOf(name), 1);
+                ? this.deleted.push(name)
+                : this.tmpGroup.users.splice(this.tmpGroup.users.indexOf(name), 1);
         },
-        undeleteUser (name) {
+        undeleteUser(name) {
             this.deleted.pop(this.deleted.indexOf(name));
         },
-        reset () {
+        reset() {
             this.deleted = [];
             this.$store.commit('systemGroups/unsetEditorGroup');
         },

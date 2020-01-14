@@ -110,7 +110,7 @@ export default {
         ...mapGetters({
             findSite: 'sites/findById',
         }),
-        site(){
+        site() {
             return this.findSite(this.id);
         },
     },
@@ -119,5 +119,5 @@ export default {
             pullFiles: 'sites/pull',
         }),
     },
-}
+};
 </script>
