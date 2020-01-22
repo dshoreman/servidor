@@ -1,9 +1,6 @@
 import './bootstrap';
 import DarkMode from './plugins/darkmode';
 import MainMenu from './components/MainMenu.vue';
-import PassportAccessTokens from './components/passport/PersonalAccessTokens.vue';
-import PassportAuthorizedClients from './components/passport/AuthorizedClients.vue';
-import PassportClients from './components/passport/Clients.vue';
 import StatsBar from './components/StatsBar.vue';
 import SuiVue from 'semantic-ui-vue';
 import SystemGroups from './components/System/Groups.vue';
@@ -26,10 +23,6 @@ Vue.component('stats-bar', StatsBar);
 
 Vue.component('system-groups', SystemGroups);
 Vue.component('system-users', SystemUsers);
-
-Vue.component('passport-clients', PassportClients);
-Vue.component('passport-authorized-clients', PassportAuthorizedClients);
-Vue.component('passport-personal-access-tokens', PassportAccessTokens);
 
 const router = new VueRouter({
     mode: 'history',
