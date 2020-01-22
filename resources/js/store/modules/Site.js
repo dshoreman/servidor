@@ -12,6 +12,7 @@ export default {
         sites: [],
         site: {
             name: '',
+            create_site: false,
         },
     },
     mutations: {

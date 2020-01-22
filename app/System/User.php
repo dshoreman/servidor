@@ -32,6 +32,17 @@ class User
         return new self($user);
     }
 
+    public static function findByName(string $username): self
+    {
+        $user = posix_getpwnam($username);
+
+        if (!$user) {
+            throw new UserNotFoundException();
+        }
+
+        return new self($user);
+    }
+
     private function refresh($nameOrUid): self
     {
         $arr = is_int($nameOrUid)

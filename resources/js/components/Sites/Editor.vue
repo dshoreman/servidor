@@ -106,7 +106,7 @@
                     {{ errors.system_user[0] }}
                 </sui-label>
                 <sui-form-field :error="'system_user' in errors">
-                    <sui-checkbox toggle v-model="create_user" value="1">
+                    <sui-checkbox toggle v-model="tmpSite.create_user" value="1">
                         Create a user named '<code>{{ tmpSite.name }}</code>' for this project
                     </sui-checkbox>
                 </sui-form-field>
@@ -164,7 +164,6 @@ export default {
     data() {
         return {
             clonedSite: {},
-            create_user: 0,
         };
     },
     methods: {

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* Users can now be created for projects when updating them
+
 ### Changed
 * Login page is now styled to match dark mode
 
