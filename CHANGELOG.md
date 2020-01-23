@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Login page is now styled to match dark mode
 
 ### Fixed
+* File browser now shows "???" when owner or group don't exist
 * Login form no longer breaks out of the layout to full page width
 * Stats bar no longer polls for data after logging out
 

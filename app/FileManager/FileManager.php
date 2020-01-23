@@ -95,6 +95,9 @@ class FileManager
             $file = new SplFileInfo($file, implode('/', $path), $name);
         }
 
+        $owner = posix_getpwuid($file->getOwner()) ?: [];
+        $group = posix_getgrgid($file->getGroup()) ?: [];
+
         $data = [
             'filename' => $file->getFilename(),
             'filepath' => $file->getPath(),
@@ -103,8 +106,8 @@ class FileManager
             'isFile' => $file->isFile(),
             'isLink' => $file->isLink(),
             'target' => $file->isLink() ? $file->getLinkTarget() : '',
-            'owner' => posix_getpwuid($file->getOwner())['name'],
-            'group' => posix_getgrgid($file->getGroup())['name'],
+            'owner' => $owner['name'] ?? '???',
+            'group' => $group['name'] ?? '???',
         ];
 
         $data['perms'] = empty($this->filePerms) || !isset($this->filePerms[$data['filename']])
