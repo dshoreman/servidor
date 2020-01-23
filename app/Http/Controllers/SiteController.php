@@ -10,6 +10,7 @@ use Servidor\Http\Requests\CreateSite;
 use Servidor\Http\Requests\UpdateSite;
 use Servidor\Site;
 use Servidor\System\User as SystemUser;
+use Servidor\System\Users\LinuxUser;
 
 class SiteController extends Controller
 {
@@ -102,12 +103,16 @@ class SiteController extends Controller
         $site->update($request->validated());
 
         if (true === $request->input('create_user')) {
-            $user = Str::slug($site->name);
+            $username = Str::slug($site->name);
 
             try {
-                SystemUser::findByName($user);
+                SystemUser::findByName($username);
             } catch (UserNotFoundException $e) {
-                SystemUser::create($user);
+                $user = new LinuxUser(['name' => $username]);
+
+                $user->setCreateHome(true);
+
+                SystemUser::createCustom($user);
             }
         }
 

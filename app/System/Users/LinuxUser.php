@@ -108,6 +108,23 @@ class LinuxUser
         return $this;
     }
 
+    public function setCreateHome(bool $enabled): self
+    {
+        $keyOn = array_search('-m', $this->args);
+        $keyOff = array_search('-M', $this->args);
+
+        if (is_int($keyOn)) {
+            unset($this->args[$keyOn]);
+        }
+        if (is_int($keyOff)) {
+            unset($this->args[$keyOff]);
+        }
+
+        $this->args[] = $enabled ? '-m' : '-M';
+
+        return $this;
+    }
+
     private function loadGroups(): void
     {
         $this->groups = [];
