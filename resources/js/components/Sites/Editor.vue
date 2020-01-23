@@ -101,7 +101,7 @@
             </sui-form-field>
 
             <sui-header content="System User" />
-            <sui-segment :inverted="darkMode">
+            <sui-segment :inverted="darkMode" v-if="!tmpSite.system_user">
                 <sui-label basic color="red" pointing="below" v-if="'system_user' in errors">
                     {{ errors.system_user[0] }}
                 </sui-label>
@@ -110,6 +110,13 @@
                         Create a user named '<code>{{ tmpSite.name }}</code>' for this project
                     </sui-checkbox>
                 </sui-form-field>
+            </sui-segment>
+            <sui-segment :inverted="darkMode" color="violet" v-else>
+                <p>
+                    <sui-icon name="check" /> The user
+                    <strong>{{ tmpSite.system_user.name }}</strong>
+                    exists and is linked to this project.
+                </p>
             </sui-segment>
 
             <sui-button negative icon="trash" type="button"
