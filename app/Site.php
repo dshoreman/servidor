@@ -4,6 +4,7 @@ namespace Servidor;
 
 use Illuminate\Database\Eloquent\Model;
 use Servidor\Events\SiteUpdated;
+use Servidor\System\User as SystemUser;
 
 class Site extends Model
 {
@@ -26,4 +27,15 @@ class Site extends Model
         'redirect_to',
         'is_enabled',
     ];
+
+    public function getSystemUserAttribute()
+    {
+        $uid = $this->attributes['system_user'];
+
+        if (!$uid) {
+            return;
+        }
+
+        return SystemUser::find($uid)->toArray();
+    }
 }

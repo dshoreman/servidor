@@ -112,7 +112,10 @@ class SiteController extends Controller
 
                 $user->setCreateHome(true);
 
-                SystemUser::createCustom($user);
+                if ($user = SystemUser::createCustom($user)) {
+                    $site->system_user = $user['uid'];
+                    $site->save();
+                }
             }
         }
 
