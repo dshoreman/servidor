@@ -12,6 +12,21 @@
             </sui-form-field>
         </sui-form-fields>
         <sui-form-field>
+            <label>Home Directory</label>
+            <sui-segment :inverted="darkMode" v-if="tmpUser.dir">
+                {{ tmpUser.dir }}
+                <router-link floated="right" is="sui-button" :to="{
+                    name: 'files',
+                    params: { path: tmpUser.dir }
+                }" size="mini" compact icon="folder">Browse</router-link>
+            </sui-segment>
+            <sui-segment :inverted="darkMode" v-else>
+                <sui-checkbox toggle v-model="tmpUser.create_home" value="1">
+                    Create the home directory automatically
+                </sui-checkbox>
+            </sui-segment>
+        </sui-form-field>
+        <sui-form-field>
             <label>Primary Group</label>
             <sui-dropdown search selection
                 :options="groupDropdown" v-model="tmpUser.gid" />

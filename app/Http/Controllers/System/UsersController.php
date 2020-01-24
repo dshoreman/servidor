@@ -10,6 +10,7 @@ use Servidor\Exceptions\System\UserSaveException;
 use Servidor\Http\Controllers\Controller;
 use Servidor\Http\Requests\System\SaveUser;
 use Servidor\System\User as SystemUser;
+use Servidor\System\Users\LinuxUser;
 
 class UsersController extends Controller
 {
@@ -23,11 +24,13 @@ class UsersController extends Controller
         $data = $request->validated();
 
         try {
-            $user = SystemUser::create(
-                $data['name'],
-                $data['uid'] ?? null,
-                $data['gid'] ?? null,
-            );
+            $user = new LinuxUser(['name' => $data['name']]);
+
+            $user->setCreateHome($request->input('create_home', false))
+                        ->setUid($data['uid'] ?? null)
+                        ->setGid($data['gid'] ?? null);
+
+            $user = SystemUser::createCustom($user);
         } catch (UserSaveException $e) {
             $data['error'] = $e->getMessage();
 

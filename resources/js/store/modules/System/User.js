@@ -12,6 +12,7 @@ export default {
         user: {
             name: '',
             groups: [],
+            create_home: true,
         },
     },
     mutations: {
@@ -35,6 +36,7 @@ export default {
                     gid: 0,
                     name: user,
                     groups: [],
+                    create_home: true,
                 };
             }
 
