@@ -4,9 +4,13 @@ namespace Servidor\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
+use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Http\Requests\CreateSite;
 use Servidor\Http\Requests\UpdateSite;
 use Servidor\Site;
+use Servidor\System\User as SystemUser;
+use Servidor\System\Users\LinuxUser;
 
 class SiteController extends Controller
 {
@@ -97,6 +101,23 @@ class SiteController extends Controller
     public function update(UpdateSite $request, Site $site)
     {
         $site->update($request->validated());
+
+        if (true === $request->input('create_user')) {
+            $username = Str::slug($site->name);
+
+            try {
+                SystemUser::findByName($username);
+            } catch (UserNotFoundException $e) {
+                $user = new LinuxUser(['name' => $username]);
+
+                $user->setCreateHome(true);
+
+                if ($user = SystemUser::createCustom($user)) {
+                    $site->system_user = $user['uid'];
+                    $site->save();
+                }
+            }
+        }
 
         return response($site, Response::HTTP_OK);
     }

@@ -12,6 +12,7 @@ export default {
         sites: [],
         site: {
             name: '',
+            create_site: false,
         },
     },
     mutations: {
@@ -69,6 +70,10 @@ export default {
             const index = state.sites.findIndex(s => s.id === id);
 
             Vue.set(state.sites, index, site);
+
+            state.current = {
+                ...state.sites.find(s => s.id === id),
+            };
         },
         removeSite: (state, id) => {
             const index = state.sites.findIndex(s => s.id === id);

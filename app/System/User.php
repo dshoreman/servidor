@@ -32,6 +32,17 @@ class User
         return new self($user);
     }
 
+    public static function findByName(string $username): self
+    {
+        $user = posix_getpwnam($username);
+
+        if (!$user) {
+            throw new UserNotFoundException();
+        }
+
+        return new self($user);
+    }
+
     private function refresh($nameOrUid): self
     {
         $arr = is_int($nameOrUid)
@@ -63,11 +74,17 @@ class User
 
     public static function create(string $name, ?int $uid = null, ?int $gid = null): array
     {
-        $user = new self(
+        return self::createCustom(
             (new LinuxUser(['name' => $name]))
                 ->setUid($uid ?: null)
                 ->setGid($gid ?: null),
         );
+    }
+
+    public static function createCustom(LinuxUser $user): array
+    {
+        $name = $user->name;
+        $user = new self($user);
 
         $user->commit('useradd');
 

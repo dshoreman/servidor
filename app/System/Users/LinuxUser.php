@@ -10,6 +10,11 @@ class LinuxUser
     private $args = [];
 
     /**
+     * @var string
+     */
+    private $dir;
+
+    /**
      * @var int
      */
     protected $gid;
@@ -38,12 +43,10 @@ class LinuxUser
     {
         $this->name = $user['name'] ?? '';
 
-        if (isset($user['uid'])) {
-            $this->uid = $user['uid'];
-        }
-
-        if (isset($user['gid'])) {
-            $this->gid = $user['gid'];
+        foreach (['dir', 'gid', 'uid'] as $key) {
+            if (isset($user[$key])) {
+                $this->$key = $user[$key];
+            }
         }
 
         if ($loadGroups) {
@@ -108,6 +111,23 @@ class LinuxUser
         return $this;
     }
 
+    public function setCreateHome(bool $enabled): self
+    {
+        $keyOn = array_search('-m', $this->args);
+        $keyOff = array_search('-M', $this->args);
+
+        if (is_int($keyOn)) {
+            unset($this->args[$keyOn]);
+        }
+        if (is_int($keyOff)) {
+            unset($this->args[$keyOff]);
+        }
+
+        $this->args[] = $enabled ? '-m' : '-M';
+
+        return $this;
+    }
+
     private function loadGroups(): void
     {
         $this->groups = [];
@@ -140,7 +160,7 @@ class LinuxUser
     {
         $arr = [];
 
-        foreach (['name', 'groups', 'gid', 'uid'] as $key) {
+        foreach (['name', 'dir', 'groups', 'gid', 'uid'] as $key) {
             if (isset($this->$key)) {
                 $arr[$key] = $this->$key;
             }
