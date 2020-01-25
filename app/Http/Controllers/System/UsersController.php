@@ -22,13 +22,19 @@ class UsersController extends Controller
     public function store(SaveUser $request): Response
     {
         $data = $request->validated();
+        $createGroup = $request->input('user_group', false);
 
         try {
             $user = new LinuxUser(['name' => $data['name']]);
 
             $user->setCreateHome($request->input('create_home', false))
-                        ->setUid($data['uid'] ?? null)
-                        ->setGid($data['gid'] ?? null);
+                        ->setUid($data['uid'] ?? null);
+
+            if (!$createGroup && $data['gid'] ?? null) {
+                $user->setGid($data['gid']);
+            }
+
+            $user->setUserGroup($createGroup);
 
             $user = SystemUser::createCustom($user);
         } catch (UserSaveException $e) {

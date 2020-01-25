@@ -11,8 +11,10 @@ export default {
         users: [],
         user: {
             name: '',
+            gid: '100',
             groups: [],
             create_home: true,
+            user_group: true,
         },
     },
     mutations: {
@@ -33,10 +35,11 @@ export default {
             if (!state.editMode) {
                 user = {
                     uid: null,
-                    gid: 0,
+                    gid: '100',
                     name: user,
                     groups: [],
                     create_home: true,
+                    user_group: true,
                 };
             }
 

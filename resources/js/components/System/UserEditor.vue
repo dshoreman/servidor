@@ -11,6 +11,7 @@
                 <input v-model="tmpUser.uid" type="number">
             </sui-form-field>
         </sui-form-fields>
+
         <sui-form-field>
             <label>Home Directory</label>
             <sui-segment :inverted="darkMode" v-if="tmpUser.dir">
@@ -26,9 +27,15 @@
                 </sui-checkbox>
             </sui-segment>
         </sui-form-field>
+
         <sui-form-field>
             <label>Primary Group</label>
-            <sui-dropdown search selection
+            <sui-segment :inverted="darkMode" v-if="!editMode">
+                <sui-checkbox toggle v-model="tmpUser.user_group" value="1">
+                    Create and assign a group with the same name
+                </sui-checkbox>
+            </sui-segment>
+            <sui-dropdown search selection v-if="editMode || !tmpUser.user_group"
                 :options="groupDropdown" v-model="tmpUser.gid" />
         </sui-form-field>
 
