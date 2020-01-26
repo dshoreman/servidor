@@ -38,10 +38,10 @@ export default {
             }
 
             state.clean = Object.assign({}, group);
-            state.clean.users = group.users.slice(0);
+            state.clean.users = [ ...group.users ];
 
-            group.users = group.users.slice(0);
             state.group = Object.assign({}, group);
+            state.group.users = [ ...group.users ];
             state.group.gid_original = group.gid;
 
             state.editing = true;
