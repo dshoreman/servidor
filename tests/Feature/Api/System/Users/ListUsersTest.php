@@ -67,7 +67,7 @@ class ListUsersTest extends TestCase
     {
         $user = $this->authed()->postJson($this->endpoint, [
             'name' => 'nocolon',
-            'gid' => 0,
+            'user_group' => true,
         ])->json();
 
         $user = $this->authed()->putJson(

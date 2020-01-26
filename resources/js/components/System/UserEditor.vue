@@ -11,9 +11,38 @@
                 <input v-model="tmpUser.uid" type="number">
             </sui-form-field>
         </sui-form-fields>
+
+        <sui-form-field>
+            <label>Home Directory</label>
+            <sui-segment class="homedir" :inverted="darkMode" v-if="editMode && tmpUser.dir">
+                <router-link floated="right" is="sui-button" :to="{
+                    name: 'files',
+                    params: { path: tmpUser.dir }
+                }" size="mini" basic compact icon="folder">Browse</router-link>
+                <sui-input transparent v-model="tmpUser.dir" type="text" />
+                <sui-checkbox v-model="tmpUser.move_home" value="1"
+                    toggle v-if="tmpUser.dir != oldUser.dir">
+                    Move the old directory
+                </sui-checkbox>
+            </sui-segment>
+            <template v-else>
+                <input type="text" v-model="tmpUser.dir" :placeholder="'/home/' + tmpUser.name" />
+                <sui-segment :inverted="darkMode">
+                    <sui-checkbox toggle v-model="tmpUser.create_home" value="1">
+                        Create the home directory automatically
+                    </sui-checkbox>
+                </sui-segment>
+            </template>
+        </sui-form-field>
+
         <sui-form-field>
             <label>Primary Group</label>
-            <sui-dropdown search selection
+            <sui-segment :inverted="darkMode" v-if="!editMode">
+                <sui-checkbox toggle v-model="tmpUser.user_group" value="1">
+                    Create and assign a group with the same name
+                </sui-checkbox>
+            </sui-segment>
+            <sui-dropdown search selection v-if="editMode || !tmpUser.user_group"
                 :options="groupDropdown" v-model="tmpUser.gid" />
         </sui-form-field>
 

@@ -12,7 +12,7 @@ class LinuxUser
     /**
      * @var string
      */
-    private $dir;
+    protected $dir;
 
     /**
      * @var int
@@ -113,17 +113,42 @@ class LinuxUser
 
     public function setCreateHome(bool $enabled): self
     {
-        $keyOn = array_search('-m', $this->args);
-        $keyOff = array_search('-M', $this->args);
+        return $this->toggleArg($enabled, '-m', '-M');
+    }
+
+    public function setHomeDirectory(string $dir): self
+    {
+        if ('' != $dir && $dir != $this->getOriginal($dir)) {
+            $this->dir = $dir;
+            $this->args[] = '-d "' . $this->dir . '"';
+        }
+
+        return $this;
+    }
+
+    public function setMoveHome(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-m');
+    }
+
+    public function setUserGroup(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-U', '-N');
+    }
+
+    public function toggleArg(bool $cond, string $on, string $off = ''): self
+    {
+        $keyOn = array_search($on, $this->args);
+        $keyOff = array_search($off, $this->args);
 
         if (is_int($keyOn)) {
             unset($this->args[$keyOn]);
         }
-        if (is_int($keyOff)) {
+        if ('' != $keyOff && is_int($keyOff)) {
             unset($this->args[$keyOff]);
         }
 
-        $this->args[] = $enabled ? '-m' : '-M';
+        $this->args[] = $cond ? $on : $off;
 
         return $this;
     }

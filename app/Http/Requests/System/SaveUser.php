@@ -19,9 +19,8 @@ class SaveUser extends FormRequest
                 'required', 'max:32', 'bail', new ValidLinuxUser(),
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
+            'dir' => 'string|nullable',
             'uid' => 'integer|nullable',
-            'gid' => 'integer|required',
-            'groups' => 'array|nullable',
         ];
     }
 }

@@ -11,7 +11,10 @@ export default {
         users: [],
         user: {
             name: '',
+            gid: '100',
             groups: [],
+            create_home: true,
+            user_group: true,
         },
     },
     mutations: {
@@ -29,12 +32,16 @@ export default {
 
             state.editMode = 'object' === typeof user;
 
-            if (!state.editMode) {
+            if (state.editMode) {
+                user.move_home = true;
+            } else {
                 user = {
                     uid: null,
-                    gid: 0,
+                    gid: '100',
                     name: user,
                     groups: [],
+                    create_home: true,
+                    user_group: true,
                 };
             }
 
@@ -55,7 +62,7 @@ export default {
                 uid: null,
                 uid_original: null,
                 name: '',
-                gid: 0,
+                gid: '',
                 groups: [],
             };
         },

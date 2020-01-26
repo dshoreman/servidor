@@ -26,7 +26,7 @@ class UpdateUserTest extends TestCase
 
         $response = $this->putJson($this->endpoint(4270), [
             'name' => 'guestupdateduser',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $updated = $this->authed()->getJson($this->endpoint);
@@ -42,12 +42,11 @@ class UpdateUserTest extends TestCase
     {
         $user = $this->authed()->postJson($this->endpoint, [
             'name' => 'updatetestuser',
-            'gid' => 0,
+            'user_group' => true,
         ])->json();
 
         $response = $this->authed()->putJson($this->endpoint($user['uid']), [
             'name' => 'updatetestuser-renamed',
-            'gid' => 0,
         ]);
 
         $response->assertOk();
@@ -72,16 +71,15 @@ class UpdateUserTest extends TestCase
      * @test
      * @group issue154
      */
-    public function group_should_be_set_after_updating_an_user(): void
+    public function group_should_be_set_after_updating_a_user(): void
     {
         $user = $this->authed()->postJson($this->endpoint, [
             'name' => 'userhasgroups',
-            'gid' => 0,
+            'user_group' => true,
         ])->json();
 
         $response = $this->authed()->putJson($this->endpoint($user['uid']), [
             'name' => 'userhasgroups',
-            'gid' => 0,
             'groups' => ['adm'],
         ]);
 

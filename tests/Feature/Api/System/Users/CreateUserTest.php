@@ -38,7 +38,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestuser',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -66,6 +66,8 @@ class CreateUserTest extends TestCase
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '',
             'gid' => '',
+            'create_home' => 'foo',
+            'user_group' => 'bar',
             'groups' => 'notanarray',
         ]);
 
@@ -73,7 +75,8 @@ class CreateUserTest extends TestCase
         $response->assertJsonValidationErrors([
             'name',
             'gid',
-            'groups',
+            'create_home',
+            'user_group',
         ]);
 
         $updated = $this->authed()->getJson($this->endpoint);
@@ -85,7 +88,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '-test-dash-prefix',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -97,7 +100,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '+test-plus-prefix',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -109,7 +112,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '~test-tilde-prefix',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -121,7 +124,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test-contains-:',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -133,7 +136,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test,contains,comma',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -145,7 +148,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\tcontains\ttab",
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -157,7 +160,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\ncontains\nnewline",
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -169,7 +172,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test contains space',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -181,7 +184,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'testuser ',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -195,7 +198,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '_im-a-name-that-is-over-32-chars-',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);

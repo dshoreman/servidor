@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+* Home directories can now be created, changed and moved
 * Users can now be created for projects when updating them
 
 ### Changed
