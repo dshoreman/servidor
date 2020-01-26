@@ -97,6 +97,7 @@ class User
                    ->setUid($data['uid'] ?? null)
                    ->setGid($data['gid'] ?? null)
                    ->setGroups($data['groups'] ?? null)
+                   ->setMoveHome($data['move_home'] ?? false)
                    ->setHomeDirectory($data['dir'] ?? '');
 
         if (!$this->user->isDirty()) {

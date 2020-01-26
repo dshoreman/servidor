@@ -20,6 +20,10 @@
                     params: { path: tmpUser.dir }
                 }" size="mini" basic compact icon="folder">Browse</router-link>
                 <sui-input transparent v-model="tmpUser.dir" type="text" />
+                <sui-checkbox v-model="tmpUser.move_home" value="1"
+                    toggle v-if="tmpUser.dir != oldUser.dir">
+                    Move the old directory
+                </sui-checkbox>
             </sui-segment>
             <sui-segment :inverted="darkMode" v-else>
                 <sui-checkbox toggle v-model="tmpUser.create_home" value="1">

@@ -10,6 +10,7 @@ class UpdateUser extends SaveUser
             'dir' => 'string|nullable',
             'gid' => 'integer|nullable',
             'groups' => 'array|nullable',
+            'move_home' => 'boolean|nullable',
         ]);
     }
 }

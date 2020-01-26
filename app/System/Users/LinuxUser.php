@@ -126,12 +126,17 @@ class LinuxUser
         return $this;
     }
 
+    public function setMoveHome(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-m');
+    }
+
     public function setUserGroup(bool $enabled): self
     {
         return $this->toggleArg($enabled, '-U', '-N');
     }
 
-    public function toggleArg(bool $cond, string $on, string $off): self
+    public function toggleArg(bool $cond, string $on, string $off = ''): self
     {
         $keyOn = array_search($on, $this->args);
         $keyOff = array_search($off, $this->args);
@@ -139,7 +144,7 @@ class LinuxUser
         if (is_int($keyOn)) {
             unset($this->args[$keyOn]);
         }
-        if (is_int($keyOff)) {
+        if ('' != $keyOff && is_int($keyOff)) {
             unset($this->args[$keyOff]);
         }
 

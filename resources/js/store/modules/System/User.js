@@ -32,7 +32,9 @@ export default {
 
             state.editMode = 'object' === typeof user;
 
-            if (!state.editMode) {
+            if (state.editMode) {
+                user.move_home = true;
+            } else {
                 user = {
                     uid: null,
                     gid: '100',
