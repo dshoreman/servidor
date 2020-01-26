@@ -57,10 +57,14 @@
                 :disabled="newGroup === null" />
 
             <sui-list divided>
-                <sui-message info v-if="!tmpUser.groups.length"
-                    header="No memberships!" icon="exclamation triangle"
-                    content="Groups will be listed here."
-                />
+                <sui-list-item v-if="!tmpUser.groups.length">
+                    <sui-list-icon size="large" name="exclamation triangle" />
+                    <sui-list-content>
+                        <sui-list-header class="ui small">
+                            {{ tmpUser.name }} is not a member of any other groups.
+                        </sui-list-header>
+                    </sui-list-content>
+                </sui-list-item>
                 <sui-list-item v-else v-for="group in tmpUser.groups" :key="group">
                     <sui-list-icon size="large" name="users" />
 

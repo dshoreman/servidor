@@ -23,10 +23,15 @@
                 :disabled="newUser === null" />
 
             <sui-list divided>
-                <sui-message info v-if="!tmpGroup.users.length"
-                    header="Empty group!" icon="exclamation triangle"
-                    content="Members will be listed here."
-                />
+                <sui-list-item v-if="!tmpGroup.users.length">
+                    <sui-list-icon size="large" name="exclamation triangle" />
+                    <sui-list-content>
+                        <sui-list-header class="ui small">
+                            There are currently no users in this group.
+                        </sui-list-header>
+                    </sui-list-content>
+                </sui-list-item>
+
                 <sui-list-item v-else v-for="user in tmpGroup.users" :key="user">
                     <sui-list-icon name="user" size="large" />
 
