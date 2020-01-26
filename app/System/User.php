@@ -45,8 +45,8 @@ class User
 
     private function refresh($nameOrUid): self
     {
-        $arr = is_int($nameOrUid)
-             ? posix_getpwuid($nameOrUid)
+        $arr = is_numeric($nameOrUid)
+             ? posix_getpwuid((int) $nameOrUid)
              : posix_getpwnam($nameOrUid);
 
         $this->user = new LinuxUser($arr, true);
@@ -96,7 +96,8 @@ class User
         $this->user->setName($data['name'])
                    ->setUid($data['uid'] ?? null)
                    ->setGid($data['gid'] ?? null)
-                   ->setGroups($data['groups'] ?? null);
+                   ->setGroups($data['groups'] ?? null)
+                   ->setHomeDirectory($data['dir'] ?? '');
 
         if (!$this->user->isDirty()) {
             throw new UserNotModifiedException();

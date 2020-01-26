@@ -116,6 +116,16 @@ class LinuxUser
         return $this->toggleArg($enabled, '-m', '-M');
     }
 
+    public function setHomeDirectory(string $dir): self
+    {
+        if ('' != $dir && $dir != $this->getOriginal($dir)) {
+            $this->dir = $dir;
+            $this->args[] = '-d "' . $this->dir . '"';
+        }
+
+        return $this;
+    }
+
     public function setUserGroup(bool $enabled): self
     {
         return $this->toggleArg($enabled, '-U', '-N');

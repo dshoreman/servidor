@@ -14,12 +14,12 @@
 
         <sui-form-field>
             <label>Home Directory</label>
-            <sui-segment :inverted="darkMode" v-if="tmpUser.dir">
-                {{ tmpUser.dir }}
+            <sui-segment class="homedir" :inverted="darkMode" v-if="tmpUser.dir">
                 <router-link floated="right" is="sui-button" :to="{
                     name: 'files',
                     params: { path: tmpUser.dir }
-                }" size="mini" compact icon="folder">Browse</router-link>
+                }" size="mini" basic compact icon="folder">Browse</router-link>
+                <sui-input transparent v-model="tmpUser.dir" type="text" />
             </sui-segment>
             <sui-segment :inverted="darkMode" v-else>
                 <sui-checkbox toggle v-model="tmpUser.create_home" value="1">
