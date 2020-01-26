@@ -14,7 +14,7 @@
 
         <sui-form-field>
             <label>Home Directory</label>
-            <sui-segment class="homedir" :inverted="darkMode" v-if="tmpUser.dir">
+            <sui-segment class="homedir" :inverted="darkMode" v-if="editMode && tmpUser.dir">
                 <router-link floated="right" is="sui-button" :to="{
                     name: 'files',
                     params: { path: tmpUser.dir }
@@ -25,11 +25,14 @@
                     Move the old directory
                 </sui-checkbox>
             </sui-segment>
-            <sui-segment :inverted="darkMode" v-else>
-                <sui-checkbox toggle v-model="tmpUser.create_home" value="1">
-                    Create the home directory automatically
-                </sui-checkbox>
-            </sui-segment>
+            <template v-else>
+                <input type="text" v-model="tmpUser.dir" :placeholder="'/home/' + tmpUser.name" />
+                <sui-segment :inverted="darkMode">
+                    <sui-checkbox toggle v-model="tmpUser.create_home" value="1">
+                        Create the home directory automatically
+                    </sui-checkbox>
+                </sui-segment>
+            </template>
         </sui-form-field>
 
         <sui-form-field>

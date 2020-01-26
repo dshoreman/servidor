@@ -29,6 +29,7 @@ class UsersController extends Controller
             $user = new LinuxUser(['name' => $data['name']]);
 
             $user->setCreateHome($request->input('create_home', false))
+                        ->setHomeDirectory($data['dir'] ?? '')
                         ->setUid($data['uid'] ?? null);
 
             if (!$createGroup && $data['gid'] ?? null) {
