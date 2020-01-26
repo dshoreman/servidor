@@ -48,24 +48,19 @@
             </sui-list>
         </sui-form-field>
 
-        <sui-button-group fluid>
-            <sui-button type="button" @click="reset()">Cancel</sui-button>
-            <sui-button-or></sui-button-or>
-            <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
-        </sui-button-group>
-
-        <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
-        <sui-segment class="red" v-show="editMode" :inverted="darkMode">
-            <sui-button negative :inverted="darkMode" icon="trash" type="button"
-                content="Delete Group" @click="deleteGroup(tmpGroup.gid)" />
-        </sui-segment>
+        <editor-buttons :editing="editMode" @cancel="reset()"
+            @delete="deleteGroup(tmpGroup.gid)" />
     </sui-form>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex';
+import EditorButtons from './EditorButtons';
 
 export default {
+    components: {
+        'editor-buttons': EditorButtons,
+    },
     computed: {
         ...mapState({
             editing: state => state.systemGroups.editing,
