@@ -60,7 +60,7 @@ export default {
                 uid: null,
                 uid_original: null,
                 name: '',
-                gid: 0,
+                gid: '',
                 groups: [],
             };
         },

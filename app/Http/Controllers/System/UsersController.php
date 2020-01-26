@@ -8,7 +8,8 @@ use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Exceptions\System\UserNotModifiedException;
 use Servidor\Exceptions\System\UserSaveException;
 use Servidor\Http\Controllers\Controller;
-use Servidor\Http\Requests\System\SaveUser;
+use Servidor\Http\Requests\System\CreateUser;
+use Servidor\Http\Requests\System\UpdateUser;
 use Servidor\System\User as SystemUser;
 use Servidor\System\Users\LinuxUser;
 
@@ -19,7 +20,7 @@ class UsersController extends Controller
         return response(SystemUser::list());
     }
 
-    public function store(SaveUser $request): Response
+    public function store(CreateUser $request): Response
     {
         $data = $request->validated();
         $createGroup = $request->input('user_group', false);
@@ -46,7 +47,7 @@ class UsersController extends Controller
         return response($user, Response::HTTP_CREATED);
     }
 
-    public function update(SaveUser $request, int $uid): Response
+    public function update(UpdateUser $request, int $uid): Response
     {
         try {
             $user = SystemUser::find($uid);

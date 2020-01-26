@@ -20,8 +20,6 @@ class SaveUser extends FormRequest
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
             'uid' => 'integer|nullable',
-            'gid' => 'integer|required',
-            'groups' => 'array|nullable',
         ];
     }
 }
