@@ -67,20 +67,15 @@
                 </sui-list-item>
                 <sui-list-item v-else v-for="group in tmpUser.groups" :key="group">
                     <sui-list-icon size="large" name="users" />
-
-                    <sui-list-content v-if="!deleted.includes(group)">
-                        <sui-button icon="minus" type="button" @click="deleteGroup(group)"
-                            floated="right" class="circular compact red mini" />
-                        <sui-list-header :class="(hadGroup(group) ? '' : 'green ') + 'ui small'">
-                            {{ group }}
-                        </sui-list-header>
-                    </sui-list-content>
-
-                    <sui-list-content v-if="deleted.includes(group)">
-                        <sui-button icon="undo" type="button" @click="undeleteGroup(group)"
-                            floated="right" class="circular compact grey mini" />
-                        <sui-list-header class="ui small grey">
+                    <sui-list-content>
+                        <sui-button :icon="groupIcon(group)" type="button" floated="right"
+                                    :class="groupClass(group)" @click="groupToggle(group)" />
+                        <sui-list-header v-if="deleted.includes(group)" class="ui small grey">
                             <strike>{{ group }}</strike>
+                        </sui-list-header>
+                        <sui-list-header v-else
+                            :class="'ui small' + (hadGroup(group) ? '' : ' green')">
+                            {{ group }}
                         </sui-list-header>
                     </sui-list-content>
                 </sui-list-item>
@@ -171,6 +166,19 @@ export default {
         },
         undeleteGroup(name) {
             this.deleted.pop(this.deleted.indexOf(name));
+        },
+        groupClass(group) {
+            const colour = this.deleted.includes(group) ? 'grey' : 'red';
+
+            return `mini ${colour} compact circular`;
+        },
+        groupToggle(group) {
+            return this.deleted.includes(group)
+                ? this.undeleteGroup(group)
+                : this.deleteGroup(group);
+        },
+        groupIcon(group) {
+            return this.deleted.includes(group) ? 'undo' : 'minus';
         },
         reset() {
             this.deleted = [];
