@@ -55,6 +55,36 @@ class UpdateGroupTest extends TestCase
     }
 
     /** @test */
+    public function authed_user_can_remove_all_users_from_group(): void
+    {
+        $group = $this->authed()->postJson($this->endpoint, [
+            'name' => 'groupwithmembers',
+        ]);
+
+        $this->addDeletable('group', $group);
+        $users = ['bin', 'daemon', 'games'];
+        $gid = $group->json()['gid'];
+
+        $group = $this->authed()->putJson($this->endpoint($gid), [
+            'name' => 'groupwithmembers',
+            'users' => $users,
+        ]);
+
+        $group->assertOk();
+        $group->assertJsonFragment(['users' => $users]);
+        $group->assertJsonStructure($this->expectedKeys);
+
+        $response = $this->authed()->putJson($this->endpoint($gid), [
+            'name' => 'groupwithmembers',
+            'users' => [],
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment(['users' => []]);
+        $response->assertJsonStructure($this->expectedKeys);
+    }
+
+    /** @test */
     public function cannot_update_nonexistant_group(): void
     {
         $response = $this->authed()->putJson($this->endpoint(9032), [

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Login page is now styled to match dark mode
 
 ### Fixed
+* All users can now be removed from a group, not just some
 * File browser now shows "???" when owner or group don't exist
 * Bulleted user lists under group names no longer update prematurely
 * Login form no longer breaks out of the layout to full page width

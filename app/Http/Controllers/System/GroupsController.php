@@ -132,19 +132,19 @@ class GroupsController extends Controller
             exec('sudo groupmod ' . implode(' ', $options), $output, $retval);
 
             if (0 !== $retval) {
-                throw $this->failed('Something went wrong. Exit code: ' . $retval);
+                throw $this->failed('Something went wrong updating the group. Exit code: ' . $retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
         }
 
-        if ($members ?? null) {
+        if (isset($members)) {
             $group = $updated['name'];
 
             exec("sudo gpasswd -M '" . ($members ?? null) . "' {$group}", $output, $retval);
 
             if (0 !== $retval) {
-                throw $this->failed('Something went wrong. Exit code: ' . $retval);
+                throw $this->failed('Something went wrong updating the group users. Exit code: ' . $retval);
             }
 
             $updated = posix_getgrgid($data['gid']);
