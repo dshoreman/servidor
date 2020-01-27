@@ -7,90 +7,28 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Servidor\Http\Controllers\Controller;
+use Servidor\System\Group as SystemGroup;
 
 class GroupsController extends Controller
 {
-    private const GROUP_NAME_TAKEN = 9;
-    private const GROUP_GID_TAKEN = 4;
-    private const GROUP_SYNTAX_INVALID = 2;
-    private const GROUP_OPTION_INVALID = 3;
-    private const GROUP_UPDATE_FAILED = 10;
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): Response
     {
-        exec('cat /etc/group', $lines);
-
-        $keys = ['name', 'password', 'gid', 'users'];
-        $groups = collect();
-
-        foreach ($lines as $line) {
-            $group = array_combine($keys, explode(':', $line));
-            $group['users'] = '' == $group['users'] ? [] : explode(',', $group['users']);
-
-            $groups->push($group);
-        }
-
-        return response($groups);
+        return response(SystemGroup::list());
     }
 
-    /**
-     * Create a new group on the host system.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
         $data = $request->validate($this->validationRules());
 
-        if ((int) ($data['gid'] ?? null) > 0) {
-            $options[] = '-g ' . (int) $data['gid'];
+        try {
+            $group = SystemGroup::create($data['name'], $data['gid'] ?? null);
+        } catch (GroupSaveException $e) {
+            $data['error'] = $e->getMessage();
+
+            return response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $options[] = $data['name'];
-
-        exec('sudo groupadd ' . implode(' ', $options), $output, $retval);
-        unset($output);
-
-        if ($data['users'] ?? null === null) {
-            $data['users'] = '';
-        }
-
-        switch ($retval) {
-            case 0:
-                $group = posix_getgrnam($data['name']);
-
-                $data = [
-                    'gid' => $group['gid'],
-                    'name' => $group['name'],
-                    'users' => $group['members'],
-                ];
-
-                break;
-            case self::GROUP_SYNTAX_INVALID:
-                $data['error'] = 'Invalid command syntax.';
-                break;
-            case self::GROUP_OPTION_INVALID:
-                $data['error'] = 'Invalid argument to option';
-                break;
-            case self::GROUP_GID_TAKEN:
-                $data['error'] = 'GID not unique (when -o not used)';
-                break;
-            case self::GROUP_NAME_TAKEN:
-                $data['error'] = 'Group name not unique';
-                break;
-            case self::GROUP_UPDATE_FAILED:
-                $data['error'] = "Can't update group file";
-                break;
-        }
-
-        return response($data, 0 === $retval
-            ? Response::HTTP_CREATED
-            : Response::HTTP_UNPROCESSABLE_ENTITY);
+        return response($group, Response::HTTP_CREATED);
     }
 
     /**

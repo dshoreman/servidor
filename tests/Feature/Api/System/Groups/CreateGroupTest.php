@@ -34,7 +34,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_create_user_with_minimum_data(): void
+    public function authed_user_can_create_group_with_minimum_data(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestgroup',
