@@ -7,7 +7,7 @@ use Servidor\Rules\NoColon;
 use Servidor\Rules\NoComma;
 use Servidor\Rules\NoWhitespace;
 
-class SaveUser extends FormRequest
+class SaveGroup extends FormRequest
 {
     public function authorize(): bool
     {
@@ -22,8 +22,9 @@ class SaveUser extends FormRequest
                 new NoColon(), new NoWhitespace(),
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
-            'dir' => 'string|nullable',
-            'uid' => 'integer|nullable',
+            'gid' => 'integer|nullable',
+            'groups' => 'array|nullable',
+            'users' => 'array|nullable',
         ];
     }
 }

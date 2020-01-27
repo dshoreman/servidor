@@ -3,6 +3,7 @@
 namespace Servidor\System;
 
 use Illuminate\Support\Collection;
+use Servidor\Exceptions\System\GroupNotFoundException;
 use Servidor\Exceptions\System\GroupSaveException;
 use Servidor\System\Groups\LinuxGroup;
 
@@ -67,6 +68,22 @@ class Group
         $group->commit('groupadd');
 
         return $group->refresh($name)->toArray();
+    }
+
+    public function delete(): void
+    {
+        exec('sudo groupdel ' . $this->group->name);
+    }
+
+    public static function find(int $gid)
+    {
+        $group = posix_getgrgid($gid);
+
+        if (!$group) {
+            throw new GroupNotFoundException();
+        }
+
+        return new self($group);
     }
 
     public static function list(): Collection

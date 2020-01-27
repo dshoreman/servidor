@@ -2,11 +2,10 @@
 
 namespace Servidor\Http\Controllers\System;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Servidor\Http\Controllers\Controller;
+use Servidor\Http\Requests\System\SaveGroup;
 use Servidor\System\Group as SystemGroup;
 
 class GroupsController extends Controller
@@ -16,9 +15,9 @@ class GroupsController extends Controller
         return response(SystemGroup::list());
     }
 
-    public function store(Request $request): Response
+    public function store(SaveGroup $request): Response
     {
-        $data = $request->validate($this->validationRules());
+        $data = $request->validated();
 
         try {
             $group = SystemGroup::create($data['name'], $data['gid'] ?? null);
@@ -38,9 +37,9 @@ class GroupsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $gid)
+    public function update(SaveGroup $request, $gid)
     {
-        $data = $request->validate($this->validationRules());
+        $data = $request->validated();
         $data['gid'] = (int) ($data['gid'] ?? $gid);
 
         if (!$original = posix_getgrgid($gid)) {
@@ -95,57 +94,15 @@ class GroupsController extends Controller
         ], Response::HTTP_OK);
     }
 
-    /**
-     * Remove the specified group from the system.
-     *
-     * @param int $gid
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($gid)
+    public function destroy(int $gid): Response
     {
-        if ($group = posix_getgrgid($gid)) {
-            exec('sudo groupdel ' . $group['name']);
-        }
+        SystemGroup::find($gid)->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * Get the validation rules for system groups.
-     *
-     * @return array
-     */
-    protected function validationRules()
+    protected function failed(string $message, string $key = 'gid'): ValidationException
     {
-        return [
-            'name' => [
-                'required', 'max:32', 'bail',
-                function ($attribute, $value, $fail): void {
-                    if (Str::contains($value, ':')) {
-                        $fail("The {$attribute} cannot contain a colon.");
-                    }
-
-                    if (Str::contains($value, ',')) {
-                        $fail("The {$attribute} cannot contain a comma.");
-                    }
-
-                    if (Str::contains($value, ["\t", "\n", ' '])) {
-                        $fail("The {$attribute} cannot contain whitespace or newlines.");
-                    }
-                },
-                'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
-            ],
-            'gid' => 'integer|nullable',
-            'groups' => 'array|nullable',
-            'users' => 'array|nullable',
-        ];
-    }
-
-    protected function failed($message, $key = 'gid')
-    {
-        return ValidationException::withMessages([
-            $key => $message,
-        ]);
+        return ValidationException::withMessages([$key => $message]);
     }
 }
