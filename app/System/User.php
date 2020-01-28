@@ -96,6 +96,7 @@ class User
         $this->user->setName($data['name'])
                    ->setUid($data['uid'] ?? null)
                    ->setGid($data['gid'] ?? null)
+                   ->setShell($data['shell'] ?? null)
                    ->setGroups($data['groups'] ?? null)
                    ->setMoveHome($data['move_home'] ?? false)
                    ->setHomeDirectory($data['dir'] ?? '');

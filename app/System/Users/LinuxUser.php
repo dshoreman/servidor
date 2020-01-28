@@ -121,6 +121,19 @@ class LinuxUser
         return $this;
     }
 
+    public function setShell(?string $shell): self
+    {
+        if (!is_null($shell)) {
+            $this->shell = $shell;
+        }
+
+        if ($this->shell != $this->getOriginal('shell')) {
+            $this->args[] = '-s "' . $this->shell . '"';
+        }
+
+        return $this;
+    }
+
     public function setCreateHome(bool $enabled): self
     {
         return $this->toggleArg($enabled, '-m', '-M');

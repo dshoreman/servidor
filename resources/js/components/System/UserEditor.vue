@@ -12,7 +12,7 @@
             </sui-form-field>
         </sui-form-fields>
 
-        <sui-form-field v-if="editMode">
+        <sui-form-field>
             <label>Default Shell</label>
             <input v-model="tmpUser.shell" type="text" placeholder="/bin/sh" />
         </sui-form-field>
