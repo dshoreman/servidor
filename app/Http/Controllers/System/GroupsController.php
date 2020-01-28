@@ -4,6 +4,9 @@ namespace Servidor\Http\Controllers\System;
 
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use Servidor\Exceptions\System\GroupNotFoundException;
+use Servidor\Exceptions\System\GroupNotModifiedException;
+use Servidor\Exceptions\System\GroupSaveException;
 use Servidor\Http\Controllers\Controller;
 use Servidor\Http\Requests\System\SaveGroup;
 use Servidor\System\Group as SystemGroup;
@@ -30,68 +33,22 @@ class GroupsController extends Controller
         return response($group, Response::HTTP_CREATED);
     }
 
-    /**
-     * Update the specified group on the system.
-     *
-     * @param int $gid
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(SaveGroup $request, $gid)
+    public function update(SaveGroup $request, int $gid): Response
     {
-        $data = $request->validated();
-        $data['gid'] = (int) ($data['gid'] ?? $gid);
+        try {
+            $group = SystemGroup::find($gid);
 
-        if (!$original = posix_getgrgid($gid)) {
-            throw $this->failed('No group found matching the given criteria.');
+            return response(
+                $group->update($request->validated()),
+                Response::HTTP_OK
+            );
+        } catch (GroupNotFoundException $e) {
+            throw $this->fail('No group found matching the given criteria.');
+        } catch (GroupNotModifiedException $e) {
+            throw $this->fail('Nothing to update!');
+        } catch (GroupSaveException $e) {
+            throw $this->fail($e->getMessage());
         }
-        $updated = $original;
-
-        if ($data['name'] != $original['name']) {
-            $options[] = '-n ' . $data['name'];
-        }
-
-        if ($data['gid'] != $gid && $data['gid'] > 0) {
-            $options[] = '-g ' . $data['gid'];
-        }
-
-        if (($data['users'] ?? []) != $original['members']) {
-            $members = implode(',', $data['users']);
-        }
-
-        if (empty($options ?? null) && !isset($members)) {
-            throw $this->failed('Nothing to update!');
-        }
-
-        if (count($options ?? [])) {
-            $options[] = $original['name'];
-
-            exec('sudo groupmod ' . implode(' ', $options), $output, $retval);
-
-            if (0 !== $retval) {
-                throw $this->failed('Something went wrong updating the group. Exit code: ' . $retval);
-            }
-
-            $updated = posix_getgrgid($data['gid']);
-        }
-
-        if (isset($members)) {
-            $group = $updated['name'];
-
-            exec("sudo gpasswd -M '" . ($members ?? null) . "' {$group}", $output, $retval);
-
-            if (0 !== $retval) {
-                throw $this->failed('Something went wrong updating the group users. Exit code: ' . $retval);
-            }
-
-            $updated = posix_getgrgid($data['gid']);
-        }
-
-        return response([
-            'gid' => $updated['gid'],
-            'name' => $updated['name'],
-            'users' => $updated['members'],
-        ], Response::HTTP_OK);
     }
 
     public function destroy(int $gid): Response
@@ -101,7 +58,7 @@ class GroupsController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    protected function failed(string $message, string $key = 'gid'): ValidationException
+    protected function fail(string $message, string $key = 'gid'): ValidationException
     {
         return ValidationException::withMessages([$key => $message]);
     }

@@ -4,6 +4,7 @@ namespace Servidor\System;
 
 use Illuminate\Support\Collection;
 use Servidor\Exceptions\System\GroupNotFoundException;
+use Servidor\Exceptions\System\GroupNotModifiedException;
 use Servidor\Exceptions\System\GroupSaveException;
 use Servidor\System\Groups\LinuxGroup;
 
@@ -26,12 +27,20 @@ class Group
                      ? $group : new LinuxGroup($group);
     }
 
-    private function commit(string $cmd): self
+    private function commit(string $cmd, ?string $args = null): int
     {
         $name = $this->group->getOriginal('name');
+        $args = $args ?: $this->group->toArgs();
 
-        exec("sudo {$cmd} {$this->group->toArgs()} {$name}", $output, $retval);
+        exec("sudo {$cmd} {$args} {$name}", $output, $retval);
         unset($output);
+
+        return $retval;
+    }
+
+    protected function commitAdd(): self
+    {
+        $retval = $this->commit('groupadd');
 
         if (0 === $retval) {
             return $this;
@@ -55,7 +64,33 @@ class Group
                 break;
         }
 
-        throw new GroupSaveException($error ?: 'Something unexpected happened!');
+        throw new GroupSaveException($error ?? 'Something unexpected happened!');
+    }
+
+    private function commitMod(): self
+    {
+        if ($this->group->hasArgs()) {
+            $retval = $this->commit('groupmod');
+
+            if (0 !== $retval) {
+                throw new GroupSaveException("Couldn't update the group. Exit code: {$retval}.");
+            }
+        }
+
+        if ($this->group->hasChangedUsers()) {
+            $users = $this->group->users;
+
+            $this->refresh($this->group->gid)
+                 ->group->setUsers($users);
+
+            $retval = $this->commit('gpasswd', '-M "' . implode(',', $this->group->users) . '"');
+
+            if (0 !== $retval) {
+                throw new GroupSaveException("Couldn't update the group's users. Exit code: {$retval}.");
+            }
+        }
+
+        return $this;
     }
 
     public static function create(string $name, ?int $gid = null): array
@@ -65,7 +100,7 @@ class Group
                 ->setGid($gid ?: null),
         );
 
-        $group->commit('groupadd');
+        $group->commitAdd();
 
         return $group->refresh($name)->toArray();
     }
@@ -101,6 +136,21 @@ class Group
         }
 
         return $groups;
+    }
+
+    public function update(array $data): array
+    {
+        $this->group->setName($data['name'])
+                    ->setGid($data['gid'] ?? null)
+                    ->setUsers($data['users'] ?? null);
+
+        if (!$this->group->isDirty()) {
+            throw new GroupNotModifiedException();
+        }
+
+        $this->commitMod();
+
+        return $this->refresh($this->group->gid)->toArray();
     }
 
     private function refresh($nameOrGid): self

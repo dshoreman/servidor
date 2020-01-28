@@ -12,7 +12,7 @@ class LinuxGroup
     /**
      * @var int
      */
-    private $gid;
+    public $gid;
 
     /**
      * @var string
@@ -22,7 +22,12 @@ class LinuxGroup
     /**
      * @var mixed
      */
-    private $users = '';
+    public $users = '';
+
+    /**
+     * @var array
+     */
+    private $original;
 
     public function __construct(array $group = [])
     {
@@ -55,6 +60,41 @@ class LinuxGroup
         }
 
         return $this;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        if ($name != $this->getOriginal('name')) {
+            $this->args[] = '-n ' . $name;
+        }
+
+        return $this;
+    }
+
+    public function setUsers(?array $users): self
+    {
+        if (is_array($users)) {
+            $this->users = $users;
+        }
+
+        return $this;
+    }
+
+    public function hasArgs(): bool
+    {
+        return count($this->args) > 0;
+    }
+
+    public function hasChangedUsers(): bool
+    {
+        return $this->users != $this->getOriginal('users');
+    }
+
+    public function isDirty()
+    {
+        return $this->hasArgs() || $this->hasChangedUsers();
     }
 
     public function toArgs(): string
