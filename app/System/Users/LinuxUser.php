@@ -39,11 +39,16 @@ class LinuxUser
      */
     public $name;
 
+    /**
+     * @var string
+     */
+    public $shell;
+
     public function __construct(array $user = [], bool $loadGroups = false)
     {
         $this->name = $user['name'] ?? '';
 
-        foreach (['dir', 'gid', 'uid'] as $key) {
+        foreach (['dir', 'gid', 'uid', 'shell'] as $key) {
             if (isset($user[$key])) {
                 $this->$key = $user[$key];
             }
@@ -195,7 +200,7 @@ class LinuxUser
     {
         $arr = [];
 
-        foreach (['name', 'dir', 'groups', 'gid', 'uid'] as $key) {
+        foreach (['name', 'dir', 'groups', 'shell', 'gid', 'uid'] as $key) {
             if (isset($this->$key)) {
                 $arr[$key] = $this->$key;
             }

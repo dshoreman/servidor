@@ -12,6 +12,11 @@
             </sui-form-field>
         </sui-form-fields>
 
+        <sui-form-field v-if="editMode">
+            <label>Default Shell</label>
+            <input v-model="tmpUser.shell" type="text" placeholder="/bin/sh" />
+        </sui-form-field>
+
         <sui-form-field>
             <label>Home Directory</label>
             <sui-segment class="homedir" :inverted="darkMode" v-if="editMode && tmpUser.dir">
