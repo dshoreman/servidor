@@ -56,6 +56,11 @@ class LinuxUser
         $this->original = $this->toArray();
     }
 
+    public function getArgs(): array
+    {
+        return $this->args;
+    }
+
     public function getOriginal(string $key)
     {
         return $this->original[$key] ?? null;
@@ -118,7 +123,7 @@ class LinuxUser
 
     public function setHomeDirectory(string $dir): self
     {
-        if ('' != $dir && $dir != $this->getOriginal($dir)) {
+        if ('' != $dir && $dir != $this->getOriginal('dir')) {
             $this->dir = $dir;
             $this->args[] = '-d "' . $this->dir . '"';
         }
@@ -144,11 +149,16 @@ class LinuxUser
         if (is_int($keyOn)) {
             unset($this->args[$keyOn]);
         }
+
         if ('' != $keyOff && is_int($keyOff)) {
             unset($this->args[$keyOff]);
         }
 
-        $this->args[] = $cond ? $on : $off;
+        $arg = $cond ? $on : $off;
+
+        if ('' != $arg) {
+            $this->args[] = $arg;
+        }
 
         return $this;
     }

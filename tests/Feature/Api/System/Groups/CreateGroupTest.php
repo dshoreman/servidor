@@ -34,7 +34,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_create_user_with_minimum_data(): void
+    public function authed_user_can_create_group_with_minimum_data(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestgroup',
@@ -57,6 +57,35 @@ class CreateGroupTest extends TestCase
 
         $updated = $this->authed()->getJson($this->endpoint);
         $updated->assertJsonMissing(['gid' > 1337]);
+    }
+
+    /** @test */
+    public function cannot_create_group_with_existing_name(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'bin',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonFragment([
+            'name' => 'bin',
+            'error' => 'The group name must be unique',
+        ]);
+    }
+
+    /** @test */
+    public function cannot_create_group_with_existing_gid(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'imposter',
+            'gid' => 3,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonFragment([
+            'name' => 'imposter',
+            'error' => "The group's GID must be unique",
+        ]);
     }
 
     /** @test */

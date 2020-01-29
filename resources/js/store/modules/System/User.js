@@ -70,6 +70,9 @@ export default {
             if (!user.groups) {
                 user.groups = [];
             }
+            if (Number.isInteger(user.gid)) {
+                user.gid = user.gid.toString();
+            }
             state.users.push(user);
         },
         updateUser: (state, { uid, user }) => {
@@ -99,10 +102,12 @@ export default {
 
             commit('setEditorUser', user);
         },
-        create: ({ commit }, user) => {
+        create: ({ commit, dispatch }, user) => {
             axios.post('/api/system/users', user).then(response => {
                 commit('addUser', response.data);
-                commit('unsetEditorUser');
+                dispatch('systemGroups/load', null, { root: true }).then(() => {
+                    commit('unsetEditorUser');
+                });
             });
         },
         update: ({ commit }, { uid, user }) => {

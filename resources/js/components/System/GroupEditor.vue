@@ -23,50 +23,44 @@
                 :disabled="newUser === null" />
 
             <sui-list divided>
-                <sui-message info v-if="!tmpGroup.users.length"
-                    header="Empty group!" icon="exclamation triangle"
-                    content="Members will be listed here."
-                />
-                <sui-list-item v-else v-for="user in tmpGroup.users" :key="user">
-                    <sui-list-icon name="user" size="large" />
-
-                    <sui-list-content v-if="!deleted.includes(user)">
-                        <sui-button icon="minus" type="button" @click="deleteUser(user)"
-                            floated="right" class="circular compact red mini" />
-                        <sui-list-header :class="(hadUser(user) ? '' : 'green ') + 'ui small'">
-                            {{ user }}
+                <sui-list-item v-if="!tmpGroup.users.length">
+                    <sui-list-icon size="large" name="exclamation triangle" />
+                    <sui-list-content>
+                        <sui-list-header class="ui small">
+                            There are currently no users in this group.
                         </sui-list-header>
                     </sui-list-content>
-
-                    <sui-list-content v-if="deleted.includes(user)">
-                        <sui-button icon="undo" type="button" @click="undeleteUser(user)"
-                            floated="right" class="circular compact grey mini" />
-                        <sui-list-header class="ui small grey">
+                </sui-list-item>
+                <sui-list-item v-else v-for="user in tmpGroup.users" :key="user">
+                    <sui-list-icon name="user" size="large" />
+                    <sui-list-content>
+                        <sui-button :icon="userIcon(user)" type="button" floated="right"
+                                    :class="userClass(user)" @click="userToggle(user)" />
+                        <sui-list-header class="ui small grey" v-if="deleted.includes(user)">
                             <strike>{{ user }}</strike>
+                        </sui-list-header>
+                        <sui-list-header v-else
+                            :class="'ui small' + (hadUser(user) ? '' : ' green')">
+                            {{ user }}
                         </sui-list-header>
                     </sui-list-content>
                 </sui-list-item>
             </sui-list>
         </sui-form-field>
 
-        <sui-button-group fluid>
-            <sui-button type="button" @click="reset()">Cancel</sui-button>
-            <sui-button-or></sui-button-or>
-            <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
-        </sui-button-group>
-
-        <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
-        <sui-segment class="red" v-show="editMode" :inverted="darkMode">
-            <sui-button negative :inverted="darkMode" icon="trash" type="button"
-                content="Delete Group" @click="deleteGroup(tmpGroup.gid)" />
-        </sui-segment>
+        <editor-buttons :editing="editMode" @cancel="reset()"
+            @delete="deleteGroup(tmpGroup.gid)" />
     </sui-form>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex';
+import EditorButtons from './EditorButtons';
 
 export default {
+    components: {
+        'editor-buttons': EditorButtons,
+    },
     computed: {
         ...mapState({
             editing: state => state.systemGroups.editing,
@@ -133,6 +127,19 @@ export default {
         },
         undeleteUser(name) {
             this.deleted.pop(this.deleted.indexOf(name));
+        },
+        userClass(user) {
+            const colour = this.deleted.includes(user) ? 'grey' : 'red';
+
+            return `mini ${colour} compact circular`;
+        },
+        userIcon(user) {
+            return this.deleted.includes(user) ? 'undo' : 'minus';
+        },
+        userToggle(user) {
+            return this.deleted.includes(user)
+                ? this.undeleteUser(user)
+                : this.deleteUser(user);
         },
         reset() {
             this.deleted = [];
