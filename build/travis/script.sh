@@ -23,7 +23,7 @@ test_php() {
         run_php_cs "${scriptDir}"
     fi
 
-    phpdbg -qrr "${scriptDir}/phpunit" -c build/phpunit/config.xml
+    phpdbg -qrr "${scriptDir}/phpunit" -c build/phpunit/config.xml --coverage-clover=coverage.xml
 }
 
 run_php_cs() {
