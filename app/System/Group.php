@@ -14,7 +14,6 @@ class Group
     private const GROUP_GID_TAKEN = 4;
     private const GROUP_SYNTAX_INVALID = 2;
     private const GROUP_OPTION_INVALID = 3;
-    private const GROUP_UPDATE_FAILED = 10;
 
     /**
      * @var LinuxGroup
@@ -54,17 +53,14 @@ class Group
                 $error = 'Invalid argument to option';
                 break;
             case self::GROUP_GID_TAKEN:
-                $error = 'GID not unique (when -o not used)';
+                $error = "The group's GID must be unique";
                 break;
             case self::GROUP_NAME_TAKEN:
-                $error = 'Group name not unique';
-                break;
-            case self::GROUP_UPDATE_FAILED:
-                $error = "Can't update group file";
+                $error = 'The group name must be unique';
                 break;
         }
 
-        throw new GroupSaveException($error ?? 'Something unexpected happened!');
+        throw new GroupSaveException($error ?? 'Something unexpected happened! Exit code: ' . $retval);
     }
 
     private function commitMod(): self

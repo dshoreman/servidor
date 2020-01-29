@@ -123,7 +123,7 @@ class LinuxUser
 
     public function setHomeDirectory(string $dir): self
     {
-        if ('' != $dir && $dir != $this->getOriginal($dir)) {
+        if ('' != $dir && $dir != $this->getOriginal('dir')) {
             $this->dir = $dir;
             $this->args[] = '-d "' . $this->dir . '"';
         }

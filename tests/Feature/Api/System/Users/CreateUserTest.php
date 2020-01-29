@@ -49,6 +49,24 @@ class CreateUserTest extends TestCase
     }
 
     /** @test */
+    public function can_create_user_with_custom_gid(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'customgid',
+            'gid' => 1,
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure($this->expectedKeys);
+        $response->assertJsonFragment([
+            'name' => 'customgid',
+            'gid' => 1,
+        ]);
+
+        $this->addDeletable('user', $response);
+    }
+
+    /** @test */
     public function cannot_create_user_without_required_fields(): void
     {
         $response = $this->authed()->postJson($this->endpoint, ['uid' => 1337]);
@@ -58,6 +76,22 @@ class CreateUserTest extends TestCase
 
         $updated = $this->authed()->getJson($this->endpoint);
         $updated->assertJsonMissing(['uid' > 1337]);
+    }
+
+    /** @test */
+    public function cannot_create_user_with_existing_name(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'bin',
+            'user_group' => true,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonFragment([
+            'name' => 'bin',
+            'user_group' => true,
+            'error' => 'Something went wrong (exit code: 9)',
+        ]);
     }
 
     /** @test */

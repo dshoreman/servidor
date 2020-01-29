@@ -20,4 +20,21 @@ class LinuxUserTest extends TestCase
         $this->assertEquals('', $user->toArgs());
         $this->assertFalse($user->isDirty());
     }
+
+    /** @test */
+    public function multiple_toggles_of_same_arg_should_not_duplicate(): void
+    {
+        $user = new LinuxUser([
+            'name' => 'foo',
+        ]);
+
+        $user->setUserGroup(true);
+        $user->setUserGroup(false);
+        $user->setUserGroup(true);
+
+        $this->assertEquals(1, count($user->getArgs()));
+        $this->assertEquals(['-U'], array_values($user->getArgs()));
+        $this->assertEquals('-U', $user->toArgs());
+        $this->assertTrue($user->isDirty());
+    }
 }

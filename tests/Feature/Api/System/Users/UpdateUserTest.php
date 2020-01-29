@@ -58,6 +58,46 @@ class UpdateUserTest extends TestCase
     }
 
     /** @test */
+    public function authed_user_can_change_a_users_uid(): void
+    {
+        $user = $this->authed()->postJson($this->endpoint, [
+            'name' => 'uidchanger',
+            'user_group' => true,
+        ])->json();
+
+        $response = $this->authed()->putJson($this->endpoint($user['uid']), [
+            'name' => $user['name'],
+            'uid' => $user['uid'] + 1,
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment(['uid' => $user['uid'] + 1]);
+        $response->assertJsonStructure($this->expectedKeys);
+
+        $this->addDeletable('user', $response);
+    }
+
+    /** @test */
+    public function authed_user_can_change_a_users_home_directory(): void
+    {
+        $user = $this->authed()->postJson($this->endpoint, [
+            'name' => 'dirchanger',
+            'user_group' => true,
+        ])->json();
+
+        $response = $this->authed()->putJson($this->endpoint($user['uid']), [
+            'dir' => '/home/changeddir',
+            'name' => $user['name'],
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment(['dir' => '/home/changeddir']);
+        $response->assertJsonStructure($this->expectedKeys);
+
+        $this->addDeletable('user', $response);
+    }
+
+    /** @test */
     public function cannot_update_nonexistant_user(): void
     {
         $response = $this->authed()->putJson($this->endpoint(9032), [
@@ -65,6 +105,26 @@ class UpdateUserTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /** @test */
+    public function updating_a_user_without_changes_should_fail(): void
+    {
+        $user = $this->authed()->postJson($this->endpoint, [
+            'name' => 'changeless',
+            'user_group' => true,
+        ]);
+
+        $response = $this->authed()->putJson(
+            $this->endpoint($user->json()['uid']),
+            $user->json(),
+        );
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors(['uid']);
+        $response->assertJsonFragment(['uid' => ['Nothing to update!']]);
+
+        $this->addDeletable('user', $user);
     }
 
     /**
