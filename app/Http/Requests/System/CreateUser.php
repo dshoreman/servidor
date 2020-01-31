@@ -8,6 +8,7 @@ class CreateUser extends SaveUser
     {
         return array_merge(parent::rules(), [
             'gid' => 'integer|required_unless:user_group,1',
+            'system' => 'boolean|nullable',
             'create_home' => 'boolean',
             'user_group' => 'boolean',
         ]);

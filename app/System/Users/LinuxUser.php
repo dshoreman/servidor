@@ -134,6 +134,11 @@ class LinuxUser
         return $this;
     }
 
+    public function setSystem(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-r');
+    }
+
     public function setCreateHome(bool $enabled): self
     {
         return $this->toggleArg($enabled, '-m', '-M');
