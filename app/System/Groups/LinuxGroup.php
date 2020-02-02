@@ -54,6 +54,11 @@ class LinuxGroup extends LinuxCommand
         return $this;
     }
 
+    public function setSystem(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-r');
+    }
+
     public function setUsers(?array $users): self
     {
         if (is_array($users)) {

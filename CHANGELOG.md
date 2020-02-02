@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Home directories can now be created, changed and moved
 * Users can now be created for projects when updating them
 * You can now set or modify the default shell for users
+* System GID/UID can now be enabled when creating groups/users
 
 ### Changed
 * Login page is now styled to match dark mode

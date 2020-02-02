@@ -24,7 +24,11 @@ class GroupsController extends Controller
         $data = $request->validated();
 
         try {
-            $group = SystemGroup::create($data['name'], $data['gid'] ?? null);
+            $group = SystemGroup::create(
+                $data['name'],
+                $data['system'] ?? false,
+                $data['gid'] ?? null,
+            );
         } catch (GroupSaveException $e) {
             $data['error'] = $e->getMessage();
 

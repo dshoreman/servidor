@@ -12,6 +12,14 @@
             </sui-form-field>
         </sui-form-fields>
 
+        <sui-form-field v-if="!editMode">
+            <sui-segment :inverted="darkMode">
+                <sui-checkbox toggle v-model="tmpGroup.system" value="1">
+                    Create a system group
+                </sui-checkbox>
+            </sui-segment>
+        </sui-form-field>
+
         <sui-form-field v-show="editMode">
             <label>Group Members</label>
 

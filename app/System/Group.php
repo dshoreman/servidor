@@ -89,11 +89,12 @@ class Group
         return $this;
     }
 
-    public static function create(string $name, ?int $gid = null): array
+    public static function create(string $name, bool $system = false, ?int $gid = null): array
     {
         $group = new self(
             (new LinuxGroup(['name' => $name]))
-                ->setGid($gid ?: null),
+                ->setGid($gid ?: null)
+                ->setSystem($system),
         );
 
         $group->commitAdd();

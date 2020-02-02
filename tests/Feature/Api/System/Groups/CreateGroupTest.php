@@ -48,6 +48,21 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
+    public function authed_user_can_create_system_group(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'systemsal',
+            'system' => true,
+        ]);
+
+        $this->addDeletable('group', $response);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure($this->expectedKeys);
+        $this->assertLessThan(1000, $response->json()['gid']);
+    }
+
+    /** @test */
     public function cannot_create_group_without_required_fields(): void
     {
         $response = $this->authed()->postJson($this->endpoint, ['gid' => 1337]);

@@ -6,6 +6,8 @@ class CreateGroup extends SaveGroup
 {
     public function rules(): array
     {
-        return parent::rules();
+        return array_merge(parent::rules(), [
+            'system' => 'boolean|nullable',
+        ]);
     }
 }
