@@ -40,6 +40,7 @@ export default {
                     gid: '100',
                     name: user,
                     groups: [],
+                    shell: '/bin/zsh',
                     create_home: true,
                     user_group: true,
                 };

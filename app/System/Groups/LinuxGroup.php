@@ -2,13 +2,10 @@
 
 namespace Servidor\System\Groups;
 
-class LinuxGroup
-{
-    /**
-     * @var array
-     */
-    private $args = [];
+use Servidor\System\LinuxCommand;
 
+class LinuxGroup extends LinuxCommand
+{
     /**
      * @var int
      */
@@ -24,29 +21,13 @@ class LinuxGroup
      */
     public $users = '';
 
-    /**
-     * @var array
-     */
-    private $original;
-
     public function __construct(array $group = [])
     {
         $this->name = $group['name'] ?? '';
 
-        if (isset($group['gid'])) {
-            $this->gid = $group['gid'];
-        }
+        $this->initArgs(['gid', 'users' => 'members'], $group);
 
-        if (isset($group['members'])) {
-            $this->users = $group['members'];
-        }
-
-        $this->original = $this->toArray();
-    }
-
-    public function getOriginal(string $key)
-    {
-        return $this->original[$key] ?? null;
+        $this->setOriginal();
     }
 
     public function setGid(?int $gid = null): self
@@ -73,6 +54,11 @@ class LinuxGroup
         return $this;
     }
 
+    public function setSystem(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-r');
+    }
+
     public function setUsers(?array $users): self
     {
         if (is_array($users)) {
@@ -80,11 +66,6 @@ class LinuxGroup
         }
 
         return $this;
-    }
-
-    public function hasArgs(): bool
-    {
-        return count($this->args) > 0;
     }
 
     public function hasChangedUsers(): bool
@@ -95,11 +76,6 @@ class LinuxGroup
     public function isDirty()
     {
         return $this->hasArgs() || $this->hasChangedUsers();
-    }
-
-    public function toArgs(): string
-    {
-        return implode(' ', $this->args);
     }
 
     public function toArray(): array

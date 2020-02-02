@@ -67,6 +67,42 @@ class CreateUserTest extends TestCase
     }
 
     /** @test */
+    public function can_create_user_with_custom_shell(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'shelly',
+            'user_group' => true,
+            'shell' => '/bin/zsh',
+        ]);
+
+        $this->addDeletable('user', $response);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure($this->expectedKeys);
+        $response->assertJsonFragment([
+            'name' => 'shelly',
+            'shell' => '/bin/zsh',
+        ]);
+    }
+
+    /** @test */
+    public function can_create_system_user(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'systemsam',
+            'system' => true,
+            'user_group' => true,
+        ]);
+
+        $this->addDeletable('user', $response);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure($this->expectedKeys);
+        $this->assertLessThan(1000, $response->json()['uid']);
+        $this->assertLessThan(1000, $response->json()['gid']);
+    }
+
+    /** @test */
     public function cannot_create_user_without_required_fields(): void
     {
         $response = $this->authed()->postJson($this->endpoint, ['uid' => 1337]);

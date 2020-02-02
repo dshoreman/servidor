@@ -98,6 +98,26 @@ class UpdateUserTest extends TestCase
     }
 
     /** @test */
+    public function authed_user_can_change_a_users_shell(): void
+    {
+        $user = $this->authed()->postJson($this->endpoint, [
+            'name' => 'shelly',
+            'user_group' => true,
+        ]);
+
+        $response = $this->authed()->putJson($this->endpoint($user['uid']), [
+            'name' => $user['name'],
+            'shell' => '/bin/zsh',
+        ]);
+
+        $this->addDeletable('user', $response);
+
+        $response->assertOk();
+        $response->assertJsonFragment(['shell' => '/bin/zsh']);
+        $response->assertJsonStructure($this->expectedKeys);
+    }
+
+    /** @test */
     public function cannot_update_nonexistant_user(): void
     {
         $response = $this->authed()->putJson($this->endpoint(9032), [

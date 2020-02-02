@@ -2,13 +2,10 @@
 
 namespace Servidor\System\Users;
 
-class LinuxUser
-{
-    /**
-     * @var array
-     */
-    private $args = [];
+use Servidor\System\LinuxCommand;
 
+class LinuxUser extends LinuxCommand
+{
     /**
      * @var string
      */
@@ -27,11 +24,6 @@ class LinuxUser
     /**
      * @var array
      */
-    protected $original = [];
-
-    /**
-     * @var array
-     */
     public $groups;
 
     /**
@@ -39,31 +31,22 @@ class LinuxUser
      */
     public $name;
 
+    /**
+     * @var string
+     */
+    public $shell;
+
     public function __construct(array $user = [], bool $loadGroups = false)
     {
         $this->name = $user['name'] ?? '';
 
-        foreach (['dir', 'gid', 'uid'] as $key) {
-            if (isset($user[$key])) {
-                $this->$key = $user[$key];
-            }
-        }
+        $this->initArgs(['dir', 'gid', 'uid', 'shell'], $user);
 
         if ($loadGroups) {
             $this->loadGroups();
         }
 
-        $this->original = $this->toArray();
-    }
-
-    public function getArgs(): array
-    {
-        return $this->args;
-    }
-
-    public function getOriginal(string $key)
-    {
-        return $this->original[$key] ?? null;
+        $this->setOriginal();
     }
 
     public function setName(string $name): self
@@ -116,6 +99,24 @@ class LinuxUser
         return $this;
     }
 
+    public function setShell(?string $shell): self
+    {
+        if (!is_null($shell)) {
+            $this->shell = $shell;
+        }
+
+        if ($this->shell != $this->getOriginal('shell')) {
+            $this->args[] = '-s "' . $this->shell . '"';
+        }
+
+        return $this;
+    }
+
+    public function setSystem(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-r');
+    }
+
     public function setCreateHome(bool $enabled): self
     {
         return $this->toggleArg($enabled, '-m', '-M');
@@ -141,28 +142,6 @@ class LinuxUser
         return $this->toggleArg($enabled, '-U', '-N');
     }
 
-    public function toggleArg(bool $cond, string $on, string $off = ''): self
-    {
-        $keyOn = array_search($on, $this->args);
-        $keyOff = array_search($off, $this->args);
-
-        if (is_int($keyOn)) {
-            unset($this->args[$keyOn]);
-        }
-
-        if ('' != $keyOff && is_int($keyOff)) {
-            unset($this->args[$keyOff]);
-        }
-
-        $arg = $cond ? $on : $off;
-
-        if ('' != $arg) {
-            $this->args[] = $arg;
-        }
-
-        return $this;
-    }
-
     private function loadGroups(): void
     {
         $this->groups = [];
@@ -186,16 +165,11 @@ class LinuxUser
         return count($this->args) > 0;
     }
 
-    public function toArgs(): string
-    {
-        return implode(' ', $this->args);
-    }
-
     public function toArray(): array
     {
         $arr = [];
 
-        foreach (['name', 'dir', 'groups', 'gid', 'uid'] as $key) {
+        foreach (['name', 'dir', 'groups', 'shell', 'gid', 'uid'] as $key) {
             if (isset($this->$key)) {
                 $arr[$key] = $this->$key;
             }

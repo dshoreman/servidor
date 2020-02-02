@@ -30,6 +30,8 @@ class UsersController extends Controller
 
             $user->setCreateHome($request->input('create_home', false))
                         ->setHomeDirectory($data['dir'] ?? '')
+                        ->setShell($data['shell'] ?? null)
+                        ->setSystem($data['system'] ?? false)
                         ->setUid($data['uid'] ?? null);
 
             if (!$createGroup && $data['gid'] ?? null) {

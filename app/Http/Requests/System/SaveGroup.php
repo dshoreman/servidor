@@ -23,8 +23,6 @@ class SaveGroup extends FormRequest
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
             'gid' => 'integer|nullable',
-            'groups' => 'array|nullable',
-            'users' => 'array|nullable',
         ];
     }
 }

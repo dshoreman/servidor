@@ -23,6 +23,7 @@ class SaveUser extends FormRequest
                 'regex:/^[a-z_][a-z0-9_-]*[\$]?$/',
             ],
             'dir' => 'string|nullable',
+            'shell' => 'string|nullable',
             'uid' => 'integer|nullable',
         ];
     }

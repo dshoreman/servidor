@@ -12,6 +12,19 @@
             </sui-form-field>
         </sui-form-fields>
 
+        <sui-form-field v-if="!editMode">
+            <sui-segment :inverted="darkMode">
+                <sui-checkbox toggle v-model="tmpUser.system" value="1">
+                    Create a system account
+                </sui-checkbox>
+            </sui-segment>
+        </sui-form-field>
+
+        <sui-form-field>
+            <label>Default Shell</label>
+            <input v-model="tmpUser.shell" type="text" placeholder="/bin/sh" />
+        </sui-form-field>
+
         <sui-form-field>
             <label>Home Directory</label>
             <sui-segment class="homedir" :inverted="darkMode" v-if="editMode && tmpUser.dir">
