@@ -93,13 +93,11 @@ class CreateGroupTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '',
-            'users' => 'notanarray',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors([
             'name',
-            'users',
         ]);
 
         $updated = $this->authed()->getJson($this->endpoint);

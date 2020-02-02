@@ -8,7 +8,8 @@ use Servidor\Exceptions\System\GroupNotFoundException;
 use Servidor\Exceptions\System\GroupNotModifiedException;
 use Servidor\Exceptions\System\GroupSaveException;
 use Servidor\Http\Controllers\Controller;
-use Servidor\Http\Requests\System\SaveGroup;
+use Servidor\Http\Requests\System\CreateGroup;
+use Servidor\Http\Requests\System\UpdateGroup;
 use Servidor\System\Group as SystemGroup;
 
 class GroupsController extends Controller
@@ -18,7 +19,7 @@ class GroupsController extends Controller
         return response(SystemGroup::list());
     }
 
-    public function store(SaveGroup $request): Response
+    public function store(CreateGroup $request): Response
     {
         $data = $request->validated();
 
@@ -33,7 +34,7 @@ class GroupsController extends Controller
         return response($group, Response::HTTP_CREATED);
     }
 
-    public function update(SaveGroup $request, int $gid): Response
+    public function update(UpdateGroup $request, int $gid): Response
     {
         try {
             $group = SystemGroup::find($gid);
