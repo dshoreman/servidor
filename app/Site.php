@@ -4,6 +4,8 @@ namespace Servidor;
 
 use Illuminate\Database\Eloquent\Model;
 use Servidor\Events\SiteUpdated;
+use Servidor\Exceptions\System\UserNotFoundException;
+use Servidor\System\User as SystemUser;
 
 class Site extends Model
 {
@@ -26,4 +28,19 @@ class Site extends Model
         'redirect_to',
         'is_enabled',
     ];
+
+    public function getSystemUserAttribute(): ?array
+    {
+        $uid = $this->attributes['system_user'];
+
+        if (!$uid) {
+            return null;
+        }
+
+        try {
+            return SystemUser::find($uid)->toArray();
+        } catch (UserNotFoundException $e) {
+            return null;
+        }
+    }
 }

@@ -10,6 +10,10 @@ main() {
 
 test_npm() {
     npm run prod
+
+    "${TRAVIS_BUILD_DIR}/node_modules/.bin/eslint" \
+        -c build/eslint/config.json "resources/js/**/*.{js,vue}" \
+        && echo "Eslint ran without errors"
 }
 
 test_php() {
@@ -19,7 +23,7 @@ test_php() {
         run_php_cs "${scriptDir}"
     fi
 
-    phpdbg -qrr "${scriptDir}/phpunit" -c build/phpunit/config.xml
+    phpdbg -qrr "${scriptDir}/phpunit" -c build/phpunit/config.xml --coverage-clover=coverage.xml
 }
 
 run_php_cs() {

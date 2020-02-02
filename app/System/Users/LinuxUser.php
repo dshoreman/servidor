@@ -2,12 +2,14 @@
 
 namespace Servidor\System\Users;
 
-class LinuxUser
+use Servidor\System\LinuxCommand;
+
+class LinuxUser extends LinuxCommand
 {
     /**
-     * @var array
+     * @var string
      */
-    private $args = [];
+    protected $dir;
 
     /**
      * @var int
@@ -22,11 +24,6 @@ class LinuxUser
     /**
      * @var array
      */
-    protected $original = [];
-
-    /**
-     * @var array
-     */
     public $groups;
 
     /**
@@ -34,28 +31,22 @@ class LinuxUser
      */
     public $name;
 
+    /**
+     * @var string
+     */
+    public $shell;
+
     public function __construct(array $user = [], bool $loadGroups = false)
     {
         $this->name = $user['name'] ?? '';
 
-        if (isset($user['uid'])) {
-            $this->uid = $user['uid'];
-        }
-
-        if (isset($user['gid'])) {
-            $this->gid = $user['gid'];
-        }
+        $this->initArgs(['dir', 'gid', 'uid', 'shell'], $user);
 
         if ($loadGroups) {
             $this->loadGroups();
         }
 
-        $this->original = $this->toArray();
-    }
-
-    public function getOriginal(string $key)
-    {
-        return $this->original[$key] ?? null;
+        $this->setOriginal();
     }
 
     public function setName(string $name): self
@@ -108,6 +99,49 @@ class LinuxUser
         return $this;
     }
 
+    public function setShell(?string $shell): self
+    {
+        if (!is_null($shell)) {
+            $this->shell = $shell;
+        }
+
+        if ($this->shell != $this->getOriginal('shell')) {
+            $this->args[] = '-s "' . $this->shell . '"';
+        }
+
+        return $this;
+    }
+
+    public function setSystem(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-r');
+    }
+
+    public function setCreateHome(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-m', '-M');
+    }
+
+    public function setHomeDirectory(string $dir): self
+    {
+        if ('' != $dir && $dir != $this->getOriginal('dir')) {
+            $this->dir = $dir;
+            $this->args[] = '-d "' . $this->dir . '"';
+        }
+
+        return $this;
+    }
+
+    public function setMoveHome(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-m');
+    }
+
+    public function setUserGroup(bool $enabled): self
+    {
+        return $this->toggleArg($enabled, '-U', '-N');
+    }
+
     private function loadGroups(): void
     {
         $this->groups = [];
@@ -131,16 +165,11 @@ class LinuxUser
         return count($this->args) > 0;
     }
 
-    public function toArgs(): string
-    {
-        return implode(' ', $this->args);
-    }
-
     public function toArray(): array
     {
         $arr = [];
 
-        foreach (['name', 'groups', 'gid', 'uid'] as $key) {
+        foreach (['name', 'dir', 'groups', 'shell', 'gid', 'uid'] as $key) {
             if (isset($this->$key)) {
                 $arr[$key] = $this->$key;
             }

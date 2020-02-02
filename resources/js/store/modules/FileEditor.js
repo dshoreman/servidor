@@ -1,5 +1,6 @@
-import CodeMirror from 'codemirror'
-import 'codemirror/mode/meta.js'
+/* eslint-disable global-require */
+import 'codemirror/mode/meta.js';
+import CodeMirror from 'codemirror';
 
 export default {
     namespaced: true,
@@ -81,56 +82,48 @@ export default {
         ],
     },
     mutations: {
-        setTheme (state, theme) {
-            state.options.theme = theme
+        setTheme(state, theme) {
+            state.options.theme = theme;
         },
-        setMode (state, mode) {
-            state.options.mode = mode
+        setMode(state, mode) {
+            state.options.mode = mode;
         },
         setSelectedMode(state, name) {
-            state.selectedMode = name
+            state.selectedMode = name;
         },
         setLineWrapping(state, value) {
-            state.options.lineWrapping = value
-        }
+            state.options.lineWrapping = value;
+        },
     },
     actions: {
-        async setTheme ({ commit }, theme) {
-            await require('codemirror/theme/' + theme + '.css');
-            commit('setTheme', theme)
+        async setTheme({ commit }, theme) {
+            await require(`codemirror/theme/${theme}.css`);
+            commit('setTheme', theme);
         },
-        async setMode ({ commit, state }, value) {
-            var val = value, m, mode, spec;
+        async setMode({ commit }, value) {
+            const filename = (/.+\.(?<ext>[^.]+)$/u).exec(value);
+            let mode;
 
-            if (m = /.+\.([^.]+)$/.exec(val)) {
-                var info = CodeMirror.findModeByExtension(m[1]);
-                if (info) {
-                    mode = info.mode;
-                    spec = info.mime;
-                    commit('setSelectedMode', info.mime)
-                }
-            } else {
-                var info = CodeMirror.findModeByMIME(val);
-                if (info) {
-                    mode = info.mode;
-                    spec = val;
-                    commit('setSelectedMode', info.mime)
-                }
+            const info = filename
+                ? CodeMirror.findModeByExtension(filename.groups.ext)
+                : CodeMirror.findModeByMIME(value);
+
+            if (info) {
+                mode = info.mode;
+                commit('setSelectedMode', info.mime);
             }
 
-            if (mode) {
-                if (mode !== "null") {
-                    await require('codemirror/mode/' + mode + '/' + mode + '.js');
-                }
-                commit('setMode', mode)
-            } else {
-                commit('setSelectedMode', 'text/plain')
-                commit('setMode', null)
+            if (!mode) {
+                commit('setSelectedMode', 'text/plain');
+            } else if ('null' !== mode) {
+                await require(`codemirror/mode/${mode}/${mode}.js`);
             }
+
+            commit('setMode', mode ? mode : null);
         },
-        setLineWrapping ({ commit, state }, value) {
+        setLineWrapping({ commit }, value) {
             commit('setLineWrapping', value);
-        }
+        },
     },
     getters: {
         options: state => state.options,
@@ -138,4 +131,4 @@ export default {
         modes: state => state.modes,
         selectedMode: state => state.selectedMode,
     },
-}
+};

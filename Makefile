@@ -3,14 +3,14 @@
 now := `date '+%Y-%m-%d_%H%M'`
 
 test:
-	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit -c build/phpunit/config.xml"
+	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
 
 coverage:
-	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
+	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
 	@echo
 
 coverage-html:
-	vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit --coverage-html tests/reports/coverage/latest"
+	vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml --coverage-html tests/reports/coverage/latest"
 	@mv tests/reports/coverage/latest tests/reports/coverage/$(now)/ && xdg-open ./tests/reports/coverage/$(now)/index.html
 	@echo
 
@@ -21,6 +21,9 @@ metrics-html:
 	vendor/bin/phpmetrics app --report-html="./tests/reports/metrics/$(now)" --git
 
 reports: coverage-html metrics-html
+
+eslint:
+	node_modules/.bin/eslint -c build/eslint/config.json "resources/js/**/*.{js,vue}"
 
 phpstan:
 	vendor/bin/phpstan analyze -c build/phpstan/config.neon
@@ -40,6 +43,6 @@ phpmnd:
 	vendor/bin/phpmnd . --progress --exclude tests
 	@echo
 
-syntax: phpcsf phpcs phpmd phpmnd
+syntax: eslint phpcsf phpcs phpmd phpmnd
 
 kitchen-sink: syntax phpstan coverage metrics

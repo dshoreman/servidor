@@ -1,3 +1,5 @@
+const SYSTEM_UID_THRESHOLD = 1000;
+
 export default {
     namespaced: true,
     state: {
@@ -9,7 +11,10 @@ export default {
         users: [],
         user: {
             name: '',
+            gid: '100',
             groups: [],
+            create_home: true,
+            user_group: true,
         },
     },
     mutations: {
@@ -22,15 +27,22 @@ export default {
         toggleSystemUsers: (state, value) => {
             state.showSystem = value;
         },
-        setEditorUser: (state, user) => {
-            state.editMode = typeof user == 'object';
+        setEditorUser: (state, userOrName) => {
+            let user = userOrName;
 
-            if (!state.editMode) {
+            state.editMode = 'object' === typeof user;
+
+            if (state.editMode) {
+                user.move_home = true;
+            } else {
                 user = {
                     uid: null,
-                    gid: 0,
+                    gid: '100',
                     name: user,
                     groups: [],
+                    shell: '/bin/zsh',
+                    create_home: true,
+                    user_group: true,
                 };
             }
 
@@ -42,7 +54,7 @@ export default {
 
             state.editing = true;
         },
-        unsetEditorUser: (state) => {
+        unsetEditorUser: state => {
             state.clean = {};
             state.editing = false;
             state.editMode = false;
@@ -51,7 +63,7 @@ export default {
                 uid: null,
                 uid_original: null,
                 name: '',
-                gid: 0,
+                gid: '',
                 groups: [],
             };
         },
@@ -59,26 +71,30 @@ export default {
             if (!user.groups) {
                 user.groups = [];
             }
+            if (Number.isInteger(user.gid)) {
+                user.gid = user.gid.toString();
+            }
             state.users.push(user);
         },
-        updateUser: (state, {uid, user}) => {
-            let index = state.users.findIndex(u => u.uid === uid);
+        updateUser: (state, { uid, user }) => {
+            const index = state.users.findIndex(u => u.uid === uid);
 
             Vue.set(state.users, index, user);
         },
         removeUser: (state, uid) => {
-            let index = state.users.findIndex(u => u.uid === uid);
+            const index = state.users.findIndex(u => u.uid === uid);
 
             state.users.splice(index, 1);
         },
     },
     actions: {
-        load: ({commit}) => {
+        load: ({ commit }) => {
             axios.get('/api/system/users').then(response => {
                 commit('setUsers', response.data);
             });
         },
-        edit: ({commit, state, getters}, user) => {
+        edit: ({ commit, state, getters }, user) => {
+            /* eslint-disable no-warning-comments */
             // TODO: Add some kind of modal/confirm prompt in case
             //  the user wants to abort any changes and continue.
             if (state.editing && getters.userIsDirty) {
@@ -87,23 +103,25 @@ export default {
 
             commit('setEditorUser', user);
         },
-        create: ({commit, state}, user) => {
+        create: ({ commit, dispatch }, user) => {
             axios.post('/api/system/users', user).then(response => {
                 commit('addUser', response.data);
-                commit('unsetEditorUser');
+                dispatch('systemGroups/load', null, { root: true }).then(() => {
+                    commit('unsetEditorUser');
+                });
             });
         },
-        update: ({commit}, {uid, user}) => {
-            axios.put('/api/system/users/'+uid, user).then(response => {
+        update: ({ commit }, { uid, user }) => {
+            axios.put(`/api/system/users/${uid}`, user).then(response => {
                 commit('updateUser', {
-                    uid: uid,
+                    uid,
                     user: response.data,
                 });
                 commit('unsetEditorUser');
             });
         },
-        delete: ({commit, state}, uid) => {
-            axios.delete('/api/system/users/'+uid).then(response => {
+        delete: ({ commit, state }, uid) => {
+            axios.delete(`/api/system/users/${uid}`).then(() => {
                 commit('removeUser', state.user.uid_original);
                 commit('unsetEditorUser');
             });
@@ -115,7 +133,7 @@ export default {
         },
         filtered: state => {
             return state.users.filter(user => {
-                if (!state.showSystem && user.uid < 1000) {
+                if (!state.showSystem && SYSTEM_UID_THRESHOLD > user.uid) {
                     return false;
                 }
 
@@ -126,22 +144,22 @@ export default {
             return state.users.map(user => {
                 return {
                     icon: 'user',
-                    text: user.uid+' - '+user.name,
+                    text: `${user.uid} - ${user.name}`,
                     value: user.uid,
                 };
             });
         },
         userIsDirty: state => {
-            let old = state.clean,
-                now = state.user;
+            const now = state.user,
+                old = state.clean;
 
-            if (old === null) {
+            if (null === old) {
                 return false;
             }
 
-            return old.name != now.name
-                || old.uid != now.uid
-                || old.gid != now.gid
+            return old.name !== now.name
+                || old.uid !== now.uid
+                || old.gid !== now.gid
                 || !_.isEqual(old.groups, now.groups);
         },
     },

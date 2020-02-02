@@ -43,7 +43,7 @@ class DeleteUserTest extends TestCase
     {
         $user = $this->authed()->postJson($this->endpoint, [
             'name' => 'deletetestuser',
-            'gid' => 0,
+            'user_group' => true,
         ])->json();
 
         $response = $this->authed()->deleteJson($this->endpoint($user['uid']), []);

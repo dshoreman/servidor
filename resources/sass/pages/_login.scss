@@ -1,12 +1,43 @@
 body.login {
-    background: #dedede;
+    background: #2b3e50;
     margin-top: 5em;
 
     .grid {
         height: 100%;
     }
-    .column {
-        max-width: 450px;
+    .ui.grid > .column:not(.row) {
+        width: 450px;
+
+        .ui.inverted.segment,
+        .ui.inverted.message {
+            background: rgba(27, 28, 29, 0.3);
+        }
+
+        .ui.form input {
+            color: rgba(255, 255, 255, 0.6);
+
+            &:focus {
+                color: #fff;
+            }
+        }
+        .ui.toggle.checkbox {
+            label {
+                &::before {
+                    background: rgba(0, 0, 0, 0.3);
+                }
+                &::after {
+                    background: rgba(227, 230, 233, 0.7) linear-gradient(
+                        transparent, rgba(0, 0, 0, 0.05));
+                }
+            }
+
+            input:checked ~ label {
+                color: #fff !important;
+            }
+        }
+        /*.ui.form input {
+            background: rgba(255, 255, 255, 0.1);
+        }*/
     }
 
     .field[class*="left aligned"] {

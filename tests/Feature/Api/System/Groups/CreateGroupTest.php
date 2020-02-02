@@ -34,7 +34,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_create_user_with_minimum_data(): void
+    public function authed_user_can_create_group_with_minimum_data(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestgroup',
@@ -45,6 +45,21 @@ class CreateGroupTest extends TestCase
         $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('group', $response);
+    }
+
+    /** @test */
+    public function authed_user_can_create_system_group(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'systemsal',
+            'system' => true,
+        ]);
+
+        $this->addDeletable('group', $response);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure($this->expectedKeys);
+        $this->assertLessThan(1000, $response->json()['gid']);
     }
 
     /** @test */
@@ -60,17 +75,44 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
+    public function cannot_create_group_with_existing_name(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'bin',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonFragment([
+            'name' => 'bin',
+            'error' => 'The group name must be unique',
+        ]);
+    }
+
+    /** @test */
+    public function cannot_create_group_with_existing_gid(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'imposter',
+            'gid' => 3,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonFragment([
+            'name' => 'imposter',
+            'error' => "The group's GID must be unique",
+        ]);
+    }
+
+    /** @test */
     public function cannot_create_group_with_invalid_data(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '',
-            'users' => 'notanarray',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors([
             'name',
-            'users',
         ]);
 
         $updated = $this->authed()->getJson($this->endpoint);

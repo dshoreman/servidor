@@ -12,31 +12,31 @@ export default {
         setFile: (state, file) => {
             state.file = file;
         },
-        clearFile: (state) => {
+        clearFile: state => {
             state.file = [];
         },
         setPath: (state, path) => {
             state.currentPath = path;
-        }
+        },
     },
     actions: {
-        load: ({commit}, {path}) => {
-            return new Promise((resolve, reject) =>
+        load: ({ commit }, { path }) => {
+            return new Promise((resolve, reject) => {
                 axios.get('/api/files', {
-                    params: { path: path },
-                }) .then(response => {
+                    params: { path },
+                }).then(response => {
                     commit('setPath', path);
                     commit('setFiles', response.data);
                     resolve(response);
-                }).catch(error => reject(error))
-            );
+                }).catch(error => reject(error));
+            });
         },
-        open: ({commit}, {file}) => {
+        open: ({ commit }, { file }) => {
             return new Promise((resolve, reject) => {
                 commit('clearFile');
 
                 axios.get('/api/files/', {
-                    params: { file: file }
+                    params: { file },
                 }).then(response => {
                     commit('setPath', response.data.filepath);
                     commit('setFile', response.data);
@@ -47,7 +47,7 @@ export default {
                     if (!data.error || !data.error.code) {
                         data = { error: {
                             code: error.response.status,
-                            msg: data.message
+                            msg: data.message,
                         }};
                     }
 
@@ -56,11 +56,11 @@ export default {
                 });
             });
         },
-        save: ({commit, state}) => {
+        save: ({ commit, state }) => {
             return new Promise((resolve, reject) => {
-                let fullpath = state.currentPath + '/' + state.file.filename;
+                const fullpath = `${state.currentPath}/${state.file.filename}`;
 
-                axios.put('/api/files?file=' + fullpath, {
+                axios.put(`/api/files?file=${fullpath}`, {
                     contents: state.file.contents,
                 }).then(response => {
                     commit('setFile', response.data);
@@ -76,4 +76,4 @@ export default {
         file: state => state.file,
         currentPath: state => state.currentPath,
     },
-}
+};

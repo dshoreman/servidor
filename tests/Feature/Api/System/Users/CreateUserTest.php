@@ -38,7 +38,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestuser',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -46,6 +46,60 @@ class CreateUserTest extends TestCase
         $response->assertJsonStructure($this->expectedKeys);
 
         $this->addDeletable('user', $response);
+    }
+
+    /** @test */
+    public function can_create_user_with_custom_gid(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'customgid',
+            'gid' => 1,
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure($this->expectedKeys);
+        $response->assertJsonFragment([
+            'name' => 'customgid',
+            'gid' => 1,
+        ]);
+
+        $this->addDeletable('user', $response);
+    }
+
+    /** @test */
+    public function can_create_user_with_custom_shell(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'shelly',
+            'user_group' => true,
+            'shell' => '/bin/zsh',
+        ]);
+
+        $this->addDeletable('user', $response);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure($this->expectedKeys);
+        $response->assertJsonFragment([
+            'name' => 'shelly',
+            'shell' => '/bin/zsh',
+        ]);
+    }
+
+    /** @test */
+    public function can_create_system_user(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'systemsam',
+            'system' => true,
+            'user_group' => true,
+        ]);
+
+        $this->addDeletable('user', $response);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure($this->expectedKeys);
+        $this->assertLessThan(1000, $response->json()['uid']);
+        $this->assertLessThan(1000, $response->json()['gid']);
     }
 
     /** @test */
@@ -61,11 +115,29 @@ class CreateUserTest extends TestCase
     }
 
     /** @test */
+    public function cannot_create_user_with_existing_name(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'bin',
+            'user_group' => true,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonFragment([
+            'name' => 'bin',
+            'user_group' => true,
+            'error' => 'Something went wrong (exit code: 9)',
+        ]);
+    }
+
+    /** @test */
     public function cannot_create_user_with_invalid_data(): void
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '',
             'gid' => '',
+            'create_home' => 'foo',
+            'user_group' => 'bar',
             'groups' => 'notanarray',
         ]);
 
@@ -73,7 +145,8 @@ class CreateUserTest extends TestCase
         $response->assertJsonValidationErrors([
             'name',
             'gid',
-            'groups',
+            'create_home',
+            'user_group',
         ]);
 
         $updated = $this->authed()->getJson($this->endpoint);
@@ -85,7 +158,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '-test-dash-prefix',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -97,7 +170,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '+test-plus-prefix',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -109,7 +182,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '~test-tilde-prefix',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -121,11 +194,11 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test-contains-:',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name contains invalid characters.']);
+        $response->assertJsonFragment(['The name cannot contain a colon.']);
     }
 
     /** @test */
@@ -133,11 +206,11 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test,contains,comma',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name contains invalid characters.']);
+        $response->assertJsonFragment(['The name cannot contain a comma.']);
     }
 
     /** @test */
@@ -145,11 +218,11 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\tcontains\ttab",
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name contains invalid characters.']);
+        $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
     }
 
     /** @test */
@@ -157,11 +230,11 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => "test\ncontains\nnewline",
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name contains invalid characters.']);
+        $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
     }
 
     /** @test */
@@ -169,11 +242,11 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'test contains space',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name contains invalid characters.']);
+        $response->assertJsonFragment(['The name cannot contain whitespace or newlines.']);
     }
 
     /** @test */
@@ -181,7 +254,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'testuser ',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -195,7 +268,7 @@ class CreateUserTest extends TestCase
     {
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => '_im-a-name-that-is-over-32-chars-',
-            'gid' => 0,
+            'user_group' => true,
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);

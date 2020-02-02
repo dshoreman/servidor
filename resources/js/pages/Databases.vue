@@ -8,9 +8,10 @@
                     v-model="search" @keydown.enter="create"></sui-input>
 
             <sui-table selectable :inverted="darkMode">
-                <sui-table-row v-for="db, key in databases" :key="key">
+                <sui-table-row v-for="(db, key) in databases" :key="key">
                     <sui-table-cell>
-                        <sui-icon :color="darkMode ? 'orange' : 'violet'" name="database" /> {{ db }}
+                        <sui-icon :color="darkMode ? 'orange' : 'violet'" name="database" />
+                        {{ db }}
                     </sui-table-cell>
                 </sui-table-row>
             </sui-table>
@@ -23,7 +24,7 @@
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-    mounted () {
+    mounted() {
         this.$store.dispatch('databases/load');
     },
     computed: {
@@ -31,10 +32,10 @@ export default {
             databases: 'databases/filtered',
         }),
         search: {
-            get () {
+            get() {
                 return this.$store.state.databases.search;
             },
-            set (value) {
+            set(value) {
                 this.$store.dispatch('databases/filter', value);
             },
         },

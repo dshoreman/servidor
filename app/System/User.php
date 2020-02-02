@@ -32,10 +32,21 @@ class User
         return new self($user);
     }
 
+    public static function findByName(string $username): self
+    {
+        $user = posix_getpwnam($username);
+
+        if (!$user) {
+            throw new UserNotFoundException();
+        }
+
+        return new self($user);
+    }
+
     private function refresh($nameOrUid): self
     {
-        $arr = is_int($nameOrUid)
-             ? posix_getpwuid($nameOrUid)
+        $arr = is_numeric($nameOrUid)
+             ? posix_getpwuid((int) $nameOrUid)
              : posix_getpwnam($nameOrUid);
 
         $this->user = new LinuxUser($arr, true);
@@ -63,11 +74,17 @@ class User
 
     public static function create(string $name, ?int $uid = null, ?int $gid = null): array
     {
-        $user = new self(
+        return self::createCustom(
             (new LinuxUser(['name' => $name]))
                 ->setUid($uid ?: null)
                 ->setGid($gid ?: null),
         );
+    }
+
+    public static function createCustom(LinuxUser $user): array
+    {
+        $name = $user->name;
+        $user = new self($user);
 
         $user->commit('useradd');
 
@@ -79,7 +96,10 @@ class User
         $this->user->setName($data['name'])
                    ->setUid($data['uid'] ?? null)
                    ->setGid($data['gid'] ?? null)
-                   ->setGroups($data['groups'] ?? null);
+                   ->setShell($data['shell'] ?? null)
+                   ->setGroups($data['groups'] ?? null)
+                   ->setMoveHome($data['move_home'] ?? false)
+                   ->setHomeDirectory($data['dir'] ?? '');
 
         if (!$this->user->isDirty()) {
             throw new UserNotModifiedException();

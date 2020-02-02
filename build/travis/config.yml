@@ -35,6 +35,9 @@ script:
 after_failure:
   - if [[ "${RUN_MODE}" != "npm" ]]; then cat storage/logs/laravel.log; fi
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 notifications:
   irc:
     channels:

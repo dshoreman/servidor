@@ -10,8 +10,11 @@ abstract class TestCase extends BaseCase
 
     protected $expectedKeys = [
         'name',
-        'uid',
+        'dir',
+        'groups',
+        'shell',
         'gid',
+        'uid',
     ];
 
     protected function endpoint(?int $id = null): string

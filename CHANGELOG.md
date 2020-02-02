@@ -9,6 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.8.0] - 2020-02-02
+### Added
+* Home directories can now be created, changed and moved
+* Users can now be created for projects when updating them
+* You can now set or modify the default shell for users
+* System GID/UID can now be enabled when creating groups/users
+
+### Changed
+* Login page is now styled to match dark mode
+* Validation errors for system user's names are more specific again
+
+### Fixed
+* All users can now be removed from a group, not just some
+* File browser now shows "???" when owner or group don't exist
+* Bulleted user lists under group names no longer update prematurely
+* Login form no longer breaks out of the layout to full page width
+* Stats bar no longer polls for data after logging out
+
+
 ## [0.7.0] - 2019-12-31
 ### Added
 * Files can now actually be edited and saved in the editor
@@ -105,7 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.7.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.8.0...develop
+[0.8.0]: https://github.com/dshoreman/servidor/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/dshoreman/servidor/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/dshoreman/servidor/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/dshoreman/servidor/compare/v0.4.0...v0.5.0

@@ -15,16 +15,16 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
 import FileList from '../../components/Files/Browser/FileList';
 import PathBar from '../../components/Files/PathBar';
+import { mapGetters } from 'vuex';
 
 export default {
-    mounted () {
+    mounted() {
         this.$store.dispatch('sites/load');
         this.$store.dispatch('files/load', { path: this.path });
     },
-    beforeRouteUpdate (to, from, next) {
+    beforeRouteUpdate(to, from, next) {
         this.$store.dispatch('files/load', { path: to.params.path });
         next();
     },
@@ -41,9 +41,9 @@ export default {
             findSite: 'sites/findByDocroot',
             files: 'files/all',
         }),
-        site: function() {
+        site() {
             return this.findSite(this.currentPath);
         },
     },
-}
+};
 </script>

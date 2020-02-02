@@ -29,7 +29,8 @@
                 <sui-header icon>
                     <sui-icon v-if="file.error.code == 403" name="ban" color="red" />
                     <sui-icon v-else-if="file.error.code == 404" name="search" color="teal" />
-                    <sui-icon v-else-if="file.error.code == 415" name="help circle" color="violet" />
+                    <sui-icon v-else-if="file.error.code == 415"
+                        name="help circle" color="violet" />
                     <sui-icon v-else name="bug" color="orange" />
                     {{ file.error.msg }}
                 </sui-header>
@@ -39,21 +40,23 @@
 </template>
 
 <script>
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/dracula.css';
 import { mapActions, mapGetters } from 'vuex';
-import { codemirror } from 'vue-codemirror'
 import PathBar from '../../components/Files/PathBar';
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/dracula.css'
+import { codemirror } from 'vue-codemirror';
 
 export default {
     components: {
         codemirror,
         PathBar,
     },
-    async mounted () {
+    async mounted() {
         this.loading = true;
         await this.$store.dispatch('files/open', { file: this.filePath })
-            .finally(() => this.loading = false );
+            .finally(() => {
+                this.loading = false;
+            });
         this.$store.dispatch('editor/setMode', this.filePath);
     },
     props: [
@@ -72,39 +75,39 @@ export default {
             modes: 'editor/modes',
         }),
         mappedModes() {
-          return this.modes.map(o => {
-            return { text: o.name, value: o.mime };
-          });
+            return this.modes.map(o => {
+                return { text: o.name, value: o.mime };
+            });
         },
         theme: {
-            get () {
-                return this.$store.state.editor.options.theme
+            get() {
+                return this.$store.state.editor.options.theme;
             },
-            set (value) {
-                this.$store.dispatch('editor/setTheme', value)
-            }
+            set(value) {
+                this.$store.dispatch('editor/setTheme', value);
+            },
         },
         mode: {
-            get () {
-                return this.$store.state.editor.selectedMode
+            get() {
+                return this.$store.state.editor.selectedMode;
             },
-            set (value) {
-                this.$store.dispatch('editor/setMode', value)
-            }
+            set(value) {
+                this.$store.dispatch('editor/setMode', value);
+            },
         },
         wrap: {
-            get () {
-                return this.$store.state.editor.options.lineWrapping
+            get() {
+                return this.$store.state.editor.options.lineWrapping;
             },
-            set (value) {
-                this.$store.dispatch('editor/setLineWrapping', value)
-            }
-        }
+            set(value) {
+                this.$store.dispatch('editor/setLineWrapping', value);
+            },
+        },
     },
     methods: {
         ...mapActions({
             save: 'files/save',
         }),
     },
-}
+};
 </script>

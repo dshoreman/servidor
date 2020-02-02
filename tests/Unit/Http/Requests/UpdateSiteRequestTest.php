@@ -138,7 +138,7 @@ class UpdateSiteRequestTest extends TestCase
     {
         $v = $this->getValidator(['type' => 'php']);
 
-        $this->assertContains('required', $v->errors()->first('document_root'));
+        $this->assertStringContainsString('required', $v->errors()->first('document_root'));
         $this->assertFalse($v->passes());
 
         $v = $this->getValidator([
@@ -189,7 +189,7 @@ class UpdateSiteRequestTest extends TestCase
 
         $v = $this->getValidator($data);
 
-        $this->assertContains('required', $v->errors()->first('redirect_type'));
+        $this->assertStringContainsString('required', $v->errors()->first('redirect_type'));
     }
 
     /** @test */
@@ -206,7 +206,7 @@ class UpdateSiteRequestTest extends TestCase
     {
         $v = $this->getValidator(['type' => 'redirect']);
 
-        $this->assertContains('required', $v->errors()->first('redirect_to'));
+        $this->assertStringContainsString('required', $v->errors()->first('redirect_to'));
     }
 
     /** @test */

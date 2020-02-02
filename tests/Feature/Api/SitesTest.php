@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Servidor\Site;
@@ -10,6 +11,7 @@ use Tests\TestCase;
 
 class SitesApiTest extends TestCase
 {
+    use ArraySubsetAsserts;
     use RefreshDatabase;
     use RequiresAuth;
 
@@ -154,6 +156,30 @@ class SitesApiTest extends TestCase
         ]);
 
         $response->assertJsonMissingValidationErrors(['name']);
+    }
+
+    /** @test */
+    public function can_create_matching_user_when_updating_site(): void
+    {
+        $site = Site::create(['name' => 'Hello World']);
+
+        $response = $this->authed()->putJson('/api/sites/' . $site->id, [
+            'create_user' => true,
+            'name' => 'Hello World',
+            'document_root' => '/var/www/hello-world',
+            'primary_domain' => 'example.com',
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+            'type' => 'basic',
+        ]);
+
+        exec('sudo userdel hello-world && sudo rm -rf /home/hello-world');
+
+        $response->assertOk();
+        $response->assertJsonStructure(['name', 'system_user', 'type']);
+        $this->assertArraySubset([
+            'dir' => '/home/hello-world',
+            'name' => 'hello-world',
+        ], $response->json()['system_user']);
     }
 
     /**

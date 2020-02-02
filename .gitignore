@@ -19,6 +19,7 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .env
+.env.backup
 .env.testing
 .php_cs.cache
 .phpunit.result.cache

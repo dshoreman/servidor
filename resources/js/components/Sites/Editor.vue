@@ -74,7 +74,8 @@
             <sui-form-fields v-if="tmpSite.type && tmpSite.type != 'redirect'">
                 <sui-form-field :width="12" :error="'source_repo' in errors">
                     <label>Clone URL</label>
-                    <sui-input v-model="tmpSite.source_repo" @change="refreshBranches(tmpSite.source_repo)" />
+                    <sui-input v-model="tmpSite.source_repo"
+                        @change="refreshBranches(tmpSite.source_repo)" />
                     <sui-label basic color="red" pointing v-if="'source_repo' in errors">
                         {{ errors.source_repo[0] }}
                     </sui-label>
@@ -98,6 +99,25 @@
                     {{ errors.document_root[0] }}
                 </sui-label>
             </sui-form-field>
+
+            <sui-header content="System User" />
+            <sui-segment :inverted="darkMode" v-if="!tmpSite.system_user">
+                <sui-label basic color="red" pointing="below" v-if="'system_user' in errors">
+                    {{ errors.system_user[0] }}
+                </sui-label>
+                <sui-form-field :error="'system_user' in errors">
+                    <sui-checkbox toggle v-model="tmpSite.create_user" value="1">
+                        Create a user named '<code>{{ tmpSite.name }}</code>' for this project
+                    </sui-checkbox>
+                </sui-form-field>
+            </sui-segment>
+            <sui-segment :inverted="darkMode" color="violet" v-else>
+                <p>
+                    <sui-icon name="check" /> The user
+                    <strong>{{ tmpSite.system_user.name }}</strong>
+                    exists and is linked to this project.
+                </p>
+            </sui-segment>
 
             <sui-button negative icon="trash" type="button"
                 content="Delete" floated="right" @click="deleteSite(site.id)" />
@@ -134,17 +154,17 @@ export default {
     },
     computed: {
         ...mapState({
-            'alerts': state => state.sites.alerts,
-            'errors': state => state.sites.errors,
-            'tmpSite': state => state.sites.current,
-            'loadingBranches': state => state.sites.branchesLoading,
+            alerts: state => state.sites.alerts,
+            errors: state => state.sites.errors,
+            tmpSite: state => state.sites.current,
+            loadingBranches: state => state.sites.branchesLoading,
         }),
         ...mapGetters({
-            'branches': 'sites/branchOptions',
+            branches: 'sites/branchOptions',
         }),
     },
     watch: {
-        'tmpSite.type'() {
+        'tmpSite.type': function () {
             this.setDocroot();
         },
     },
@@ -158,12 +178,13 @@ export default {
             refreshBranches: 'sites/loadBranches',
         }),
         updateSite(id) {
-            this.$store.dispatch('sites/update', {id, data: this.tmpSite});
+            this.$store.dispatch('sites/update', { id, data: this.tmpSite });
         },
         deleteSite() {
-            confirm("Deletion is permanent! Are you sure?") &&
-                this.$store.dispatch('sites/delete', this.site.id).then(
-                    response => this.$router.push({ name: 'apps' })
+            /* eslint-disable no-alert */
+            confirm('Deletion is permanent! Are you sure?')
+                && this.$store.dispatch('sites/delete', this.site.id).then(
+                    () => this.$router.push({ name: 'apps' }),
                 );
         },
         setDocroot() {
@@ -171,9 +192,9 @@ export default {
             let val = '';
 
             if (['basic', 'php', 'laravel'].includes(site.type)) {
-                val = '/var/www/' + (site.primary_domain || '');
+                val = `/var/www/${site.primary_domain || ''}`;
 
-                if (site.type == 'laravel') {
+                if ('laravel' === site.type) {
                     val += '/public';
                 }
             }
@@ -181,5 +202,5 @@ export default {
             site.document_root = val;
         },
     },
-}
+};
 </script>

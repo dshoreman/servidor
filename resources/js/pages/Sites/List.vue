@@ -8,10 +8,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import Alerts from '../../components/Alerts';
 import SiteItem from '../../components/Sites/SiteItem';
+import { mapState } from 'vuex';
 
 export default {
     components: {
@@ -27,5 +26,5 @@ export default {
             errors: state => state.sites.errors,
         }),
     },
-}
+};
 </script>

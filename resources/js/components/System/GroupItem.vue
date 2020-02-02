@@ -22,9 +22,9 @@ export default {
         active: Boolean,
     },
     methods: {
-        edit () {
+        edit() {
             this.$emit('edit', this.group);
-        }
-    }
-}
+        },
+    },
+};
 </script>

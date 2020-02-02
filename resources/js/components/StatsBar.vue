@@ -48,8 +48,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
+const REFRESH_INTERVAL_MS = 60000;
+
 export default {
-    data () {
+    data() {
         return {
             loaded: false,
             cpu_usage: 0,
@@ -61,35 +65,44 @@ export default {
             version: '',
         };
     },
-    mounted () {
+    mounted() {
         this.initStatsBar();
 
         const refreshStatsBar = () => {
             return setInterval(
                 () => this.initStatsBar(),
-                1000 * 60
+                REFRESH_INTERVAL_MS,
             );
         };
 
+        let refreshStatsBarIntervalId = refreshStatsBar();
+
         const startStopRefreshStatsBar = () => {
-            if(document.hidden) {
+            if (document.hidden) {
                 clearInterval(refreshStatsBarIntervalId);
             } else {
                 refreshStatsBarIntervalId = refreshStatsBar();
             }
         };
 
-        let refreshStatsBarIntervalId = refreshStatsBar();
-        document.addEventListener("visibilitychange", startStopRefreshStatsBar, false);
+        document.addEventListener('visibilitychange', startStopRefreshStatsBar, false);
 
-        this.$once("hook:beforeDestroy", () => {
-            document.removeEventListener("visibilitychange", startStopRefreshStatsBar);
+        this.$once('hook:beforeDestroy', () => {
+            document.removeEventListener('visibilitychange', startStopRefreshStatsBar);
         });
     },
+    computed: {
+        ...mapGetters([
+            'loggedIn',
+        ]),
+    },
     methods: {
-        initStatsBar () {
+        initStatsBar() {
+            if (!this.loggedIn) {
+                return;
+            }
             axios.get('/api/system-info').then(response => {
-                let data = response.data;
+                const data = response.data;
 
                 this.hostname = data.hostname;
                 this.cpu_usage = data.cpu;
@@ -102,16 +115,16 @@ export default {
                 this.loaded = true;
             });
         },
-        cpuTooltip () {
-            return 'Load average: ' + this.load_avg['1m'] + ', '
-                 + this.load_avg['5m'] + ', ' + this.load_avg['15m'];
+        cpuTooltip() {
+            return `Load average: ${this.load_avg['1m']}, ${
+                this.load_avg['5m']}, ${this.load_avg['15m']}`;
         },
-        ramTooltip () {
-            return 'Using ' + this.ram.used + 'M of ' + this.ram.total + 'M';
+        ramTooltip() {
+            return `Using ${this.ram.used}M of ${this.ram.total}M`;
         },
-        diskTooltip () {
-            return this.disk.used + 'G used; ' + this.disk.free + 'G free' ;
+        diskTooltip() {
+            return `${this.disk.used}G used; ${this.disk.free}G free`;
         },
     },
-}
+};
 </script>

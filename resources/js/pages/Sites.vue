@@ -4,7 +4,7 @@
             <sui-grid-column>
                 <sui-input placeholder="Type a name for your Application..." :icon="filterIcon"
                            class="fluid massive" :inverted="darkMode" :transparent="darkMode"
-                           v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit"></sui-input>
+                           v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit" />
             </sui-grid-column>
         </sui-grid-row>
         <router-view id="sites" :sites="sites" />
@@ -12,11 +12,11 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 import store from '../store';
 
 export default {
-    beforeRouteEnter (to, from, next) {
+    beforeRouteEnter(to, from, next) {
         store.dispatch('sites/load').then(() => next());
     },
     computed: {
@@ -26,14 +26,14 @@ export default {
         ...mapGetters({
             sites: 'sites/filtered',
         }),
-        filterIcon: function () {
+        filterIcon() {
             const match = this.site.name.toLowerCase();
 
-            if (match == '') {
+            if ('' === match) {
                 return 'search';
             }
 
-            if ('object' == typeof(this.sites.find(s => s.name.toLowerCase() == match))) {
+            if ('object' === typeof this.sites.find(s => s.name.toLowerCase() === match)) {
                 return 'cogs';
             }
 
@@ -44,23 +44,25 @@ export default {
         ...mapMutations({
             filterSites: 'sites/setFilter',
         }),
-        createOrEdit: function () {
+        createOrEdit() {
             const match = this.site.name.toLowerCase();
 
-            if (match == '') {
+            if ('' === match) {
                 return;
             }
 
-            let result = this.sites.find(s => s.name.toLowerCase() == match);
+            const result = this.sites.find(s => s.name.toLowerCase() === match);
 
-            if (typeof(result) === 'object') {
-                return this.$router.push({ name: 'apps.edit', params: { id: result.id }});
+            if ('object' === typeof result) {
+                this.$router.push({ name: 'apps.edit', params: { id: result.id }});
+
+                return;
             }
 
-            this.$store.dispatch('sites/create').then(({data})=>{
-                this.$router.push({ name: 'apps.edit', params: {id: data.id}})
+            this.$store.dispatch('sites/create').then(({ data }) => {
+                this.$router.push({ name: 'apps.edit', params: { id: data.id }});
             });
         },
-    }
-}
+    },
+};
 </script>

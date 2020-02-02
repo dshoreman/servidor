@@ -11,7 +11,8 @@
 
             <main-menu use_new=true />
 
-            <sui-menu class="large" secondary fluid inverted pointing id="user-menu" v-if="!loggedIn">
+            <sui-menu class="large" secondary fluid inverted
+                pointing id="user-menu" v-if="!loggedIn">
                 <sui-menu-item>
                     <router-link :to="{ name: 'login' }">
                         Login
@@ -24,7 +25,8 @@
                 </sui-menu-item>
             </sui-menu>
 
-            <sui-menu class="large" secondary fluid inverted vertical pointing id="user-menu" v-else>
+            <sui-menu class="large" secondary fluid inverted
+                vertical pointing id="user-menu" v-else>
                 <a is="sui-menu-item">
                     {{ user.name }} <sui-icon name="chevron up" />
                 </a>
@@ -49,13 +51,13 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
     props: {
         version: {
             type: String,
-            default: "0.0.0",
+            default: '0.0.0',
         },
     },
     computed: {
@@ -66,17 +68,17 @@ export default {
             user: state => state.Auth.user,
         }),
     },
-    created () {
+    created() {
         this.$store.dispatch('fetchProfile');
     },
     methods: {
-        logout () {
-            this.$store.dispatch('logout').then(response => {
+        logout() {
+            this.$store.dispatch('logout').then(() => {
                 this.$nextTick(() => {
                     this.$router.push({ name: 'login' });
                 });
             });
         },
     },
-}
+};
 </script>

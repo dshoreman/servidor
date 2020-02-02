@@ -11,9 +11,51 @@
                 <input v-model="tmpUser.uid" type="number">
             </sui-form-field>
         </sui-form-fields>
+
+        <sui-form-field v-if="!editMode">
+            <sui-segment :inverted="darkMode">
+                <sui-checkbox toggle v-model="tmpUser.system" value="1">
+                    Create a system account
+                </sui-checkbox>
+            </sui-segment>
+        </sui-form-field>
+
+        <sui-form-field>
+            <label>Default Shell</label>
+            <input v-model="tmpUser.shell" type="text" placeholder="/bin/sh" />
+        </sui-form-field>
+
+        <sui-form-field>
+            <label>Home Directory</label>
+            <sui-segment class="homedir" :inverted="darkMode" v-if="editMode && tmpUser.dir">
+                <router-link floated="right" is="sui-button" :to="{
+                    name: 'files',
+                    params: { path: tmpUser.dir }
+                }" size="mini" basic compact icon="folder">Browse</router-link>
+                <sui-input transparent v-model="tmpUser.dir" type="text" />
+                <sui-checkbox v-model="tmpUser.move_home" value="1"
+                    toggle v-if="tmpUser.dir != oldUser.dir">
+                    Move the old directory
+                </sui-checkbox>
+            </sui-segment>
+            <template v-else>
+                <input type="text" v-model="tmpUser.dir" :placeholder="'/home/' + tmpUser.name" />
+                <sui-segment :inverted="darkMode">
+                    <sui-checkbox toggle v-model="tmpUser.create_home" value="1">
+                        Create the home directory automatically
+                    </sui-checkbox>
+                </sui-segment>
+            </template>
+        </sui-form-field>
+
         <sui-form-field>
             <label>Primary Group</label>
-            <sui-dropdown search selection
+            <sui-segment :inverted="darkMode" v-if="!editMode">
+                <sui-checkbox toggle v-model="tmpUser.user_group" value="1">
+                    Create and assign a group with the same name
+                </sui-checkbox>
+            </sui-segment>
+            <sui-dropdown search selection v-if="editMode || !tmpUser.user_group"
                 :options="groupDropdown" v-model="tmpUser.gid" />
         </sui-form-field>
 
@@ -28,50 +70,44 @@
                 :disabled="newGroup === null" />
 
             <sui-list divided>
-                <sui-message info v-if="!tmpUser.groups.length"
-                    header="No memberships!" icon="exclamation triangle"
-                    content="Groups will be listed here."
-                />
-                <sui-list-item v-else v-for="group in tmpUser.groups" :key="group">
-                    <sui-list-icon size="large" name="users" />
-
-                    <sui-list-content v-if="!deleted.includes(group)">
-                        <sui-button icon="minus" type="button" @click="deleteGroup(group)"
-                            floated="right" class="circular compact red mini" />
-                        <sui-list-header :class="(hadGroup(group) ? '' : 'green ') + 'ui small'">
-                            {{ group }}
+                <sui-list-item v-if="!tmpUser.groups.length">
+                    <sui-list-icon size="large" name="exclamation triangle" />
+                    <sui-list-content>
+                        <sui-list-header class="ui small">
+                            {{ tmpUser.name }} is not a member of any other groups.
                         </sui-list-header>
                     </sui-list-content>
-
-                    <sui-list-content v-if="deleted.includes(group)">
-                        <sui-button icon="undo" type="button" @click="undeleteGroup(group)"
-                            floated="right" class="circular compact grey mini" />
-                        <sui-list-header class="ui small grey">
+                </sui-list-item>
+                <sui-list-item v-else v-for="group in tmpUser.groups" :key="group">
+                    <sui-list-icon size="large" name="users" />
+                    <sui-list-content>
+                        <sui-button :icon="groupIcon(group)" type="button" floated="right"
+                                    :class="groupClass(group)" @click="groupToggle(group)" />
+                        <sui-list-header v-if="deleted.includes(group)" class="ui small grey">
                             <strike>{{ group }}</strike>
+                        </sui-list-header>
+                        <sui-list-header v-else
+                            :class="'ui small' + (hadGroup(group) ? '' : ' green')">
+                            {{ group }}
                         </sui-list-header>
                     </sui-list-content>
                 </sui-list-item>
             </sui-list>
         </sui-form-field>
 
-        <sui-button-group fluid>
-            <sui-button type="button" @click="reset()">Cancel</sui-button>
-            <sui-button-or></sui-button-or>
-            <sui-button type="submit" positive :content="editMode ? 'Update' : 'Create'" />
-        </sui-button-group>
-
-        <sui-header size="small" v-show="editMode">Danger Zone</sui-header>
-        <sui-segment class="red" v-show="editMode" :inverted="darkMode">
-            <sui-button negative :inverted="darkMode" icon="trash" type="button"
-                content="Delete User" @click="deleteUser(tmpUser.uid)" />
-        </sui-segment>
+        <editor-buttons :editing="editMode" @cancel="reset()"
+            @delete="deleteUser(tmpUser.uid)" />
     </sui-form>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
+import EditorButtons from './EditorButtons';
 
 export default {
+    components: {
+        'editor-buttons': EditorButtons,
+    },
     computed: {
         ...mapState({
             editing: state => state.systemUsers.editing,
@@ -84,42 +120,42 @@ export default {
             groupDropdown: 'systemGroups/dropdown',
         }),
     },
-    data () {
+    data() {
         return {
             deleted: [],
             newGroup: null,
         };
     },
     watch: {
-        editing (editing) {
-            (!editing) || this.$nextTick(() => this.$refs.name.focus());
+        editing(editing) {
+            !editing || this.$nextTick(() => this.$refs.name.focus());
         },
     },
     methods: {
-        createUser () {
-            if (this.tmpUser.name.trim().length == 0) {
+        createUser() {
+            if (0 === this.tmpUser.name.trim().length) {
                 return;
             }
 
             this.$store.dispatch('systemUsers/create', this.tmpUser);
         },
-        updateUser (uid) {
+        updateUser(uid) {
             if (this.deleted.length) {
                 this.deleted.forEach(group => {
-                    let i = this.tmpUser.groups.indexOf(group);
+                    const i = this.tmpUser.groups.indexOf(group);
 
                     this.tmpUser.groups.splice(i, 1);
                 });
             }
 
-            this.$store.dispatch('systemUsers/update', {uid, user: this.tmpUser});
+            this.$store.dispatch('systemUsers/update', { uid, user: this.tmpUser });
         },
-        deleteUser (uid) {
+        deleteUser(uid) {
             this.$store.dispatch('systemUsers/delete', uid);
         },
-        addGroup () {
-            let group = this.groups[this.groups.findIndex(
-                g => g.gid == this.newGroup
+        addGroup() {
+            const group = this.groups[this.groups.findIndex(
+                g => g.gid === this.newGroup,
             )];
 
             if (!this.tmpUser.groups.includes(group.name)) {
@@ -128,18 +164,31 @@ export default {
 
             this.newGroup = null;
         },
-        hadGroup (name) {
+        hadGroup(name) {
             return this.oldUser.groups.includes(name);
         },
-        deleteGroup (name) {
+        deleteGroup(name) {
             this.hadGroup(name)
-             ? this.deleted.push(name)
-             : this.tmpUser.groups.splice(this.tmpUser.groups.indexOf(name), 1);
+                ? this.deleted.push(name)
+                : this.tmpUser.groups.splice(this.tmpUser.groups.indexOf(name), 1);
         },
-        undeleteGroup (name) {
+        undeleteGroup(name) {
             this.deleted.pop(this.deleted.indexOf(name));
         },
-        reset () {
+        groupClass(group) {
+            const colour = this.deleted.includes(group) ? 'grey' : 'red';
+
+            return `mini ${colour} compact circular`;
+        },
+        groupToggle(group) {
+            return this.deleted.includes(group)
+                ? this.undeleteGroup(group)
+                : this.deleteGroup(group);
+        },
+        groupIcon(group) {
+            return this.deleted.includes(group) ? 'undo' : 'minus';
+        },
+        reset() {
             this.deleted = [];
             this.$store.commit('systemUsers/unsetEditorUser');
         },

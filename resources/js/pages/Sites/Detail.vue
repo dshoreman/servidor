@@ -87,6 +87,49 @@
                     </sui-grid-row>
                 </sui-grid>
             </sui-segment>
+
+            <sui-header attached="top" :inverted="darkMode" v-if="site.system_user">
+                System User
+            </sui-header>
+            <sui-segment attached :inverted="darkMode" v-if="site.system_user">
+                <sui-grid>
+                    <sui-grid-row>
+                        <sui-grid-column :width="8">
+                            <sui-header size="tiny" :inverted="darkMode">
+                                Username
+                                <sui-header-subheader>
+                                    {{ site.system_user.name }}
+                                </sui-header-subheader>
+                            </sui-header>
+                        </sui-grid-column>
+                        <sui-grid-column :width="4">
+                            <sui-header size="tiny" :inverted="darkMode">
+                                User ID
+                                <sui-header-subheader>
+                                    {{ site.system_user.uid }}
+                                </sui-header-subheader>
+                            </sui-header>
+                        </sui-grid-column>
+                        <sui-grid-column :width="4">
+                            <sui-header size="tiny" :inverted="darkMode">
+                                Group ID
+                                <sui-header-subheader>
+                                    {{ site.system_user.gid }}
+                                </sui-header-subheader>
+                            </sui-header>
+                        </sui-grid-column>
+                    </sui-grid-row>
+                </sui-grid>
+
+                <sui-header size="tiny" :inverted="darkMode" v-if="site.system_user.dir">
+                    <router-link :to="{ name: 'files', params: { path: site.system_user.dir }}"
+                                 content="Browse files" is="sui-button" floated="right"
+                                 basic primary icon="open folder" />
+                    Home Directory
+                    <sui-header-subheader>{{ site.system_user.dir }}</sui-header-subheader>
+                </sui-header>
+            </sui-segment>
+
         </sui-grid-column>
     </sui-grid-row>
 </template>
@@ -110,7 +153,7 @@ export default {
         ...mapGetters({
             findSite: 'sites/findById',
         }),
-        site(){
+        site() {
             return this.findSite(this.id);
         },
     },
@@ -119,5 +162,5 @@ export default {
             pullFiles: 'sites/pull',
         }),
     },
-}
+};
 </script>

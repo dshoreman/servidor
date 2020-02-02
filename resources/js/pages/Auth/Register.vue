@@ -58,7 +58,7 @@
 
 <script>
 export default {
-    data () {
+    data() {
         return {
             name: '',
             email: '',
@@ -66,22 +66,22 @@ export default {
             passwordConfirm: '',
         };
     },
-    mounted () {
+    mounted() {
         document.body.classList.add('login');
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
         document.body.classList.remove('login');
 
         return next();
     },
     methods: {
-        register () {
+        register() {
             this.$store.dispatch('register', {
                 name: this.name,
                 email: this.email,
                 password: this.password,
                 passwordConfirmation: this.passwordConfirm,
-            }).then(response => {
+            }).then(() => {
                 this.$router.push({ name: 'login' });
             });
         },

@@ -1,18 +1,19 @@
 <template>
     <div class="ui middle aligned center aligned grid">
         <div class="column">
-            <h2 class="ui teal header centered">
+            <h2 class="ui header centered">
                 <i class="server icon"></i>
                 Sign in to Servidor
             </h2>
             <form class="ui form" @submit.prevent="login" method="POST" action="/login">
-                <div class="ui stacked segment">
+                <div class="ui inverted stacked segment">
                     <sui-message negative v-if="error.msg"
                         :header="error.title"
                         :content="error.msg" />
 
                     <div class="field">
-                        <div class="ui left icon input" type="email" placeholder="Email address">
+                        <div class="ui left inverted transparent icon input"
+                            type="email" placeholder="Email address">
                             <input id="email" type="email" name="email"
                                 v-model="username" placeholder="E-mail address"
                                 required autofocus>
@@ -20,7 +21,8 @@
                         </div>
                     </div>
                     <div class="field">
-                        <div class="ui left icon input" type="password" placeholder="Password">
+                        <div class="ui left inverted transparent icon input"
+                            type="password" placeholder="Password">
                             <input id="password" type="password" name="password"
                                 v-model="password" required
                                 placeholder="Password" />
@@ -33,35 +35,38 @@
                             <label for="remember">Remember Me</label>
                         </div>
                     </div>
-                    <button class="ui teal fluid large button" type="submit">
+                    <button class="ui positive fluid large button" type="submit">
                         Login
                     </button>
                 </div>
             </form>
 
-            <div class="ui message">
+            <div class="ui inverted message">
                 <router-link :to="{ name: 'password.request' }" class="centered">
                     Forgot Your Password?
                 </router-link>
             </div>
         </div>
+        <link v-if="darkMode" href="/css/dark-theme.css" rel="stylesheet" type="text/css">
+        <link href="/css/app.css" rel="stylesheet" type="text/css">
+        <link v-if="darkMode" href="/css/dark-theme.custom.css" rel="stylesheet" type="text/css">
     </div>
 </template>
 
 <script>
-import { mapMutations, mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
-    data () {
+    data() {
         return {
             username: '',
             password: '',
         };
     },
-    mounted () {
+    mounted() {
         document.body.classList.add('login');
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
         document.body.classList.remove('login');
 
         return next();
@@ -75,11 +80,11 @@ export default {
         ...mapMutations([
             'setAlert',
         ]),
-        login () {
+        login() {
             this.$store.dispatch('login', {
                 username: this.username,
                 password: this.password,
-            }).then(response => {
+            }).then(() => {
                 this.$router.push({ name: 'dashboard' });
             });
         },

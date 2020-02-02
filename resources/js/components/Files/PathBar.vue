@@ -6,15 +6,15 @@
             <template v-for="(segment, index) in pathParts">
 
                 <sui-breadcrumb-section v-if="segment.path != path"
-                    link @click="goTo(segment.path)">
+                    link :key="index" @click="goTo(segment.path)">
                     {{ segment.dirname }}
                 </sui-breadcrumb-section>
-                <sui-breadcrumb-section v-else>
+                <sui-breadcrumb-section :key="index" v-else>
                     {{ segment.dirname }}
                 </sui-breadcrumb-section>
 
                 <sui-breadcrumb-divider @click="goTo(segment.path)"
-                    v-if="index < (pathParts.length - 1)" />
+                    v-if="index < (pathParts.length - 1)" :key="'divider' + index" />
 
             </template>
         </sui-breadcrumb>
@@ -36,16 +36,16 @@ export default {
         },
     },
     computed: {
-        pathParts: function() {
-            let parts = [],
-                path = '';
+        pathParts() {
+            const parts = [];
+            let path = '';
 
-            for (let part of this.path.split('/')) {
-                path = path + part + '/';
+            for (const part of this.path.split('/')) {
+                path = `${path + part}/`;
 
                 parts.push({
-                    'path': path.replace(/\/+$/, ''),
-                    'dirname': part,
+                    path: path.replace(/\/+$/u, ''),
+                    dirname: part,
                 });
             }
 
@@ -53,14 +53,15 @@ export default {
         },
     },
     methods: {
-        goTo: function (path) {
-            this.$router.push({ name: 'files', params: {
-                path: path ? path : '/',
-            }});
+        goTo(path) {
+            this.$router.push({
+                name: 'files',
+                params: { path: path ? path : '/' },
+            });
         },
-        goUp: function () {
+        goUp() {
             this.goTo(this.path.substr(0, this.path.lastIndexOf('/')));
         },
     },
-}
+};
 </script>

@@ -3,6 +3,7 @@
 namespace Servidor\FileManager;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -94,6 +95,9 @@ class FileManager
             $file = new SplFileInfo($file, implode('/', $path), $name);
         }
 
+        $owner = posix_getpwuid($file->getOwner()) ?: [];
+        $group = posix_getgrgid($file->getGroup()) ?: [];
+
         $data = [
             'filename' => $file->getFilename(),
             'filepath' => $file->getPath(),
@@ -102,8 +106,8 @@ class FileManager
             'isFile' => $file->isFile(),
             'isLink' => $file->isLink(),
             'target' => $file->isLink() ? $file->getLinkTarget() : '',
-            'owner' => posix_getpwuid($file->getOwner())['name'],
-            'group' => posix_getgrgid($file->getGroup())['name'],
+            'owner' => $owner['name'] ?? '???',
+            'group' => $group['name'] ?? '???',
         ];
 
         $data['perms'] = empty($this->filePerms) || !isset($this->filePerms[$data['filename']])
@@ -144,7 +148,7 @@ class FileManager
             $msg = $e->getMessage();
             $data['contents'] = '';
 
-            $data['error'] = str_contains($msg, 'Permission denied') ? [
+            $data['error'] = Str::contains($msg, 'Permission denied') ? [
                 'code' => Response::HTTP_FORBIDDEN,
                 'msg' => 'Permission denied',
             ] : ['code' => 418, 'msg' => $msg];
