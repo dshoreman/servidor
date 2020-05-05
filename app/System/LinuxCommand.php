@@ -44,28 +44,6 @@ abstract class LinuxCommand
         return implode(' ', $this->args);
     }
 
-    public function toggleArg(bool $cond, string $on, string $off = ''): self
-    {
-        $keyOn = array_search($on, $this->args);
-        $keyOff = array_search($off, $this->args);
-
-        if (is_int($keyOn)) {
-            unset($this->args[$keyOn]);
-        }
-
-        if ('' != $keyOff && is_int($keyOff)) {
-            unset($this->args[$keyOff]);
-        }
-
-        $arg = $cond ? $on : $off;
-
-        if ('' != $arg) {
-            $this->args[] = $arg;
-        }
-
-        return $this;
-    }
-
     public function getOriginal(string $key)
     {
         return $this->original[$key] ?? null;
@@ -75,4 +53,6 @@ abstract class LinuxCommand
     {
         $this->original = $this->toArray();
     }
+
+    abstract public function toArray(): array;
 }

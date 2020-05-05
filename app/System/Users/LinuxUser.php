@@ -3,9 +3,12 @@
 namespace Servidor\System\Users;
 
 use Servidor\System\LinuxCommand;
+use Servidor\Traits\ToggleCommandArgs;
 
 class LinuxUser extends LinuxCommand
 {
+    use ToggleCommandArgs;
+
     /**
      * @var string
      */

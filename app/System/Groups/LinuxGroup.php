@@ -3,9 +3,12 @@
 namespace Servidor\System\Groups;
 
 use Servidor\System\LinuxCommand;
+use Servidor\Traits\ToggleCommandArgs;
 
 class LinuxGroup extends LinuxCommand
 {
+    use ToggleCommandArgs;
+
     /**
      * @var int
      */
