@@ -57,7 +57,7 @@
         </sui-form-field>
 
         <editor-buttons :editing="editMode" @cancel="reset()"
-            @delete="deleteGroup(tmpGroup.gid)" />
+            @delete="deleteGroup(tmpGroup.gid)" item="group" />
     </sui-form>
 </template>
 

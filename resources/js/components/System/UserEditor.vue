@@ -96,7 +96,7 @@
         </sui-form-field>
 
         <editor-buttons :editing="editMode" @cancel="reset()"
-            @delete="deleteUser(tmpUser.uid)" />
+            @delete="deleteUser(tmpUser.uid)" item="user" />
     </sui-form>
 </template>
 
