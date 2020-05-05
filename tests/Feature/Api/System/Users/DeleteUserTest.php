@@ -4,6 +4,7 @@ namespace Tests\Feature\Api\System\Users;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
+use Servidor\FileManager\FileManager;
 use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
 
@@ -62,5 +63,26 @@ class DeleteUserTest extends TestCase
         $response = $this->authed()->getJson($this->endpoint($user['uid']));
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @test
+     */
+    public function user_home_directory_can_be_purged(): void
+    {
+        $user = $this->authed()->postJson($this->endpoint, [
+            'name' => 'userwithhomedir',
+            'create_home' => true,
+            'user_group' => true,
+        ])->json();
+
+        $before = (new FileManager())->list('/home');
+        $response = $this->authed()->deleteJson($this->endpoint($user['uid']), [
+            'deleteHome' => true,
+        ]);
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $after = (new FileManager())->list('/home');
+        $this->assertEquals(count($before) - 1, count($after));
     }
 }
