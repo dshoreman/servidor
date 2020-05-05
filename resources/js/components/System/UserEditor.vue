@@ -154,7 +154,7 @@ export default {
 
             this.$store.dispatch('systemUsers/update', { uid, user: this.tmpUser });
         },
-        deleteUser(uid, purge) {
+        deleteUser(uid) {
             this.$store.dispatch('systemUsers/delete', { uid, purge: this.deleteHome });
         },
         addGroup() {

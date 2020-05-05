@@ -69,7 +69,7 @@ class UsersController extends Controller
 
     public function destroy(Request $request, int $uid): Response
     {
-        $withHome = $request->get('deleteHome');
+        $withHome = (bool) $request->input('deleteHome', false);
 
         SystemUser::find($uid)->delete($withHome);
 
