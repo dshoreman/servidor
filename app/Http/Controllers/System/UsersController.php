@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers\System;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Servidor\Exceptions\System\UserNotFoundException;
@@ -66,9 +67,11 @@ class UsersController extends Controller
         }
     }
 
-    public function destroy(int $uid): Response
+    public function destroy(Request $request, int $uid): Response
     {
-        SystemUser::find($uid)->delete();
+        $withHome = $request->get('deleteHome');
+
+        SystemUser::find($uid)->delete($withHome);
 
         return response(null, Response::HTTP_NO_CONTENT);
     }

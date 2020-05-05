@@ -124,9 +124,15 @@ class User
         return $this;
     }
 
-    public function delete(): void
+    public function delete(bool $withHome = false): void
     {
-        exec('sudo userdel ' . $this->user->name);
+        $cmd = 'sudo userdel ';
+
+        if ($withHome) {
+            $cmd .= '--remove ';
+        }
+
+        exec($cmd . $this->user->name);
     }
 
     public function toArray(): array
