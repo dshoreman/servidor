@@ -4,6 +4,7 @@ namespace Servidor\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Servidor\FileManager\FileManager;
 
@@ -54,7 +55,7 @@ class FileController extends Controller
     public function update(Request $request)
     {
         if (!$filepath = $request->query('file')) {
-            throw new InvalidArgumentException('File path must be specified.');
+            throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 
         $data = $request->validate([
