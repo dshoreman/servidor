@@ -23,7 +23,8 @@ test_php() {
         run_php_cs "${scriptDir}"
     fi
 
-    phpdbg -qrr "${scriptDir}/phpunit" -c build/phpunit/config.xml --coverage-clover=coverage.xml
+    phpdbg -qrr "${scriptDir}/phpunit" -c build/phpunit/config.xml \
+        --coverage-clover=coverage.xml --exclude-group "broken-travis"
 }
 
 run_php_cs() {

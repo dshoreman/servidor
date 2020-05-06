@@ -9,9 +9,12 @@ class UpdateFileTest extends TestCase
 {
     use RequiresAuth;
 
-    protected string $endpoint = '/api/files';
+    protected $endpoint = '/api/files';
 
-    /** @test */
+    /**
+     * @test
+     * @group broken-travis
+     */
     public function authed_user_can_update_file(): void
     {
         $args = ['file' => resource_path('test-skel/updating.html')];

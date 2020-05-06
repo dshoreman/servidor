@@ -8,7 +8,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected string $endpoint = '/api';
+    protected $endpoint = '/api';
 
     protected function assertValidationErrors($response, $keys): void
     {
