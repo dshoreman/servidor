@@ -5,7 +5,6 @@ namespace Servidor\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
-use InvalidArgumentException;
 use Servidor\FileManager\FileManager;
 
 class FileController extends Controller
@@ -34,17 +33,7 @@ class FileController extends Controller
                 return response($file, $file['error']['code']);
             }
 
-            try {
-                return response()->json($file);
-            } catch (InvalidArgumentException $e) {
-                $file['contents'] = '';
-                $file['error'] = [
-                    'code' => 422,
-                    'msg' => 'Failed loading file',
-                ];
-
-                return response()->json($file);
-            }
+            return response()->json($file);
         }
 
         $path = $request->get('path');
