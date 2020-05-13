@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\Files;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
@@ -50,5 +51,39 @@ class ListFilesTest extends TestCase
                 'msg' => "This directory doesn't exist.",
             ],
         ]);
+    }
+
+    /** @test */
+    public function file_can_still_be_listed_when_owner_no_longer_exists(): void
+    {
+        exec(implode(' && ', [
+            'sudo useradd -m testghost',
+            'sudo -u testghost touch /home/testghost/file.txt',
+            'sudo userdel testghost',
+        ]));
+        $this->assertTrue(
+            is_file('/home/testghost/file.txt'),
+            'Failed asserting that /home/testghost/file.txt exists.',
+        );
+
+        $response = $this->authed()->getJson(
+            $this->endpoint(['path' => '/home/testghost'])
+        );
+        $data = Arr::first($response->json(), function ($value, $key) {
+            return 'file.txt' == $value['filename'];
+        });
+
+        $response->assertOk();
+        $response->assertJsonStructure([[
+            'filename', 'filepath', 'mimetype', 'owner', 'group',
+        ]]);
+        $response->assertJsonFragment([
+            'filename' => 'file.txt',
+            'filepath' => '/home/testghost',
+        ]);
+        $this->assertEquals('???', $data['owner']);
+        $this->assertEquals('???', $data['group']);
+
+        exec('sudo rm -rf /home/testghost');
     }
 }
