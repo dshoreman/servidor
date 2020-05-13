@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * File contents no longer have whitespace and newlines trimmed when saved
+* Listing a directory that doesn't exist will now show a friendly error
 
 
 ## [0.8.0] - 2020-02-02

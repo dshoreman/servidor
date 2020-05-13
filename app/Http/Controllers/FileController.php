@@ -48,8 +48,11 @@ class FileController extends Controller
         }
 
         $path = $request->get('path');
+        $list = $this->fm->list($path);
 
-        return response()->json($this->fm->list($path));
+        return isset($list['error'])
+            ? response($list, $list['error']['code'])
+            : response()->json($list);
     }
 
     public function update(Request $request)

@@ -5,6 +5,7 @@ namespace Servidor\FileManager;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -35,6 +36,21 @@ class FileManager
 
         $this->loadPermissions($path);
 
+        try {
+            return $this->getFiles($path);
+        } catch (DirectoryNotFoundException $e) {
+            return [
+                'filepath' => $path,
+                'error' => [
+                    'code' => 404,
+                    'msg' => "This directory doesn't exist.",
+                ],
+            ];
+        }
+    }
+
+    private function getFiles(string $path): array
+    {
         $files = $this->finder->depth(0)->in($path)
                       ->sortByName(true)
                       ->ignoreDotFiles(false);

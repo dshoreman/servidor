@@ -20,7 +20,7 @@ export default {
         },
     },
     actions: {
-        load: ({ commit }, { path }) => {
+        load: ({ commit, getters }, { path }) => {
             return new Promise((resolve, reject) => {
                 axios.get('/api/files', {
                     params: { path },
@@ -28,10 +28,16 @@ export default {
                     commit('setPath', path);
                     commit('setFiles', response.data);
                     resolve(response);
-                }).catch(error => reject(error));
+                }).catch(error => {
+                    const data = getters.errorData(error);
+
+                    commit('setPath', data.filepath);
+                    commit('setFiles', data);
+                    reject(error);
+                });
             });
         },
-        open: ({ commit }, { file }) => {
+        open: ({ commit, getters }, { file }) => {
             return new Promise((resolve, reject) => {
                 commit('clearFile');
 
@@ -42,14 +48,7 @@ export default {
                     commit('setFile', response.data);
                     resolve(response);
                 }).catch(error => {
-                    let data = error.response.data;
-
-                    if (!data.error || !data.error.code) {
-                        data = { error: {
-                            code: error.response.status,
-                            msg: data.message,
-                        }};
-                    }
+                    const data = getters.errorData(error);
 
                     commit('setFile', data);
                     reject(error);
@@ -75,5 +74,17 @@ export default {
         all: state => state.files,
         file: state => state.file,
         currentPath: state => state.currentPath,
+        errorData: () => error => {
+            let data = error.response.data;
+
+            if (!data.error || !data.error.code) {
+                data = { error: {
+                    code: error.response.status,
+                    msg: data.message,
+                }};
+            }
+
+            return data;
+        },
     },
 };
