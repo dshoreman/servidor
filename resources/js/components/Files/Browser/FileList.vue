@@ -6,6 +6,7 @@
                 <th>Permissions</th>
                 <th>Owner</th>
                 <th>Group</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>

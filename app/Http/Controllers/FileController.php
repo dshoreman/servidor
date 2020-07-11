@@ -69,4 +69,9 @@ class FileController extends Controller
 
         return response()->json($this->fm->open($filepath));
     }
+
+    public function delete(Request $request)
+    {
+        return response(null, 204);
+    }
 }

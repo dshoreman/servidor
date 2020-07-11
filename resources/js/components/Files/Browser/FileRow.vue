@@ -10,6 +10,11 @@
             collapsing>{{ file.perms.octal }}</sui-table-cell>
         <td>{{ file.owner }}</td>
         <td>{{ file.group }}</td>
+        <sui-table-cell collapsing>
+            <sui-button compact color="red"
+                icon="trash alternate outline"
+                v-if="file.isFile" />
+        </sui-table-cell>
     </tr>
 </template>
 

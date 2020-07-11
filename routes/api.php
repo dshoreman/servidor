@@ -35,6 +35,7 @@ Route::middleware('auth:api')->group(function (): void {
 
     Route::get('files', 'FileController@index');
     Route::put('files', 'FileController@update');
+    Route::delete('files', 'FileController@delete');
 
     Route::name('system')->prefix('/system')->namespace('System')->group(function (): void {
         Route::resource('groups', 'GroupsController', [
