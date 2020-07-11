@@ -13,15 +13,4 @@ abstract class TestCase extends BaseCase
         'name',
         'users',
     ];
-
-    protected function endpoint(?int $id = null): string
-    {
-        $endpoint = $this->endpoint;
-
-        if ($id) {
-            $endpoint .= '/' . $id;
-        }
-
-        return $endpoint;
-    }
 }

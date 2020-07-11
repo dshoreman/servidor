@@ -2,9 +2,9 @@
 
 namespace Servidor\FileManager;
 
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -35,6 +35,21 @@ class FileManager
 
         $this->loadPermissions($path);
 
+        try {
+            return $this->getFiles($path);
+        } catch (DirectoryNotFoundException $e) {
+            return [
+                'filepath' => $path,
+                'error' => [
+                    'code' => 404,
+                    'msg' => "This directory doesn't exist.",
+                ],
+            ];
+        }
+    }
+
+    private function getFiles(string $path): array
+    {
         $files = $this->finder->depth(0)->in($path)
                       ->sortByName(true)
                       ->ignoreDotFiles(false);
@@ -110,9 +125,7 @@ class FileManager
             'group' => $group['name'] ?? '???',
         ];
 
-        $data['perms'] = empty($this->filePerms) || !isset($this->filePerms[$data['filename']])
-                       ? ['text' => '', 'octal' => mb_substr(decoct($file->getPerms()), -4)]
-                       : $this->filePerms[$data['filename']];
+        $data['perms'] = $this->filePerms[$data['filename']];
 
         if (intval(3) === mb_strlen($data['perms']['octal'])) {
             $data['perms']['octal'] = '0' . $data['perms']['octal'];
@@ -147,11 +160,11 @@ class FileManager
         } catch (RuntimeException $e) {
             $msg = $e->getMessage();
             $data['contents'] = '';
+            $data['error'] = ['code' => 418, 'msg' => $msg];
 
-            $data['error'] = Str::contains($msg, 'Permission denied') ? [
-                'code' => Response::HTTP_FORBIDDEN,
-                'msg' => 'Permission denied',
-            ] : ['code' => 418, 'msg' => $msg];
+            if (Str::contains($msg, 'failed to open stream: Permission denied')) {
+                $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
+            }
         }
 
         return $data;
