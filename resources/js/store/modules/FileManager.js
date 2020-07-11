@@ -15,6 +15,11 @@ export default {
         clearFile: state => {
             state.file = [];
         },
+        removeFile: (state, file) => {
+            const index = state.files.findIndex(f => f === file);
+
+            state.files.splice(index, 1);
+        },
         setPath: (state, path) => {
             state.currentPath = path;
         },
@@ -63,6 +68,18 @@ export default {
                     contents: state.file.contents,
                 }).then(response => {
                     commit('setFile', response.data);
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        },
+        delete: ({ commit, state }, file) => {
+            return new Promise((resolve, reject) => {
+                const fullpath = `${file.filepath}/${file.filename}`;
+
+                axios.delete(`/api/files?file=${fullpath}`).then(response => {
+                    commit('removeFile', file);
                     resolve(response);
                 }).catch(error => {
                     reject(error);

@@ -13,6 +13,7 @@
         <sui-table-cell collapsing>
             <sui-button compact color="red"
                 icon="trash alternate outline"
+                @click.stop="remove(file)"
                 v-if="file.isFile" />
         </sui-table-cell>
     </tr>
@@ -61,6 +62,9 @@ export default {
             }
 
             this.$router.push(route);
+        },
+        remove(file) {
+            this.$store.dispatch('files/delete', file);
         },
     },
 };
