@@ -29,5 +29,6 @@ class DeletePathTest extends TestCase
 
         $response = $this->authed()->deleteJson($this->endpoint(['file' => $path]));
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $this->assertFileNotExists($path);
     }
 }

@@ -72,6 +72,18 @@ class FileController extends Controller
 
     public function delete(Request $request)
     {
+        if (!$filepath = $request->query('file')) {
+            throw ValidationException::withMessages(['file' => 'File path must be specified.']);
+        }
+
+        $file = $this->fm->open($filepath);
+
+        if (array_key_exists('error', $file)) {
+            return response($file, $file['error']['code']);
+        }
+
+        $this->fm->delete($filepath);
+
         return response(null, 204);
     }
 }

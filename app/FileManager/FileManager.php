@@ -76,6 +76,15 @@ class FileManager
         return false !== file_put_contents($file, $contents);
     }
 
+    public function delete($file): bool
+    {
+        if (!file_exists($file)) {
+            return true;
+        }
+
+        return is_dir($file) ? false : unlink($file);
+    }
+
     private function loadFilePermissions(string $path): array
     {
         $pathParts = explode('/', $path);
