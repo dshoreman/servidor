@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * Deleting system users and groups now triggers a confirmation prompt
 * Home directory can now be purged when deleting a system user
-* Files can now be deleted through the File Manager
+* Files and folders can now be deleted through the File Manager
 
 ### Fixed
 * File contents no longer have whitespace and newlines trimmed when saved

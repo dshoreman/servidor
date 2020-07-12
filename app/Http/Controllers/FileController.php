@@ -76,16 +76,10 @@ class FileController extends Controller
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 
-        $file = $this->fm->open($filepath);
+        $data = $this->fm->delete($filepath);
 
-        if (array_key_exists('error', $file)) {
-            return '404' == $file['error']['code']
-                ? response(null, Response::HTTP_NO_CONTENT)
-                : response($file, $file['error']['code']);
-        }
-
-        $this->fm->delete($filepath);
-
-        return response(null, Response::HTTP_NO_CONTENT);
+        return null === $data['error']
+            ? response(null, Response::HTTP_NO_CONTENT)
+            : response()->json($data, $data['error']['code']);
     }
 }

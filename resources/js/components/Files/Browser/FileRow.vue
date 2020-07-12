@@ -13,8 +13,7 @@
         <sui-table-cell collapsing>
             <sui-button compact color="red"
                 icon="trash alternate outline"
-                @click.stop="remove(file)"
-                v-if="file.isFile" />
+                @click.stop="remove(file)" />
         </sui-table-cell>
     </tr>
 </template>
