@@ -31,4 +31,14 @@ class DeletePathTest extends TestCase
         $response->assertStatus(Response::HTTP_NO_CONTENT);
         $this->assertFileNotExists($path);
     }
+
+    /** @test */
+    public function delete_returns_204_response_when_file_does_not_exist(): void
+    {
+        $response = $this->authed()->deleteJson($this->endpoint([
+            'file' => resource_path('test-skel/non-existant.md'),
+        ]));
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
 }

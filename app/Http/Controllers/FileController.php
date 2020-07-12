@@ -79,11 +79,13 @@ class FileController extends Controller
         $file = $this->fm->open($filepath);
 
         if (array_key_exists('error', $file)) {
-            return response($file, $file['error']['code']);
+            return '404' == $file['error']['code']
+                ? response(null, Response::HTTP_NO_CONTENT)
+                : response($file, $file['error']['code']);
         }
 
         $this->fm->delete($filepath);
 
-        return response(null, 204);
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
