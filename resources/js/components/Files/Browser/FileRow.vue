@@ -10,6 +10,11 @@
             collapsing>{{ file.perms.octal }}</sui-table-cell>
         <td>{{ file.owner }}</td>
         <td>{{ file.group }}</td>
+        <sui-table-cell collapsing>
+            <sui-button compact color="red"
+                icon="trash alternate outline"
+                @click.stop="remove(file)" />
+        </sui-table-cell>
     </tr>
 </template>
 
@@ -56,6 +61,13 @@ export default {
             }
 
             this.$router.push(route);
+        },
+        remove(file) {
+            /* eslint-disable no-alert */
+            if (!confirm('Deletion is permanent! Are you sure?')) {
+                return;
+            }
+            this.$store.dispatch('files/delete', file);
         },
     },
 };

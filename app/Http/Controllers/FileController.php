@@ -69,4 +69,17 @@ class FileController extends Controller
 
         return response()->json($this->fm->open($filepath));
     }
+
+    public function delete(Request $request)
+    {
+        if (!$filepath = $request->query('file')) {
+            throw ValidationException::withMessages(['file' => 'File path must be specified.']);
+        }
+
+        $data = $this->fm->delete($filepath);
+
+        return null === $data['error']
+            ? response(null, Response::HTTP_NO_CONTENT)
+            : response()->json($data, $data['error']['code']);
+    }
 }

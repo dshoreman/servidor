@@ -76,6 +76,21 @@ class FileManager
         return false !== file_put_contents($file, $contents);
     }
 
+    public function delete($path)
+    {
+        $remove = is_dir($path) ? 'rmdir' : 'unlink';
+        $error = ['code' => 500, 'msg' => 'Failed removing' . $path];
+
+        if (!file_exists($path)) {
+            return ['error' => null];
+        }
+        if (!is_writable($path)) {
+            return ['error' => ['code' => 403, 'msg' => 'No permission to write path']];
+        }
+
+        return ['error' => $remove($path) ? null : $error];
+    }
+
     private function loadFilePermissions(string $path): array
     {
         $pathParts = explode('/', $path);
