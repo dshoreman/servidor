@@ -63,7 +63,8 @@ export default {
             this.$router.push(route);
         },
         remove(file) {
-            if (!confirm("Deletion is permanent! Are you sure?")) {
+            /* eslint-disable no-alert */
+            if (!confirm('Deletion is permanent! Are you sure?')) {
                 return;
             }
             this.$store.dispatch('files/delete', file);

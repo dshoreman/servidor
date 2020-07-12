@@ -74,7 +74,7 @@ export default {
                 });
             });
         },
-        delete: ({ commit, state }, file) => {
+        delete: ({ commit }, file) => {
             return new Promise((resolve, reject) => {
                 const fullpath = `${file.filepath}/${file.filename}`;
 
