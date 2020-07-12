@@ -60,6 +60,15 @@ class FileManager
         );
     }
 
+    public function create($file, $contents): array
+    {
+        if (false === $this->save($file, $contents)) {
+            return ['error' => ['code' => 503, 'msg' => 'Could not create ' . $file]];
+        }
+
+        return $this->open($file);
+    }
+
     public function open($file): array
     {
         if (!file_exists($file)) {
