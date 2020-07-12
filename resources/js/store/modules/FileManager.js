@@ -60,6 +60,19 @@ export default {
                 });
             });
         },
+        create: ({ commit, state }, path) => {
+            return new Promise((resolve, reject) => {
+                axios.post(`/api/files?file=${path}`, {
+                    contents: state.file.contents,
+                }).then(response => {
+                    commit('setPath', response.data.filepath);
+                    commit('setFile', response.data);
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        },
         save: ({ commit, state }) => {
             return new Promise((resolve, reject) => {
                 const fullpath = `${state.currentPath}/${state.file.filename}`;

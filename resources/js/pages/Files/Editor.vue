@@ -20,7 +20,8 @@
                     </sui-menu-item>
                 </sui-menu-menu>
             </sui-menu>
-            <sui-segment v-if="file.error == undefined" class="code"
+
+            <sui-segment v-if="creating || file.error == undefined" class="code"
                 attached="bottom" :inverted="darkMode" :loading="loading">
                 <codemirror v-model="file.contents" :options="options" v-if="!loading" />
             </sui-segment>
@@ -42,9 +43,11 @@
 <script>
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/dracula.css';
-import { mapActions, mapGetters } from 'vuex';
 import PathBar from '../../components/Files/PathBar';
 import { codemirror } from 'vue-codemirror';
+import { mapGetters } from 'vuex';
+
+const NOT_FOUND = 404;
 
 export default {
     components: {
@@ -103,11 +106,19 @@ export default {
                 this.$store.dispatch('editor/setLineWrapping', value);
             },
         },
+        creating() {
+            return 'undefined' !== typeof this.file.error && NOT_FOUND === this.file.error.code;
+        },
     },
     methods: {
-        ...mapActions({
-            save: 'files/save',
-        }),
+        save(path) {
+            const method = this.creating ? 'create' : 'save';
+
+            this.loading = true;
+            this.$store.dispatch(`files/${method}`, path).finally(() => {
+                this.loading = false;
+            });
+        },
     },
 };
 </script>
