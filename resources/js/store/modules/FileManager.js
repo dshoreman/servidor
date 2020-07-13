@@ -15,6 +15,11 @@ export default {
         clearFile: state => {
             state.file = [];
         },
+        replaceFile: (state, { oldFile, newFile }) => {
+            const index = state.files.findIndex(f => f === oldFile);
+
+            Vue.set(state.files, index, newFile);
+        },
         removeFile: (state, file) => {
             const index = state.files.findIndex(f => f === file);
 
@@ -81,6 +86,19 @@ export default {
                     contents: state.file.contents,
                 }).then(response => {
                     commit('setFile', response.data);
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        },
+        rename: ({ commit }, { file, newPath }) => {
+            return new Promise((resolve, reject) => {
+                axios.post('/api/files/rename', {
+                    oldPath: `${file.filepath}/${file.filename}`,
+                    newPath,
+                }).then(response => {
+                    commit('replaceFile', { oldFile: file, newFile: response.data });
                     resolve(response);
                 }).catch(error => {
                     reject(error);

@@ -86,6 +86,18 @@ class FileController extends Controller
         return response()->json($this->fm->open($filepath));
     }
 
+    public function rename(Request $request)
+    {
+        $data = $request->validate([
+            'oldPath' => 'required|string',
+            'newPath' => 'required|string',
+        ]);
+
+        $file = $this->fm->move($data['oldPath'], $data['newPath']);
+
+        return response()->json($file, $file['error']['code'] ?? Response::HTTP_OK);
+    }
+
     public function delete(Request $request)
     {
         if (!$filepath = $request->query('file')) {

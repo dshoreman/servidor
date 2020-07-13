@@ -85,6 +85,21 @@ class FileManager
         return false !== file_put_contents($file, $contents);
     }
 
+    public function move($path, $target): array
+    {
+        if (!file_exists($path)) {
+            return ['error' => ['code' => 404, 'msg' => 'File not found']];
+        }
+        if (file_exists($target)) {
+            return ['error' => ['code' => 409, 'msg' => 'Target already exists']];
+        }
+        if (!rename($path, $target)) {
+            return ['error' => ['code' => 500, 'msg' => 'Rename operation failed']];
+        }
+
+        return $this->open($target);
+    }
+
     public function delete($path)
     {
         $remove = is_dir($path) ? 'rmdir' : 'unlink';

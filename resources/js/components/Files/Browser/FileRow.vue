@@ -10,7 +10,15 @@
             collapsing>{{ file.perms.octal }}</sui-table-cell>
         <td>{{ file.owner }}</td>
         <td>{{ file.group }}</td>
-        <sui-table-cell collapsing>
+        <sui-table-cell collapsing text-align="right">
+            <div is="sui-button-group" v-if="!file.isDir">
+                <sui-button compact class="icon" @click.stop="$emit('rename', file)">
+                    <i class="icons">
+                        <sui-icon name="file alternate outline" />
+                        <sui-icon name="corner i cursor" />
+                    </i>
+                </sui-button>
+            </div>
             <sui-button compact color="red"
                 icon="trash alternate outline"
                 @click.stop="remove(file)" />
