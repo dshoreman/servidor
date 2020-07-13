@@ -9,6 +9,10 @@ export default {
         setFiles: (state, files) => {
             state.files = files;
         },
+        addFile: (state, file) => {
+            state.files.push(file);
+            state.files.sort((a, b) => a.filename.localeCompare(b.filename));
+        },
         setFile: (state, file) => {
             state.file = file;
         },
@@ -67,11 +71,24 @@ export default {
         },
         create: ({ commit, state }, path) => {
             return new Promise((resolve, reject) => {
-                axios.post(`/api/files?file=${path}`, {
+                axios.post('/api/files', {
                     contents: state.file.contents,
+                    file: path,
                 }).then(response => {
                     commit('setPath', response.data.filepath);
                     commit('setFile', response.data);
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        },
+        createDir: ({ commit }, path) => {
+            return new Promise((resolve, reject) => {
+                axios.post('/api/files', {
+                    dir: path,
+                }).then(response => {
+                    commit('addFile', response.data);
                     resolve(response);
                 }).catch(error => {
                     reject(error);

@@ -46,18 +46,16 @@ class FileController extends Controller
 
     public function create(Request $request)
     {
-        if (!$filepath = $request->query('file')) {
-            throw ValidationException::withMessages(['file' => 'File path must be specified.']);
-        }
-
         $data = $request->validate([
-            'file' => 'required',
-            'contents' => 'required|nullable',
+            'dir' => 'required_without:file|string',
+            'file' => 'required_without:dir|string',
+            'contents' => 'required_with:file|nullable',
         ]);
 
-        $file = $this->fm->create($filepath, $data['contents']);
+        $res = $data['dir'] ?? null ? $this->fm->createDir($data['dir'])
+             : $this->fm->createFile($data['file'], $data['contents']);
 
-        return response()->json($file, $file['error']['code'] ?? Response::HTTP_CREATED);
+        return response()->json($res, $res['error']['code'] ?? Response::HTTP_CREATED);
     }
 
     public function update(Request $request)

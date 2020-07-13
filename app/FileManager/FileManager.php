@@ -60,7 +60,24 @@ class FileManager
         );
     }
 
-    public function create($file, $contents): array
+    public function createDir($path): array
+    {
+        if (file_exists($path)) {
+            return ['error' => ['code' => 409, 'msg' => 'Path already exists']];
+        }
+        if (!mkdir($path) || !is_dir($path)) {
+            return ['error' => ['code' => 500, 'msg' => 'Could not create ' . $path]];
+        }
+
+        $dir = $this->open($path);
+        if ('Unsupported filetype' === $dir['error']['msg'] ?? '') {
+            unset($dir['error']);
+        }
+
+        return $dir;
+    }
+
+    public function createFile($file, $contents): array
     {
         if (false === $this->save($file, $contents)) {
             return ['error' => ['code' => 503, 'msg' => 'Could not create ' . $file]];
