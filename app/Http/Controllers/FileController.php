@@ -44,6 +44,20 @@ class FileController extends Controller
             : response()->json($list);
     }
 
+    public function create(Request $request)
+    {
+        $data = $request->validate([
+            'dir' => 'required_without:file|string',
+            'file' => 'required_without:dir|string',
+            'contents' => 'required_with:file|nullable',
+        ]);
+
+        $res = $data['dir'] ?? null ? $this->fm->createDir($data['dir'])
+             : $this->fm->createFile($data['file'], $data['contents']);
+
+        return response()->json($res, $res['error']['code'] ?? Response::HTTP_CREATED);
+    }
+
     public function update(Request $request)
     {
         if (!$filepath = $request->query('file')) {
@@ -68,6 +82,18 @@ class FileController extends Controller
         $this->fm->save($filepath, $data['contents']);
 
         return response()->json($this->fm->open($filepath));
+    }
+
+    public function rename(Request $request)
+    {
+        $data = $request->validate([
+            'oldPath' => 'required|string',
+            'newPath' => 'required|string',
+        ]);
+
+        $file = $this->fm->move($data['oldPath'], $data['newPath']);
+
+        return response()->json($file, $file['error']['code'] ?? Response::HTTP_OK);
     }
 
     public function delete(Request $request)

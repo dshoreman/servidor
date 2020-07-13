@@ -7,9 +7,47 @@
                     id="back2site" content="View Application" v-if="site"
                     :data-tooltip="'Open overview for ' + site.name"
                     data-position="left center" />
+
+                <sui-button class="icon" floated="right" @click.native="toggleNewFile">
+                    <i class="icons">
+                        <sui-icon name="file outline" />
+                        <sui-icon name="add" class="purple corner" />
+                    </i>
+                </sui-button>
+
+                <div is="sui-button-group" style="float: right">
+                    <sui-button class="icon" @click.native="toggleNewDir">
+                        <i class="icons" tooltip="New folder">
+                            <sui-icon name="folder outline" />
+                            <sui-icon name="add" class="purple corner" />
+                        </i>
+                    </sui-button>
+                </div>
             </path-bar>
 
             <file-list :files="files" :path="currentPath" />
+
+            <sui-modal size="tiny" v-model="promptNewDir">
+                <sui-modal-header>Enter folder name</sui-modal-header>
+                <sui-modal-content>
+                    <sui-input class="fluid" v-model="dirname" @keyup.enter="mkdir"
+                        style="border: 1px solid rgba(34, 36, 38, 0.15)" />
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button positive @click.native="mkdir" content="OK" />
+                </sui-modal-actions>
+            </sui-modal>
+
+            <sui-modal size="tiny" v-model="promptNewFile">
+                <sui-modal-header>Enter filename</sui-modal-header>
+                <sui-modal-content>
+                    <sui-input class="fluid" v-model="filename" @keyup.enter="edit"
+                        style="border: 1px solid rgba(34, 36, 38, 0.15)" />
+                </sui-modal-content>
+                <sui-modal-actions>
+                    <sui-button positive @click.native="edit" content="OK" />
+                </sui-modal-actions>
+            </sui-modal>
         </sui-grid-column>
     </sui-grid>
 </template>
@@ -28,6 +66,14 @@ export default {
         this.$store.dispatch('files/load', { path: to.params.path });
         next();
     },
+    data() {
+        return {
+            dirname: '',
+            filename: '',
+            promptNewDir: false,
+            promptNewFile: false,
+        };
+    },
     props: [
         'path',
     ],
@@ -41,8 +87,32 @@ export default {
             findSite: 'sites/findByDocroot',
             files: 'files/all',
         }),
+        createPath() {
+            return `${this.currentPath}/${this.filename}`;
+        },
         site() {
             return this.findSite(this.currentPath);
+        },
+    },
+    methods: {
+        edit() {
+            this.$router.push({
+                name: 'files.edit',
+                query: { f: this.createPath },
+            });
+        },
+        mkdir() {
+            const path = `${this.currentPath}/${this.dirname}`;
+
+            this.$store.dispatch('files/createDir', path).then(() => {
+                this.promptNewDir = false;
+            });
+        },
+        toggleNewDir() {
+            this.promptNewDir = !this.promptNewDir;
+        },
+        toggleNewFile() {
+            this.promptNewFile = !this.promptNewFile;
         },
     },
 };

@@ -9,11 +9,20 @@ export default {
         setFiles: (state, files) => {
             state.files = files;
         },
+        addFile: (state, file) => {
+            state.files.push(file);
+            state.files.sort((a, b) => a.filename.localeCompare(b.filename));
+        },
         setFile: (state, file) => {
             state.file = file;
         },
         clearFile: state => {
             state.file = [];
+        },
+        replaceFile: (state, { oldFile, newFile }) => {
+            const index = state.files.findIndex(f => f === oldFile);
+
+            Vue.set(state.files, index, newFile);
         },
         removeFile: (state, file) => {
             const index = state.files.findIndex(f => f === file);
@@ -60,6 +69,32 @@ export default {
                 });
             });
         },
+        create: ({ commit, state }, path) => {
+            return new Promise((resolve, reject) => {
+                axios.post('/api/files', {
+                    contents: state.file.contents,
+                    file: path,
+                }).then(response => {
+                    commit('setPath', response.data.filepath);
+                    commit('setFile', response.data);
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        },
+        createDir: ({ commit }, path) => {
+            return new Promise((resolve, reject) => {
+                axios.post('/api/files', {
+                    dir: path,
+                }).then(response => {
+                    commit('addFile', response.data);
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        },
         save: ({ commit, state }) => {
             return new Promise((resolve, reject) => {
                 const fullpath = `${state.currentPath}/${state.file.filename}`;
@@ -68,6 +103,19 @@ export default {
                     contents: state.file.contents,
                 }).then(response => {
                     commit('setFile', response.data);
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+            });
+        },
+        rename: ({ commit }, { file, newPath }) => {
+            return new Promise((resolve, reject) => {
+                axios.post('/api/files/rename', {
+                    oldPath: `${file.filepath}/${file.filename}`,
+                    newPath,
+                }).then(response => {
+                    commit('replaceFile', { oldFile: file, newFile: response.data });
                     resolve(response);
                 }).catch(error => {
                     reject(error);

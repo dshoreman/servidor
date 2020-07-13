@@ -35,6 +35,8 @@ Route::middleware('auth:api')->group(function (): void {
 
     Route::get('files', 'FileController@index');
     Route::put('files', 'FileController@update');
+    Route::post('files', 'FileController@create');
+    Route::post('files/rename', 'FileController@rename');
     Route::delete('files', 'FileController@delete');
 
     Route::name('system')->prefix('/system')->namespace('System')->group(function (): void {

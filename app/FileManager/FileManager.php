@@ -60,6 +60,35 @@ class FileManager
         );
     }
 
+    public function createDir($path): array
+    {
+        if (file_exists($path)) {
+            return ['error' => ['code' => 409, 'msg' => 'Path already exists']];
+        }
+        if (!mkdir($path) || !is_dir($path)) {
+            return ['error' => ['code' => 500, 'msg' => 'Could not create ' . $path]];
+        }
+
+        $dir = $this->open($path);
+        if ('Unsupported filetype' === $dir['error']['msg'] ?? '') {
+            unset($dir['error']);
+        }
+
+        return $dir;
+    }
+
+    public function createFile($file, $contents): array
+    {
+        if (file_exists($file)) {
+            return ['error' => ['code' => 409, 'msg' => 'File already exists']];
+        }
+        if (!$this->save($file, $contents)) {
+            return ['error' => ['code' => 500, 'msg' => 'Could not create ' . $file]];
+        }
+
+        return $this->open($file);
+    }
+
     public function open($file): array
     {
         if (!file_exists($file)) {
@@ -74,6 +103,26 @@ class FileManager
     public function save($file, $contents): bool
     {
         return false !== file_put_contents($file, $contents);
+    }
+
+    public function move($path, $target): array
+    {
+        if (!file_exists($path)) {
+            return ['error' => ['code' => 404, 'msg' => 'File not found']];
+        }
+        if (file_exists($target)) {
+            return ['error' => ['code' => 409, 'msg' => 'Target already exists']];
+        }
+        if (!rename($path, $target)) {
+            return ['error' => ['code' => 500, 'msg' => 'Rename operation failed']];
+        }
+
+        $item = $this->open($target);
+        if ($item['isDir'] && 'Unsupported filetype' === $item['error']['msg'] ?? '') {
+            unset($item['error']);
+        }
+
+        return $item;
     }
 
     public function delete($path)
