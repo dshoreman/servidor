@@ -42,6 +42,33 @@ class CreatePathTest extends TestCase
     }
 
     /** @test */
+    public function cannot_create_file_if_target_exists(): void
+    {
+        $file = resource_path('test-skel/mixed/hello.md');
+
+        $response = $this->authed()->postJson($this->endpoint(), [
+            'file' => $file,
+            'contents' => 'Overwrite?',
+        ]);
+
+        $response->assertStatus(Response::HTTP_CONFLICT);
+        $this->assertStringNotEqualsFile($file, 'Overwrite?');
+    }
+
+    /** @test */
+    public function guest_cannot_create_a_folder(): void
+    {
+        $path = resource_path('test-skel/uncreatable');
+
+        $response = $this->postJson($this->endpoint(), [
+            'dir' => $path,
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $this->assertDirectoryNotExists($path);
+    }
+
+    /** @test */
     public function authed_user_can_create_a_folder(): void
     {
         $this->withoutExceptionHandling();

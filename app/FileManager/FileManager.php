@@ -79,8 +79,11 @@ class FileManager
 
     public function createFile($file, $contents): array
     {
-        if (false === $this->save($file, $contents)) {
-            return ['error' => ['code' => 503, 'msg' => 'Could not create ' . $file]];
+        if (file_exists($file)) {
+            return ['error' => ['code' => 409, 'msg' => 'File already exists']];
+        }
+        if (!$this->save($file, $contents)) {
+            return ['error' => ['code' => 500, 'msg' => 'Could not create ' . $file]];
         }
 
         return $this->open($file);
