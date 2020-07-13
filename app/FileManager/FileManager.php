@@ -117,7 +117,12 @@ class FileManager
             return ['error' => ['code' => 500, 'msg' => 'Rename operation failed']];
         }
 
-        return $this->open($target);
+        $item = $this->open($target);
+        if ($item['isDir'] && 'Unsupported filetype' === $item['error']['msg'] ?? '') {
+            unset($item['error']);
+        }
+
+        return $item;
     }
 
     public function delete($path)

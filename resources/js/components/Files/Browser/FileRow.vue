@@ -11,7 +11,7 @@
         <td>{{ file.owner }}</td>
         <td>{{ file.group }}</td>
         <sui-table-cell collapsing text-align="right">
-            <div is="sui-button-group" v-if="!file.isDir">
+            <div is="sui-button-group">
                 <sui-button compact class="icon" @click.stop="$emit('rename', file)">
                     <i class="icons">
                         <sui-icon name="file alternate outline" />
