@@ -5,6 +5,8 @@
 /public/css/*-theme.css
 /public/css/*-theme.custom.css
 /public/js/app.js
+/public/fonts/*
+!/public/fonts/.gitkeep
 /public/hot
 /public/storage
 /storage/test-clone
