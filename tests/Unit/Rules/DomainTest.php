@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Rules;
 
 use Servidor\Rules\Domain;
 use Tests\TestCase;
 use Validator;
 
-class DomainValidationTest extends TestCase
+class DomainTest extends TestCase
 {
     /**
      * @var array

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -9,7 +9,7 @@ use Servidor\Site;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
-class SitesApiTest extends TestCase
+class SitesTest extends TestCase
 {
     use ArraySubsetAsserts;
     use RefreshDatabase;
