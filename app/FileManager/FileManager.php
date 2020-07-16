@@ -19,7 +19,7 @@ class FileManager
     /**
      * @var array
      */
-    private $filePerms;
+    private $filePerms = [];
 
     public function __construct()
     {
@@ -62,7 +62,7 @@ class FileManager
         );
     }
 
-    public function createDir($path): array
+    public function createDir(string $path): array
     {
         if (file_exists($path)) {
             return ['error' => ['code' => 409, 'msg' => 'Path already exists']];
@@ -79,7 +79,7 @@ class FileManager
         return $dir;
     }
 
-    public function createFile($file, $contents): array
+    public function createFile(string $file, string $contents): array
     {
         if (file_exists($file)) {
             return ['error' => ['code' => 409, 'msg' => 'File already exists']];
@@ -91,7 +91,7 @@ class FileManager
         return $this->open($file);
     }
 
-    public function open($file): array
+    public function open(string $file): array
     {
         if (!file_exists($file)) {
             return ['error' => ['code' => 404, 'msg' => 'File not found']];
@@ -102,12 +102,12 @@ class FileManager
         return $this->fileWithContents($file);
     }
 
-    public function save($file, $contents): bool
+    public function save(string $file, string $contents): bool
     {
         return false !== file_put_contents($file, $contents);
     }
 
-    public function move($path, $target): array
+    public function move(string $path, string $target): array
     {
         if (!file_exists($path)) {
             return ['error' => ['code' => 404, 'msg' => 'File not found']];
@@ -127,7 +127,7 @@ class FileManager
         return $item;
     }
 
-    public function delete($path)
+    public function delete(string $path): array
     {
         $remove = is_dir($path) ? 'rmdir' : 'unlink';
         $error = ['code' => 500, 'msg' => 'Failed removing' . $path];
@@ -170,6 +170,9 @@ class FileManager
         return $this->filePerms = $perms;
     }
 
+    /**
+     * @param SplFileInfo|string $file
+     */
     private function loadFile($file): array
     {
         if (is_string($file)) {
@@ -206,14 +209,14 @@ class FileManager
     /**
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function fileToArray($file): array
+    private function fileToArray(string $file): array
     {
         list($file, $data) = $this->loadFile($file);
 
         return $data;
     }
 
-    private function fileWithContents($file): array
+    private function fileWithContents(string $file): array
     {
         list($file, $data) = $this->loadFile($file);
 

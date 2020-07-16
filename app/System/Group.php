@@ -20,6 +20,9 @@ class Group
      */
     private $group;
 
+    /**
+     * @param array|LinuxGroup $group
+     */
     public function __construct($group)
     {
         $this->group = $group instanceof LinuxGroup
@@ -28,7 +31,7 @@ class Group
 
     private function commit(string $cmd, ?string $args = null): int
     {
-        $name = $this->group->getOriginal('name');
+        $name = (string) $this->group->getOriginal('name');
         $args = $args ?: $this->group->toArgs();
 
         exec("sudo {$cmd} {$args} {$name}", $output, $retval);
@@ -76,7 +79,7 @@ class Group
         if ($this->group->hasChangedUsers()) {
             $users = $this->group->users;
 
-            $this->refresh($this->group->gid)
+            $this->refresh($this->group->gid ?? $this->group->name)
                  ->group->setUsers($users);
 
             $retval = $this->commit('gpasswd', '-M "' . implode(',', $this->group->users) . '"');
@@ -107,7 +110,7 @@ class Group
         exec('sudo groupdel ' . $this->group->name);
     }
 
-    public static function find(int $gid)
+    public static function find(int $gid): self
     {
         $group = posix_getgrgid($gid);
 
@@ -147,9 +150,12 @@ class Group
 
         $this->commitMod();
 
-        return $this->refresh($this->group->gid)->toArray();
+        return $this->refresh($this->group->gid ?? $this->group->name)->toArray();
     }
 
+    /**
+     * @param int|string $nameOrGid
+     */
     private function refresh($nameOrGid): self
     {
         $arr = is_int($nameOrGid)

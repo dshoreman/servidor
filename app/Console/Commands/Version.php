@@ -25,7 +25,7 @@ class Version extends Command
      *
      * @psalm-suppress UndefinedConstant
      */
-    public function handle()
+    public function handle(): void
     {
         $this->info('Servidor v' . SERVIDOR_VERSION);
     }

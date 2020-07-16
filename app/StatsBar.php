@@ -4,7 +4,7 @@ namespace Servidor;
 
 class StatsBar
 {
-    public static function stats()
+    public static function stats(): array
     {
         $os = self::parseReleaseFile('os');
         $lsb = self::parseReleaseFile('lsb');
@@ -23,7 +23,7 @@ class StatsBar
         ];
     }
 
-    private static function parseReleaseFile($file)
+    private static function parseReleaseFile(string $file): array
     {
         $flags = FILE_IGNORE_NEW_LINES;
         $data = [];

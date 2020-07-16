@@ -4,28 +4,34 @@ namespace Servidor\Listeners;
 
 use Illuminate\Support\Facades\Storage;
 use Servidor\Events\SiteUpdated;
+use Servidor\Site;
 
 class WriteSiteConfig
 {
     /**
-     * @var \Servidor\Site
+     * @var Site
      */
     private $site;
 
     /**
      * @var string
      */
-    private $filename;
+    private $filename = '';
 
     /**
      * @var string
      */
-    private $configPath;
+    private $configPath = '';
 
     /**
      * @var string
      */
-    private $symlink;
+    private $symlink = '';
+
+    public function __construct(Site $site)
+    {
+        $this->site = $site;
+    }
 
     /**
      * Handle the event.

@@ -62,11 +62,14 @@ class LoginController extends Controller
         }
     }
 
-    protected function username()
+    protected function username(): string
     {
         return 'username';
     }
 
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function logout()
     {
         /** @var \Illuminate\Contracts\Auth\Guard */

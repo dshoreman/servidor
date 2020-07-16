@@ -9,7 +9,7 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 class Database
 {
     /**
-     * @var Connection
+     * @var ?Connection
      */
     private $connection;
 

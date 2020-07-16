@@ -2,18 +2,13 @@
 
 namespace Servidor\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Servidor\StatsBar;
 
 class SystemInformationController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function __invoke()
+    public function __invoke(): Response
     {
-        return StatsBar::stats();
+        return response()->json(StatsBar::stats());
     }
 }
