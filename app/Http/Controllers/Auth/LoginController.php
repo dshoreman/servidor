@@ -53,9 +53,10 @@ class LoginController extends Controller
             return response((string) $response->getBody());
         } catch (BadResponseException $e) {
             $this->incrementLoginAttempts($request);
+            $response = $e->getResponse();
 
             return response(
-                (string) $e->getResponse()->getBody(),
+                $response ? (string) $response->getBody() : '',
                 (int) $e->getCode(),
             );
         }
@@ -68,9 +69,13 @@ class LoginController extends Controller
 
     public function logout()
     {
-        $user = auth()->user();
+        /** @var \Illuminate\Contracts\Auth\Guard */
+        $auth = auth();
+        /** @var \Servidor\User */
+        $user = $auth->user();
+        $token = $user->token();
 
-        if (true !== $user->token()->delete()) {
+        if ($token && true !== $token->delete()) {
             throw new Exception('Failed to delete token.');
         }
 

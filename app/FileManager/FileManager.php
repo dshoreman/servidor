@@ -3,6 +3,7 @@
 namespace Servidor\FileManager;
 
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
@@ -146,7 +147,10 @@ class FileManager
         $pathParts = explode('/', $path);
 
         $name = array_pop($pathParts);
-        $path = mb_substr($path, 0, mb_strrpos($path, '/'));
+        if (false === ($pos = mb_strrpos($path, '/'))) {
+            throw new InvalidArgumentException();
+        }
+        $path = mb_substr($path, 0, $pos);
 
         return $this->loadPermissions($path, $name);
     }

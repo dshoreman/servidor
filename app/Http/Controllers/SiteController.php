@@ -5,6 +5,7 @@ namespace Servidor\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Http\Requests\CreateSite;
 use Servidor\Http\Requests\UpdateSite;
@@ -21,7 +22,9 @@ class SiteController extends Controller
      */
     public function index()
     {
-        return response()->json(Site::all()->toArray());
+        $sites = Site::all();
+
+        return response()->json(is_object($sites) ? $sites->toArray() : ($sites ?: []));
     }
 
     /**
@@ -45,6 +48,9 @@ class SiteController extends Controller
     {
         $cmd = "git ls-remote --heads '%s' | sed 's^.*refs/heads/^^'";
         $repo = $request->query('repo', $site->source_repo);
+        if (!$repo || !is_string($repo)) {
+            throw new InvalidArgumentException();
+        }
 
         exec(sprintf($cmd, $repo), $branches);
 
