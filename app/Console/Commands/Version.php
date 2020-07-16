@@ -23,7 +23,7 @@ class Version extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @psalm-suppress UndefinedConstant
      */
     public function handle()
     {
