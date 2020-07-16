@@ -24,7 +24,7 @@ class LoginController extends Controller
     /**
      * Proxy login requests to /oauth/token with client secret.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function login(Request $request, Client $client)
     {

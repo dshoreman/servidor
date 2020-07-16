@@ -21,7 +21,7 @@ class SiteController extends Controller
      */
     public function index()
     {
-        return response(Site::all()->toArray());
+        return response()->json(Site::all()->toArray());
     }
 
     /**
@@ -33,7 +33,7 @@ class SiteController extends Controller
     {
         $site = Site::create($request->validated());
 
-        return response($site, Response::HTTP_CREATED);
+        return response()->json($site, Response::HTTP_CREATED);
     }
 
     /**
@@ -48,7 +48,7 @@ class SiteController extends Controller
 
         exec(sprintf($cmd, $repo), $branches);
 
-        return $branches;
+        return response()->json($branches);
     }
 
     /**
@@ -68,7 +68,7 @@ class SiteController extends Controller
         }
 
         if (isset($error)) {
-            return response(compact('error'), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(compact('error'), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if (is_dir($root . '/.git')) {
@@ -76,7 +76,7 @@ class SiteController extends Controller
 
             exec('cd "' . $root . '"' . $args . ' && git pull');
 
-            return response($site, Response::HTTP_OK);
+            return response()->json($site, Response::HTTP_OK);
         }
 
         if (!is_dir(dirname($root))) {
@@ -90,7 +90,7 @@ class SiteController extends Controller
 
         exec($cmd);
 
-        return response($site, Response::HTTP_OK);
+        return response()->json($site, Response::HTTP_OK);
     }
 
     /**
@@ -119,13 +119,13 @@ class SiteController extends Controller
             }
         }
 
-        return response($site, Response::HTTP_OK);
+        return response()->json($site, Response::HTTP_OK);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
     public function destroy(Site $site)
     {

@@ -16,7 +16,7 @@ class GroupsController extends Controller
 {
     public function index(): Response
     {
-        return response(SystemGroup::list());
+        return response()->json(SystemGroup::list());
     }
 
     public function store(CreateGroup $request): Response
@@ -32,10 +32,10 @@ class GroupsController extends Controller
         } catch (GroupSaveException $e) {
             $data['error'] = $e->getMessage();
 
-            return response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response($group, Response::HTTP_CREATED);
+        return response()->json($group, Response::HTTP_CREATED);
     }
 
     public function update(UpdateGroup $request, int $gid): Response
@@ -43,7 +43,7 @@ class GroupsController extends Controller
         try {
             $group = SystemGroup::find($gid);
 
-            return response(
+            return response()->json(
                 $group->update($request->validated()),
                 Response::HTTP_OK
             );
@@ -56,7 +56,10 @@ class GroupsController extends Controller
         }
     }
 
-    public function destroy(int $gid): Response
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function destroy(int $gid)
     {
         SystemGroup::find($gid)->delete();
 

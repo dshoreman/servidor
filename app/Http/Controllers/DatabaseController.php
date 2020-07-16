@@ -12,7 +12,7 @@ class DatabaseController extends Controller
     /**
      * Display a list of databases.
      *
-     * @return Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
     public function index()
     {
@@ -24,7 +24,7 @@ class DatabaseController extends Controller
     /**
      * Create a new database.
      *
-     * @return Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
     public function store(Request $request)
     {
