@@ -59,7 +59,9 @@ class WriteSiteConfig
 
         Storage::put('vhosts/' . $this->filename, $view->with('site', $this->site));
 
-        $file = Storage::disk('local')->path('vhosts/' . $this->filename);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter */
+        $disk = Storage::disk('local');
+        $file = $disk->path('vhosts/' . $this->filename);
         exec('sudo cp "' . $file . '" "' . $this->configPath . '"');
     }
 
