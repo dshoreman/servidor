@@ -50,6 +50,7 @@ class FileManager
 
     private function getFiles(string $path): array
     {
+        /** @psalm-suppress TooManyArguments - sortByName */
         $files = $this->finder->depth(0)->in($path)
                       ->sortByName(true)
                       ->ignoreDotFiles(false);
@@ -70,7 +71,7 @@ class FileManager
         }
 
         $dir = $this->open($path);
-        if ('Unsupported filetype' === $dir['error']['msg'] ?? '') {
+        if ('Unsupported filetype' === ($dir['error']['msg'] ?? '')) {
             unset($dir['error']);
         }
 
@@ -118,7 +119,7 @@ class FileManager
         }
 
         $item = $this->open($target);
-        if ($item['isDir'] && 'Unsupported filetype' === $item['error']['msg'] ?? '') {
+        if ($item['isDir'] && 'Unsupported filetype' === ($item['error']['msg'] ?? '')) {
             unset($item['error']);
         }
 

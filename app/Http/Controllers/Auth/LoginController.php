@@ -50,13 +50,13 @@ class LoginController extends Controller
 
             $this->clearLoginAttempts($request);
 
-            return response($response->getBody());
+            return response((string) $response->getBody());
         } catch (BadResponseException $e) {
             $this->incrementLoginAttempts($request);
 
             return response(
-                $e->getResponse()->getBody(),
-                $e->getCode(),
+                (string) $e->getResponse()->getBody(),
+                (int) $e->getCode(),
             );
         }
     }

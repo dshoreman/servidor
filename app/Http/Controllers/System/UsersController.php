@@ -35,7 +35,7 @@ class UsersController extends Controller
                         ->setSystem($data['system'] ?? false)
                         ->setUid($data['uid'] ?? null);
 
-            if (!$createGroup && $data['gid'] ?? null) {
+            if (!$createGroup && ($data['gid'] ?? null)) {
                 $user->setGid($data['gid']);
             }
 
