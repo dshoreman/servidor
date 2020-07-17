@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -21,16 +22,14 @@ class FileController extends Controller
 
     /**
      * Output a file or list of files from the local filesystem.
-     *
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         if ($filepath = $request->get('file')) {
             $file = $this->fm->open($filepath);
 
             if (array_key_exists('error', $file)) {
-                return response($file, $file['error']['code']);
+                return response()->json($file, $file['error']['code']);
             }
 
             return response()->json($file);
@@ -38,13 +37,12 @@ class FileController extends Controller
 
         $path = $request->get('path');
         $list = $this->fm->list($path);
+        $error = (array) ($list['error'] ?? []);
 
-        return isset($list['error'])
-            ? response($list, $list['error']['code'])
-            : response()->json($list);
+        return response()->json($list, (int) ($error['code'] ?? Response::HTTP_OK));
     }
 
-    public function create(Request $request): Response
+    public function create(Request $request): JsonResponse
     {
         $data = $request->validate([
             'dir' => 'required_without:file|string',
@@ -59,7 +57,7 @@ class FileController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|JsonResponse|Response
      */
     public function update(Request $request)
     {
@@ -87,7 +85,7 @@ class FileController extends Controller
         return response()->json($this->fm->open($filepath));
     }
 
-    public function rename(Request $request): Response
+    public function rename(Request $request): JsonResponse
     {
         $data = $request->validate([
             'oldPath' => 'required|string',

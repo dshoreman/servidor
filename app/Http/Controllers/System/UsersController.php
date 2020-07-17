@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers\System;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -16,12 +17,12 @@ use Servidor\System\Users\LinuxUser;
 
 class UsersController extends Controller
 {
-    public function index(): Response
+    public function index(): JsonResponse
     {
         return response()->json(SystemUser::list());
     }
 
-    public function store(CreateUser $request): Response
+    public function store(CreateUser $request): JsonResponse
     {
         $data = $request->validated();
         $createGroup = $request->input('user_group', false);
@@ -51,7 +52,7 @@ class UsersController extends Controller
         return response()->json($user, Response::HTTP_CREATED);
     }
 
-    public function update(UpdateUser $request, int $uid): Response
+    public function update(UpdateUser $request, int $uid): JsonResponse
     {
         try {
             $user = SystemUser::find($uid);

@@ -41,11 +41,11 @@ class LinuxUser extends LinuxCommand
 
     public function __construct(array $user = [], bool $loadGroups = false)
     {
-        $this->gid = $user['gid'] ? (int) $user['gid'] : null;
-        $this->uid = $user['uid'] ? (int) $user['uid'] : null;
-        $this->dir = (string) $user['dir'];
+        $this->gid = isset($user['gid']) ? (int) $user['gid'] : null;
+        $this->uid = isset($user['uid']) ? (int) $user['uid'] : null;
+        $this->dir = isset($user['dir']) ? (string) $user['dir'] : '';
         $this->name = (string) $user['name'];
-        $this->shell = (string) $user['shell'];
+        $this->shell = isset($user['shell']) ? (string) $user['shell'] : '';
 
         if ($loadGroups) {
             $this->loadGroups();

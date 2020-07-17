@@ -26,9 +26,9 @@ class LinuxGroup extends LinuxCommand
 
     public function __construct(array $group = [])
     {
-        $this->gid = $group['gid'] ? (int) $group['gid'] : null;
+        $this->gid = ($group['gid'] ?? null) ? (int) $group['gid'] : null;
         $this->name = (string) $group['name'];
-        $this->users = $group['members'];
+        $this->users = $group['members'] ?? [];
 
         $this->setOriginal();
     }
