@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="2"
+    errorLevel="1"
     resolveFromConfigFile="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
@@ -28,5 +28,15 @@
                 <file name="app/User.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>
+
+        <!-- Level 1 Errors -->
+        <MixedArgument errorLevel="suppress" />
+        <MixedArrayAccess errorLevel="suppress" />
+        <MixedArrayAssignment errorLevel="suppress" />
+        <MixedAssignment errorLevel="suppress" />
+        <MixedInferredReturnType errorLevel="suppress" />
+        <MixedMethodCall errorLevel="suppress" />
+        <MixedOperand errorLevel="suppress" />
+        <MixedReturnStatement errorLevel="suppress" />
     </issueHandlers>
 </psalm>
