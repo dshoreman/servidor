@@ -28,6 +28,9 @@ eslint:
 phpstan:
 	vendor/bin/phpstan analyze -c build/phpstan/config.neon
 
+psalm:
+	vendor/bin/psalm -c build/psalm/psalm.xml
+
 phpcsf:
 	vendor/bin/php-cs-fixer fix --diff --dry-run --config build/php-cs-fixer/config.php
 	@echo
@@ -43,6 +46,6 @@ phpmnd:
 	vendor/bin/phpmnd . --progress --exclude tests
 	@echo
 
-syntax: eslint phpcsf phpcs phpmd phpmnd
+syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm
 
-kitchen-sink: syntax phpstan coverage metrics
+kitchen-sink: syntax coverage metrics
