@@ -52,7 +52,7 @@ class UpdateSite extends FormRequest
      */
     public function withValidator($validator): void
     {
-        $validator->after(function ($validator): void {
+        $validator->after(function (\Illuminate\Validation\Validator $validator): void {
             $data = $validator->getData();
 
             if (!isset($data['source_branch'], $data['source_repo'])) {

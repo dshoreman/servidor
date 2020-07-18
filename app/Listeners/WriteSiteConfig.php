@@ -4,28 +4,34 @@ namespace Servidor\Listeners;
 
 use Illuminate\Support\Facades\Storage;
 use Servidor\Events\SiteUpdated;
+use Servidor\Site;
 
 class WriteSiteConfig
 {
     /**
-     * @var \Servidor\Site
+     * @var Site
      */
     private $site;
 
     /**
      * @var string
      */
-    private $filename;
+    private $filename = '';
 
     /**
      * @var string
      */
-    private $configPath;
+    private $configPath = '';
 
     /**
      * @var string
      */
-    private $symlink;
+    private $symlink = '';
+
+    public function __construct(Site $site)
+    {
+        $this->site = $site;
+    }
 
     /**
      * Handle the event.
@@ -53,13 +59,16 @@ class WriteSiteConfig
 
     private function updateConfig(): void
     {
+        /** @var \Illuminate\View\View */
         $view = 'laravel' == $this->site->type
             ? view('sites.server-templates.php')
             : view('sites.server-templates.' . $this->site->type);
 
-        Storage::put('vhosts/' . $this->filename, $view->with('site', $this->site));
+        Storage::put('vhosts/' . $this->filename, (string) $view->with('site', $this->site));
 
-        $file = Storage::disk('local')->path('vhosts/' . $this->filename);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter */
+        $disk = Storage::disk('local');
+        $file = $disk->path('vhosts/' . $this->filename);
         exec('sudo cp "' . $file . '" "' . $this->configPath . '"');
     }
 

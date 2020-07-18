@@ -15,6 +15,9 @@ class User
      */
     private $user;
 
+    /**
+     * @param array|LinuxUser $user
+     */
     public function __construct($user)
     {
         $this->user = $user instanceof LinuxUser
@@ -43,6 +46,9 @@ class User
         return new self($user);
     }
 
+    /**
+     * @param int|string $nameOrUid
+     */
     private function refresh($nameOrUid): self
     {
         $arr = is_numeric($nameOrUid)
@@ -107,7 +113,7 @@ class User
 
         $this->commit('usermod');
 
-        return $this->refresh($data['uid'] ?? $this->user->uid)->toArray();
+        return $this->refresh($this->user->uid ?? $this->user->name)->toArray();
     }
 
     private function commit(string $cmd): self

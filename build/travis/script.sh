@@ -33,6 +33,7 @@ run_php_cs() {
     "${1}/phpmd" app ansi build/phpmd/rules.xml
     "${1}/phpmnd" . --non-zero-exit-on-violation --exclude tests
     "${1}/phpstan" analyze -c build/phpstan/config.neon
+    "${1}/psalm" -c build/psalm/psalm.xml
 }
 
 main

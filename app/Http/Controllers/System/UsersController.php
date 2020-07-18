@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers\System;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -16,12 +17,12 @@ use Servidor\System\Users\LinuxUser;
 
 class UsersController extends Controller
 {
-    public function index(): Response
+    public function index(): JsonResponse
     {
-        return response(SystemUser::list());
+        return response()->json(SystemUser::list());
     }
 
-    public function store(CreateUser $request): Response
+    public function store(CreateUser $request): JsonResponse
     {
         $data = $request->validated();
         $createGroup = $request->input('user_group', false);
@@ -35,7 +36,7 @@ class UsersController extends Controller
                         ->setSystem($data['system'] ?? false)
                         ->setUid($data['uid'] ?? null);
 
-            if (!$createGroup && $data['gid'] ?? null) {
+            if (!$createGroup && ($data['gid'] ?? null)) {
                 $user->setGid($data['gid']);
             }
 
@@ -45,18 +46,18 @@ class UsersController extends Controller
         } catch (UserSaveException $e) {
             $data['error'] = $e->getMessage();
 
-            return response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response($user, Response::HTTP_CREATED);
+        return response()->json($user, Response::HTTP_CREATED);
     }
 
-    public function update(UpdateUser $request, int $uid): Response
+    public function update(UpdateUser $request, int $uid): JsonResponse
     {
         try {
             $user = SystemUser::find($uid);
 
-            return response(
+            return response()->json(
                 $user->update($request->validated()),
                 Response::HTTP_OK
             );
@@ -67,7 +68,10 @@ class UsersController extends Controller
         }
     }
 
-    public function destroy(Request $request, int $uid): Response
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function destroy(Request $request, int $uid)
     {
         $withHome = (bool) $request->input('deleteHome', false);
 

@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers\System;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Servidor\Exceptions\System\GroupNotFoundException;
@@ -14,12 +15,12 @@ use Servidor\System\Group as SystemGroup;
 
 class GroupsController extends Controller
 {
-    public function index(): Response
+    public function index(): JsonResponse
     {
-        return response(SystemGroup::list());
+        return response()->json(SystemGroup::list());
     }
 
-    public function store(CreateGroup $request): Response
+    public function store(CreateGroup $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -32,18 +33,18 @@ class GroupsController extends Controller
         } catch (GroupSaveException $e) {
             $data['error'] = $e->getMessage();
 
-            return response($data, Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response($group, Response::HTTP_CREATED);
+        return response()->json($group, Response::HTTP_CREATED);
     }
 
-    public function update(UpdateGroup $request, int $gid): Response
+    public function update(UpdateGroup $request, int $gid): JsonResponse
     {
         try {
             $group = SystemGroup::find($gid);
 
-            return response(
+            return response()->json(
                 $group->update($request->validated()),
                 Response::HTTP_OK
             );
@@ -56,7 +57,10 @@ class GroupsController extends Controller
         }
     }
 
-    public function destroy(int $gid): Response
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function destroy(int $gid)
     {
         SystemGroup::find($gid)->delete();
 

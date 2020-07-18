@@ -24,26 +24,14 @@ abstract class LinuxCommand
         return count($this->args) > 0;
     }
 
-    protected function initArgs(array $args, array $data): void
-    {
-        foreach ($args as $alias => $key) {
-            if (!isset($data[$key])) {
-                continue;
-            }
-
-            if (is_int($alias)) {
-                $alias = $key;
-            }
-
-            $this->$alias = $data[$key];
-        }
-    }
-
     public function toArgs(): string
     {
         return implode(' ', $this->args);
     }
 
+    /**
+     * @return mixed
+     */
     public function getOriginal(string $key)
     {
         return $this->original[$key] ?? null;

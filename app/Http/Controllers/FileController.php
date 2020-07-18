@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -21,16 +22,14 @@ class FileController extends Controller
 
     /**
      * Output a file or list of files from the local filesystem.
-     *
-     * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         if ($filepath = $request->get('file')) {
             $file = $this->fm->open($filepath);
 
             if (array_key_exists('error', $file)) {
-                return response($file, $file['error']['code']);
+                return response()->json($file, $file['error']['code']);
             }
 
             return response()->json($file);
@@ -38,13 +37,12 @@ class FileController extends Controller
 
         $path = $request->get('path');
         $list = $this->fm->list($path);
+        $error = (array) ($list['error'] ?? []);
 
-        return isset($list['error'])
-            ? response($list, $list['error']['code'])
-            : response()->json($list);
+        return response()->json($list, (int) ($error['code'] ?? Response::HTTP_OK));
     }
 
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         $data = $request->validate([
             'dir' => 'required_without:file|string',
@@ -58,9 +56,12 @@ class FileController extends Controller
         return response()->json($res, $res['error']['code'] ?? Response::HTTP_CREATED);
     }
 
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|JsonResponse|Response
+     */
     public function update(Request $request)
     {
-        if (!$filepath = $request->query('file')) {
+        if (!($filepath = $request->query('file')) || !is_string($filepath)) {
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 
@@ -72,7 +73,7 @@ class FileController extends Controller
         $file = $this->fm->open($filepath);
 
         if (array_key_exists('error', $file)) {
-            return response($file, $file['error']['code']);
+            return response()->json($file, $file['error']['code']);
         }
 
         if ($file['contents'] == $data['contents']) {
@@ -84,7 +85,7 @@ class FileController extends Controller
         return response()->json($this->fm->open($filepath));
     }
 
-    public function rename(Request $request)
+    public function rename(Request $request): JsonResponse
     {
         $data = $request->validate([
             'oldPath' => 'required|string',
@@ -96,9 +97,9 @@ class FileController extends Controller
         return response()->json($file, $file['error']['code'] ?? Response::HTTP_OK);
     }
 
-    public function delete(Request $request)
+    public function delete(Request $request): Response
     {
-        if (!$filepath = $request->query('file')) {
+        if (!($filepath = $request->query('file')) || !is_string($filepath)) {
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 

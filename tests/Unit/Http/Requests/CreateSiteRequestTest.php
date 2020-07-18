@@ -18,7 +18,7 @@ class CreateSiteRequestTest extends TestCase
     private $rules;
 
     /**
-     * @var \Illuminate\Foundation\Application
+     * @var \Illuminate\Validation\Factory
      */
     private $validator;
 
