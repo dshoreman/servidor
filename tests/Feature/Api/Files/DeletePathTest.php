@@ -41,4 +41,13 @@ class DeletePathTest extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
+
+    /** @test */
+    public function delete_throws_error_when_file_is_not_given(): void
+    {
+        $response = $this->authed()->deleteJson($this->endpoint(['foo' => 'bar']));
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors(['file' => 'File path must be specified.']);
+    }
 }
