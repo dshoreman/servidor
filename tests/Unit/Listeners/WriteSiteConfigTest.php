@@ -164,4 +164,27 @@ class WriteSiteConfigTest extends TestCase
         $this->assertDirectoryExists($path);
         exec('rm -rf "' . $path . '"');
     }
+
+    /** @test */
+    public function pull_creates_root_with_correct_permissions(): void
+    {
+        $path = '/var/www/rootperms.example/public';
+        $site = Site::create(['name' => 'rootperms']);
+
+        $this->assertDirectoryNotExists($path);
+        $site->document_root = $path;
+        $site->update([
+            'primary_domain' => 'rootperms.example',
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+            'source_branch' => 'develop',
+            'type' => 'laravel',
+        ]);
+
+        $stat = system("stat -c '%a' \"${path}\"");
+
+        $this->assertDirectoryExists($path);
+        $this->assertEquals(755, $stat);
+
+        exec('rm -rf "' . $path . '"');
+    }
 }

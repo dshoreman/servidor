@@ -89,7 +89,7 @@ class WriteSiteConfig
         }
 
         if (!is_dir($root)) {
-            mkdir($root, 755);
+            mkdir($root, 0755, true);
         }
 
         $cloneCmd = $branch ? 'git clone --branch "' . $branch . '"' : 'git clone';
