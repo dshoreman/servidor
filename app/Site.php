@@ -9,6 +9,8 @@ use Servidor\System\User as SystemUser;
 
 class Site extends Model
 {
+    protected $appends = ['logs'];
+
     protected $casts = [
         'is_enabled' => 'boolean',
     ];

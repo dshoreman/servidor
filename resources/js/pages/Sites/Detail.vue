@@ -130,9 +130,28 @@
                 </sui-header>
             </sui-segment>
 
+            <sui-header attached="top" :inverted="darkMode" v-if="Object.keys(site.logs).length">
+                Project Logs
+            </sui-header>
+            <sui-table selectable class="attached logtable" :inverted="darkMode">
+                <sui-table-body>
+                    <sui-table-row @click="viewLog(log.path)"
+                        v-for="(log, key) in site.logs" :key="key">
+                        <sui-table-cell collapsing>{{ log.name }}</sui-table-cell>
+                        <sui-table-cell>{{ log.path }}</sui-table-cell>
+                    </sui-table-row>
+                </sui-table-body>
+            </sui-table>
+
         </sui-grid-column>
     </sui-grid-row>
 </template>
+
+<style>
+.logtable tr {
+    cursor: pointer;
+}
+</style>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
@@ -161,6 +180,12 @@ export default {
         ...mapActions({
             pullFiles: 'sites/pull',
         }),
+        viewLog(path) {
+            this.$router.push({
+                name: 'files.edit',
+                query: { f: path },
+            });
+        },
     },
 };
 </script>
