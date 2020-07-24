@@ -29,7 +29,26 @@ class Site extends Model
         'is_enabled',
     ];
 
-    public function getSystemUserAttribute(): ?array
+    public function getLogsAttribute(): array
+    {
+        $defaultPhp = sprintf('/var/log/php%d.%d-fpm.log', PHP_MAJOR_VERSION, PHP_MINOR_VERSION);
+        $php = ['name' => 'PHP Error Log', 'path' => ini_get('error_log') ?: $defaultPhp];
+        $laravel = ['name' => 'Laravel Log', 'path' => 'storage/logs/laravel.log'];
+
+        switch ($this->attributes['type'] ?? '') {
+            case 'laravel':
+                return compact('php', 'laravel');
+            case 'php':
+                return compact('php');
+        }
+
+        return [];
+    }
+
+    /**
+     * @return int|array|null
+     */
+    public function getSystemUserAttribute()
     {
         $uid = $this->attributes['system_user'];
 
@@ -42,5 +61,10 @@ class Site extends Model
         } catch (UserNotFoundException $e) {
             return null;
         }
+    }
+
+    public function setSystemUserAttribute(int $uid): void
+    {
+        $this->attributes['system_user'] = $uid;
     }
 }

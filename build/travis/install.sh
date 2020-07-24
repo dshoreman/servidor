@@ -16,6 +16,7 @@ npm_install() {
 }
 
 php_install() {
+    pecl install pcov
     mysql -e 'CREATE DATABASE servidor_test;'
 
     travis_retry composer install --no-interaction
