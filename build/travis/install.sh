@@ -19,6 +19,7 @@ php_install() {
     pecl install pcov
     mysql -e 'CREATE DATABASE servidor_test;'
 
+    git config --global pull.ff only
     travis_retry composer install --no-interaction
 
     cp build/travis/dotenv ./.env

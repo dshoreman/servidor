@@ -26,7 +26,7 @@ eslint:
 	node_modules/.bin/eslint -c build/eslint/config.json "resources/js/**/*.{js,vue}"
 
 phpstan:
-	vendor/bin/phpstan analyze -c build/phpstan/config.neon
+	php -d memory_limit=-1 vendor/bin/phpstan analyze -c build/phpstan/config.neon
 
 psalm:
 	vendor/bin/psalm -c build/psalm/psalm.xml
