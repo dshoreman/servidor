@@ -133,15 +133,14 @@
             <sui-header attached="top" :inverted="darkMode" v-if="Object.keys(site.logs).length">
                 Project Logs
             </sui-header>
-            <sui-table selectable class="attached logtable" :inverted="darkMode">
-                <sui-table-body>
-                    <sui-table-row @click="viewLog(log.path)"
-                        v-for="(log, key) in site.logs" :key="key">
-                        <sui-table-cell collapsing>{{ log.name }}</sui-table-cell>
-                        <sui-table-cell>{{ log.path }}</sui-table-cell>
-                    </sui-table-row>
-                </sui-table-body>
-            </sui-table>
+            <sui-segment attached :inverted="darkMode" v-if="Object.keys(site.logs).length">
+                <sui-menu pointing secondary :inverted="darkMode">
+                    <a is="sui-menu-item" v-for="(log, key) in site.logs" :key="key"
+                        :active="activeLog === key" @click="viewLog(key)"
+                        :content="log.name" />
+                </sui-menu>
+                <pre>{{ logContent }}</pre>
+            </sui-segment>
 
         </sui-grid-column>
     </sui-grid-row>
@@ -168,6 +167,15 @@ export default {
         },
         sites: Array,
     },
+    data() {
+        return {
+            activeLog: '',
+            logContent: '',
+        };
+    },
+    mounted() {
+        this.viewLog(Object.keys(this.site.logs)[0]);
+    },
     computed: {
         ...mapGetters({
             findSite: 'sites/findById',
@@ -180,10 +188,16 @@ export default {
         ...mapActions({
             pullFiles: 'sites/pull',
         }),
-        viewLog(path) {
-            this.$router.push({
-                name: 'files.edit',
-                query: { f: path },
+        viewLog(key) {
+            const id = this.site.id;
+            this.logContent = 'Loading...';
+            this.activeLog = key;
+
+            axios.get(`/api/sites/${id}/logs/${this.activeLog}`).then(response => {
+                this.logContent = '' === response.data.trim()
+                    ? "Log file is empty or doesn't exist." : response.data;
+            }).catch(() => {
+                this.logContent = `Failed to load ${this.activeLog} log!`;
             });
         },
     },

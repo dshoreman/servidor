@@ -92,6 +92,15 @@ class SiteController extends Controller
         return response()->json($site, Response::HTTP_OK);
     }
 
+    public function showLog(Site $site, string $log): Response
+    {
+        $path = $site->logs[$log]['path'];
+
+        exec('sudo cat ' . escapeshellarg($path), $content);
+
+        return response()->make(implode("\n", $content));
+    }
+
     /**
      * Update the specified resource in storage.
      */
