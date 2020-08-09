@@ -94,11 +94,7 @@ class SiteController extends Controller
 
     public function showLog(Site $site, string $log): Response
     {
-        $path = $site->logs[$log]['path'];
-
-        exec('sudo cat ' . escapeshellarg($path), $content);
-
-        return response()->make(implode("\n", $content));
+        return response()->make($site->readLog($log));
     }
 
     /**

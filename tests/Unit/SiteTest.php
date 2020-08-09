@@ -52,6 +52,20 @@ class SiteTest extends TestCase
     }
 
     /** @test */
+    public function readLog_prefixes_relative_paths_with_docroot(): void
+    {
+        $root = resource_path('test-skel/logrel');
+        $path = $root . '/storage/logs/laravel.log';
+        $site = new Site([
+            'name' => 'logrel',
+            'type' => 'laravel',
+            'document_root' => $root,
+        ]);
+
+        $this->assertEquals('It works!', $site->readLog('laravel'));
+    }
+
+    /** @test */
     public function system_user_is_null_when_not_found(): void
     {
         $site = Site::create(['name' => 'ghosty']);

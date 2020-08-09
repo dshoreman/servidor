@@ -3,6 +3,7 @@
 namespace Servidor;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Servidor\Events\SiteUpdated;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\System\User as SystemUser;
@@ -45,6 +46,17 @@ class Site extends Model
         }
 
         return [];
+    }
+
+    public function readLog(string $log): string
+    {
+        $path = Str::startsWith($this->logs[$log]['path'], '/') ? '' : (
+            Str::beforeLast($this->document_root, '/public') . '/'
+        ) . $this->logs[$log]['path'];
+
+        exec('sudo cat ' . escapeshellarg($path), $file);
+
+        return implode("\n", $file);
     }
 
     /**
