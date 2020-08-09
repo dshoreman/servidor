@@ -130,13 +130,13 @@
                 </sui-header>
             </sui-segment>
 
-            <sui-header attached="top" :inverted="darkMode" v-if="Object.keys(site.logs).length">
+            <sui-header attached="top" :inverted="darkMode" v-if="logNames(site).length">
                 Project Logs
             </sui-header>
-            <sui-segment attached :inverted="darkMode" v-if="Object.keys(site.logs).length">
+            <sui-segment attached :inverted="darkMode" v-if="logNames(site).length">
                 <sui-menu pointing secondary :inverted="darkMode">
                     <a is="sui-menu-item" v-for="(log, key) in site.logs" :key="key"
-                        :active="activeLog === key" @click="viewLog(key)"
+                        :active="activeLog === key" @click="viewLog(site.id, key)"
                         :content="log.name" />
                 </sui-menu>
                 <pre>{{ logContent }}</pre>
@@ -174,7 +174,11 @@ export default {
         };
     },
     mounted() {
-        this.viewLog(Object.keys(this.site.logs)[0]);
+        this.initLog(this.site.id);
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.initLog(to.params.id);
+        next();
     },
     computed: {
         ...mapGetters({
@@ -188,8 +192,23 @@ export default {
         ...mapActions({
             pullFiles: 'sites/pull',
         }),
-        viewLog(key) {
-            const id = this.site.id;
+        initLog(siteId) {
+            const logs = this.logNames(siteId);
+
+            if (logs.length) {
+                this.viewLog(siteId, logs[0]);
+            } else {
+                this.logContent = '';
+                this.activeLog = '';
+            }
+        },
+        logNames(site) {
+            const s = 'object' === typeof site ? site
+                : this.findSite(parseInt(site));
+
+            return Object.keys(s.logs);
+        },
+        viewLog(id, key) {
             this.logContent = 'Loading...';
             this.activeLog = key;
 
