@@ -17,7 +17,6 @@
         <UnresolvableInclude>
             <errorLevel type="suppress">
                 <file name="app/Console/Kernel.php" />
-                <file name="app/Providers/BroadcastServiceProvider.php" />
             </errorLevel>
         </UnresolvableInclude>
         <PropertyNotSetInConstructor>
