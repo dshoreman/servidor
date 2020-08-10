@@ -30,7 +30,7 @@ class DatabaseTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_a_database(): void
+    public function it_can_create_a_database(): Database
     {
         $db = new Database();
         $before = $db->listDatabases();
@@ -40,7 +40,22 @@ class DatabaseTest extends TestCase
         sort($after);
 
         $this->assertTrue($created);
-        $this->assertSame($db->listDatabases(), $after);
+        $this->assertSame($after, $db->listDatabases());
+
+        return $db;
+    }
+
+    /**
+     * @test
+     * @depends it_can_create_a_database
+     */
+    public function it_returns_true_when_created_database_exists(
+        Database $db
+    ): void {
+        $before = $db->listDatabases();
+
+        $this->assertTrue($db->create('testdb'));
+        $this->assertSame($before, $db->listDatabases());
 
         $db->dbal()->dropDatabase('testdb');
     }

@@ -11,10 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Deleting system users and groups now triggers a confirmation prompt
 * Home directory can now be purged when deleting a system user
 * File Manager now supports creating, renaming and deleting dirs and files
+* Site overview now supports viewing logs for the site and related services
 
 ### Fixed
 * File contents no longer have whitespace and newlines trimmed when saved
 * Listing a directory that doesn't exist will now show a friendly error
+* Updating sites now correctly creates docroot when it doesn't already exist
 
 
 ## [0.8.0] - 2020-02-02

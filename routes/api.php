@@ -28,6 +28,7 @@ Route::middleware('auth:api')->group(function (): void {
     ]);
     Route::get('sites/{site}/branches', 'SiteController@branches');
     Route::post('sites/{site}/pull', 'SiteController@pull');
+    Route::get('sites/{site}/logs/{log}', 'SiteController@showLog');
 
     Route::resource('databases', 'DatabaseController', [
         'only' => ['index', 'store'],

@@ -59,10 +59,11 @@ class WriteSiteConfig
 
     private function updateConfig(): void
     {
+        $type = $this->site->type ?? 'basic';
         /** @var \Illuminate\View\View */
-        $view = 'laravel' == $this->site->type
+        $view = 'laravel' == $type
             ? view('sites.server-templates.php')
-            : view('sites.server-templates.' . $this->site->type);
+            : view('sites.server-templates.' . $type);
 
         Storage::put('vhosts/' . $this->filename, (string) $view->with('site', $this->site));
 
@@ -87,8 +88,8 @@ class WriteSiteConfig
             return;
         }
 
-        if (!is_dir(dirname($root))) {
-            mkdir(dirname($root), 755);
+        if (!is_dir($root)) {
+            mkdir($root, 0755, true);
         }
 
         $cloneCmd = $branch ? 'git clone --branch "' . $branch . '"' : 'git clone';

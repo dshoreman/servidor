@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use InvalidArgumentException;
+use Illuminate\Validation\ValidationException;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Http\Requests\CreateSite;
 use Servidor\Http\Requests\UpdateSite;
@@ -44,7 +44,7 @@ class SiteController extends Controller
         $cmd = "git ls-remote --heads '%s' | sed 's^.*refs/heads/^^'";
         $repo = $request->query('repo', $site->source_repo);
         if (!$repo || !is_string($repo)) {
-            throw new InvalidArgumentException();
+            throw ValidationException::withMessages(['repo' => 'Missing repo and site does not have one set.']);
         }
 
         exec(sprintf($cmd, $repo), $branches);
@@ -78,8 +78,8 @@ class SiteController extends Controller
             return response()->json($site, Response::HTTP_OK);
         }
 
-        if (!is_dir(dirname($root))) {
-            mkdir(dirname($root));
+        if (!is_dir($root)) {
+            mkdir($root);
         }
 
         $args = $branch ? ' --branch "' . $branch . '"' : '';
@@ -90,6 +90,11 @@ class SiteController extends Controller
         exec($cmd);
 
         return response()->json($site, Response::HTTP_OK);
+    }
+
+    public function showLog(Site $site, string $log): Response
+    {
+        return response()->make($site->readLog($log));
     }
 
     /**

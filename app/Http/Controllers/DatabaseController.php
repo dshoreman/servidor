@@ -3,6 +3,7 @@
 namespace Servidor\Http\Controllers;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Servidor\Database;
@@ -23,21 +24,19 @@ class DatabaseController extends Controller
 
     /**
      * Create a new database.
-     *
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
             'database' => 'required|string',
         ]);
 
-        $created = (new Database())->create($data['database']);
-
-        if (!$created) {
-            throw new Exception('Could not create datbase');
+        try {
+            (new Database())->create($data['database']);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Could not create database'], 500);
         }
 
-        return response($data['database'], Response::HTTP_OK);
+        return response()->json($data['database']);
     }
 }

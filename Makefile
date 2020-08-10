@@ -6,11 +6,11 @@ test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
 
 coverage:
-	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
+	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
 	@echo
 
 coverage-html:
-	vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml --coverage-html tests/reports/coverage/latest"
+	vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit -c build/phpunit/config.xml --coverage-html tests/reports/coverage/latest"
 	@mv tests/reports/coverage/latest tests/reports/coverage/$(now)/ && xdg-open ./tests/reports/coverage/$(now)/index.html
 	@echo
 
@@ -26,7 +26,7 @@ eslint:
 	node_modules/.bin/eslint -c build/eslint/config.json "resources/js/**/*.{js,vue}"
 
 phpstan:
-	vendor/bin/phpstan analyze -c build/phpstan/config.neon
+	php -d memory_limit=-1 vendor/bin/phpstan analyze -c build/phpstan/config.neon
 
 psalm:
 	vendor/bin/psalm -c build/psalm/psalm.xml
