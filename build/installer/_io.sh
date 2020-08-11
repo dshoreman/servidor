@@ -16,6 +16,11 @@ err() {
     echo -e " \e[1;31m[ERROR]\e[21m ${*}\e[0m"
 }
 
+# shellcheck disable=SC2009
+is_interactive() {
+    ps -o stat= -p $$ | grep -q '+'
+}
+
 info() {
     echo -e " \e[1;36m[INFO]\e[0m ${*}\e[0m"
 }

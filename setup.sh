@@ -19,7 +19,7 @@ main() {
     echo
     info "This script will prepare a fresh server and install Servidor."
     info "If this is not a fresh server, your mileage may vary."
-    if ! ask "Continue with install?"; then
+    if is_interactive && ! ask "Continue with install?"; then
         err "Installation aborted." && exit 1
     fi
     start_install
@@ -81,6 +81,10 @@ banner() {
 }
 err() {
     echo -e " \e[1;31m[ERROR]\e[21m ${*}\e[0m"
+}
+# shellcheck disable=SC2009
+is_interactive() {
+    ps -o stat= -p $$ | grep -q '+'
 }
 info() {
     echo -e " \e[1;36m[INFO]\e[0m ${*}\e[0m"
