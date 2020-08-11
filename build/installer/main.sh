@@ -6,6 +6,8 @@ SCRIPT_ROOT="$( cd "$(dirname "$0")" >/dev/null 2>&1; pwd -P )"
 
 # shellcheck source=_io.sh
 source "${SCRIPT_ROOT}/_io.sh"
+# shellcheck source=_install.sh
+source "${SCRIPT_ROOT}/_install.sh"
 
 trap 'echo && err "Aborted due to error" && exit 1' ERR
 trap 'echo && err "Aborted by user" && exit 1' SIGINT
@@ -13,10 +15,11 @@ trap 'echo && err "Aborted by user" && exit 1' SIGINT
 usage() {
     echo
     echo "Usage:"
-    echo "  main.sh [-h | --help]"
+    echo "  main.sh [-h | --help] [-v | --verbose]"
     echo
     echo "Options:"
     echo "  -h, --help        Display this help and exit"
+    echo "  -v, --verbose     Print extra information during install"
     echo
 }
 
@@ -28,6 +31,13 @@ main() {
     echo
     info "This script will prepare a fresh server and install Servidor."
     info "If this is not a fresh server, your mileage may vary."
+
+    if ! ask "Continue with install?"; then
+        err "Installation aborted." && exit 1
+    fi
+
+    start_install
+    install_servidor
 }
 
 sanity_check() {
@@ -45,8 +55,8 @@ sanity_check() {
 }
 
 parse_opts() {
-    local -r OPTS=h
-    local -r LONG=help
+    local -r OPTS=hv
+    local -r LONG=help,verbose
     local parsed
 
     # shellcheck disable=SC2251
@@ -61,6 +71,8 @@ parse_opts() {
         case "$1" in
             -h|--help)
                 usage && exit 0 ;;
+            -v|--verbose)
+                debug=true; shift ;;
             --)
                 shift; break ;;
             *)
@@ -70,6 +82,7 @@ parse_opts() {
         esac
     done
 
+    log "Debug mode enabled"
 }
 
 main "$@"
