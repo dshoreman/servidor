@@ -8,6 +8,8 @@ SCRIPT_ROOT="$( cd "$(dirname "$0")" >/dev/null 2>&1; pwd -P )"
 source "${SCRIPT_ROOT}/_io.sh"
 # shellcheck source=_install.sh
 source "${SCRIPT_ROOT}/_install.sh"
+# shellcheck source=_templates.sh
+source "${SCRIPT_ROOT}/_templates.sh"
 
 trap 'echo && err "Aborted due to error" && exit 1' ERR
 trap 'echo && err "Aborted by user" && exit 1' SIGINT

@@ -1,181 +1,45 @@
-#!/usr/bin/env bash
-set -Eeo pipefail
-trap 'echo && err "Aborted due to error" && exit 1' ERR
-trap 'echo && err "Aborted by user" && exit 1' SIGINT
-usage() {
-    echo
-    echo "Usage:"
-    echo "  bash ./setup.sh [-h | --help] [-v | --verbose]"
-    echo
-    echo "Options:"
-    echo "  -h, --help        Display this help and exit"
-    echo "  -v, --verbose     Print extra information during install"
-    echo
-}
-main() {
-    echo && banner
-    sanity_check
-    parse_opts "$@"
-    echo
-    info "This script will prepare a fresh server and install Servidor."
-    info "If this is not a fresh server, your mileage may vary."
-    if is_interactive && ! ask "Continue with install?"; then
-        err "Installation aborted." && exit 1
-    fi
-    start_install
-    install_servidor
-}
-sanity_check() {
-    # shellcheck disable=SC2251
-    ! getopt -T > /dev/null
-    if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
-        echo "Enhanced getopt is not available. Aborting."
-        exit 1
-    fi
-    if [ "${BASH_VERSINFO:-0}" -lt 4 ]; then
-        echo "Your version of Bash is ${BASH_VERSION} but install requires at least v4."
-        exit 1
-    fi
-}
-parse_opts() {
-    local -r OPTS=hv
-    local -r LONG=help,verbose
-    local parsed
-    # shellcheck disable=SC2251
-    ! parsed=$(getopt -o "$OPTS" -l "$LONG" -n "$0" -- "$@")
-    if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
-        echo "Run 'install.sh --help' for a list of commands."
-        exit 2
-    fi
-    eval set -- "$parsed"
-    while true; do
-        case "$1" in
-            -h|--help)
-                usage && exit 0 ;;
-            -v|--verbose)
-                debug=true; shift ;;
-            --)
-                shift; break ;;
-            *)
-                echo "Option '$1' should be valid but couldn't be handled."
-                echo "Please submit an issue at https://github.com/dshoreman/servidor/issues"
-                exit 3 ;;
-        esac
-    done
-    log "Debug mode enabled"
-}
-install_servidor() {
-    info "Installing Servidor..."
-    git clone -q https://github.com/dshoreman/servidor.git /var/servidor
-    log "Patching nginx config..."
-    nginx_config > /etc/nginx/sites-enabled/servidor.conf
-    log " Writing default index page..."
-    nginx_default_page > /var/www/html/index.nginx-debian.html
-    # NOTE: This should be much more restrictive before final release!
-    log " Setting permissions for www-data..."
-    echo "www-data ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/www-data
-    log " Taking ownership of the Servidor storage dir..."
-    chown -R www-data:www-data /var/servidor/storage
-    log "Setting owner to www-data on main web root..."
-    chown www-data:www-data /var/www
-}
-ask() {
-    echo
-    echo -e " \e[1;34m${1}\e[21m [yN]\e[0m"
-    read -rp" " response
-    [[ "${response,,}" =~ ^(y|yes)$ ]]
-}
-banner() {
-    echo -e " \e[1;36m======================"
-    echo "   Servidor Installer"
-    echo -e " ======================\e[0m"
-}
-err() {
-    echo -e " \e[1;31m[ERROR]\e[21m ${*}\e[0m"
-}
-# shellcheck disable=SC2009
-is_interactive() {
-    ps -o stat= -p $$ | grep -q '+'
-}
-info() {
-    echo -e " \e[1;36m[INFO]\e[0m ${*}\e[0m"
-}
-log() {
-    if [[ ${debug:=} = true ]]; then
-        echo -e " \e[1;33m[DEBUG]\e[0m ${*}"
-    fi
-}
-export DEBIAN_FRONTEND=noninteractive
-start_install() {
-    info "Adding required repositories..."
-    add_repos && install_packages
-    info "Enabling services..."
-    enable_services mariadb nginx php7.4-fpm
-}
-add_repos() {
-    log "Adding ondrej/nginx PPA"
-    add-apt-repository -ny ppa:ondrej/nginx
-    log "Adding ondrej/php PPA"
-    add-apt-repository -ny ppa:ondrej/php
-    log "Updating local repositories"
-    apt-get update
-}
-install_packages() {
-    info "Installing core packages..."
-    install_required sysstat unzip zsh
-    info "Installing database and web server..."
-    install_required nginx php7.4-fpm
-    info "Installing required PHP extensions..."
-    install_required composer php7.4-bcmath php7.4-json php7.4-mbstring php7.4-xml php7.4-zip
-    info "Installing database..."
-    install_required mariadb-server php7.4-mysql
-}
-install_required() {
-    for pkg in "${@}"; do
-        log "Installing package ${pkg}..."
-        apt-get install -qy --no-install-recommends "${pkg}"
-    done
-}
-enable_services() {
-    for svc in "${@}"; do
-        systemctl enable "${svc}"
-        systemctl restart "${svc}"
-    done
-}
 nginx_config() {
     cat << EOF
 server {
     listen 8042 default_server;
     listen [::]:8042 default_server;
+
     charset utf-8;
     index index.php;
     root /var/servidor/public;
+
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";
     add_header X-Content-Type-Options "nosniff";
+
     location / {
         try_files \$uri \$uri/ /index.php?\$query_string;
     }
+
     location ~ \.php\$ {
         fastcgi_pass unix:/run/php/php7.4-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         include fastcgi_params;
     }
+
     location = /favicon.ico {
         access_log off;
         log_not_found off;
     }
+
     error_page 404 /index.php;
 }
 EOF
 }
+
 nginx_default_page() {
     cat << EOF
 <!DOCTYPE html>
 <html>
   <head>
     <title>Site Not Found</title>
+
     <style type="text/css">
     h1, h2 {
       margin: 0;
@@ -202,6 +66,7 @@ nginx_default_page() {
     }
     </style>
   </head>
+
   <body>
     <div class="box">
       <h1>404</h1>
@@ -215,4 +80,3 @@ nginx_default_page() {
 </html>
 EOF
 }
-main "$@"

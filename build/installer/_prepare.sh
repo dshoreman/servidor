@@ -3,6 +3,9 @@ export DEBIAN_FRONTEND=noninteractive
 start_install() {
     info "Adding required repositories..."
     add_repos && install_packages
+
+    info "Enabling services..."
+    enable_services mariadb nginx php7.4-fpm
 }
 
 add_repos() {
@@ -34,5 +37,12 @@ install_required() {
     for pkg in "${@}"; do
         log "Installing package ${pkg}..."
         apt-get install -qy --no-install-recommends "${pkg}"
+    done
+}
+
+enable_services() {
+    for svc in "${@}"; do
+        systemctl enable "${svc}"
+        systemctl restart "${svc}"
     done
 }
