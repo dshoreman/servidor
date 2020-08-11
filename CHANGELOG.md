@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+
+## [0.9.0] - 2020-08-11
 ### Added
-* Deleting system users and groups now triggers a confirmation prompt
-* Home directory can now be purged when deleting a system user
+* Home directories can now be purged when deleting system users
 * File Manager now supports creating, renaming and deleting dirs and files
 * Site overview now supports viewing logs for the site and related services
+
+### Changed
+* Deleting system users and groups now triggers a confirmation prompt
 
 ### Fixed
 * File contents no longer have whitespace and newlines trimmed when saved
@@ -134,7 +139,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.8.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.9.0...develop
+[0.9.0]: https://github.com/dshoreman/servidor/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/dshoreman/servidor/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/dshoreman/servidor/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/dshoreman/servidor/compare/v0.5.0...v0.6.0
