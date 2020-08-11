@@ -30,3 +30,18 @@ log() {
         echo -e " \e[1;33m[DEBUG]\e[0m ${*}"
     fi
 }
+
+edit_line() {
+    local file="$1" match="$2" replace="$3"
+
+    # Bail out if exact match is found
+    grep -qP "^${match}=${replace}$" "${file}" && return
+
+    if grep -qP "^${match}=$" "${file}"; then
+        # Option is unset, edit line in-place
+        sed -i "s/^\(${match}\)=$/\1=${replace}/" "$file"
+    else
+        # Option is already set, comment it and append new line
+        sed -i "s/^\(\(${match}\)=.\+\)$/#\1\n\2=${replace}/" "$file"
+    fi
+}

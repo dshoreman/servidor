@@ -21,7 +21,7 @@ add_repos() {
 
 install_packages() {
     info "Installing core packages..."
-    install_required sysstat unzip zsh
+    install_required build-essential npm sysstat unzip zsh
 
     info "Installing database and web server..."
     install_required nginx php7.4-fpm
