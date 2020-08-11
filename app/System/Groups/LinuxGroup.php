@@ -3,11 +3,14 @@
 namespace Servidor\System\Groups;
 
 use Servidor\System\LinuxCommand;
+use Servidor\Traits\ToggleCommandArgs;
 
 class LinuxGroup extends LinuxCommand
 {
+    use ToggleCommandArgs;
+
     /**
-     * @var int
+     * @var ?int
      */
     public $gid;
 
@@ -23,9 +26,9 @@ class LinuxGroup extends LinuxCommand
 
     public function __construct(array $group = [])
     {
-        $this->name = $group['name'] ?? '';
-
-        $this->initArgs(['gid', 'users' => 'members'], $group);
+        $this->gid = ($group['gid'] ?? null) ? (int) $group['gid'] : null;
+        $this->name = (string) $group['name'];
+        $this->users = $group['members'] ?? [];
 
         $this->setOriginal();
     }
@@ -73,7 +76,7 @@ class LinuxGroup extends LinuxCommand
         return $this->users != $this->getOriginal('users');
     }
 
-    public function isDirty()
+    public function isDirty(): bool
     {
         return $this->hasArgs() || $this->hasChangedUsers();
     }
@@ -82,7 +85,7 @@ class LinuxGroup extends LinuxCommand
     {
         return [
             'gid' => $this->gid ?? null,
-            'name' => $this->name ?? '',
+            'name' => $this->name ?: '',
             'users' => $this->users ?? '',
         ];
     }

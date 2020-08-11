@@ -3,12 +3,15 @@
 namespace Servidor;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Servidor\Events\SiteUpdated;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\System\User as SystemUser;
 
 class Site extends Model
 {
+    protected $appends = ['logs'];
+
     protected $casts = [
         'is_enabled' => 'boolean',
     ];
@@ -29,7 +32,37 @@ class Site extends Model
         'is_enabled',
     ];
 
-    public function getSystemUserAttribute(): ?array
+    public function getLogsAttribute(): array
+    {
+        $defaultPhp = sprintf('/var/log/php%d.%d-fpm.log', PHP_MAJOR_VERSION, PHP_MINOR_VERSION);
+        $php = ['name' => 'PHP Error Log', 'path' => ini_get('error_log') ?: $defaultPhp];
+        $laravel = ['name' => 'Laravel Log', 'path' => 'storage/logs/laravel.log'];
+
+        switch ($this->attributes['type'] ?? '') {
+            case 'laravel':
+                return compact('php', 'laravel');
+            case 'php':
+                return compact('php');
+        }
+
+        return [];
+    }
+
+    public function readLog(string $log): string
+    {
+        $path = Str::startsWith($this->logs[$log]['path'], '/') ? '' : (
+            Str::beforeLast($this->document_root, '/public') . '/'
+        ) . $this->logs[$log]['path'];
+
+        exec('sudo cat ' . escapeshellarg($path), $file);
+
+        return implode("\n", $file);
+    }
+
+    /**
+     * @return int|array|null
+     */
+    public function getSystemUserAttribute()
     {
         $uid = $this->attributes['system_user'];
 
@@ -42,5 +75,10 @@ class Site extends Model
         } catch (UserNotFoundException $e) {
             return null;
         }
+    }
+
+    public function setSystemUserAttribute(int $uid): void
+    {
+        $this->attributes['system_user'] = $uid;
     }
 }

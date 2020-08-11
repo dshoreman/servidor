@@ -1,0 +1,5 @@
+[Unit]
+Description=Dummy Nginx service for Travis-CI testing
+
+[Service]
+ExecStart=/bin/bash -c "systemctl reset-failed nginx.service; while true; do sleep 1; done"

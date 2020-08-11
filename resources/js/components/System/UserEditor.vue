@@ -96,7 +96,10 @@
         </sui-form-field>
 
         <editor-buttons :editing="editMode" @cancel="reset()"
-            @delete="deleteUser(tmpUser.uid)" />
+            @delete="deleteUser(tmpUser.uid)" item="user">
+            <sui-checkbox toggle v-model="deleteHome"
+                label="Purge the home directory and its contents" />
+        </editor-buttons>
     </sui-form>
 </template>
 
@@ -123,6 +126,7 @@ export default {
     data() {
         return {
             deleted: [],
+            deleteHome: true,
             newGroup: null,
         };
     },
@@ -151,7 +155,7 @@ export default {
             this.$store.dispatch('systemUsers/update', { uid, user: this.tmpUser });
         },
         deleteUser(uid) {
-            this.$store.dispatch('systemUsers/delete', uid);
+            this.$store.dispatch('systemUsers/delete', { uid, purge: this.deleteHome });
         },
         addGroup() {
             const group = this.groups[this.groups.findIndex(

@@ -2,9 +2,11 @@
 
 namespace Servidor\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Http\Requests\CreateSite;
 use Servidor\Http\Requests\UpdateSite;
@@ -14,49 +16,46 @@ use Servidor\System\Users\LinuxUser;
 
 class SiteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        return response(Site::all()->toArray());
+        /**
+         * @var \Illuminate\Contracts\Support\Arrayable
+         */
+        $sites = Site::all();
+
+        return response()->json($sites->toArray());
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function store(CreateSite $request)
+    public function store(CreateSite $request): JsonResponse
     {
         $site = Site::create($request->validated());
 
-        return response($site, Response::HTTP_CREATED);
+        return response()->json($site, Response::HTTP_CREATED);
     }
 
     /**
      * Display a list of branches on the given site's repository.
-     *
-     * @return Response
      */
-    public function branches(Request $request, Site $site)
+    public function branches(Request $request, Site $site): JsonResponse
     {
         $cmd = "git ls-remote --heads '%s' | sed 's^.*refs/heads/^^'";
         $repo = $request->query('repo', $site->source_repo);
+        if (!$repo || !is_string($repo)) {
+            throw ValidationException::withMessages(['repo' => 'Missing repo and site does not have one set.']);
+        }
 
         exec(sprintf($cmd, $repo), $branches);
 
-        return $branches;
+        return response()->json($branches);
     }
 
     /**
      * Pull the latest commit from Git.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function pull(Site $site)
+    public function pull(Site $site): JsonResponse
     {
         $root = $site->document_root;
         $branch = $site->source_branch;
@@ -68,7 +67,7 @@ class SiteController extends Controller
         }
 
         if (isset($error)) {
-            return response(compact('error'), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(compact('error'), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if (is_dir($root . '/.git')) {
@@ -76,11 +75,11 @@ class SiteController extends Controller
 
             exec('cd "' . $root . '"' . $args . ' && git pull');
 
-            return response($site, Response::HTTP_OK);
+            return response()->json($site, Response::HTTP_OK);
         }
 
-        if (!is_dir(dirname($root))) {
-            mkdir(dirname($root));
+        if (!is_dir($root)) {
+            mkdir($root);
         }
 
         $args = $branch ? ' --branch "' . $branch . '"' : '';
@@ -90,15 +89,18 @@ class SiteController extends Controller
 
         exec($cmd);
 
-        return response($site, Response::HTTP_OK);
+        return response()->json($site, Response::HTTP_OK);
+    }
+
+    public function showLog(Site $site, string $log): Response
+    {
+        return response()->make($site->readLog($log));
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function update(UpdateSite $request, Site $site)
+    public function update(UpdateSite $request, Site $site): JsonResponse
     {
         $site->update($request->validated());
 
@@ -119,13 +121,13 @@ class SiteController extends Controller
             }
         }
 
-        return response($site, Response::HTTP_OK);
+        return response()->json($site, Response::HTTP_OK);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
     public function destroy(Site $site)
     {

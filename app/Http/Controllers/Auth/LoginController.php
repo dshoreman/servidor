@@ -2,7 +2,6 @@
 
 namespace Servidor\Http\Controllers\Auth;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -24,7 +23,7 @@ class LoginController extends Controller
     /**
      * Proxy login requests to /oauth/token with client secret.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function login(Request $request, Client $client)
     {
@@ -50,28 +49,35 @@ class LoginController extends Controller
 
             $this->clearLoginAttempts($request);
 
-            return response($response->getBody());
+            return response((string) $response->getBody());
         } catch (BadResponseException $e) {
             $this->incrementLoginAttempts($request);
+            $response = $e->getResponse();
 
             return response(
-                $e->getResponse()->getBody(),
-                $e->getCode(),
+                $response ? (string) $response->getBody() : '',
+                (int) $e->getCode(),
             );
         }
     }
 
-    protected function username()
+    protected function username(): string
     {
         return 'username';
     }
 
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function logout()
     {
-        $user = auth()->user();
+        /** @var \Illuminate\Contracts\Auth\Guard */
+        $auth = auth();
+        /** @var \Servidor\User */
+        $user = $auth->user();
 
-        if (true !== $user->token()->delete()) {
-            throw new Exception('Failed to delete token.');
+        if ($token = $user->token()) {
+            $token->delete();
         }
 
         return response(null, 204);

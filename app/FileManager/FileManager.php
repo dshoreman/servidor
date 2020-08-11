@@ -2,9 +2,10 @@
 
 namespace Servidor\FileManager;
 
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RuntimeException;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -18,7 +19,7 @@ class FileManager
     /**
      * @var array
      */
-    private $filePerms;
+    private $filePerms = [];
 
     public function __construct()
     {
@@ -35,6 +36,22 @@ class FileManager
 
         $this->loadPermissions($path);
 
+        try {
+            return $this->getFiles($path);
+        } catch (DirectoryNotFoundException $e) {
+            return [
+                'filepath' => $path,
+                'error' => [
+                    'code' => 404,
+                    'msg' => "This directory doesn't exist.",
+                ],
+            ];
+        }
+    }
+
+    private function getFiles(string $path): array
+    {
+        /** @psalm-suppress TooManyArguments - sortByName */
         $files = $this->finder->depth(0)->in($path)
                       ->sortByName(true)
                       ->ignoreDotFiles(false);
@@ -45,7 +62,36 @@ class FileManager
         );
     }
 
-    public function open($file): array
+    public function createDir(string $path): array
+    {
+        if (file_exists($path)) {
+            return ['error' => ['code' => 409, 'msg' => 'Path already exists']];
+        }
+        if (!mkdir($path) || !is_dir($path)) {
+            return ['error' => ['code' => 500, 'msg' => 'Could not create ' . $path]];
+        }
+
+        $dir = $this->open($path);
+        if ('Unsupported filetype' === ($dir['error']['msg'] ?? '')) {
+            unset($dir['error']);
+        }
+
+        return $dir;
+    }
+
+    public function createFile(string $file, string $contents): array
+    {
+        if (file_exists($file)) {
+            return ['error' => ['code' => 409, 'msg' => 'File already exists']];
+        }
+        if (!$this->save($file, $contents)) {
+            return ['error' => ['code' => 500, 'msg' => 'Could not create ' . $file]];
+        }
+
+        return $this->open($file);
+    }
+
+    public function open(string $file): array
     {
         if (!file_exists($file)) {
             return ['error' => ['code' => 404, 'msg' => 'File not found']];
@@ -56,9 +102,44 @@ class FileManager
         return $this->fileWithContents($file);
     }
 
-    public function save($file, $contents): bool
+    public function save(string $file, string $contents): bool
     {
         return false !== file_put_contents($file, $contents);
+    }
+
+    public function move(string $path, string $target): array
+    {
+        if (!file_exists($path)) {
+            return ['error' => ['code' => 404, 'msg' => 'File not found']];
+        }
+        if (file_exists($target)) {
+            return ['error' => ['code' => 409, 'msg' => 'Target already exists']];
+        }
+        if (!rename($path, $target)) {
+            return ['error' => ['code' => 500, 'msg' => 'Rename operation failed']];
+        }
+
+        $item = $this->open($target);
+        if ($item['isDir'] && 'Unsupported filetype' === ($item['error']['msg'] ?? '')) {
+            unset($item['error']);
+        }
+
+        return $item;
+    }
+
+    public function delete(string $path): array
+    {
+        $remove = is_dir($path) ? 'rmdir' : 'unlink';
+        $error = ['code' => 500, 'msg' => 'Failed removing' . $path];
+
+        if (!file_exists($path)) {
+            return ['error' => null];
+        }
+        if (!is_writable($path)) {
+            return ['error' => ['code' => 403, 'msg' => 'No permission to write path']];
+        }
+
+        return ['error' => $remove($path) ? null : $error];
     }
 
     private function loadFilePermissions(string $path): array
@@ -66,7 +147,10 @@ class FileManager
         $pathParts = explode('/', $path);
 
         $name = array_pop($pathParts);
-        $path = mb_substr($path, 0, mb_strrpos($path, '/'));
+        if (false === ($pos = mb_strrpos($path, '/'))) {
+            throw new InvalidArgumentException();
+        }
+        $path = mb_substr($path, 0, $pos);
 
         return $this->loadPermissions($path, $name);
     }
@@ -86,6 +170,9 @@ class FileManager
         return $this->filePerms = $perms;
     }
 
+    /**
+     * @param SplFileInfo|string $file
+     */
     private function loadFile($file): array
     {
         if (is_string($file)) {
@@ -110,9 +197,7 @@ class FileManager
             'group' => $group['name'] ?? '???',
         ];
 
-        $data['perms'] = empty($this->filePerms) || !isset($this->filePerms[$data['filename']])
-                       ? ['text' => '', 'octal' => mb_substr(decoct($file->getPerms()), -4)]
-                       : $this->filePerms[$data['filename']];
+        $data['perms'] = $this->filePerms[$data['filename']];
 
         if (intval(3) === mb_strlen($data['perms']['octal'])) {
             $data['perms']['octal'] = '0' . $data['perms']['octal'];
@@ -124,14 +209,14 @@ class FileManager
     /**
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function fileToArray($file): array
+    private function fileToArray(string $file): array
     {
         list($file, $data) = $this->loadFile($file);
 
         return $data;
     }
 
-    private function fileWithContents($file): array
+    private function fileWithContents(string $file): array
     {
         list($file, $data) = $this->loadFile($file);
 
@@ -147,11 +232,11 @@ class FileManager
         } catch (RuntimeException $e) {
             $msg = $e->getMessage();
             $data['contents'] = '';
+            $data['error'] = ['code' => 418, 'msg' => $msg];
 
-            $data['error'] = Str::contains($msg, 'Permission denied') ? [
-                'code' => Response::HTTP_FORBIDDEN,
-                'msg' => 'Permission denied',
-            ] : ['code' => 418, 'msg' => $msg];
+            if (Str::contains($msg, 'failed to open stream: Permission denied')) {
+                $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
+            }
         }
 
         return $data;

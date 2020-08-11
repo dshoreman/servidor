@@ -2,7 +2,6 @@
 
 namespace Servidor;
 
-use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
@@ -10,7 +9,7 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 class Database
 {
     /**
-     * @var Connection
+     * @var ?Connection
      */
     private $connection;
 
@@ -34,7 +33,7 @@ class Database
                 'password' => config('database.dbal.password'),
                 'host' => config('database.connections.mysql.host'),
                 'driver' => 'pdo_mysql',
-            ], new Configuration());
+            ]);
         }
 
         return $this->connection;

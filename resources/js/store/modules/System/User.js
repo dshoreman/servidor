@@ -120,8 +120,10 @@ export default {
                 commit('unsetEditorUser');
             });
         },
-        delete: ({ commit, state }, uid) => {
-            axios.delete(`/api/system/users/${uid}`).then(() => {
+        delete: ({ commit, state }, { uid, purge = false }) => {
+            axios.delete(`/api/system/users/${uid}`, {
+                data: { deleteHome: purge },
+            }).then(() => {
                 commit('removeUser', state.user.uid_original);
                 commit('unsetEditorUser');
             });

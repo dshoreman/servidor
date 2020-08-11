@@ -15,6 +15,9 @@ class User
      */
     private $user;
 
+    /**
+     * @param array|LinuxUser $user
+     */
     public function __construct($user)
     {
         $this->user = $user instanceof LinuxUser
@@ -43,6 +46,9 @@ class User
         return new self($user);
     }
 
+    /**
+     * @param int|string $nameOrUid
+     */
     private function refresh($nameOrUid): self
     {
         $arr = is_numeric($nameOrUid)
@@ -107,7 +113,7 @@ class User
 
         $this->commit('usermod');
 
-        return $this->refresh($data['uid'] ?? $this->user->uid)->toArray();
+        return $this->refresh($this->user->uid ?? $this->user->name)->toArray();
     }
 
     private function commit(string $cmd): self
@@ -124,9 +130,15 @@ class User
         return $this;
     }
 
-    public function delete(): void
+    public function delete(bool $withHome = false): void
     {
-        exec('sudo userdel ' . $this->user->name);
+        $cmd = 'sudo userdel ';
+
+        if ($withHome) {
+            $cmd .= '--remove ';
+        }
+
+        exec($cmd . $this->user->name);
     }
 
     public function toArray(): array

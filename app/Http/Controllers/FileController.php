@@ -2,9 +2,10 @@
 
 namespace Servidor\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use InvalidArgumentException;
+use Illuminate\Validation\ValidationException;
 use Servidor\FileManager\FileManager;
 
 class FileController extends Controller
@@ -21,40 +22,47 @@ class FileController extends Controller
 
     /**
      * Output a file or list of files from the local filesystem.
-     *
-     * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         if ($filepath = $request->get('file')) {
             $file = $this->fm->open($filepath);
 
             if (array_key_exists('error', $file)) {
-                return response($file, $file['error']['code']);
+                return response()->json($file, $file['error']['code']);
             }
 
-            try {
-                return response()->json($file);
-            } catch (InvalidArgumentException $e) {
-                $file['contents'] = '';
-                $file['error'] = [
-                    'code' => 422,
-                    'msg' => 'Failed loading file',
-                ];
-
-                return response()->json($file);
-            }
+            return response()->json($file);
         }
 
         $path = $request->get('path');
+        $list = $this->fm->list($path);
+        $error = (array) ($list['error'] ?? []);
 
-        return response()->json($this->fm->list($path));
+        return response()->json($list, (int) ($error['code'] ?? Response::HTTP_OK));
     }
 
+    public function create(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'dir' => 'required_without:file|string',
+            'file' => 'required_without:dir|string',
+            'contents' => 'required_with:file|nullable',
+        ]);
+
+        $res = $data['dir'] ?? null ? $this->fm->createDir($data['dir'])
+             : $this->fm->createFile($data['file'], $data['contents']);
+
+        return response()->json($res, $res['error']['code'] ?? Response::HTTP_CREATED);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|JsonResponse|Response
+     */
     public function update(Request $request)
     {
-        if (!$filepath = $request->query('file')) {
-            throw new InvalidArgumentException('File path must be specified.');
+        if (!($filepath = $request->query('file')) || !is_string($filepath)) {
+            throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 
         $data = $request->validate([
@@ -65,7 +73,7 @@ class FileController extends Controller
         $file = $this->fm->open($filepath);
 
         if (array_key_exists('error', $file)) {
-            return response($file, $file['error']['code']);
+            return response()->json($file, $file['error']['code']);
         }
 
         if ($file['contents'] == $data['contents']) {
@@ -75,5 +83,30 @@ class FileController extends Controller
         $this->fm->save($filepath, $data['contents']);
 
         return response()->json($this->fm->open($filepath));
+    }
+
+    public function rename(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'oldPath' => 'required|string',
+            'newPath' => 'required|string',
+        ]);
+
+        $file = $this->fm->move($data['oldPath'], $data['newPath']);
+
+        return response()->json($file, $file['error']['code'] ?? Response::HTTP_OK);
+    }
+
+    public function delete(Request $request): Response
+    {
+        if (!($filepath = $request->query('file')) || !is_string($filepath)) {
+            throw ValidationException::withMessages(['file' => 'File path must be specified.']);
+        }
+
+        $data = $this->fm->delete($filepath);
+
+        return null === $data['error']
+            ? response(null, Response::HTTP_NO_CONTENT)
+            : response()->json($data, $data['error']['code']);
     }
 }

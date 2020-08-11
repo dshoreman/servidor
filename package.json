@@ -10,11 +10,11 @@
         "axios": "^0.19.2",
         "cross-env": "^6.0.3",
         "eslint": "^6.8.0",
-        "eslint-plugin-vue": "^6.1.2",
-        "laravel-mix": "^5.0.1",
-        "lodash": "^4.17.15",
+        "eslint-plugin-vue": "^6.2.2",
+        "laravel-mix": "^5.0.4",
+        "lodash": "^4.17.19",
         "resolve-url-loader": "3.1.0",
-        "sass": "^1.25.0",
+        "sass": "^1.26.10",
         "sass-loader": "^8.0",
         "semantic-ui-sass": "^2.4.2",
         "vue": "^2.6.11",
@@ -23,7 +23,7 @@
     "dependencies": {
         "semantic-ui-vue": "^0.8.1",
         "vue-codemirror": "^4.0.6",
-        "vue-router": "^3.1.5",
-        "vuex": "^3.1.2"
+        "vue-router": "^3.4.2",
+        "vuex": "^3.5.1"
     }
 }

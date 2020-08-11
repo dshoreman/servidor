@@ -4,7 +4,7 @@ namespace Servidor;
 
 class StatsBar
 {
-    public static function stats()
+    public static function stats(): array
     {
         $os = self::parseReleaseFile('os');
         $lsb = self::parseReleaseFile('lsb');
@@ -23,7 +23,7 @@ class StatsBar
         ];
     }
 
-    private static function parseReleaseFile($file)
+    private static function parseReleaseFile(string $file): array
     {
         $flags = FILE_IGNORE_NEW_LINES;
         $data = [];
@@ -72,9 +72,9 @@ class StatsBar
         $data = sscanf($output, '%s %d %d %d %d %d');
 
         return [
-            'total' => round($data[1] / 1024),
-            'used' => round($data[2] / 1024),
-            'free' => round((round($data[3]) + round($data[5])) / 1024),
+            'total' => round((float) $data[1] / 1024),
+            'used' => round((float) $data[2] / 1024),
+            'free' => round((round((float) $data[3]) + round((float) $data[5])) / 1024),
         ];
     }
 
@@ -89,10 +89,10 @@ class StatsBar
 
         return [
             'partition' => $data[0],
-            'total' => number_format($data[1] / 1024 / 1024, 1),
-            'used' => number_format($data[2] / 1024 / 1024, 1),
+            'total' => number_format((float) $data[1] / 1024 / 1024, 1),
+            'used' => number_format((float) $data[2] / 1024 / 1024, 1),
             'used_pct' => $data[4],
-            'free' => number_format($data[3] / 1024 / 1024, 1),
+            'free' => number_format((float) $data[3] / 1024 / 1024, 1),
         ];
     }
 }

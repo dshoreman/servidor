@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -9,7 +9,7 @@ use Servidor\Site;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
-class SitesApiTest extends TestCase
+class SitesTest extends TestCase
 {
     use ArraySubsetAsserts;
     use RefreshDatabase;
@@ -36,6 +36,48 @@ class SitesApiTest extends TestCase
         $response->assertOk();
         $response->assertJsonCount(2);
         $response->assertJson(Site::all()->toArray());
+    }
+
+    /** @test */
+    public function guest_cannot_list_a_sites_branches(): void
+    {
+        $site = Site::create([
+            'name' => 'Test Site',
+            'type' => 'basic',
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+        ]);
+
+        $response = $this->getJson('/api/sites/' . $site->id . '/branches');
+
+        $response->assertJsonCount(1);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+    }
+
+    /** @test */
+    public function authed_user_can_list_a_sites_branches(): void
+    {
+        $site = Site::create([
+            'name' => 'Test Site',
+            'type' => 'basic',
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+        ]);
+
+        $response = $this->authed()->getJson('/api/sites/' . $site->id . '/branches');
+
+        $response->assertOk();
+        $response->assertJson(['develop', 'master']);
+    }
+
+    /** @test */
+    public function listing_branches_requires_site_to_have_a_repo(): void
+    {
+        $site = Site::create(['name' => 'Repoless', 'type' => 'basic']);
+
+        $response = $this->authed()->getJson('/api/sites/' . $site->id . '/branches');
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors(['repo' => 'Missing repo']);
     }
 
     /** @test */
@@ -221,9 +263,7 @@ class SitesApiTest extends TestCase
         $response->assertOk();
         $this->assertDirectoryExists($dir . '/.git');
 
-        // If we try this in tearDown(), storage_path() complains that
-        // path.storage class can't be found. No idea why, but it does.
-        exec('rm -rf "' . $dir . '"');
+        exec('rm -rf "' . $site->document_root . '"');
     }
 
     /** @test */
@@ -255,6 +295,55 @@ class SitesApiTest extends TestCase
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson(['error' => 'Project is missing its document root!']);
+    }
+
+    /** @test */
+    public function can_checkout_after_initial_pull(): void
+    {
+        $dir = resource_path('test-skel/checkedout');
+        $site = Site::create([
+            'name' => 'Site for checkout',
+            'type' => 'basic',
+            'document_root' => $dir,
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+        ]);
+        $site->update(['is_enabled' => true]);
+
+        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
+
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'name' => 'Site for checkout',
+            'document_root' => $dir,
+            'is_enabled' => true,
+        ]);
+
+        exec('rm -rf "' . $dir . '"');
+    }
+
+    /** @test */
+    public function pull_creates_docroot_if_it_doesnt_exist(): void
+    {
+        $dir = resource_path('test-skel/makeme');
+        $site = Site::create([
+            'type' => 'basic',
+            'name' => 'Creating Docroot',
+            'document_root' => $dir,
+            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
+        ]);
+
+        $this->assertDirectoryNotExists($dir);
+        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
+
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'name' => 'Creating Docroot',
+            'document_root' => $dir,
+            'type' => 'basic',
+        ]);
+        $this->assertDirectoryExists($dir);
+
+        exec('rm -rf "' . $dir . '"');
     }
 
     /** @test */

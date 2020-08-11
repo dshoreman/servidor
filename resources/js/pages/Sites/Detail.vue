@@ -130,9 +130,27 @@
                 </sui-header>
             </sui-segment>
 
+            <sui-header attached="top" :inverted="darkMode" v-if="logNames(site).length">
+                Project Logs
+            </sui-header>
+            <sui-segment attached :inverted="darkMode" v-if="logNames(site).length">
+                <sui-menu pointing secondary :inverted="darkMode">
+                    <a is="sui-menu-item" v-for="(log, key) in site.logs" :key="key"
+                        :active="activeLog === key" @click="viewLog(site.id, key)"
+                        :content="log.name" />
+                </sui-menu>
+                <pre>{{ logContent }}</pre>
+            </sui-segment>
+
         </sui-grid-column>
     </sui-grid-row>
 </template>
+
+<style>
+.logtable tr {
+    cursor: pointer;
+}
+</style>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
@@ -149,6 +167,19 @@ export default {
         },
         sites: Array,
     },
+    data() {
+        return {
+            activeLog: '',
+            logContent: '',
+        };
+    },
+    mounted() {
+        this.initLog(this.site.id);
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.initLog(to.params.id);
+        next();
+    },
     computed: {
         ...mapGetters({
             findSite: 'sites/findById',
@@ -161,6 +192,33 @@ export default {
         ...mapActions({
             pullFiles: 'sites/pull',
         }),
+        initLog(siteId) {
+            const logs = this.logNames(siteId);
+
+            if (logs.length) {
+                this.viewLog(siteId, logs[0]);
+            } else {
+                this.logContent = '';
+                this.activeLog = '';
+            }
+        },
+        logNames(site) {
+            const s = 'object' === typeof site ? site
+                : this.findSite(parseInt(site));
+
+            return Object.keys(s.logs);
+        },
+        viewLog(id, key) {
+            this.logContent = 'Loading...';
+            this.activeLog = key;
+
+            axios.get(`/api/sites/${id}/logs/${this.activeLog}`).then(response => {
+                this.logContent = '' === response.data.trim()
+                    ? "Log file is empty or doesn't exist." : response.data;
+            }).catch(() => {
+                this.logContent = `Failed to load ${this.activeLog} log!`;
+            });
+        },
     },
 };
 </script>

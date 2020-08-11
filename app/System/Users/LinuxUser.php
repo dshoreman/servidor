@@ -3,28 +3,31 @@
 namespace Servidor\System\Users;
 
 use Servidor\System\LinuxCommand;
+use Servidor\Traits\ToggleCommandArgs;
 
 class LinuxUser extends LinuxCommand
 {
+    use ToggleCommandArgs;
+
     /**
      * @var string
      */
     protected $dir;
 
     /**
-     * @var int
+     * @var ?int
      */
     protected $gid;
 
     /**
-     * @var int
+     * @var ?int
      */
     public $uid;
 
     /**
      * @var array
      */
-    public $groups;
+    public $groups = [];
 
     /**
      * @var string
@@ -38,9 +41,11 @@ class LinuxUser extends LinuxCommand
 
     public function __construct(array $user = [], bool $loadGroups = false)
     {
-        $this->name = $user['name'] ?? '';
-
-        $this->initArgs(['dir', 'gid', 'uid', 'shell'], $user);
+        $this->gid = isset($user['gid']) ? (int) $user['gid'] : null;
+        $this->uid = isset($user['uid']) ? (int) $user['uid'] : null;
+        $this->dir = isset($user['dir']) ? (string) $user['dir'] : '';
+        $this->name = (string) $user['name'];
+        $this->shell = isset($user['shell']) ? (string) $user['shell'] : '';
 
         if ($loadGroups) {
             $this->loadGroups();
@@ -145,7 +150,7 @@ class LinuxUser extends LinuxCommand
     private function loadGroups(): void
     {
         $this->groups = [];
-        $primary = explode(':', exec('getent group ' . $this->gid));
+        $primary = explode(':', exec('getent group ' . (int) $this->gid));
         $effective = explode(' ', exec("groups {$this->name} | sed 's/.* : //'"));
 
         $primaryName = reset($primary);
