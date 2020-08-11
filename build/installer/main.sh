@@ -18,14 +18,18 @@ usage() {
     echo
     echo "Usage:"
     echo "  main.sh [-h | --help] [-v | --verbose]"
+    echo "          [-b | --branch=<branch-name>]"
     echo
     echo "Options:"
-    echo "  -h, --help        Display this help and exit"
-    echo "  -v, --verbose     Print extra information during install"
+    echo "  -b, --branch=BRANCH  Set the branch to install (defaults to master)"
+    echo "  -h, --help           Display this help and exit"
+    echo "  -v, --verbose        Print extra information during install"
     echo
 }
 
 main() {
+    local servidor_branch
+
     echo && banner
     sanity_check
     parse_opts "$@"
@@ -38,8 +42,7 @@ main() {
         err "Installation aborted." && exit 1
     fi
 
-    start_install
-    install_servidor
+    start_install && install_servidor "${servidor_branch}"
 }
 
 sanity_check() {
@@ -57,8 +60,8 @@ sanity_check() {
 }
 
 parse_opts() {
-    local -r OPTS=hv
-    local -r LONG=help,verbose
+    local -r OPTS=b:hv
+    local -r LONG=branch:,help,verbose
     local parsed
 
     # shellcheck disable=SC2251
@@ -71,6 +74,8 @@ parse_opts() {
 
     while true; do
         case "$1" in
+            -b|--branch)
+                servidor_branch="$2"; shift 2 ;;
             -h|--help)
                 usage && exit 0 ;;
             -v|--verbose)
@@ -85,6 +90,9 @@ parse_opts() {
     done
 
     log "Debug mode enabled"
+
+    : "${servidor_branch:=master}"
+    log "Set to install Servidor from branch ${servidor_branch}"
 }
 
 main "$@"

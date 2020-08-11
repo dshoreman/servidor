@@ -5,7 +5,8 @@ now := `date '+%Y-%m-%d_%H%M'`
 installer:
 	@echo -n "Building unified install script... "
 	@cat build/installer/main.sh build/installer/_*.sh | \
-		sed -e '1,20{/^# shellcheck source=_.*$$/,+1d}' \
+		sed -e '1,30s/echo "\(\s\+\[\)/echo "        \1/' \
+			-e '1,20{/^# shellcheck source=_.*$$/,+1d}' \
 			-e '/^main "$$@"$$/{H;d};$${p;x;s/^\n//}' \
 			-e 's^main\.sh^bash ./setup.sh^' \
 			-e '/^\(SCRIPT_ROOT=\|$$\)/d' \

@@ -1,4 +1,6 @@
 install_servidor() {
+    local branch="${1}"
+
     info "Installing Servidor..."
     clone_and_install
 
@@ -10,7 +12,7 @@ install_servidor() {
 }
 
 clone_and_install() {
-    git clone -q https://github.com/dshoreman/servidor.git /var/servidor
+    git clone -qb "${branch}" https://github.com/dshoreman/servidor.git /var/servidor
     cd /var/servidor || (err "Could not clone Servidor!"; exit 1)
 
     log "Installing required Composer packages..."
