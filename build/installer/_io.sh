@@ -13,7 +13,7 @@ banner() {
 }
 
 err() {
-    echo -e " \e[1;31m[ERROR]\e[21m ${*}\e[0m"
+    echo -e " \e[1;31m[ERROR]\e[21m ${*}\e[0m" >&2
 }
 
 # shellcheck disable=SC2009
@@ -31,7 +31,7 @@ info() {
 
 log() {
     if [[ ${debug:=} = true ]]; then
-        echo -e " \e[1;33m[DEBUG]\e[0m ${*}"
+        echo -e " \e[1;33m[DEBUG]\e[0m ${*}" >&2
     fi
 }
 

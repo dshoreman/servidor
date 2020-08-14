@@ -119,13 +119,11 @@ create_database() {
     edit_line .env "DB_PASSWORD" "hunter2"
 }
 install_passport() {
-    local client_id
+    local client
     has_passport_keys || php artisan passport:keys
-    [ "$(oauth_clients)" = "0" ] && \
-        php artisan passport:client -n --password --name="Servidor API Client"
-    client_id=$(oauth_client_id)
-    edit_line .env "PASSPORT_CLIENT_ID" "${client_id}"
-    edit_line .env "PASSPORT_CLIENT_SECRET" "$(oauth_secret "${client_id}")"
+    client="$(create_oauth_client)"
+    edit_line .env "PASSPORT_CLIENT_ID" "$(head -n1 <<< "${client}")"
+    edit_line .env "PASSPORT_CLIENT_SECRET" "$(tail -n1 <<< "${client}")"
 }
 patch_nginx() {
     nginx_config > /etc/nginx/sites-enabled/servidor.conf
@@ -198,7 +196,7 @@ banner() {
     echo -e " ======================\e[0m"
 }
 err() {
-    echo -e " \e[1;31m[ERROR]\e[21m ${*}\e[0m"
+    echo -e " \e[1;31m[ERROR]\e[21m ${*}\e[0m" >&2
 }
 # shellcheck disable=SC2009
 is_interactive() {
@@ -212,7 +210,7 @@ info() {
 }
 log() {
     if [[ ${debug:=} = true ]]; then
-        echo -e " \e[1;33m[DEBUG]\e[0m ${*}"
+        echo -e " \e[1;33m[DEBUG]\e[0m ${*}" >&2
     fi
 }
 success() {
@@ -232,6 +230,17 @@ edit_line() {
 }
 has_passport_keys() {
     [ -f storage/oauth-private.key ] && [ -f storage/oauth-public.key ]
+}
+create_oauth_client() {
+    if [ "$(oauth_clients)" = "0" ]; then
+        log "Creating new oauth client..."
+        php artisan passport:client -n --password --name="Servidor API Client" | tail -n2 | cut -f3 -d' '
+    else
+        log "Fetching existing client..."
+        local client_id
+        client_id=$(oauth_client_id)
+        echo -e "${client_id}\n$(oauth_secret "${client_id}")"
+    fi
 }
 oauth_clients() {
     mysql -Ne "SELECT COUNT(*) FROM servidor.oauth_clients WHERE password_client=1"

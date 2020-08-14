@@ -62,16 +62,13 @@ create_database() {
 }
 
 install_passport() {
-    local client_id
+    local client
 
     has_passport_keys || php artisan passport:keys
 
-    [ "$(oauth_clients)" = "0" ] && \
-        php artisan passport:client -n --password --name="Servidor API Client"
-
-    client_id=$(oauth_client_id)
-    edit_line .env "PASSPORT_CLIENT_ID" "${client_id}"
-    edit_line .env "PASSPORT_CLIENT_SECRET" "$(oauth_secret "${client_id}")"
+    client="$(create_oauth_client)"
+    edit_line .env "PASSPORT_CLIENT_ID" "$(head -n1 <<< "${client}")"
+    edit_line .env "PASSPORT_CLIENT_SECRET" "$(tail -n1 <<< "${client}")"
 }
 
 patch_nginx() {
