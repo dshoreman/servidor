@@ -80,3 +80,12 @@ nginx_default_page() {
 </html>
 EOF
 }
+
+vagrant_zshrc() {
+    cat << EOF
+alias as-web="sudo -u www-data"
+alias wv="as-web vim"
+alias pa="php artisan"
+alias php="as-web php"
+EOF
+}

@@ -6,6 +6,11 @@ start_install() {
 
     info "Enabling services..."
     enable_services mariadb nginx php7.4-fpm
+
+    if is_vagrant; then
+        info "Adding vagrant user to www-data group..."
+        usermod -aG www-data vagrant
+    fi
 }
 
 add_repos() {
@@ -15,29 +20,40 @@ add_repos() {
     log "Adding ondrej/php PPA"
     add-apt-repository -ny ppa:ondrej/php
 
-    log "Updating local repositories"
-    apt-get update
+    log "Adding Nodesource repository"
+    if is_vagrant; then
+        # We don't need npm here, just update the repos
+        log "Updating local repositories" && apt-get update
+    else
+        # This also runs apt-get update, so we don't have to.
+        curl -sL https://deb.nodesource.com/setup_lts.x | bash -
+    fi
 }
 
 install_packages() {
+    local phpexts=(composer php7.4-bcmath php7.4-json php7.4-mbstring php7.4-xml php7.4-zip)
+
     info "Installing core packages..."
-    install_required build-essential npm sysstat unzip zsh
+    install_required build-essential nodejs sysstat unzip zsh
 
     info "Installing database and web server..."
     install_required nginx php7.4-fpm
 
     info "Installing required PHP extensions..."
-    install_required composer php7.4-bcmath php7.4-json php7.4-mbstring php7.4-xml php7.4-zip
+
+    is_vagrant && \
+        log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
+        phpexts+=(php-pcov php7.4-phpdbg)
+
+    install_required "${phpexts[@]}"
 
     info "Installing database..."
     install_required mariadb-server php7.4-mysql
 }
 
 install_required() {
-    for pkg in "${@}"; do
-        log "Installing package ${pkg}..."
-        apt-get install -qy --no-install-recommends "${pkg}"
-    done
+    log "Packages to install: ${*}"
+    apt-get install -qy --no-install-recommends "${@}"
 }
 
 enable_services() {

@@ -21,6 +21,10 @@ is_interactive() {
     ps -o stat= -p $$ | grep -q '+'
 }
 
+is_vagrant() {
+    [ "${SUDO_USER:=}" = "vagrant" ]
+}
+
 info() {
     echo -e " \e[1;36m[INFO]\e[0m ${*}\e[0m"
 }
@@ -29,6 +33,10 @@ log() {
     if [[ ${debug:=} = true ]]; then
         echo -e " \e[1;33m[DEBUG]\e[0m ${*}"
     fi
+}
+
+success() {
+    echo -e " \e[1;32m[SUCCESS]\e[22m ${*}\e[0m"
 }
 
 edit_line() {
