@@ -17,12 +17,12 @@ npm_install() {
 
 php_install() {
     pecl install pcov
-    mysql -e 'CREATE DATABASE servidor_test;'
+    mysql -e 'CREATE DATABASE servidor_testing;'
 
+    cp build/travis/dotenv ./.env
     git config --global pull.ff only
     travis_retry composer install --no-interaction
 
-    cp build/travis/dotenv ./.env
     php artisan key:generate
     php artisan migrate && php artisan passport:install
 }
