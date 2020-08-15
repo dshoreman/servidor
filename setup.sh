@@ -71,7 +71,7 @@ parse_opts() {
     log "Set to install Servidor from branch ${servidor_branch}"
 }
 install_servidor() {
-    local branch="${1}"
+    local app_url="http://servidor.local" branch="${1}"
     info "Installing Servidor..."
     clone_and_install
     info "Configuring application..."
@@ -86,8 +86,8 @@ clone_and_install() {
     fi
     cd /var/servidor || (err "Could not clone Servidor!"; exit 1)
     log "Installing required Composer packages..."
-    is_vagrant && cmd="sudo -Hu vagrant composer" || cmd="composer"
-    ${cmd} -n install --no-progress --no-suggest
+    is_vagrant && cmd="sudo -Hu vagrant composer install" || cmd="composer install --no-dev"
+    ${cmd} --no-interaction --no-progress --no-suggest
     log "Compiling static assets..."
     if is_vagrant; then
         info " Running in Vagrant, skipping asset build!"
@@ -106,6 +106,8 @@ configure_application() {
     else
         log " SKIPPED! A key has already been generated."
     fi
+    is_vagrant || app_url="http://$(hostname -f)"
+    edit_line .env "APP_URL" "${app_url}"
     log "Migrating the database..."
     php artisan migrate --seed
 }
@@ -179,7 +181,7 @@ print_success() {
     info "  'admin@servidor.local' and password 'servidor'."
     info
     info "Servidor is listening at the following addresses:"
-    info "  $(grep APP_URL .env | sed 's/.*=//'):8042/"
+    info "  ${app_url}:8042/"
     info "  http://$(dig +short myip.opendns.com @resolver1.opendns.com):8042/"
     info
     is_vagrant && info "Don't forget to npm ci && npm run dev!" && info
