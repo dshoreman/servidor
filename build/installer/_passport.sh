@@ -5,7 +5,8 @@ has_passport_keys() {
 create_oauth_client() {
     if [ "$(oauth_clients)" = "0" ]; then
         log "Creating new oauth client..."
-        php artisan passport:client -n --password --name="Servidor API Client" | tail -n2 | cut -f3 -d' '
+        sudo -Hu servidor php artisan passport:client -n --password \
+            --name="Servidor API Client" | tail -n2 | cut -f3 -d' '
     else
         log "Fetching existing client..."
 

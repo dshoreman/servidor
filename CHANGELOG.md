@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Fixed
+* Nginx sites no longer try to use the old PHP 7.3 socket
 
 
 ## [0.9.0] - 2020-08-11

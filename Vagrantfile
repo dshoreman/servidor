@@ -13,7 +13,11 @@ Vagrant.configure("2") do |config|
     disabled: true
 
   config.vm.synced_folder ".", "/var/servidor",
-    create: true, owner: "www-data", group: "www-data",
+    create: true, owner: "998", group: "998",
+    mount_options: ["dmode=775,fmode=664"]
+
+  config.vm.synced_folder "./resources/test-skel", "/var/servidor/resources/test-skel",
+    create: false, owner: "www-data", group: "www-data",
     mount_options: ["dmode=775,fmode=664"]
 
   config.vm.synced_folder "./resources/test-skel/protected", "/var/servidor/resources/test-skel/protected",

@@ -71,7 +71,6 @@ class CreatePathTest extends TestCase
     /** @test */
     public function authed_user_can_create_a_folder(): void
     {
-        $this->withoutExceptionHandling();
         $dir = resource_path('test-skel/newdir');
 
         $response = $this->authed()->postJson($this->endpoint(), [
