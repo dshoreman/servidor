@@ -12,6 +12,10 @@
     <body>
         @yield('content')
 
-        <script src="{{ mix('js/app.js') }}"></script>
+        @if (app()->environment() == 'local')
+            <script src="{{ mix('js/app.js') }}"></script>
+        @else
+            <script src="{{ asset('js/app.js') }}"></script>
+        @endif
     </body>
 </html>

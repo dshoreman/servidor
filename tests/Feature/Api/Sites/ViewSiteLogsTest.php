@@ -15,7 +15,6 @@ class ViewSiteLogsTest extends TestCase
     /** @test */
     public function can_retrieve_content_for_site_log(): void
     {
-        $this->withoutExceptionHandling();
         $site = Site::create(['name' => 'logtest', 'type' => 'php']);
 
         $response = $this->authed()->getJson('/api/sites/' . $site->id . '/logs/php');

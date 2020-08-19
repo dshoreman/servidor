@@ -2,6 +2,17 @@
 
 now := `date '+%Y-%m-%d_%H%M'`
 
+installer:
+	@echo -n "Building unified install script... "
+	@cat build/installer/main.sh build/installer/_*.sh | \
+		sed -e '1,30s/echo "\(\s\+\[\)/echo "        \1/' \
+			-e '1,20{/^# shellcheck source=_.*$$/,+1d}' \
+			-e '/^main "$$@"$$/{H;d};$${p;x;s/^\n//}' \
+			-e 's^main\.sh^bash ./setup.sh^' \
+			-e '/^\(SCRIPT_ROOT=\|$$\)/d' \
+		> setup.sh
+	@chmod +x setup.sh && echo "Done!"
+
 test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
 
