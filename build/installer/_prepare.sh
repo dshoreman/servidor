@@ -31,13 +31,13 @@ add_repos() {
 }
 
 install_packages() {
-    local phpexts=(composer php7.4-bcmath php7.4-json php7.4-mbstring php7.4-xml php7.4-zip)
+    local phpexts=(php7.4-bcmath php7.4-json php7.4-mbstring php7.4-xml php7.4-zip)
 
     info "Installing core packages..."
-    install_required build-essential nodejs sysstat unzip zsh
+    install_pkg build-essential nodejs sysstat unzip zsh
 
     info "Installing database and web server..."
-    install_required nginx php7.4-fpm
+    install_pkg nginx php7.4-fpm
 
     info "Installing required PHP extensions..."
 
@@ -45,13 +45,32 @@ install_packages() {
         log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
         phpexts+=(php-pcov php7.4-phpdbg)
 
-    install_required "${phpexts[@]}"
+    install_pkg "${phpexts[@]}"
+
+    info "Installing latest stable Composer..."
+    install_composer
 
     info "Installing database..."
-    install_required mariadb-server php7.4-mysql
+    install_pkg mariadb-server php7.4-mysql
 }
 
-install_required() {
+install_composer() {
+    local expected actual target=/tmp/composer-setup.php
+
+    log " Fetching current installer checksum..."
+    expected="$(curl -sSL https://composer.github.io/installer.sig)"
+    log " Downloading installer..."
+    curl -sSL https://getcomposer.org/installer > $target
+    log " Comparing checksums..."
+    actual="$(sha384sum $target | cut -d' ' -f1)"
+
+    if [ "$actual" = "$expected" ]; then
+        log " Checksums match! Starting install..."
+        php $target --quiet --install-dir="/usr/local/bin" --filename="composer"
+    fi
+}
+
+install_pkg() {
     log "Packages to install: ${*}"
     apt-get install -qy --no-install-recommends "${@}"
 }
