@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* An install script! Installation is now the same across dev *and* "prod"
+
 ### Fixed
 * Nginx sites no longer try to use the old PHP 7.3 socket
 

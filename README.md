@@ -20,7 +20,7 @@ Servidor is still very much a work in progress, but what has been [added so far]
 
 ## What it Does
 
-Currently there is basic support for projects and management of Linux users and groups. When sites are added, Servidor will
+Currently there is basic support for projects and management of Linux users and groups. When you add a site, Servidor will
 take care of cloning the repository, creating the relevant NginX configs and even reloading the web server. Starting in v0.5
 you also have the ability to manually trigger a `git pull` on any given project without ever having to touch SSH.
 
@@ -28,15 +28,41 @@ you also have the ability to manually trigger a `git pull` on any given project 
 
 > **WARNING!** Servidor is not yet ready for production use!
 
-There's no automatic installer yet but, if you do want to test it on a real server, you'll find a lot of helpful hints in
-vagrant/bootstrap.sh. Otherwise, follow the [Development] instructions below to set up your local environment.
+#### Interactive Setup
+
+To install Servidor, first ensure you're logged in as root to a fresh server, then run the following in SSH:
+
+```sh
+# Save the installer first. Piping to Bash may lead to unexpected results in interactive mode
+curl -sSL https://raw.githubusercontent.com/dshoreman/servidor/installer/setup.sh > /tmp/setup \
+  && bash /tmp/setup.sh
+```
+
+When Servidor has finished installing, you'll see the default login credentials with links to the Servidor backend below them.
+In case you don't have DNS pointing at the server yet, both IP and hostname-based links are listed.
+
+Running locally? Follow the [Development] instructions below to set up your local test environment.
+
+#### Startup Script
+
+If your server provider supports startup scripts for fully automated installation, you can pipe the installer directly to bash:
+```sh
+#/bin/sh
+curl -s https://raw.githubusercontent.com/dshoreman/servidor/installer/setup.sh | bash
+```
+
+Options can be passed to the installer by appending them after `-s --` like so:
+```sh
+#/bin/sh
+curl -s https://raw.githubusercontent.com/dshoreman/servidor/installer/setup.sh | bash -s -- -v --branch develop
+```
 
 ## Development
 
 Servidor is setup to use Vagrant for development. To get started, first clone the repository and run `vagrant up`.  
-The files are mounted at `/var/servidor` within the VM, so you can open the project locally with your usual editor.
 
-Once Vagrant has finished spinning up the VM and installed everything, you'll need to install JS deps and compile assets:
+Installation happens automatically as part of the provisioning process, but the installer will not build frontend assets if it
+detects Vagrant. Instead, you'll need to install and build them separately after running `vagrant up`:
 
 ```sh
 # Clean-install NPM packages from the lock file
@@ -48,13 +74,12 @@ npm run dev
 
 Alternatively, you can use `npm run watch` or `npm run hot` to have assets automatically rebuilt during development.
 
-By default, Vagrant is configured to listen on 192.168.10.100 which you'll need to map in your hosts file:
+By default, Servidor can be accessed at http://servidor.local:8042. If you have [vagrant-hostsupdater] or similar, this will be
+mapped automatically. Alternatively you can use http://192.168.10.100:8042, or run the following to update /etc/hosts:
 
 ```sh
 echo '192.168.10.100 servidor.local' | sudo tee -a /etc/hosts
 ```
-
-Now point your browser to http://servidor.local and use *`admin@servidor.local`* to login with the password *`servidor`*.
 
 ### Running Tests
 
@@ -76,3 +101,4 @@ open an issue or pull request - the latter should go to the develop branch. Than
 [Development]: #development
 [Running Tests]: #running-tests
 [Contributing]: #contributing
+[vagrant-hostsupdater]: https://github.com/agiledivider/vagrant-hostsupdater#installation
