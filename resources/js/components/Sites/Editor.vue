@@ -16,7 +16,7 @@
 
             <sui-form-field :error="'name' in errors">
                 <label>App Name</label>
-                <sui-input v-model="tmpSite.name" placeholder="My Blog" />
+                <sui-input v-model="tmpSite.name" @input="setDocroot" placeholder="My Blog" />
                 <sui-label basic color="red" pointing v-if="'name' in errors">
                     {{ errors.name[0] }}
                 </sui-label>
@@ -192,7 +192,7 @@ export default {
             let val = '';
 
             if (['basic', 'php', 'laravel'].includes(site.type)) {
-                val = `/var/www/${site.primary_domain || ''}`;
+                val = `/var/www/${site.primary_domain || _.kebabCase(site.name)}`;
 
                 if ('laravel' === site.type) {
                     val += '/public';
