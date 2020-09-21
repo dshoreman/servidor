@@ -24,7 +24,7 @@
 
             <sui-header content="Primary Domain" />
             <sui-form-fields>
-                <sui-form-field :width="12" :error="'primary_domain' in errors">
+                <sui-form-field :width="11" :error="'primary_domain' in errors">
                     <label>Domain Name</label>
                     <sui-input placeholder="example.com" @input="setDocroot"
                         v-model="tmpSite.primary_domain" />
@@ -33,7 +33,7 @@
                             {{ errors.primary_domain[0] }}
                         </sui-label>
                 </sui-form-field>
-                <sui-form-field :width="4" :error="'type' in errors">
+                <sui-form-field :width="5" :error="'type' in errors">
                     <label>Project type</label>
                     <sui-dropdown selection :options="[
                         { text: 'Redirect', value: 'redirect' },
@@ -72,7 +72,7 @@
             </sui-form-fields>
 
             <sui-form-fields v-if="tmpSite.type && tmpSite.type != 'redirect'">
-                <sui-form-field :width="12" :error="'source_repo' in errors">
+                <sui-form-field :width="11" :error="'source_repo' in errors">
                     <label>Clone URL</label>
                     <sui-input v-model="tmpSite.source_repo"
                         @change="refreshBranches(tmpSite.source_repo)" />
@@ -80,7 +80,7 @@
                         {{ errors.source_repo[0] }}
                     </sui-label>
                 </sui-form-field>
-                <sui-form-field :width="4" :error="'source_branch' in errors">
+                <sui-form-field :width="5" :error="'source_branch' in errors">
                     <label>Branch</label>
                     <sui-dropdown search selection :loading="loadingBranches"
                         :options="branches" v-model="tmpSite.source_branch"
@@ -101,7 +101,7 @@
             </sui-form-field>
 
             <sui-form-fields v-else-if="tmpSite.type == 'laravel'">
-                <sui-form-field :width="12" :error="'project_root' in errors">
+                <sui-form-field :width="11" :error="'project_root' in errors">
                     <label>Document Root</label>
                     <sui-input v-model="tmpSite.project_root" />
                     <sui-label basic color="red" pointing v-if="'project_root' in errors">
@@ -109,7 +109,7 @@
                     </sui-label>
                 </sui-form-field>
 
-                <sui-form-field :width="4" :error="'public_dir' in errors">
+                <sui-form-field :width="5" :error="'public_dir' in errors">
                     <label>Public Folder</label>
                     <sui-input v-model="tmpSite.public_dir" />
                     <sui-label basic color="red" pointing v-if="'public_dir' in errors">
