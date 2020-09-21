@@ -46,14 +46,14 @@
                     </sui-grid-row>
                 </sui-grid>
 
-                <sui-header size="tiny" :inverted="darkMode" v-if="site.document_root">
-                    <router-link :to="{ name: 'files', params: {path: site.document_root } }"
+                <sui-header size="tiny" :inverted="darkMode" v-if="site.project_root">
+                    <router-link :to="{ name: 'files', params: {path: site.project_root } }"
                                  content="Browse files" is="sui-button" floated="right"
                                  basic primary icon="open folder" />
-                    Document Root
-                    <sui-header-subheader>{{ site.document_root }}</sui-header-subheader>
+                    Project Root
+                    <sui-header-subheader>{{ site.project_root }}</sui-header-subheader>
                 </sui-header>
-                <p v-else>This project doesn't have a document root defined.</p>
+                <p v-else>This project doesn't have a project root defined.</p>
             </sui-segment>
 
             <sui-header v-if="site.type == 'redirect'" attached="top" :inverted="darkMode">

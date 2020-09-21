@@ -153,7 +153,7 @@ class SitesTest extends TestCase
             'name' => 'My Updated Blog',
             'type' => 'basic',
             'source_repo' => 'https://github.com/user/blog.git',
-            'document_root' => '/var/www/blog',
+            'project_root' => '/var/www/blog',
         ]);
 
         $updated = Site::findOrFail($site->id);
@@ -162,7 +162,7 @@ class SitesTest extends TestCase
         $this->assertEquals('My Blog', $updated->name);
         $this->assertNull($updated->type);
         $this->assertNull($updated->source_repo);
-        $this->assertNull($updated->document_root);
+        $this->assertNull($updated->project_root);
     }
 
     /** @test */
@@ -174,7 +174,7 @@ class SitesTest extends TestCase
             'name' => 'My Updated Blog',
             'type' => 'basic',
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
-            'document_root' => '/var/www/blog',
+            'project_root' => '/var/www/blog',
             'primary_domain' => 'test.com',
         ]);
 
@@ -184,7 +184,7 @@ class SitesTest extends TestCase
         $this->assertEquals('My Updated Blog', $updated->name);
         $this->assertEquals('basic', $updated->type);
         $this->assertEquals('https://github.com/dshoreman/servidor-test-site.git', $updated->source_repo);
-        $this->assertEquals('/var/www/blog', $updated->document_root);
+        $this->assertEquals('/var/www/blog', $updated->project_root);
     }
 
     /** @test */
@@ -208,7 +208,7 @@ class SitesTest extends TestCase
         $response = $this->authed()->putJson('/api/sites/' . $site->id, [
             'create_user' => true,
             'name' => 'Hello World',
-            'document_root' => '/var/www/hello-world',
+            'project_root' => '/var/www/hello-world',
             'primary_domain' => 'example.com',
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
             'type' => 'basic',
@@ -254,7 +254,7 @@ class SitesTest extends TestCase
         $site = Site::create([
             'name' => 'Dummy Site',
             'type' => 'basic',
-            'document_root' => $dir,
+            'project_root' => $dir,
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
         ]);
 
@@ -263,7 +263,7 @@ class SitesTest extends TestCase
         $response->assertOk();
         $this->assertDirectoryExists($dir . '/.git');
 
-        exec('rm -rf "' . $site->document_root . '"');
+        exec('rm -rf "' . $site->project_root . '"');
     }
 
     /** @test */
@@ -282,7 +282,7 @@ class SitesTest extends TestCase
     }
 
     /** @test */
-    public function cannot_pull_site_when_missing_document_root(): void
+    public function cannot_pull_site_when_missing_project_root(): void
     {
         $site = Site::create([
             'name' => 'Dummy Site',
@@ -304,7 +304,7 @@ class SitesTest extends TestCase
         $site = Site::create([
             'name' => 'Site for checkout',
             'type' => 'basic',
-            'document_root' => $dir,
+            'project_root' => $dir,
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
         ]);
         $site->update(['is_enabled' => true]);
@@ -314,7 +314,7 @@ class SitesTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment([
             'name' => 'Site for checkout',
-            'document_root' => $dir,
+            'project_root' => $dir,
             'is_enabled' => true,
         ]);
 
@@ -328,7 +328,7 @@ class SitesTest extends TestCase
         $site = Site::create([
             'type' => 'basic',
             'name' => 'Creating Docroot',
-            'document_root' => $dir,
+            'project_root' => $dir,
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
         ]);
 
@@ -338,7 +338,7 @@ class SitesTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment([
             'name' => 'Creating Docroot',
-            'document_root' => $dir,
+            'project_root' => $dir,
             'type' => 'basic',
         ]);
         $this->assertDirectoryExists($dir);
