@@ -44,9 +44,9 @@
         <footer>
             <p>Servidor v{{ version }}</p>
         </footer>
-        <link v-if="darkMode" href="/css/dark-theme.css" rel="stylesheet" type="text/css">
+        <link :href="'/css/theme.' + (darkMode ? 'dark' : 'light') + '.css'" rel="stylesheet">
         <link href="/css/app.css" rel="stylesheet" type="text/css">
-        <link v-if="darkMode" href="/css/dark-theme.custom.css" rel="stylesheet" type="text/css">
+        <link v-if="darkMode" href="/css/theme.dark-custom.css" rel="stylesheet" type="text/css">
     </div>
 </template>
 

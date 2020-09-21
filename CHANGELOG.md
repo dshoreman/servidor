@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * Nginx sites no longer try to use the old PHP 7.3 socket
 * Overflowing dropdowns in site editor don't overflow past the grid any more
+* Duplicated core styles in dark mode are finally a thing of the past
 
 
 ## [0.9.0] - 2020-08-11

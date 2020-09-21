@@ -47,9 +47,9 @@
                 </router-link>
             </div>
         </div>
-        <link v-if="darkMode" href="/css/dark-theme.css" rel="stylesheet" type="text/css">
+        <link href="/css/theme.dark.css" rel="stylesheet" type="text/css">
         <link href="/css/app.css" rel="stylesheet" type="text/css">
-        <link v-if="darkMode" href="/css/dark-theme.custom.css" rel="stylesheet" type="text/css">
+        <link href="/css/theme.dark-custom.css" rel="stylesheet" type="text/css">
     </div>
 </template>
 

@@ -6,8 +6,6 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', '') }}</title>
-
-        <link href="{{ asset('css/core.css') }}" rel="stylesheet" type="text/css">
     </head>
     <body>
         @yield('content')
