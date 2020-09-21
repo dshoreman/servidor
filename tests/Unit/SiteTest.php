@@ -13,6 +13,27 @@ class SiteTest extends TestCase
     public const PHP_LOG_PATH = '/var/log/php%d.%d-fpm.log';
 
     /** @test */
+    public function document_root_matches_project_root_in_non_laravel_projects(): void
+    {
+        $site = Site::create(['name' => 'rootcheck', 'type' => 'basic']);
+        $site->project_root = '/var/www/rootcheck';
+        $site->public_dir = '/';
+
+        $this->assertEquals('/var/www/rootcheck', $site->document_root);
+    }
+
+    /** @test */
+    public function document_root_includes_public_dir_in_laravel_projects(): void
+    {
+        $site = Site::create(['name' => 'lararoot', 'type' => 'laravel']);
+
+        $site->project_root = '/var/www/lararoot';
+        $site->public_dir = '/public';
+
+        $this->assertEquals('/var/www/lararoot/public', $site->document_root);
+    }
+
+    /** @test */
     public function logs_include_only_php_log_for_php_projects(): void
     {
         $site = Site::create(['name' => 'loggable', 'type' => 'php']);
@@ -60,6 +81,7 @@ class SiteTest extends TestCase
             'name' => 'logrel',
             'type' => 'laravel',
             'project_root' => $root,
+            'public_dir' => '/public',
         ]);
 
         $this->assertEquals('It works!', $site->readLog('laravel'));

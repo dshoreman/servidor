@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 * An install script! Installation is now the same across dev *and* "prod"
+* Public folder can be defined separately from docroot for Laravel projects
 
 ### Changed
 * Project folder paths will fall back to site name when domain isn't set

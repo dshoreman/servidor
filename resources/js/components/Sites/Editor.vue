@@ -91,7 +91,7 @@
                 </sui-form-field>
             </sui-form-fields>
 
-            <sui-form-field v-if="['basic', 'php', 'laravel'].includes(tmpSite.type)"
+            <sui-form-field v-if="['basic', 'php'].includes(tmpSite.type)"
                 :error="'project_root' in errors">
                 <label>Document Root</label>
                 <sui-input readonly v-model="tmpSite.project_root" />
@@ -99,6 +99,24 @@
                     {{ errors.project_root[0] }}
                 </sui-label>
             </sui-form-field>
+
+            <sui-form-fields v-else-if="tmpSite.type == 'laravel'">
+                <sui-form-field :width="12" :error="'project_root' in errors">
+                    <label>Document Root</label>
+                    <sui-input v-model="tmpSite.project_root" />
+                    <sui-label basic color="red" pointing v-if="'project_root' in errors">
+                        {{ errors.project_root[0] }}
+                    </sui-label>
+                </sui-form-field>
+
+                <sui-form-field :width="4" :error="'public_dir' in errors">
+                    <label>Public Folder</label>
+                    <sui-input v-model="tmpSite.public_dir" />
+                    <sui-label basic color="red" pointing v-if="'public_dir' in errors">
+                        {{ errors.public_dir[0] }}
+                    </sui-label>
+                </sui-form-field>
+            </sui-form-fields>
 
             <sui-header content="System User" />
             <sui-segment :inverted="darkMode" v-if="!tmpSite.system_user">
@@ -189,17 +207,15 @@ export default {
         },
         setDocroot() {
             const site = this.tmpSite;
-            let val = '';
+            let dir = '', root = '';
 
             if (['basic', 'php', 'laravel'].includes(site.type)) {
-                val = `/var/www/${site.primary_domain || _.kebabCase(site.name)}`;
-
-                if ('laravel' === site.type) {
-                    val += '/public';
-                }
+                dir = 'laravel' === site.type ? '/public' : '/';
+                root = `/var/www/${site.primary_domain || _.kebabCase(site.name)}`;
             }
 
-            site.project_root = val;
+            site.project_root = root;
+            site.public_dir = dir;
         },
     },
 };
