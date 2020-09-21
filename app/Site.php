@@ -26,7 +26,7 @@ class Site extends Model
         'type',
         'source_repo',
         'source_branch',
-        'document_root',
+        'project_root',
         'redirect_type',
         'redirect_to',
         'is_enabled',
@@ -51,7 +51,7 @@ class Site extends Model
     public function readLog(string $log): string
     {
         $path = Str::startsWith($this->logs[$log]['path'], '/') ? '' : (
-            Str::beforeLast($this->document_root, '/public') . '/'
+            Str::beforeLast($this->project_root, '/public') . '/'
         ) . $this->logs[$log]['path'];
 
         exec('sudo cat ' . escapeshellarg($path), $file);

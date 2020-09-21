@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * An install script! Installation is now the same across dev *and* "prod"
 
 ### Changed
-* Project folder paths will now fall back to site name when domain isn't set
+* Project folder paths will fall back to site name when domain isn't set
 
 ### Fixed
 * Nginx sites no longer try to use the old PHP 7.3 socket

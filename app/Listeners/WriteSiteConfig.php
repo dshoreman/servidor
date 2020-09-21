@@ -75,7 +75,7 @@ class WriteSiteConfig
 
     private function pullSite(): void
     {
-        $root = $this->site->document_root;
+        $root = $this->site->project_root;
         $branch = $this->site->source_branch;
 
         if (!$this->site->type || 'redirect' == $this->site->type || !$root) {

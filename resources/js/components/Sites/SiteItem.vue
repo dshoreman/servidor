@@ -7,8 +7,8 @@
         </sui-card-content>
 
         <sui-card-content extra>
-            <router-link :to="{ name: 'files', params: { path: site.document_root } }"
-                slot="right" v-if="site.document_root != null">
+            <router-link :to="{ name: 'files', params: { path: site.project_root } }"
+                slot="right" v-if="site.project_root != null">
                 <sui-icon name="open folder" /> Browse Files
             </router-link>
         </sui-card-content>

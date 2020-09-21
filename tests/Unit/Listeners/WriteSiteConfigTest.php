@@ -22,7 +22,7 @@ class WriteSiteConfigTest extends TestCase
             'name' => 'symlinkery',
         ]);
         $site->update([
-            'document_root' => $path,
+            'project_root' => $path,
             'primary_domain' => 'symlinkery.dev',
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
             'source_branch' => 'develop',
@@ -34,7 +34,7 @@ class WriteSiteConfigTest extends TestCase
         $this->assertFileExists($link);
         $this->assertEquals($target, readlink($link));
 
-        exec("rm -rf \"{$site->document_root}\"; sudo rm \"{$link}\"");
+        exec("rm -rf \"{$site->project_root}\"; sudo rm \"{$link}\"");
     }
 
     /** @test */
@@ -45,7 +45,7 @@ class WriteSiteConfigTest extends TestCase
         $site = Site::create(['name' => 'symlinkeroo']);
 
         $site->update([
-            'document_root' => $path,
+            'project_root' => $path,
             'primary_domain' => 'symlinkeroo.dev',
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
             'source_branch' => 'develop',
@@ -59,7 +59,7 @@ class WriteSiteConfigTest extends TestCase
         $this->assertEquals('symlinkeroo-updated', $site->name);
         $this->assertSame($linkBefore, readlink($link));
 
-        exec("rm -rf \"{$site->document_root}\"; sudo rm \"{$link}\"");
+        exec("rm -rf \"{$site->project_root}\"; sudo rm \"{$link}\"");
     }
 
     /** @test */
@@ -70,7 +70,7 @@ class WriteSiteConfigTest extends TestCase
         $path = resource_path('test-skel/outdated-project');
         $site = Site::create(['name' => 'linkoutdated']);
 
-        $site->document_root = $path;
+        $site->project_root = $path;
         $site->update([
             'primary_domain' => 'outdated.dev',
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
@@ -88,7 +88,7 @@ class WriteSiteConfigTest extends TestCase
         $this->assertTrue(is_link($link));
         $this->assertEquals($vhost, readlink($link));
 
-        exec("rm -rf \"{$site->document_root}\"; sudo rm \"{$link}\"");
+        exec("rm -rf \"{$site->project_root}\"; sudo rm \"{$link}\"");
     }
 
     /** @test */
@@ -97,7 +97,7 @@ class WriteSiteConfigTest extends TestCase
         $path = resource_path('test-skel/foo');
         $site = Site::create(['name' => 'Untitled']);
 
-        $site->document_root = $path;
+        $site->project_root = $path;
         $site->update([
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
             'primary_domain' => 'basicdefault.example',
@@ -113,7 +113,7 @@ class WriteSiteConfigTest extends TestCase
     {
         $site = Site::create(['name' => 'laratest']);
 
-        $site->document_root = resource_path('test-skel/larafoo');
+        $site->project_root = resource_path('test-skel/larafoo');
         $site->update([
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
             'primary_domain' => 'laratest.dev',
@@ -140,7 +140,7 @@ class WriteSiteConfigTest extends TestCase
         $this->assertFileNotExists('/etc/nginx/sites-enabled/laratest.dev.conf');
 
         unlink(storage_path('app/vhosts/laratest.dev.conf'));
-        exec('rm -rf "' . $site->document_root . '"');
+        exec('rm -rf "' . $site->project_root . '"');
     }
 
     /** @test */
@@ -152,7 +152,7 @@ class WriteSiteConfigTest extends TestCase
         ]);
 
         $this->assertDirectoryNotExists($path);
-        $site->document_root = $path;
+        $site->project_root = $path;
         $site->update([
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
             'source_branch' => 'develop',
@@ -172,7 +172,7 @@ class WriteSiteConfigTest extends TestCase
         $site = Site::create(['name' => 'rootperms']);
 
         $this->assertDirectoryNotExists($path);
-        $site->document_root = $path;
+        $site->project_root = $path;
         $site->update([
             'primary_domain' => 'rootperms.example',
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',

@@ -59,7 +59,7 @@ class SiteTest extends TestCase
         $site = new Site([
             'name' => 'logrel',
             'type' => 'laravel',
-            'document_root' => $root,
+            'project_root' => $root,
         ]);
 
         $this->assertEquals('It works!', $site->readLog('laravel'));

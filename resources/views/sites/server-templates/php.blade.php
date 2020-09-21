@@ -1,7 +1,7 @@
 server {
     server_name {{ $site->primary_domain }};
 
-    root {{ $site->document_root }};
+    root {{ $site->project_root }};
     index index.php index.html index.htm;
 
     location / {

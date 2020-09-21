@@ -92,11 +92,11 @@
             </sui-form-fields>
 
             <sui-form-field v-if="['basic', 'php', 'laravel'].includes(tmpSite.type)"
-                :error="'document_root' in errors">
+                :error="'project_root' in errors">
                 <label>Document Root</label>
-                <sui-input readonly v-model="tmpSite.document_root" />
-                <sui-label basic color="red" pointing v-if="'document_root' in errors">
-                    {{ errors.document_root[0] }}
+                <sui-input readonly v-model="tmpSite.project_root" />
+                <sui-label basic color="red" pointing v-if="'project_root' in errors">
+                    {{ errors.project_root[0] }}
                 </sui-label>
             </sui-form-field>
 
@@ -199,7 +199,7 @@ export default {
                 }
             }
 
-            site.document_root = val;
+            site.project_root = val;
         },
     },
 };

@@ -86,7 +86,7 @@ class UpdateSiteRequestTest extends TestCase
         $dataWithout = [
             'name' => 'Test Site',
             'primary_domain' => 'example-without.com',
-            'document_root' => '/',
+            'project_root' => '/',
         ];
         $dataWith = array_merge($dataWithout, [
             'source_repo' => 'https://github.com/foo/bar.git',
@@ -134,27 +134,27 @@ class UpdateSiteRequestTest extends TestCase
     }
 
     /** @test */
-    public function site_document_root_is_required_when_type_is_not_redirect(): void
+    public function site_project_root_is_required_when_type_is_not_redirect(): void
     {
         $v = $this->getValidator(['type' => 'php']);
 
-        $this->assertStringContainsString('required', $v->errors()->first('document_root'));
+        $this->assertStringContainsString('required', $v->errors()->first('project_root'));
         $this->assertFalse($v->passes());
 
         $v = $this->getValidator([
             'name' => 'foo',
             'primary_domain' => 'localhost',
             'type' => 'php',
-            'document_root' => '/',
+            'project_root' => '/',
             'source_repo' => 'https://github.com/foo/bar.git',
         ]);
 
-        $this->assertEmpty($v->errors()->get('document_root'));
+        $this->assertEmpty($v->errors()->get('project_root'));
         $this->assertTrue($v->passes());
     }
 
     /** @test */
-    public function site_document_root_is_not_required_when_type_is_redirect(): void
+    public function site_project_root_is_not_required_when_type_is_redirect(): void
     {
         $data = [
             'name' => 'Test Site',
@@ -166,18 +166,18 @@ class UpdateSiteRequestTest extends TestCase
 
         $v = $this->getValidator($data);
 
-        $this->assertEmpty($v->errors()->get('document_root'));
+        $this->assertEmpty($v->errors()->get('project_root'));
         $this->assertTrue($v->passes());
     }
 
     /** @test */
-    public function site_document_root_must_be_a_string(): void
+    public function site_project_root_must_be_a_string(): void
     {
-        $this->assertTrue($this->validateField('document_root', '/'));
-        $this->assertFalse($this->validateField('document_root', 42));
-        $this->assertFalse($this->validateField('document_root', true));
-        $this->assertFalse($this->validateField('document_root', ['a', 'b']));
-        $this->assertFalse($this->validateField('document_root', (object) ['a', 'b']));
+        $this->assertTrue($this->validateField('project_root', '/'));
+        $this->assertFalse($this->validateField('project_root', 42));
+        $this->assertFalse($this->validateField('project_root', true));
+        $this->assertFalse($this->validateField('project_root', ['a', 'b']));
+        $this->assertFalse($this->validateField('project_root', (object) ['a', 'b']));
     }
 
     /** @test */

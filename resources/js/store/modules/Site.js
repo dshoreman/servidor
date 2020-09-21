@@ -175,7 +175,7 @@ export default {
             return state.sites.find(s => s.id === id);
         },
         findByDocroot: state => path => {
-            return state.sites.find(s => s.document_root === path);
+            return state.sites.find(s => s.project_root === path);
         },
         branchOptions: state => {
             return state.branches.map(b => {
