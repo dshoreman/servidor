@@ -34,9 +34,9 @@
                 </router-link>
             </sui-message>
         </sui-grid-column>
-        <link href="/css/theme.dark.css" rel="stylesheet" type="text/css">
-        <link href="/css/app.css" rel="stylesheet" type="text/css">
-        <link href="/css/theme.dark-custom.css" rel="stylesheet" type="text/css">
+
+        <link type="text/css" rel="stylesheet" :href="style"
+            v-for="style in themeStyles('login')" :key="style">
     </sui-grid>
 </template>
 

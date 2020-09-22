@@ -38,15 +38,14 @@
 
         <section class="main">
             <stats-bar id="stats-bar" />
-
             <router-view id="content" />
         </section>
         <footer>
             <p>Servidor v{{ version }}</p>
         </footer>
-        <link :href="'/css/theme.' + (darkMode ? 'dark' : 'light') + '.css'" rel="stylesheet">
-        <link href="/css/app.css" rel="stylesheet" type="text/css">
-        <link v-if="darkMode" href="/css/theme.dark-custom.css" rel="stylesheet" type="text/css">
+
+        <link type="text/css" rel="stylesheet" :href="style"
+            v-for="style in themeStyles()" :key="style">
     </div>
 </template>
 

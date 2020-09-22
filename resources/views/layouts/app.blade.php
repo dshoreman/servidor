@@ -10,10 +10,16 @@
     <body>
         @yield('content')
 
-        @if (app()->environment() == 'local')
-            <script src="{{ mix('js/app.js') }}"></script>
-        @else
-            <script src="{{ asset('js/app.js') }}"></script>
-        @endif
+        <script>
+            window.stylePaths = {
+                app: "{{ smart_asset('app') }}",
+                theme: {
+                    darkTweaks: "{{ smart_asset('theme.dark-custom') }}",
+                    dark: "{{ smart_asset('theme.dark') }}",
+                    light: "{{ smart_asset('theme.light') }}",
+                },
+            };
+        </script>
+        <script src="{{ smart_asset('app', 'js') }}"></script>
     </body>
 </html>
