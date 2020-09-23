@@ -12,13 +12,6 @@ export default {
                 };
             },
             methods: {
-                themeStyles(layout = '') {
-                    const css = window.stylePaths;
-
-                    return this.darkMode || 'login' === layout
-                        ? [css.theme.dark, css.app, css.theme.darkTweaks]
-                        : [css.theme.light, css.app];
-                },
                 toggleDarkMode() {
                     this.currentTheme = 'light' === this.currentTheme ? 'dark' : 'light';
 
@@ -26,6 +19,30 @@ export default {
 
                     location.reload();
                 },
+            },
+        });
+
+        vue.component('themed-page', {
+            props: { layout: String },
+            computed: {
+                themeStyles() {
+                    const css = window.stylePaths;
+
+                    return this.darkMode || 'login' === this.layout
+                        ? [css.theme.dark, css.app, css.theme.darkTweaks]
+                        : [css.theme.light, css.app];
+                },
+            },
+            render(createElement) {
+                return createElement(this.$vnode.data.tag || 'div', {
+                    attrs: this.$vnode.data.attrs || [],
+                    class: this.currentTheme,
+                }, [
+                    this.$slots.default,
+                    this.themeStyles.map(style => createElement('link', {
+                        attrs: { rel: 'stylesheet', href: style },
+                    })),
+                ]);
             },
         });
 

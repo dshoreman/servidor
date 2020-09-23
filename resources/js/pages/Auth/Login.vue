@@ -1,5 +1,5 @@
 <template>
-    <sui-grid textAlign="center" verticalAlign="middle">
+    <sui-grid is="themed-page" layout="login" textAlign="center" verticalAlign="middle">
         <sui-grid-column>
             <h2 is="sui-header">
                 <sui-icon name="server" /> Sign in to Servidor
@@ -34,9 +34,6 @@
                 </router-link>
             </sui-message>
         </sui-grid-column>
-
-        <link type="text/css" rel="stylesheet" :href="style"
-            v-for="style in themeStyles('login')" :key="style">
     </sui-grid>
 </template>
 

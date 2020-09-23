@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <themed-page>
         <darkmode-special />
         <sui-menu inverted vertical class="visible sidebar" fixed="left">
             <sui-menu-item>
@@ -43,10 +43,7 @@
         <footer>
             <p>Servidor v{{ version }}</p>
         </footer>
-
-        <link type="text/css" rel="stylesheet" :href="style"
-            v-for="style in themeStyles()" :key="style">
-    </div>
+    </themed-page>
 </template>
 
 <script>

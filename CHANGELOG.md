@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Duplicated core styles in dark mode are finally a thing of the past
 * Input icons on the login page are now aligned to the correct side
 * Script and style paths weren't being set based on environment
+* Dark theme styles served via `npm run hot` no longer cause conflicts in light mode
 
 
 ## [0.9.0] - 2020-08-11
