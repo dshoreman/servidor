@@ -1,9 +1,9 @@
-#content {
-    opacity: 0.8;
-}
-#app {
+#app.dark {
     #stats-bar {
         background: rgba(27, 28, 39, 0.8) !important;
+    }
+    #content {
+        opacity: 0.8;
     }
 
     .ui.inverted {

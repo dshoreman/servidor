@@ -8,6 +8,7 @@
  * http://opensource.org/licenses/MIT
  *
  */
+ @import url('https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin,latin-ext');
 /*!
  * # Semantic UI 2.4.2 - Reset
  * http://github.com/semantic-org/semantic-ui/
@@ -7635,6 +7636,8 @@ a.ui.inverted.grey.header:hover {
              Icon
 *******************************/
 
+@import '../variables';
+@import '~semantic-ui-sass/scss/elements/icon';
 i.icon {
   display: inline-block;
   opacity: 1;
