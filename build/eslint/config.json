@@ -116,7 +116,7 @@
         "strict": "error",
 
         /* Variables */
-        "init-declarations": "off",
+        "init-declarations": [ "error", "always" ],
         "no-label-var": "error",
         "no-restricted-globals": "error",
         "no-shadow": "error",
@@ -188,6 +188,7 @@
         "max-statements": "error",
         "max-statements-per-line": "error",
         "multiline-comment-style": [ "error", "separate-lines" ],
+        "multiline-ternary": [ "error", "always-multiline" ],
         "new-cap": "error",
         "new-parens": "error",
         "newline-per-chained-call": ["error", {
@@ -236,7 +237,7 @@
             { "blankLine": "any",    "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}
         ],
         "prefer-exponentiation-operator": "error",
-        "prefer-object-spread": "off",
+        "prefer-object-spread": "error",
         "quote-props": ["error", "as-needed"],
         "quotes": [ "error", "single", {
             "avoidEscape": true
@@ -282,7 +283,10 @@
         }],
         "prefer-arrow-callback": "error",
         "prefer-const": "error",
-        "prefer-destructuring": "off",
+        "prefer-destructuring": [ "error", {
+          "array": true,
+          "object": true
+        }],
         "prefer-numeric-literals": "error",
         "prefer-rest-params": "error",
         "prefer-spread": "error",

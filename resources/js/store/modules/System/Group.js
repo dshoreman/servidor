@@ -37,10 +37,10 @@ export default {
                 };
             }
 
-            state.clean = Object.assign({}, group);
+            state.clean = { ...group };
             state.clean.users = [ ...group.users ];
 
-            state.group = Object.assign({}, group);
+            state.group = { ...group };
             state.group.users = [ ...group.users ];
             state.group.gid_original = group.gid;
 

@@ -140,7 +140,7 @@ export default {
         file: state => state.file,
         currentPath: state => state.currentPath,
         errorData: () => error => {
-            let data = error.response.data;
+            let { data } = error.response;
 
             if (!data.error || !data.error.code) {
                 data = { error: {

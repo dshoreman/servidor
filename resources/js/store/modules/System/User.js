@@ -46,10 +46,10 @@ export default {
                 };
             }
 
-            state.clean = Object.assign({}, user);
+            state.clean = { ...user };
             state.clean.groups = user.groups ? user.groups.slice(0) : [];
 
-            state.user = Object.assign({}, user);
+            state.user = { ...user };
             state.user.uid_original = user.uid;
 
             state.editing = true;

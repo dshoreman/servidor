@@ -102,7 +102,7 @@ export default {
                 return;
             }
             axios.get('/api/system-info').then(response => {
-                const data = response.data;
+                const { data } = response;
 
                 this.hostname = data.hostname;
                 this.cpu_usage = data.cpu;
