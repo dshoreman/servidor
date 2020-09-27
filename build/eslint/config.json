@@ -2,7 +2,7 @@
     "env": {
         "browser": true,
         "commonjs": true,
-        "es6": true
+        "es2020": true
     },
     "extends": [
         "eslint:recommended",
@@ -15,9 +15,6 @@
         "Vue": "readonly",
         "_": "readonly"
     },
-    "parserOptions": {
-        "ecmaVersion": 2018
-    },
     "plugins": [
         "vue"
     ],
@@ -26,11 +23,12 @@
         /* Possible errors */
         "no-await-in-loop": "error",
         "no-console": "error",
-        "no-dupe-else-if": "error",
         "no-extra-parens": "error",
-        "no-import-assign": "error",
-        "no-setter-return": "error",
+        "no-loss-of-precision": "error",
+        "no-promise-executor-return": "error",
         "no-template-curly-in-string": "error",
+        "no-unreachable-loop": "error",
+        "no-useless-backreference": "error",
         "require-atomic-updates": "error",
 
         /* Best practices */
@@ -42,6 +40,7 @@
         "consistent-return": "error",
         "curly": "error",
         "default-case": "error",
+        "default-case-last": "error",
         "default-param-last": "error",
         "dot-location": ["error", "property"],
         "dot-notation": "error",
@@ -124,22 +123,13 @@
         "no-undef-init": "error",
         "no-undefined": "error",
         "no-unused-vars": [ "error", {
-            "varsIgnorePattern": "app"
+            "args": "all",
+            "vars": "all",
+            "caughtErrors": "all",
+            "argsIgnorePattern": "^_|to|from$",
+            "varsIgnorePattern": "^app$"
         }],
         "no-use-before-define": "error",
-
-        /* Node/CommonJS */
-        "callback-return": "error",
-        "global-require": "error",
-        "handle-callback-err": "error",
-        "no-buffer-constructor": "error",
-        "no-mixed-requires": "error",
-        "no-new-require": "error",
-        "no-path-concat": "error",
-        "no-process-env": "error",
-        "no-process-exit": "error",
-        "no-restricted-modules": "error",
-        "no-sync": "error",
 
         /* Stylistic issues */
         "array-bracket-newline": [ "error", "consistent" ],
@@ -151,6 +141,9 @@
         "brace-style": [ "error", "1tbs" ],
         "capitalized-comments": [ "error", "always", {
             "ignoreConsecutiveComments": true
+        }],
+        "camelcase": [ "error", {
+            "properties": "never"
         }],
         "comma-dangle": ["error", "always-multiline"],
         "comma-spacing": [ "error", {
@@ -165,6 +158,7 @@
         "func-name-matching": "error",
         "func-names": [ "error", "as-needed" ],
         "func-style": "error",
+        "function-call-argument-newline": [ "error", "consistent" ],
         "function-paren-newline": [ "error", "consistent" ],
         "id-blacklist": "error",
         "id-length": "off",
@@ -277,6 +271,7 @@
         "generator-star-spacing": "error",
         "no-confusing-arrow": "error",
         "no-duplicate-imports": "error",
+        "no-restricted-exports": "error",
         "no-restricted-imports": "error",
         "no-useless-computed-key": "error",
         "no-useless-constructor": "error",
