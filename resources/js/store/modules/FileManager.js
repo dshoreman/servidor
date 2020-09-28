@@ -34,106 +34,92 @@ export default {
         },
     },
     actions: {
-        load: ({ commit, getters }, { path }) => {
-            return new Promise((resolve, reject) => {
-                axios.get('/api/files', {
-                    params: { path },
-                }).then(response => {
-                    commit('setPath', path);
-                    commit('setFiles', response.data);
-                    resolve(response);
-                }).catch(error => {
-                    const data = getters.errorData(error);
+        load: ({ commit, getters }, { path }) => new Promise((resolve, reject) => {
+            axios.get('/api/files', {
+                params: { path },
+            }).then(response => {
+                commit('setPath', path);
+                commit('setFiles', response.data);
+                resolve(response);
+            }).catch(error => {
+                const data = getters.errorData(error);
 
-                    commit('setPath', data.filepath);
-                    commit('setFiles', data);
-                    reject(error);
-                });
+                commit('setPath', data.filepath);
+                commit('setFiles', data);
+                reject(error);
             });
-        },
-        open: ({ commit, getters }, { file }) => {
-            return new Promise((resolve, reject) => {
-                commit('clearFile');
+        }),
+        open: ({ commit, getters }, { file }) => new Promise((resolve, reject) => {
+            commit('clearFile');
 
-                axios.get('/api/files/', {
-                    params: { file },
-                }).then(response => {
-                    commit('setPath', response.data.filepath);
-                    commit('setFile', response.data);
-                    resolve(response);
-                }).catch(error => {
-                    const data = getters.errorData(error);
+            axios.get('/api/files/', {
+                params: { file },
+            }).then(response => {
+                commit('setPath', response.data.filepath);
+                commit('setFile', response.data);
+                resolve(response);
+            }).catch(error => {
+                const data = getters.errorData(error);
 
-                    commit('setFile', data);
-                    reject(error);
-                });
+                commit('setFile', data);
+                reject(error);
             });
-        },
-        create: ({ commit, state }, path) => {
-            return new Promise((resolve, reject) => {
-                axios.post('/api/files', {
-                    contents: state.file.contents,
-                    file: path,
-                }).then(response => {
-                    commit('setPath', response.data.filepath);
-                    commit('setFile', response.data);
-                    resolve(response);
-                }).catch(error => {
-                    reject(error);
-                });
+        }),
+        create: ({ commit, state }, path) => new Promise((resolve, reject) => {
+            axios.post('/api/files', {
+                contents: state.file.contents,
+                file: path,
+            }).then(response => {
+                commit('setPath', response.data.filepath);
+                commit('setFile', response.data);
+                resolve(response);
+            }).catch(error => {
+                reject(error);
             });
-        },
-        createDir: ({ commit }, path) => {
-            return new Promise((resolve, reject) => {
-                axios.post('/api/files', {
-                    dir: path,
-                }).then(response => {
-                    commit('addFile', response.data);
-                    resolve(response);
-                }).catch(error => {
-                    reject(error);
-                });
+        }),
+        createDir: ({ commit }, path) => new Promise((resolve, reject) => {
+            axios.post('/api/files', {
+                dir: path,
+            }).then(response => {
+                commit('addFile', response.data);
+                resolve(response);
+            }).catch(error => {
+                reject(error);
             });
-        },
-        save: ({ commit, state }) => {
-            return new Promise((resolve, reject) => {
-                const fullpath = `${state.currentPath}/${state.file.filename}`;
+        }),
+        save: ({ commit, state }) => new Promise((resolve, reject) => {
+            const fullpath = `${state.currentPath}/${state.file.filename}`;
 
-                axios.put(`/api/files?file=${fullpath}`, {
-                    contents: state.file.contents,
-                }).then(response => {
-                    commit('setFile', response.data);
-                    resolve(response);
-                }).catch(error => {
-                    reject(error);
-                });
+            axios.put(`/api/files?file=${fullpath}`, {
+                contents: state.file.contents,
+            }).then(response => {
+                commit('setFile', response.data);
+                resolve(response);
+            }).catch(error => {
+                reject(error);
             });
-        },
-        rename: ({ commit }, { file, newPath }) => {
-            return new Promise((resolve, reject) => {
-                axios.post('/api/files/rename', {
-                    oldPath: `${file.filepath}/${file.filename}`,
-                    newPath,
-                }).then(response => {
-                    commit('replaceFile', { oldFile: file, newFile: response.data });
-                    resolve(response);
-                }).catch(error => {
-                    reject(error);
-                });
+        }),
+        rename: ({ commit }, { file, newPath }) => new Promise((resolve, reject) => {
+            axios.post('/api/files/rename', {
+                oldPath: `${file.filepath}/${file.filename}`,
+                newPath,
+            }).then(response => {
+                commit('replaceFile', { oldFile: file, newFile: response.data });
+                resolve(response);
+            }).catch(error => {
+                reject(error);
             });
-        },
-        delete: ({ commit }, file) => {
-            return new Promise((resolve, reject) => {
-                const fullpath = `${file.filepath}/${file.filename}`;
+        }),
+        delete: ({ commit }, file) => new Promise((resolve, reject) => {
+            const fullpath = `${file.filepath}/${file.filename}`;
 
-                axios.delete(`/api/files?file=${fullpath}`).then(response => {
-                    commit('removeFile', file);
-                    resolve(response);
-                }).catch(error => {
-                    reject(error);
-                });
+            axios.delete(`/api/files?file=${fullpath}`).then(response => {
+                commit('removeFile', file);
+                resolve(response);
+            }).catch(error => {
+                reject(error);
             });
-        },
+        }),
     },
     getters: {
         all: state => state.files,

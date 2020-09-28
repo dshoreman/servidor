@@ -68,12 +68,10 @@ export default {
     mounted() {
         this.initStatsBar();
 
-        const refreshStatsBar = () => {
-            return setInterval(
-                () => this.initStatsBar(),
-                REFRESH_INTERVAL_MS,
-            );
-        };
+        const refreshStatsBar = () => setInterval(
+            () => this.initStatsBar(),
+            REFRESH_INTERVAL_MS,
+        );
 
         let refreshStatsBarIntervalId = refreshStatsBar();
 

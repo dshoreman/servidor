@@ -65,11 +65,9 @@ export default {
     props: [
         'filePath',
     ],
-    data: () => {
-        return {
-            loading: false,
-        };
-    },
+    data: () => ({
+        loading: false,
+    }),
     computed: {
         ...mapGetters({
             file: 'files/file',
@@ -78,9 +76,7 @@ export default {
             modes: 'editor/modes',
         }),
         mappedModes() {
-            return this.modes.map(o => {
-                return { text: o.name, value: o.mime };
-            });
+            return this.modes.map(o => ({ text: o.name, value: o.mime }));
         },
         theme: {
             get() {

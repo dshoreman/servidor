@@ -47,9 +47,7 @@ router.beforeEach((to, from, next) => {
     next(nextpage);
 });
 
-window.axios.interceptors.response.use(response => {
-    return response;
-}, error => {
+window.axios.interceptors.response.use(response => response, error => {
     if (HTTP_UNAUTHORISED === error.response.status
         && 'invalid_credentials' !== error.response.data.error) {
         store.dispatch('forceLogin', 'Session timed out');

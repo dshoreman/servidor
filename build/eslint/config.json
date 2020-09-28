@@ -263,7 +263,7 @@
         "wrap-regex": "error",
 
         /* ES6 aka ES2015 */
-        "arrow-body-style": "off",
+        "arrow-body-style": [ "error", "as-needed" ],
         "arrow-parens": [ "error", "as-needed" ],
         "arrow-spacing": [ "error", {
             "after": true,
