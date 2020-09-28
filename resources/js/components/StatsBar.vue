@@ -68,12 +68,10 @@ export default {
     mounted() {
         this.initStatsBar();
 
-        const refreshStatsBar = () => {
-            return setInterval(
-                () => this.initStatsBar(),
-                REFRESH_INTERVAL_MS,
-            );
-        };
+        const refreshStatsBar = () => setInterval(
+            () => this.initStatsBar(),
+            REFRESH_INTERVAL_MS,
+        );
 
         let refreshStatsBarIntervalId = refreshStatsBar();
 
@@ -102,7 +100,7 @@ export default {
                 return;
             }
             axios.get('/api/system-info').then(response => {
-                const data = response.data;
+                const { data } = response;
 
                 this.hostname = data.hostname;
                 this.cpu_usage = data.cpu;

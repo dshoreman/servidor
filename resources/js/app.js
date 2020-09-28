@@ -30,8 +30,8 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const token = store.getters.token;
-    let authed = store.getters.loggedIn, nextpage;
+    const nextpage = {}, { token } = store.getters;
+    let authed = store.getters.loggedIn;
 
     if (token && token !== localStorage.getItem('accessToken')) {
         store.dispatch('forceLogin', 'Token mismatch');
@@ -39,17 +39,15 @@ router.beforeEach((to, from, next) => {
     }
 
     if (!authed && to.matched.some(route => route.meta.auth)) {
-        nextpage = { name: 'login' };
+        nextpage.name = 'login';
     } else if (authed && to.matched.some(route => route.meta.guest)) {
-        nextpage = { name: 'dashboard' };
+        nextpage.name = 'dashboard';
     }
 
     next(nextpage);
 });
 
-window.axios.interceptors.response.use(response => {
-    return response;
-}, error => {
+window.axios.interceptors.response.use(response => response, error => {
     if (HTTP_UNAUTHORISED === error.response.status
         && 'invalid_credentials' !== error.response.data.error) {
         store.dispatch('forceLogin', 'Session timed out');

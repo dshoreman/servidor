@@ -29,50 +29,44 @@ export default {
         },
     },
     actions: {
-        register: data => {
-            return new Promise((resolve, reject) => {
-                axios.post('/api/register', {
-                    name: data.name,
-                    email: data.email,
-                    password: data.password,
-                    password_confirmation: data.passwordConfirmation,
-                }).then(response => {
-                    resolve(response);
-                }).catch(error => {
-                    reject(error);
-                });
+        register: data => new Promise((resolve, reject) => {
+            axios.post('/api/register', {
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                password_confirmation: data.passwordConfirmation,
+            }).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error);
             });
-        },
-        login: ({ commit }, data) => {
-            return new Promise((resolve, reject) => {
-                axios.post('/api/login', {
-                    username: data.username,
-                    password: data.password,
-                }).then(response => {
-                    commit('clearAlert');
-                    commit('setToken', response.data.access_token);
-                    resolve(response);
-                }).catch(error => {
-                    commit('clearAlert');
-                    commit('setAlert', {
-                        title: "We couldn't get you logged in :(",
-                        msg: error.response.data.message,
-                    });
-                    reject(error);
+        }),
+        login: ({ commit }, data) => new Promise((resolve, reject) => {
+            axios.post('/api/login', {
+                username: data.username,
+                password: data.password,
+            }).then(response => {
+                commit('clearAlert');
+                commit('setToken', response.data.access_token);
+                resolve(response);
+            }).catch(error => {
+                commit('clearAlert');
+                commit('setAlert', {
+                    title: "We couldn't get you logged in :(",
+                    msg: error.response.data.message,
                 });
+                reject(error);
             });
-        },
-        logout: ({ commit }) => {
-            return new Promise((resolve, reject) => {
-                axios.post('/api/logout').then(response => {
-                    resolve(response);
-                }).catch(error => {
-                    reject(error);
-                }).then(() => {
-                    commit('clearToken');
-                });
+        }),
+        logout: ({ commit }) => new Promise((resolve, reject) => {
+            axios.post('/api/logout').then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error);
+            }).then(() => {
+                commit('clearToken');
             });
-        },
+        }),
         fetchProfile: ({ commit }) => {
             axios.get('/api/user').then(response => {
                 commit('setUser', response.data);
@@ -86,8 +80,6 @@ export default {
     getters: {
         authMsg: state => state.alert,
         token: state => state.token,
-        loggedIn: state => {
-            return null !== state.token;
-        },
+        loggedIn: state => null !== state.token,
     },
 };

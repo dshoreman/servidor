@@ -203,8 +203,7 @@ export default {
             }
         },
         logNames(site) {
-            const s = 'object' === typeof site ? site
-                : this.findSite(parseInt(site));
+            const s = 'object' === typeof site ? site : this.findSite(parseInt(site));
 
             return Object.keys(s.logs);
         },
@@ -214,7 +213,8 @@ export default {
 
             axios.get(`/api/sites/${id}/logs/${this.activeLog}`).then(response => {
                 this.logContent = '' === response.data.trim()
-                    ? "Log file is empty or doesn't exist." : response.data;
+                    ? "Log file is empty or doesn't exist."
+                    : response.data;
             }).catch(() => {
                 this.logContent = `Failed to load ${this.activeLog} log!`;
             });
