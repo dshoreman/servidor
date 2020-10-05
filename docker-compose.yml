@@ -6,7 +6,6 @@ services:
     build:
       args:
         user: servidor
-        uid: 1000
       context: ./
       dockerfile: Dockerfile
     image: servidor
@@ -35,7 +34,7 @@ services:
     # and the nginx conf.
     volumes:
       - ./:/var/www
-      - ./docker-composer/nginx:/etc/nginx/conf.d
+      - ./docker-compose/nginx:/etc/nginx/conf.d
     networks:
       - servidor
 
