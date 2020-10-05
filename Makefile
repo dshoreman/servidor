@@ -19,12 +19,13 @@ dev-env:
 	@echo "[1/5] Destroying Vagrant VM and purging package caches..." && \
 		rm -rf ./composer ./node_modules ./vendor; vagrant destroy -f
 	@echo
-	@echo "[2/5] Installing Composer packages..."
+	@echo "[2/5] Installing Composer/NPM packages and building assets..."
 ifeq (, $(shell command -v composer))
 	@echo "Composer not available, package installation will run in Vagrant instead."
 else
 	@composer install --no-interaction --no-progress --no-suggest || true
 endif
+	@npm ci && npm run dev
 	@echo
 	@echo "[3/5] Creating the new VM..." && \
 		vagrant up --no-provision || true
