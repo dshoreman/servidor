@@ -97,7 +97,7 @@ clone_and_install() {
         sudo -u servidor git clone -qb "${branch}" https://github.com/dshoreman/servidor.git .
     fi
     log "Installing required Composer packages..."
-    is_vagrant && c_dev="" || c_dev="--no-dev"
+    is_vagrant && c_dev="--prefer-source" || c_dev="--no-dev"
     sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress --no-suggest
     log "Compiling static assets..."
     if is_vagrant; then

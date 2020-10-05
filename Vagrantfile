@@ -30,6 +30,10 @@ Vagrant.configure("2") do |config|
     create: true, owner: "servidor", group: "servidor",
     mount_options: ["dmode=775,fmode=664"]
 
+  config.vm.synced_folder "./storage", "/var/servidor/storage",
+    create: false, owner: "servidor", group: "www-data",
+    mount_options: ["dmode=770,fmode=660"]
+
   config.vm.synced_folder "./resources/test-skel",
     "/var/servidor/resources/test-skel",
     create: false, owner: "www-data", group: "www-data",
