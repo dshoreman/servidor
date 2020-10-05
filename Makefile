@@ -19,8 +19,12 @@ dev-env:
 	@echo "[1/5] Destroying Vagrant VM and purging package caches..." && \
 		rm -rf ./composer ./node_modules ./vendor; vagrant destroy -f
 	@echo
-	@echo "[2/5] Rebuilding the installer..." && \
-		make installer
+	@echo "[2/5] Installing Composer packages..."
+ifeq (, $(shell command -v composer))
+	@echo "Composer not available, package installation will run in Vagrant instead."
+else
+	@composer install --no-interaction --no-progress --no-suggest || true
+endif
 	@echo
 	@echo "[3/5] Creating the new VM..." && \
 		vagrant up --no-provision || true
@@ -29,7 +33,7 @@ dev-env:
 		vagrant provision --provision-with=user
 	@echo
 	@echo "[5/5] Restarting Vagrant VM to run installer..." && \
-		vagrant reload --provision-with=installer
+		make installer && vagrant reload --provision-with=installer
 
 test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
