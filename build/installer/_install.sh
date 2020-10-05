@@ -14,10 +14,12 @@ install_servidor() {
 }
 
 prepare_home() {
-    log " Creating servidor system user..."
-    useradd -b /var -UG www-data -s /usr/sbin/nologin --system servidor
     if ! is_vagrant; then
+        log "Creating servidor system user..."
+        useradd -b /var -UG www-data -s /usr/sbin/nologin --system servidor
         mkdir /var/servidor && chown servidor:servidor /var/servidor
+    else
+        log "Skipped system user creation - when running in Vagrant, this is done by make dev-env."
     fi
 
     log "Adding www-data to the servidor group..."
@@ -25,7 +27,7 @@ prepare_home() {
 }
 
 clone_and_install() {
-    cd /var/servidor || (err "Could not create system user!"; exit 1)
+    cd /var/servidor || (err "Home directory for servidor was not created!"; exit 1)
     if ! is_vagrant; then
         sudo -u servidor git clone -qb "${branch}" https://github.com/dshoreman/servidor.git .
     fi

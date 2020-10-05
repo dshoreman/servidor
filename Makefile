@@ -16,11 +16,20 @@ installer:
 dev-env:
 	@echo "Go stick the kettle on, this'll take a while." && sleep 2
 	@echo
-	@echo "Destroying Vagrant VM and purging package caches..." && \
+	@echo "[1/5] Destroying Vagrant VM and purging package caches..." && \
 		rm -rf ./composer ./node_modules ./vendor; vagrant destroy -f
 	@echo
-	@echo "Restarting Vagrant VM to run installer..." && \
-		make installer && vagrant up
+	@echo "[2/5] Rebuilding the installer..." && \
+		make installer
+	@echo
+	@echo "[3/5] Creating the new VM..." && \
+		vagrant up --no-provision || true
+	@echo
+	@echo "[4/5] Creating the 'servidor' user..." && \
+		vagrant provision --provision-with=user
+	@echo
+	@echo "[5/5] Restarting Vagrant VM to run installer..." && \
+		vagrant reload --provision-with=installer
 
 test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
