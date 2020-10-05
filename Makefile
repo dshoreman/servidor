@@ -13,6 +13,15 @@ installer:
 		> setup.sh
 	@chmod +x setup.sh && echo "Done!"
 
+dev-env:
+	@echo "Go stick the kettle on, this'll take a while." && sleep 2
+	@echo
+	@echo "Destroying Vagrant VM and purging package caches..." && \
+		rm -rf ./composer ./node_modules ./vendor; vagrant destroy -f
+	@echo
+	@echo "Restarting Vagrant VM to run installer..." && \
+		make installer && vagrant up
+
 test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
 

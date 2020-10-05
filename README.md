@@ -59,10 +59,12 @@ curl -s https://raw.githubusercontent.com/dshoreman/servidor/installer/setup.sh 
 
 ## Development
 
-Servidor is setup to use Vagrant for development. To get started, first clone the repository and run `vagrant up`.  
+To get started, run `make dev-env` in the project root. Servidor relies on [Vagrant] for development, so this command  
+takes care of creating the VM, running the necessary prep, and installation of Servidor within the dev environment.  
+After the initial setup, standard Vagrant commands can be used to `up`, `suspend`, `reload` and so on.
 
-Installation happens automatically as part of the provisioning process, but the installer will not build frontend assets if it
-detects Vagrant. Instead, you'll need to install and build them separately after running `vagrant up`:
+Due to memory constraints, static assets are not built during install in Vagrant.  
+Instead, install and build them separately once `make dev-env` has completed:
 
 ```sh
 # Clean-install NPM packages from the lock file
@@ -101,4 +103,5 @@ open an issue or pull request - the latter should go to the develop branch. Than
 [Development]: #development
 [Running Tests]: #running-tests
 [Contributing]: #contributing
+[Vagrant]: https://vagrantup.com
 [vagrant-hostsupdater]: https://github.com/agiledivider/vagrant-hostsupdater#installation
