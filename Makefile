@@ -1,11 +1,12 @@
 .PHONY: test
 
+GNU_SED := $(shell command -v gsed || command -v sed)
 now := `date '+%Y-%m-%d_%H%M'`
 
-installer:
+installer: thinkdifferent
 	@echo -n "Building unified install script... "
 	@cat build/installer/main.sh build/installer/_*.sh | \
-		sed -e '1,30s/echo "\(\s\+\[\)/echo "        \1/' \
+		$(GNU_SED) -e '1,30s/echo "\(\s\+\[\)/echo "        \1/' \
 			-e '1,20{/^# shellcheck source=_.*$$/,+1d}' \
 			-e '/^main "$$@"$$/{H;d};$${p;x;s/^\n//}' \
 			-e 's^main\.sh^bash ./setup.sh^' \
@@ -35,6 +36,12 @@ endif
 	@echo
 	@echo "[5/5] Restarting Vagrant VM to run installer..." && \
 		make installer && vagrant reload --provision-with=installer
+
+thinkdifferent:
+ifeq (Darwin,$(shell uname)$(shell command -v gsed))
+	@echo "To build the installer on OSX, you must first brew install gnu-sed"
+	@exit 1
+endif
 
 test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
