@@ -1,0 +1,65 @@
+version: "3.7"
+services:
+
+  #PHP Service
+  app:
+    build:
+      args:
+        user: servidor
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: servidor
+    container_name: servidor-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    # Bind mount the laravel application data to /var/www
+    volumes:
+       - ./:/var/www
+    networks:
+      - servidor
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: servidor-web
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8000:80"
+    # Bind mount the laravel application data to /var/www
+    # and the nginx conf.
+    volumes:
+      - ./:/var/www
+      - ./docker-composer/nginx:/etc/nginx/conf.d
+    networks:
+      - servidor
+
+  #MySQL Service
+  db:
+    image: mysql:5.7
+    container_name: servidor-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - servidor
+
+#Docker Networks
+networks:
+  servidor:
+    driver: bridge

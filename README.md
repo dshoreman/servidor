@@ -88,6 +88,34 @@ To run the PHPUnit tests, use `make test` which will automatically SSH into the 
 
 Other make commands are available such as `make syntax` to run other CI tools. For a complete list, check the Makefile.
 
+
+### Docker
+
+Build app container
+
+```sh
+docker-compose build app
+```
+
+Run as daemon
+
+```sh
+docker copmposer up -d
+```
+
+Check status and list running containers:
+
+```sh
+docker-compose ps
+```
+
+Exec commands
+
+```sh
+docker-compose exec app ls -l
+```
+
+
 ## Contributing
 
 As noted above, Servidor is still very young. Your ideas, code and overall feedback are all highly valued, so please feel free to
