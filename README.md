@@ -12,8 +12,9 @@ Servidor is still very much a work in progress, but what has been [added so far]
 ## Table of Contents
 
 * [Introduction]
-* [Table of Contents]
 * [Installation]
+  * [Interactive Setup]
+  * [Startup Script]
 * [Development]
   * [Running Tests]
 * [Contributing]
@@ -26,7 +27,10 @@ you also have the ability to manually trigger a `git pull` on any given project 
 
 ## Installation
 
-> **WARNING!** Servidor is not yet ready for production use!
+> **NOTE: Servidor is still a work-in-progress!**  
+> As such, there are some parts that likely aren't as secure as they could be, so  
+> **exercise appropriate caution if you intend to use it on a public-facing server!**  
+> If you find anything that can be improved, PRs are open and greatly appreciated.
 
 #### Interactive Setup
 
@@ -59,27 +63,18 @@ curl -s https://raw.githubusercontent.com/dshoreman/servidor/installer/setup.sh 
 
 ## Development
 
-Servidor is setup to use Vagrant for development. To get started, first clone the repository and run `vagrant up`.  
-
-Installation happens automatically as part of the provisioning process, but the installer will not build frontend assets if it
-detects Vagrant. Instead, you'll need to install and build them separately after running `vagrant up`:
-
-```sh
-# Clean-install NPM packages from the lock file
-npm ci
-
-# Compile the frontend assets for development
-npm run dev
-```
-
-Alternatively, you can use `npm run watch` or `npm run hot` to have assets automatically rebuilt during development.
-
-By default, Servidor can be accessed at http://servidor.local:8042. If you have [vagrant-hostsupdater] or similar, this will be
-mapped automatically. Alternatively you can use http://192.168.10.100:8042, or run the following to update /etc/hosts:
+To get started, run `make dev-env` in the project root. Servidor relies on [Vagrant] for development, so this command  
+takes care of creating the VM, running the necessary prep, and installation of Servidor within the dev environment.  
+After the initial setup, standard Vagrant commands can be used to `up`, `suspend`, `reload` and so on.
 
 ```sh
-echo '192.168.10.100 servidor.local' | sudo tee -a /etc/hosts
+# tl;dr:
+git clone https://github.com/dshoreman/servidor.git
+cd servidor && make dev-env
 ```
+
+Due to memory constraints within the VM, static assets are initially built during `make dev-env`.  
+To recompile assets automatically when you make changes, run `npm run hot` or `npm run watch`.
 
 ### Running Tests
 
@@ -90,15 +85,20 @@ Other make commands are available such as `make syntax` to run other CI tools. F
 
 ## Contributing
 
-As noted above, Servidor is still very young. Your ideas, code and overall feedback are all highly valued, so please feel free to
-open an issue or pull request - the latter should go to the develop branch. Thanks! :heart:
+Where possible, issues are grouped into one of various projects based on the page/section they apply to, so if you want to
+find something to work on in a certain part of Servidor, then the Projects tab is a good place to start. Questions, bug reports,
+ideas and PRs are all welcome and highly appreciated, so don't be afraid to ask if there's something you're not sure of!
+
+If you use IRC, find me in *#servidor* on Freenode where I'll be happy to answer questions in a more real-time fashion.
 
 [Introduction]: #servidor
-[Table of Contents]: #table-of-contents
 [What it Does]: #what-it-does
 [added so far]: #what-it-does
 [Installation]: #installation
+[Interactive Setup]: #interactive-setup
+[Startup Script]: #startup-script
 [Development]: #development
 [Running Tests]: #running-tests
 [Contributing]: #contributing
+[Vagrant]: https://vagrantup.com
 [vagrant-hostsupdater]: https://github.com/agiledivider/vagrant-hostsupdater#installation
