@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <themed-page>
         <darkmode-special />
         <sui-menu inverted vertical class="visible sidebar" fixed="left">
             <sui-menu-item>
@@ -38,16 +38,12 @@
 
         <section class="main">
             <stats-bar id="stats-bar" />
-
             <router-view id="content" />
         </section>
         <footer>
             <p>Servidor v{{ version }}</p>
         </footer>
-        <link v-if="darkMode" href="/css/dark-theme.css" rel="stylesheet" type="text/css">
-        <link href="/css/app.css" rel="stylesheet" type="text/css">
-        <link v-if="darkMode" href="/css/dark-theme.custom.css" rel="stylesheet" type="text/css">
-    </div>
+    </themed-page>
 </template>
 
 <script>

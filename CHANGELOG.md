@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.10.0] - 2020-10-06
+### Added
+* An install script! Installation is now the same across dev *and* "prod"
+* Public folder can be defined separately from docroot for Laravel projects
+
+### Changed
+* Project folder paths will fall back to site name when domain isn't set
+
+### Fixed
+* Nginx sites no longer try to use the old PHP 7.3 socket
+* Overflowing dropdowns in site editor don't overflow past the grid any more
+* Duplicated core styles in dark mode are finally a thing of the past
+* Input icons on the login page are now aligned to the correct side
+* Script and style paths weren't being set based on environment
+* Dark theme styles served via `npm run hot` no longer cause conflicts in light mode
+
+
 ## [0.9.0] - 2020-08-11
 ### Added
 * Home directories can now be purged when deleting system users
@@ -139,7 +156,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.9.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.10.0...develop
+[0.10.0]: https://github.com/dshoreman/servidor/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/dshoreman/servidor/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/dshoreman/servidor/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/dshoreman/servidor/compare/v0.6.0...v0.7.0

@@ -37,10 +37,10 @@ export default {
                 };
             }
 
-            state.clean = Object.assign({}, group);
+            state.clean = { ...group };
             state.clean.users = [ ...group.users ];
 
-            state.group = Object.assign({}, group);
+            state.group = { ...group };
             state.group.users = [ ...group.users ];
             state.group.gid_original = group.gid;
 
@@ -108,27 +108,19 @@ export default {
         },
     },
     getters: {
-        all: state => {
-            return state.groups;
-        },
-        filtered: state => {
-            return state.groups.filter(group => {
-                if (!state.showSystem && SYSTEM_GID_THRESHOLD > group.gid) {
-                    return false;
-                }
+        all: state => state.groups,
+        filtered: state => state.groups.filter(group => {
+            if (!state.showSystem && SYSTEM_GID_THRESHOLD > group.gid) {
+                return false;
+            }
 
-                return group.name.includes(state.currentFilter);
-            });
-        },
-        dropdown: state => {
-            return state.groups.map(group => {
-                return {
-                    icon: 'users',
-                    text: `${group.gid} - ${group.name}`,
-                    value: group.gid,
-                };
-            });
-        },
+            return group.name.includes(state.currentFilter);
+        }),
+        dropdown: state => state.groups.map(group => ({
+            icon: 'users',
+            text: `${group.gid} - ${group.name}`,
+            value: group.gid,
+        })),
         groupIsDirty: state => {
             const now = state.group,
                 old = state.clean;

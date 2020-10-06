@@ -1,56 +1,40 @@
 <template>
-    <div class="ui middle aligned center aligned grid">
-        <div class="column">
-            <h2 class="ui header centered">
-                <i class="server icon"></i>
-                Sign in to Servidor
+    <sui-grid is="themed-page" layout="login" textAlign="center" verticalAlign="middle">
+        <sui-grid-column>
+            <h2 is="sui-header">
+                <sui-icon name="server" /> Sign in to Servidor
             </h2>
-            <form class="ui form" @submit.prevent="login" method="POST" action="/login">
-                <div class="ui inverted stacked segment">
+            <sui-form @submit.prevent="login">
+                <sui-segment stacked inverted>
                     <sui-message negative v-if="error.msg"
-                        :header="error.title"
-                        :content="error.msg" />
+                        :header="error.title" :content="error.msg" />
 
-                    <div class="field">
-                        <div class="ui left inverted transparent icon input"
-                            type="email" placeholder="Email address">
-                            <input id="email" type="email" name="email"
-                                v-model="username" placeholder="E-mail address"
-                                required autofocus>
-                            <i class="user icon"></i>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui left inverted transparent icon input"
-                            type="password" placeholder="Password">
-                            <input id="password" type="password" name="password"
-                                v-model="password" required
-                                placeholder="Password" />
-                            <i class="lock icon"></i>
-                        </div>
-                    </div>
-                    <div class="field left aligned">
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="remember" id="remember">
-                            <label for="remember">Remember Me</label>
-                        </div>
-                    </div>
-                    <button class="ui positive fluid large button" type="submit">
+                    <sui-form-field>
+                        <sui-input inverted transparent required type="email"
+                            icon="user" icon-position="left" v-model="username"
+                            placeholder="Email address" autofocus />
+                    </sui-form-field>
+                    <sui-form-field>
+                        <sui-input inverted transparent required type="password"
+                            icon="lock" icon-position="left" v-model="password"
+                            placeholder="Password" />
+                    </sui-form-field>
+                    <sui-form-field class="left aligned">
+                        <sui-checkbox toggle label="Remember Me" />
+                    </sui-form-field>
+                    <sui-button positive fluid type="submit" size="large">
                         Login
-                    </button>
-                </div>
-            </form>
+                    </sui-button>
+                </sui-segment>
+            </sui-form>
 
-            <div class="ui inverted message">
+            <sui-message class="inverted">
                 <router-link :to="{ name: 'password.request' }" class="centered">
                     Forgot Your Password?
                 </router-link>
-            </div>
-        </div>
-        <link v-if="darkMode" href="/css/dark-theme.css" rel="stylesheet" type="text/css">
-        <link href="/css/app.css" rel="stylesheet" type="text/css">
-        <link v-if="darkMode" href="/css/dark-theme.custom.css" rel="stylesheet" type="text/css">
-    </div>
+            </sui-message>
+        </sui-grid-column>
+    </sui-grid>
 </template>
 
 <script>

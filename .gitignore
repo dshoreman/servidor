@@ -1,9 +1,7 @@
 /node_modules
 /public/mix-manifest.json
 /public/css/app.css
-/public/css/core.css
-/public/css/*-theme.css
-/public/css/*-theme.custom.css
+/public/css/theme.*.css
 /public/js/app.js
 /public/fonts/*
 !/public/fonts/.gitkeep
@@ -16,12 +14,10 @@
 /.vscode
 /.vagrant
 /*.log
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
 .env
-.env.backup
-.env.testing
+.env.*
+.composer
 .php_cs.cache
 .phpunit.result.cache
+npm-debug.log
+yarn-error.log

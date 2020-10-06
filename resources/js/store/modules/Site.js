@@ -82,14 +82,12 @@ export default {
         },
     },
     actions: {
-        load: ({ commit }) => {
-            return new Promise((resolve, reject) => {
-                axios.get('/api/sites').then(response => {
-                    commit('setSites', response.data);
-                    resolve(response);
-                }).catch(error => reject(error));
-            });
-        },
+        load: ({ commit }) => new Promise((resolve, reject) => {
+            axios.get('/api/sites').then(response => {
+                commit('setSites', response.data);
+                resolve(response);
+            }).catch(error => reject(error));
+        }),
         loadBranches: ({ commit, state }, repo = '') => {
             commit('branchesLoading');
             let url = `/api/sites/${state.current.id}/branches`;
@@ -109,16 +107,14 @@ export default {
             commit('setEditorSite', site);
             dispatch('loadBranches');
         },
-        create: ({ commit, state }) => {
-            return new Promise((resolve, reject) => {
-                axios.post('/api/sites', state.site).then(response => {
-                    commit('addSite', response.data);
-                    commit('clearMessages');
-                    commit('setSuccess', `The site '${response.data.name}' has been created.`);
-                    resolve(response);
-                }).catch(error => reject(error));
-            });
-        },
+        create: ({ commit, state }) => new Promise((resolve, reject) => {
+            axios.post('/api/sites', state.site).then(response => {
+                commit('addSite', response.data);
+                commit('clearMessages');
+                commit('setSuccess', `The site '${response.data.name}' has been created.`);
+                resolve(response);
+            }).catch(error => reject(error));
+        }),
         update: ({ commit }, site) => {
             axios.put(`/api/sites/${site.id}`, site.data).then(response => {
                 commit('clearMessages');
@@ -144,43 +140,27 @@ export default {
                 }
             });
         },
-        pull: site => {
-            return axios.post(`/api/sites/${site.id}/pull`);
-        },
-        delete: ({ commit }, id) => {
-            return new Promise((resolve, reject) => {
-                axios.delete(`/api/sites/${id}`).then(response => {
-                    commit('removeSite', id);
-                    resolve(response);
-                }).catch(error => {
-                    commit('setErrors', {
-                        message: error.message,
-                        action: 'delete',
-                    });
-                    reject(error);
+        pull: site => axios.post(`/api/sites/${site.id}/pull`),
+        delete: ({ commit }, id) => new Promise((resolve, reject) => {
+            axios.delete(`/api/sites/${id}`).then(response => {
+                commit('removeSite', id);
+                resolve(response);
+            }).catch(error => {
+                commit('setErrors', {
+                    message: error.message,
+                    action: 'delete',
                 });
+                reject(error);
             });
-        },
+        }),
     },
     getters: {
-        all: state => {
-            return state.sites;
-        },
-        filtered: state => {
-            return state.sites.filter(site => {
-                return site.name.toLowerCase().includes(state.currentFilter.toLowerCase());
-            });
-        },
-        findById: state => id => {
-            return state.sites.find(s => s.id === id);
-        },
-        findByDocroot: state => path => {
-            return state.sites.find(s => s.document_root === path);
-        },
-        branchOptions: state => {
-            return state.branches.map(b => {
-                return { text: b, value: b };
-            });
-        },
+        all: state => state.sites,
+        filtered: state => state.sites.filter(
+            site => site.name.toLowerCase().includes(state.currentFilter.toLowerCase()),
+        ),
+        findById: state => id => state.sites.find(s => s.id === id),
+        findByDocroot: state => path => state.sites.find(s => s.project_root === path),
+        branchOptions: state => state.branches.map(b => ({ text: b, value: b })),
     },
 };

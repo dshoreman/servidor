@@ -46,10 +46,10 @@ export default {
                 };
             }
 
-            state.clean = Object.assign({}, user);
+            state.clean = { ...user };
             state.clean.groups = user.groups ? user.groups.slice(0) : [];
 
-            state.user = Object.assign({}, user);
+            state.user = { ...user };
             state.user.uid_original = user.uid;
 
             state.editing = true;
@@ -130,27 +130,19 @@ export default {
         },
     },
     getters: {
-        all: state => {
-            return state.users;
-        },
-        filtered: state => {
-            return state.users.filter(user => {
-                if (!state.showSystem && SYSTEM_UID_THRESHOLD > user.uid) {
-                    return false;
-                }
+        all: state => state.users,
+        filtered: state => state.users.filter(user => {
+            if (!state.showSystem && SYSTEM_UID_THRESHOLD > user.uid) {
+                return false;
+            }
 
-                return user.name.includes(state.currentFilter);
-            });
-        },
-        dropdown: state => {
-            return state.users.map(user => {
-                return {
-                    icon: 'user',
-                    text: `${user.uid} - ${user.name}`,
-                    value: user.uid,
-                };
-            });
-        },
+            return user.name.includes(state.currentFilter);
+        }),
+        dropdown: state => state.users.map(user => ({
+            icon: 'user',
+            text: `${user.uid} - ${user.name}`,
+            value: user.uid,
+        })),
         userIsDirty: state => {
             const now = state.user,
                 old = state.clean;

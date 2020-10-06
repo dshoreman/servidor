@@ -57,7 +57,7 @@ class SiteController extends Controller
      */
     public function pull(Site $site): JsonResponse
     {
-        $root = $site->document_root;
+        $root = $site->project_root;
         $branch = $site->source_branch;
 
         if (!$site->type || 'redirect' == $site->type) {
