@@ -14,7 +14,7 @@
         "laravel-mix": "^5.0.5",
         "lodash": "^4.17.20",
         "resolve-url-loader": "^3.1.1",
-        "sass": "^1.26.11",
+        "sass": "^1.26.12",
         "sass-loader": "^10.0.2",
         "semantic-ui-sass": "^2.4.2",
         "vue": "^2.6.12",
