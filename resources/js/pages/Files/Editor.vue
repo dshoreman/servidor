@@ -48,6 +48,8 @@ import 'codemirror/addon/scroll/simplescrollbars.css';
 import 'codemirror/addon/scroll/simplescrollbars.js';
 import 'codemirror/addon/selection/active-line.js';
 
+import 'codemirror/addon/fold/xml-fold.js';
+import 'codemirror/addon/edit/closetag.js';
 import 'codemirror/addon/edit/closebrackets.js';
 import 'codemirror/addon/edit/matchbrackets.js';
 import 'codemirror/addon/edit/trailingspace.js';
