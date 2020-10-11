@@ -46,6 +46,7 @@ import 'codemirror/theme/dracula.css';
 
 import 'codemirror/addon/scroll/simplescrollbars.css';
 import 'codemirror/addon/scroll/simplescrollbars.js';
+import 'codemirror/addon/selection/active-line.js';
 
 import PathBar from '../../components/Files/PathBar';
 import { codemirror } from 'vue-codemirror';
