@@ -13,6 +13,7 @@ export default {
             indentUnit: 4,
             tabSize: 4,
             styleActiveLine: true,
+            showTrailingSpace: true,
             lineWrapping: true,
             lineNumbers: true,
             autofocus: true,

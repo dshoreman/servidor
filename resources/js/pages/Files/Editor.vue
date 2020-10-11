@@ -50,6 +50,7 @@ import 'codemirror/addon/selection/active-line.js';
 
 import 'codemirror/addon/edit/closebrackets.js';
 import 'codemirror/addon/edit/matchbrackets.js';
+import 'codemirror/addon/edit/trailingspace.js';
 import 'codemirror/addon/comment/continuecomment.js';
 
 import PathBar from '../../components/Files/PathBar';
