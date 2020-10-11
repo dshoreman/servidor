@@ -17,6 +17,7 @@ export default {
             lineNumbers: true,
             autofocus: true,
             cursorScrollMargin: 75,
+            scrollbarStyle: 'overlay',
         },
         themes: [
             { text: '3024 Day', value: '3024-day' },

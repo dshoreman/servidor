@@ -43,6 +43,10 @@
 <script>
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/dracula.css';
+
+import 'codemirror/addon/scroll/simplescrollbars.css';
+import 'codemirror/addon/scroll/simplescrollbars.js';
+
 import PathBar from '../../components/Files/PathBar';
 import { codemirror } from 'vue-codemirror';
 import { mapGetters } from 'vuex';
