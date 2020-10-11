@@ -17,6 +17,7 @@ export default {
             lineNumbers: true,
             autofocus: true,
             matchBrackets: true,
+            autoCloseBrackets: true,
             continueComments: true,
             cursorScrollMargin: 75,
             scrollbarStyle: 'overlay',
