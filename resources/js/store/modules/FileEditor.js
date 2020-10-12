@@ -101,12 +101,10 @@ export default {
             commit('setTheme', theme);
         },
         async setMode({ commit }, value) {
-            const filename = (/.+\.(?<ext>[^.]+)$/u).exec(value);
             let mode = '';
 
-            const info = filename
-                ? CodeMirror.findModeByExtension(filename.groups.ext)
-                : CodeMirror.findModeByMIME(value);
+            const info = CodeMirror.findModeByFileName(value)
+                ?? CodeMirror.findModeByMIME(value);
 
             if (info) {
                 ({ mode } = info);
