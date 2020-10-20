@@ -1,6 +1,12 @@
 export default {
     install(vue) {
         vue.mixin({
+            created() {
+                if (null === this.currentTheme) {
+                    this.currentTheme = 'light';
+                    localStorage.setItem('theme', this.currentTheme);
+                }
+            },
             computed: {
                 darkMode() {
                     return 'dark' === this.currentTheme;
