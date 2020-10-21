@@ -8,6 +8,7 @@ import NotFound from './pages/NotFound.vue';
 import ProjectCreator from './pages/Projects/NewProject.vue';
 import ProjectIndex from './pages/Projects.vue';
 import ProjectList from './pages/Projects/ProjectList.vue';
+import ProjectViewer from './pages/Projects/ProjectViewer.vue';
 import Register from './pages/Auth/Register.vue';
 import SiteEditor from './pages/Sites/Edit.vue';
 import SiteList from './pages/Sites/List.vue';
@@ -73,6 +74,11 @@ const routes = [{
             component: ProjectCreator,
             name: 'projects.new',
             path: 'new',
+            meta: { auth: true },
+        }, {
+            component: ProjectViewer,
+            name: 'projects.view',
+            path: ':id',
             meta: { auth: true },
         }],
     }, {

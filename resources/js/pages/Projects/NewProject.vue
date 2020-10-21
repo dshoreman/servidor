@@ -29,7 +29,7 @@ export default {
     methods: {
         create() {
             this.$store.dispatch('projects/create', this.project).then(() => {
-                this.$router.push({ name: 'projects' });
+                this.$router.push({ name: 'projects.view', params: { id: this.project.name }});
             });
         },
     },

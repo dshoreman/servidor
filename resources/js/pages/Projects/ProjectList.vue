@@ -10,7 +10,9 @@
             <sui-table-row  v-for="p in projects" :key="p.name">
                 <sui-table-cell>
                     <sui-icon color="violet" name="project" />
-                    {{ p.name }}
+                    <router-link :to="{ name: 'projects.view', params: { id: p.name }}">
+                        {{ p.name }}
+                    </router-link>
                 </sui-table-cell>
             </sui-table-row>
         </sui-table>
