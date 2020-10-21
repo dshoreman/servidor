@@ -5,6 +5,9 @@ import FileEditor from './pages/Files/Editor.vue';
 import Layout from './layouts/Servidor.vue';
 import Login from './pages/Auth/Login.vue';
 import NotFound from './pages/NotFound.vue';
+import ProjectCreator from './pages/Projects/NewProject.vue';
+import ProjectIndex from './pages/Projects.vue';
+import ProjectList from './pages/Projects/ProjectList.vue';
 import Register from './pages/Auth/Register.vue';
 import SiteEditor from './pages/Sites/Edit.vue';
 import SiteList from './pages/Sites/List.vue';
@@ -57,6 +60,20 @@ const routes = [{
 
                 return { id };
             },
+        }],
+    }, {
+        path: '/projects',
+        component: ProjectIndex,
+        children: [{
+            component: ProjectList,
+            name: 'projects',
+            path: '',
+            meta: { auth: true },
+        }, {
+            component: ProjectCreator,
+            name: 'projects.new',
+            path: 'new',
+            meta: { auth: true },
         }],
     }, {
         component: Databases,
