@@ -1,19 +1,28 @@
 <template>
 
-    <sui-segment>
-        <sui-form @submit.prevent="create(project)">
+    <sui-grid>
+        <sui-grid-column :width="6">
+            <sui-step-group vertical fluid>
+                <sui-step icon="edit" active title="Name your Project" />
+            </sui-step-group>
+        </sui-grid-column>
 
-            <sui-form-field>
-                <sui-header size="small">
-                    <label>Name your Project</label>
-                </sui-header>
-                <sui-input v-model="project.name" />
-            </sui-form-field>
+        <sui-grid-column :width="10">
+            <sui-segment>
 
-            <sui-button primary content="Create project" />
+                <sui-form @submit.prevent="create(project)" v-if="step == 'name'">
+                    <sui-form-field>
+                        <sui-header size="small">
+                            <label>Name your Project</label>
+                        </sui-header>
+                        <sui-input v-model="project.name" />
+                    </sui-form-field>
+                    <sui-button primary content="Create project" />
+                </sui-form>
 
-        </sui-form>
-    </sui-segment>
+            </sui-segment>
+        </sui-grid-column>
+    </sui-grid>
 
 </template>
 
