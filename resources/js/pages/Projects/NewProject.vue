@@ -18,7 +18,7 @@
                 <sui-card-group :items-per-row="2" v-if="step == 'template'">
                     <sui-card v-for="tpl in templates" :key="tpl.name"
                               :class="!tpl.disabled && 'link ' + tpl.colour"
-                              @click="goto('name')">
+                              @click="goto('source')">
                         <sui-card-content>
                             <h3 is="sui-header">
                                 <sui-icon :name="tpl.icon" :color="tpl.colour" size="big" />
@@ -30,6 +30,44 @@
                         </sui-card-content>
                     </sui-card>
                 </sui-card-group>
+
+                <sui-form @submit.prevent="goto('domain')" v-if="step == 'source'">
+                    <sui-form-fields inline>
+                        <label>Source Provider</label>
+                        <sui-form-field>
+                            <sui-checkbox radio label="GitHub" />
+                        </sui-form-field>
+                        <sui-form-field>
+                            <sui-checkbox radio label="Bitbucket" />
+                        </sui-form-field>
+                        <sui-form-field>
+                            <sui-checkbox radio label="Custom Git URL" />
+                        </sui-form-field>
+                    </sui-form-fields>
+                    <sui-form-field v-if="provider == 'custom'">
+                        <label>Repository URL:</label>
+                        <sui-input />
+                    </sui-form-field>
+                    <sui-form-field v-else>
+                        <label>Repository:</label>
+                        <sui-input placeholder="dshoreman/servidor-test-site" />
+                    </sui-form-field>
+                    <sui-form-field>
+                        <label>Deployment Branch:</label>
+                        <sui-input placeholder="master" />
+                    </sui-form-field>
+                    <sui-button primary content="Load branches" />
+                </sui-form>
+
+                <sui-form @submit.prevent="goto('name')" v-if="step == 'domain'">
+                    <sui-form-field>
+                        <sui-header size="small">
+                            <label>Enter the primary domain name for your application</label>
+                        </sui-header>
+                        <sui-input />
+                    </sui-form-field>
+                    <sui-button primary content="Save domain" />
+                </sui-form>
 
                 <sui-form @submit.prevent="create(project)" v-if="step == 'name'">
                     <sui-form-field>
@@ -54,16 +92,27 @@ export default {
             project: {
                 name: '',
             },
+            provider: '',
             step: 'template',
             steps: [{
                 icon: 'rocket',
                 name: 'template',
-                title: 'Primary Application',
+                title: 'Project Template',
             }, {
+                disabled: true,
+                icon: 'code',
+                name: 'source',
+                title: 'Source Location',
+            }, {
+                disabled: true,
+                icon: 'globe',
+                name: 'domain',
+                title: 'Primary Domain',
+            }, {
+                disabled: true,
                 icon: 'edit',
                 name: 'name',
                 title: 'Name your Project',
-                disabled: true,
             }],
             templates: [{
                 icon: 'archive',
