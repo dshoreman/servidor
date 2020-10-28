@@ -69,15 +69,46 @@
                     <sui-button primary content="Save domain" />
                 </sui-form>
 
-                <sui-form @submit.prevent="create(project)" v-if="step == 'name'">
+                <sui-form @submit.prevent="goto('confirm')" v-if="step == 'name'">
                     <sui-form-field>
                         <sui-header size="small">
                             <label>Name your Project</label>
                         </sui-header>
                         <sui-input v-model="project.name" />
                     </sui-form-field>
-                    <sui-button primary content="Create project" />
+                    <sui-button primary content="Proceed to confirmation" />
                 </sui-form>
+
+                <sui-segment basic aligned="center" v-if="step == 'confirm'">
+                    <h3 is="sui-header">
+                        Let's get this Project started!
+                    </h3>
+                    <p>
+                        When you continue, the new project <em>"project.name"</em>
+                        will be created with a <strong>project.tpl</strong> application.
+                    </p>
+                    <p>
+                        If it's enabled, the project.tpl application will be accessible at
+                        <code>project.domain</code>.
+                    </p>
+                    <p>
+                        Code will be pulled from the <code>project.repo</code>
+                        repository on <strong>project.provider</strong>.
+                    </p>
+                    <p>
+                        The project will be configured to track the
+                        <code>project.branch</code> branch.
+                    </p>
+                    <sui-form @submit.prevent="createAndEnable(project)">
+                        <sui-button positive size="large">
+                            Create project and start application
+                        </sui-button>
+                        <sui-divider horizontal>Or</sui-divider>
+                        <sui-button primary type="button" @click="create(project)">
+                            Just save the project
+                        </sui-button>
+                    </sui-form>
+                </sui-segment>
 
             </sui-segment>
         </sui-grid-column>
@@ -113,6 +144,11 @@ export default {
                 icon: 'edit',
                 name: 'name',
                 title: 'Name your Project',
+            }, {
+                disabled: true,
+                icon: 'hourglass',
+                name: 'confirm',
+                title: 'Confirmation',
             }],
             templates: [{
                 icon: 'archive',
