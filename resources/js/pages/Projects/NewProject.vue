@@ -59,7 +59,7 @@
                     <sui-button primary content="Load branches" />
                 </sui-form>
 
-                <sui-form @submit.prevent="goto('name')" v-if="step == 'domain'">
+                <sui-form @submit.prevent="goto('confirm')" v-if="step == 'domain'">
                     <sui-form-field>
                         <sui-header size="small">
                             <label>Enter the primary domain name for your application</label>
@@ -69,23 +69,13 @@
                     <sui-button primary content="Save domain" />
                 </sui-form>
 
-                <sui-form @submit.prevent="goto('confirm')" v-if="step == 'name'">
-                    <sui-form-field>
-                        <sui-header size="small">
-                            <label>Name your Project</label>
-                        </sui-header>
-                        <sui-input v-model="project.name" />
-                    </sui-form-field>
-                    <sui-button primary content="Proceed to confirmation" />
-                </sui-form>
-
                 <sui-segment basic aligned="center" v-if="step == 'confirm'">
                     <h3 is="sui-header">
                         Let's get this Project started!
                     </h3>
                     <p>
-                        When you continue, the new project <em>"project.name"</em>
-                        will be created with a <strong>project.tpl</strong> application.
+                        When you continue, the new project will be created with a
+                        <strong>project.tpl</strong> application.
                     </p>
                     <p>
                         If it's enabled, the project.tpl application will be accessible at
@@ -100,6 +90,16 @@
                         <code>project.branch</code> branch.
                     </p>
                     <sui-form @submit.prevent="createAndEnable(project)">
+                        <sui-divider />
+                        <sui-grid textAlign="center">
+                            <sui-grid-column centered :width="11">
+                                <sui-form-field>
+                                    <label>Give your project a name:</label>
+                                    <sui-input v-model="project.name" />
+                                </sui-form-field>
+                            </sui-grid-column>
+                        </sui-grid>
+                        <sui-divider hidden />
                         <sui-button positive size="large">
                             Create project and start application
                         </sui-button>
@@ -141,12 +141,7 @@ export default {
                 title: 'Primary Domain',
             }, {
                 disabled: true,
-                icon: 'edit',
-                name: 'name',
-                title: 'Name your Project',
-            }, {
-                disabled: true,
-                icon: 'hourglass',
+                icon: 'question mark',
                 name: 'confirm',
                 title: 'Confirmation',
             }],
