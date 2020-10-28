@@ -32,6 +32,7 @@
                 </sui-card-group>
 
                 <sui-form @submit.prevent="goto('domain')" v-if="step == 'source'">
+                    <h3 is="sui-header" content="Where are the project files stored?" />
                     <sui-form-fields inline>
                         <label>Source Provider</label>
                         <sui-form-field>
@@ -56,23 +57,28 @@
                         <label>Deployment Branch:</label>
                         <sui-input placeholder="master" />
                     </sui-form-field>
-                    <sui-button primary content="Load branches" />
+                    <sui-divider hidden />
+                    <sui-button negative type="button" content="Cancel" @click="close()"
+                        icon="close" label-position="left" />
+                    <sui-button primary floated="right" content="Next"
+                        icon="right arrow" label-position="right" />
                 </sui-form>
 
                 <sui-form @submit.prevent="goto('confirm')" v-if="step == 'domain'">
+                    <h3 is="sui-header" content="Set the main entry point for your app" />
                     <sui-form-field>
-                        <sui-header size="small">
-                            <label>Enter the primary domain name for your application</label>
-                        </sui-header>
-                        <sui-input />
+                        <label>Domain name</label>
+                        <sui-input placeholder="example.com" />
                     </sui-form-field>
-                    <sui-button primary content="Save domain" />
+                    <sui-divider hidden />
+                    <sui-button negative type="button" content="Cancel" @click="close()"
+                        icon="close" label-position="left" />
+                    <sui-button primary floated="right" content="Next"
+                        icon="right arrow" label-position="right" />
                 </sui-form>
 
                 <sui-segment basic aligned="center" v-if="step == 'confirm'">
-                    <h3 is="sui-header">
-                        Let's get this Project started!
-                    </h3>
+                    <h3 is="sui-header" content="Let's get this Project started!" />
                     <p>
                         When you continue, the new project will be created with a
                         <strong>project.tpl</strong> application.
@@ -100,8 +106,8 @@
                             </sui-grid-column>
                         </sui-grid>
                         <sui-divider hidden />
-                        <sui-button positive size="large">
-                            Create project and start application
+                        <sui-button positive size="big">
+                            Save and start the application
                         </sui-button>
                         <sui-divider horizontal>Or</sui-divider>
                         <sui-button primary type="button" @click="create(project)">
@@ -188,6 +194,9 @@ export default {
             currentStep.completed = true;
             nextStep.disabled = false;
             this.step = nextStep.name;
+        },
+        close() {
+            this.$router.push({ name: 'projects' });
         },
         create() {
             this.$store.dispatch('projects/create', this.project).then(() => {
