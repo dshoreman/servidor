@@ -13,12 +13,17 @@
 
             <sui-segment v-else-if="step == 'source'">
                 <h3 is="sui-header">Where are the project files stored?</h3>
-                <source-selector :providers="providers" @selected="setAppSource" />
+                <source-selector :providers="providers"
+                    @selected="setAppSource"
+                    @cancelled="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'domain'">
                 <h3 is="sui-header">Set the main entry point for your app</h3>
-                <domain-form v-model="defaultApp.domain" @next="goto('confirm')" />
+                <domain-form
+                    v-model="defaultApp.domain"
+                    @next="goto('confirm')"
+                    @cancelled="cancel" />
             </sui-segment>
 
             <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
@@ -78,6 +83,26 @@ export default {
         },
     },
     methods: {
+        cancel() {
+            this.extraData = {
+                repository: '',
+                provider: '',
+            };
+
+            this.project = {
+                name: '',
+                applications: [ {} ],
+            };
+
+            this.steps.forEach(s => {
+                if ('template' !== s.name) {
+                    s.completed = false;
+                    s.disabled = true;
+                }
+            });
+
+            this.step = 'template';
+        },
         goto(step) {
             const currentStep = this.steps.find(s => this.step === s.name),
                 nextStep = this.steps.find(s => step === s.name);

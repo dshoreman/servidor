@@ -11,7 +11,7 @@
 
         </sui-form-field>
 
-        <step-buttons />
+        <step-buttons @cancelled="$emit('cancelled')" />
 
     </sui-form>
 </template>

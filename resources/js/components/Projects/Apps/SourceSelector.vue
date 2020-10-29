@@ -25,7 +25,7 @@
             <sui-input v-model="branch" placeholder="master" />
         </sui-form-field>
 
-        <step-buttons />
+        <step-buttons @cancelled="$emit('cancelled')" />
 
     </sui-form>
 </template>
