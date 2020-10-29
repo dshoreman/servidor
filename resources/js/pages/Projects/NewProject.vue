@@ -18,7 +18,7 @@
                 <sui-card-group :items-per-row="2" v-if="step == 'template'">
                     <sui-card v-for="tpl in templates" :key="tpl.name"
                               :class="!tpl.disabled && 'link ' + tpl.colour"
-                              @click="goto('source')">
+                              @click="setAppTemplate(tpl)">
                         <sui-card-content>
                             <h3 is="sui-header">
                                 <sui-icon :name="tpl.icon" :color="tpl.colour" size="big" />
@@ -68,7 +68,7 @@
                     <h3 is="sui-header" content="Set the main entry point for your app" />
                     <sui-form-field>
                         <label>Domain name</label>
-                        <sui-input placeholder="example.com" />
+                        <sui-input v-model="defaultApp.domain" placeholder="example.com" />
                     </sui-form-field>
                     <sui-divider hidden />
                     <sui-button negative type="button" content="Cancel" @click="close()"
@@ -81,11 +81,11 @@
                     <h3 is="sui-header" content="Let's get this Project started!" />
                     <p>
                         When you continue, the new project will be created with a
-                        <strong>project.tpl</strong> application.
+                        <strong>{{ defaultApp.template }}</strong> application.
                     </p>
                     <p>
-                        If it's enabled, the project.tpl application will be accessible at
-                        <code>project.domain</code>.
+                        If it's enabled, the {{ defaultApp.template }} application
+                        will be accessible at <code>{{ defaultApp.domain }}</code>.
                     </p>
                     <p>
                         Code will be pulled from the <code>project.repo</code>
@@ -128,6 +128,7 @@ export default {
         return {
             project: {
                 name: '',
+                applications: [],
             },
             provider: '',
             step: 'template',
@@ -186,6 +187,11 @@ export default {
             }],
         };
     },
+    computed: {
+        defaultApp() {
+            return this.project.applications[0];
+        },
+    },
     methods: {
         goto(step) {
             const currentStep = this.steps.find(s => this.step === s.name),
@@ -194,6 +200,14 @@ export default {
             currentStep.completed = true;
             nextStep.disabled = false;
             this.step = nextStep.name;
+        },
+        setAppTemplate(tpl) {
+            this.project.applications.push({
+                template: tpl.name,
+                domain: '',
+            });
+
+            this.goto('source');
         },
         close() {
             this.$router.push({ name: 'projects' });
