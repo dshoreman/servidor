@@ -23,7 +23,7 @@
                 <h3 is="sui-header">Set the main entry point for your app</h3>
                 <domain-form
                     v-model="defaultApp.domain"
-                    @next="goto('confirm')"
+                    @next="nextStep('domain')"
                     @cancelled="cancel" />
             </sui-segment>
 
@@ -84,6 +84,9 @@ export default {
                 Vue.set(this.project.applications, 0, data);
             },
         },
+        template() {
+            return this.templates.find(t => t.name === this.defaultApp.template);
+        },
     },
     methods: {
         cancel() {
@@ -94,7 +97,7 @@ export default {
 
             this.project = {
                 name: '',
-                applications: [ {} ],
+                applications: [],
             };
 
             this.steps.forEach(s => {
@@ -114,13 +117,20 @@ export default {
             nextStep.disabled = false;
             this.step = nextStep.name;
         },
+        nextStep(from) {
+            const step = this.template.steps.findIndex(s => s === from);
+
+            this.goto(this.template.steps[step + 1]);
+        },
         setAppTemplate(tpl) {
+            const [ firstStep ] = tpl.steps;
+
             this.project.applications.push({
                 template: tpl.name,
                 domain: '',
             });
 
-            this.goto('source');
+            this.goto(firstStep);
         },
         setAppSource(source) {
             this.defaultApp = {
@@ -134,7 +144,7 @@ export default {
                 repository: source.repoName,
             };
 
-            this.goto('domain');
+            this.nextStep('source');
         },
         create() {
             this.$store.dispatch('projects/create', this.project).then(() => {
