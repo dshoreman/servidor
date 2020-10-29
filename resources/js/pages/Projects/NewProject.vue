@@ -44,61 +44,33 @@
                 <domain-form v-model="defaultApp.domain" @next="goto('confirm')" />
             </sui-segment>
 
-            <sui-segment v-else-if="step == 'confirm'">
-                <sui-segment basic aligned="center">
-                    <h3 is="sui-header" content="Let's get this Project started!" />
-                    <p>
-                        When you continue, the new project will be created with a
-                        <strong>{{ defaultApp.template }}</strong> application.
-                    </p>
-                    <p>
-                        Code will be pulled from the <code>{{ source.repo }}</code>
-                        repository on <strong>{{ source.host }}</strong> using:<br>
-                        <strong>{{ defaultApp.source_repo }}</strong>.
-                    </p>
-                    <p>
-                        If it's enabled, the {{ defaultApp.template }} application
-                        will be accessible at <code>{{ defaultApp.domain }}</code>.
-                    </p>
-                    <p>
-                        The project will be configured to track the
-                        <code>{{ defaultApp.source_branch }}</code> branch.
-                    </p>
-                    <sui-form @submit.prevent="createAndEnable(project)">
-                        <sui-divider />
-                        <sui-grid textAlign="center">
-                            <sui-grid-column centered :width="11">
-                                <sui-form-field>
-                                    <label>Give your project a name:</label>
-                                    <sui-input v-model="project.name" />
-                                </sui-form-field>
-                            </sui-grid-column>
-                        </sui-grid>
-                        <sui-divider hidden />
-                        <sui-button positive size="big">
-                            Save and start the application
-                        </sui-button>
-                        <sui-divider horizontal>Or</sui-divider>
-                        <sui-button primary type="button" @click="create(project)">
-                            Just save the project
-                        </sui-button>
-                    </sui-form>
-                </sui-segment>
-
+            <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
+                <h3 is="sui-header">Let's get this Project started!</h3>
+                <confirmation-text :app="defaultApp" :source="source" />
+                <confirmation-form v-model="project.name"
+                    @enabled="createAndEnable"
+                    @created="create" />
             </sui-segment>
+
         </sui-grid-column>
     </sui-grid>
 
 </template>
 
 <script>
+import ConfirmationForm from '../../components/Projects/ConfirmationForm';
+import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DomainForm from '../../components/Projects/Apps/DomainForm';
 import StepButtons from '../../components/Projects/StepButtons';
 import StepList from '../../components/Projects/StepList';
 import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
+import providers from './source-providers.json';
+import steps from './steps.json';
 
 export default {
     components: {
+        ConfirmationForm,
+        ConfirmationText,
         DomainForm,
         StepButtons,
         StepList,
@@ -116,39 +88,9 @@ export default {
                 repo: '',
                 url: '',
             },
-            sources: [{
-                name: 'github',
-                text: 'GitHub',
-                urlFormat: 'https://github.com/%REPO%.git',
-            }, {
-                name: 'bitbucket',
-                text: 'BitBucket',
-                urlFormat: 'https://bitbucket.org/%REPO%.git',
-            }, {
-                name: 'custom',
-                text: 'Custom Git URL',
-            }],
+            sources: providers,
             step: 'template',
-            steps: [{
-                icon: 'rocket',
-                name: 'template',
-                title: 'Project Template',
-            }, {
-                disabled: true,
-                icon: 'code',
-                name: 'source',
-                title: 'Source Location',
-            }, {
-                disabled: true,
-                icon: 'globe',
-                name: 'domain',
-                title: 'Primary Domain',
-            }, {
-                disabled: true,
-                icon: 'question mark',
-                name: 'confirm',
-                title: 'Confirmation',
-            }],
+            steps,
         };
     },
     computed: {
@@ -198,6 +140,9 @@ export default {
             this.$store.dispatch('projects/create', this.project).then(() => {
                 this.$router.push({ name: 'projects.view', params: { id: this.project.name }});
             });
+        },
+        createAndEnable() {
+            this.create();
         },
     },
 };

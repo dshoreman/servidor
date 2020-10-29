@@ -1,0 +1,20 @@
+[{
+  "icon": "rocket",
+  "name": "template",
+  "title": "Project Template"
+}, {
+  "disabled": true,
+  "icon": "code",
+  "name": "source",
+  "title": "Source Location"
+}, {
+  "disabled": true,
+  "icon": "globe",
+  "name": "domain",
+  "title": "Primary Domain"
+}, {
+  "disabled": true,
+  "icon": "question mark",
+  "name": "confirm",
+  "title": "Confirmation"
+}]
