@@ -6,28 +6,14 @@
         </sui-grid-column>
 
         <sui-grid-column :width="10">
-            <sui-segment>
 
-                <h3 is="sui-header" v-if="step == 'template'">
-                    First pick a template to get started
-                </h3>
-                <sui-card-group :items-per-row="2" v-if="step == 'template'">
-                    <sui-card v-for="tpl in templates" :key="tpl.name"
-                              :class="!tpl.disabled && 'link ' + tpl.colour"
-                              @click="setAppTemplate(tpl)">
-                        <sui-card-content>
-                            <h3 is="sui-header">
-                                <sui-icon :name="tpl.icon" :color="tpl.colour" size="big" />
-                                <sui-header-content>
-                                    {{ tpl.name }}
-                                    <sui-header-subheader>{{ tpl.text }}</sui-header-subheader>
-                                </sui-header-content>
-                            </h3>
-                        </sui-card-content>
-                    </sui-card>
-                </sui-card-group>
+            <sui-segment v-if="step == 'template'">
+                <h3 is="sui-header">First pick a template to get started</h3>
+                <template-selector @selected="setAppTemplate" />
+            </sui-segment>
 
-                <sui-form @submit.prevent="setAppSource()" v-if="step == 'source'">
+            <sui-segment v-else-if="step == 'source'">
+                <sui-form @submit.prevent="setAppSource()">
                     <h3 is="sui-header" content="Where are the project files stored?" />
                     <sui-form-fields inline>
                         <label>Source Provider</label>
@@ -51,17 +37,15 @@
                     </sui-form-field>
                     <step-buttons />
                 </sui-form>
+            </sui-segment>
 
-                <sui-form @submit.prevent="goto('confirm')" v-if="step == 'domain'">
-                    <h3 is="sui-header" content="Set the main entry point for your app" />
-                    <sui-form-field>
-                        <label>Domain name</label>
-                        <sui-input v-model="defaultApp.domain" placeholder="example.com" />
-                    </sui-form-field>
-                    <step-buttons />
-                </sui-form>
+            <sui-segment v-else-if="step == 'domain'">
+                <h3 is="sui-header">Set the main entry point for your app</h3>
+                <domain-form v-model="defaultApp.domain" @next="goto('confirm')" />
+            </sui-segment>
 
-                <sui-segment basic aligned="center" v-if="step == 'confirm'">
+            <sui-segment v-else-if="step == 'confirm'">
+                <sui-segment basic aligned="center">
                     <h3 is="sui-header" content="Let's get this Project started!" />
                     <p>
                         When you continue, the new project will be created with a
@@ -108,13 +92,17 @@
 </template>
 
 <script>
+import DomainForm from '../../components/Projects/Apps/DomainForm';
 import StepButtons from '../../components/Projects/StepButtons';
 import StepList from '../../components/Projects/StepList';
+import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
 
 export default {
     components: {
+        DomainForm,
         StepButtons,
         StepList,
+        TemplateSelector,
     },
     data() {
         return {
@@ -160,39 +148,6 @@ export default {
                 icon: 'question mark',
                 name: 'confirm',
                 title: 'Confirmation',
-            }],
-            templates: [{
-                icon: 'archive',
-                colour: 'brown',
-                disabled: true,
-                name: 'Archive',
-                text: 'Redirect all requests on a domain to an archived copy on Wayback Machine.',
-            }, {
-                icon: 'question mark',
-                colour: 'grey',
-                name: 'Clean Slate',
-                text: "Don't setup an application component for now, just create an empty project.",
-            }, {
-                icon: 'docker',
-                colour: 'blue',
-                disabled: true,
-                name: 'Docker',
-                text: 'Install and configure a docker container to run automatically on system boot.',
-            }, {
-                icon: 'html5',
-                colour: 'orange',
-                name: 'HTML',
-                text: 'Configure nginx to serve static content such as HTML, CSS and Javascript.',
-            }, {
-                icon: 'php',
-                colour: 'violet',
-                name: 'PHP',
-                text: 'Like HTML projects, but with added support for dynamic PHP content.',
-            }, {
-                icon: 'laravel',
-                colour: 'red',
-                name: 'Laravel',
-                text: 'Modified PHP project with hooks for artisan migrations and composer/npm.',
             }],
         };
     },
