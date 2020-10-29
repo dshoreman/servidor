@@ -8,7 +8,8 @@
 
             <sui-segment v-if="step == 'template'">
                 <h3 is="sui-header">First pick a template to get started</h3>
-                <template-selector @selected="setAppTemplate" />
+                <template-selector :templates="templates"
+                    @selected="setAppTemplate" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'source'">
@@ -47,6 +48,7 @@ import StepList from '../../components/Projects/StepList';
 import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
 import providers from './source-providers.json';
 import steps from './steps.json';
+import templates from './templates.json';
 
 export default {
     components: {
@@ -70,6 +72,7 @@ export default {
             providers,
             step: 'template',
             steps,
+            templates,
         };
     },
     computed: {
