@@ -31,31 +31,27 @@
                     </sui-card>
                 </sui-card-group>
 
-                <sui-form @submit.prevent="goto('domain')" v-if="step == 'source'">
+                <sui-form @submit.prevent="setAppSource()" v-if="step == 'source'">
                     <h3 is="sui-header" content="Where are the project files stored?" />
                     <sui-form-fields inline>
                         <label>Source Provider</label>
-                        <sui-form-field>
-                            <sui-checkbox radio label="GitHub" />
-                        </sui-form-field>
-                        <sui-form-field>
-                            <sui-checkbox radio label="Bitbucket" />
-                        </sui-form-field>
-                        <sui-form-field>
-                            <sui-checkbox radio label="Custom Git URL" />
+                        <sui-form-field v-for="host in sources" :key="host.name">
+                            <sui-checkbox radio v-model="source.host"
+                                :value="host.name" :label="host.text" />
                         </sui-form-field>
                     </sui-form-fields>
-                    <sui-form-field v-if="provider == 'custom'">
+                    <sui-form-field v-if="source.host == 'custom'">
                         <label>Repository URL:</label>
-                        <sui-input />
+                        <sui-input v-model="source.url" />
                     </sui-form-field>
                     <sui-form-field v-else>
                         <label>Repository:</label>
-                        <sui-input placeholder="dshoreman/servidor-test-site" />
+                        <sui-input placeholder="dshoreman/servidor-test-site"
+                            v-model="source.repo" />
                     </sui-form-field>
                     <sui-form-field>
                         <label>Deployment Branch:</label>
-                        <sui-input placeholder="master" />
+                        <sui-input v-model="source.branch" placeholder="master" />
                     </sui-form-field>
                     <sui-divider hidden />
                     <sui-button negative type="button" content="Cancel" @click="close()"
@@ -84,16 +80,17 @@
                         <strong>{{ defaultApp.template }}</strong> application.
                     </p>
                     <p>
+                        Code will be pulled from the <code>{{ source.repo }}</code>
+                        repository on <strong>{{ source.host }}</strong> using:<br>
+                        <strong>{{ defaultApp.source_repo }}</strong>.
+                    </p>
+                    <p>
                         If it's enabled, the {{ defaultApp.template }} application
                         will be accessible at <code>{{ defaultApp.domain }}</code>.
                     </p>
                     <p>
-                        Code will be pulled from the <code>project.repo</code>
-                        repository on <strong>project.provider</strong>.
-                    </p>
-                    <p>
                         The project will be configured to track the
-                        <code>project.branch</code> branch.
+                        <code>{{ defaultApp.source_branch }}</code> branch.
                     </p>
                     <sui-form @submit.prevent="createAndEnable(project)">
                         <sui-divider />
@@ -130,7 +127,24 @@ export default {
                 name: '',
                 applications: [],
             },
-            provider: '',
+            source: {
+                host: 'github',
+                branch: '',
+                repo: '',
+                url: '',
+            },
+            sources: [{
+                name: 'github',
+                text: 'GitHub',
+                urlFormat: 'https://github.com/%REPO%.git',
+            }, {
+                name: 'bitbucket',
+                text: 'BitBucket',
+                urlFormat: 'https://bitbucket.org/%REPO%.git',
+            }, {
+                name: 'custom',
+                text: 'Custom Git URL',
+            }],
             step: 'template',
             steps: [{
                 icon: 'rocket',
@@ -188,8 +202,13 @@ export default {
         };
     },
     computed: {
-        defaultApp() {
-            return this.project.applications[0];
+        defaultApp: {
+            get() {
+                return this.project.applications[0];
+            },
+            set(data) {
+                Vue.set(this.project.applications, 0, data);
+            },
         },
     },
     methods: {
@@ -208,6 +227,22 @@ export default {
             });
 
             this.goto('source');
+        },
+        setAppSource() {
+            const sourceHost = this.sources.find(s => s.name === this.source.host);
+            let { url } = this.source;
+
+            if ('urlFormat' in sourceHost) {
+                url = sourceHost.urlFormat.replace('%REPO%', this.source.repo);
+            }
+
+            this.defaultApp = {
+                ...this.defaultApp,
+                source_repo: url,
+                source_branch: this.source.branch,
+            };
+
+            this.goto('domain');
         },
         close() {
             this.$router.push({ name: 'projects' });
