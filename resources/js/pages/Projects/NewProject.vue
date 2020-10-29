@@ -2,11 +2,7 @@
 
     <sui-grid>
         <sui-grid-column :width="6">
-            <sui-step-group vertical fluid>
-                <sui-step v-for="s in steps" :key="s.title" :icon="s.icon"
-                          :active="step == s.name" :completed="s.completed"
-                          :title="s.title" :disabled="s.disabled" />
-            </sui-step-group>
+            <step-list :selected="step" :steps="steps" />
         </sui-grid-column>
 
         <sui-grid-column :width="10">
@@ -53,11 +49,7 @@
                         <label>Deployment Branch:</label>
                         <sui-input v-model="source.branch" placeholder="master" />
                     </sui-form-field>
-                    <sui-divider hidden />
-                    <sui-button negative type="button" content="Cancel" @click="close()"
-                        icon="close" label-position="left" />
-                    <sui-button primary floated="right" content="Next"
-                        icon="right arrow" label-position="right" />
+                    <step-buttons />
                 </sui-form>
 
                 <sui-form @submit.prevent="goto('confirm')" v-if="step == 'domain'">
@@ -66,11 +58,7 @@
                         <label>Domain name</label>
                         <sui-input v-model="defaultApp.domain" placeholder="example.com" />
                     </sui-form-field>
-                    <sui-divider hidden />
-                    <sui-button negative type="button" content="Cancel" @click="close()"
-                        icon="close" label-position="left" />
-                    <sui-button primary floated="right" content="Next"
-                        icon="right arrow" label-position="right" />
+                    <step-buttons />
                 </sui-form>
 
                 <sui-segment basic aligned="center" v-if="step == 'confirm'">
@@ -120,7 +108,14 @@
 </template>
 
 <script>
+import StepButtons from '../../components/Projects/StepButtons';
+import StepList from '../../components/Projects/StepList';
+
 export default {
+    components: {
+        StepButtons,
+        StepList,
+    },
     data() {
         return {
             project: {
@@ -243,9 +238,6 @@ export default {
             };
 
             this.goto('domain');
-        },
-        close() {
-            this.$router.push({ name: 'projects' });
         },
         create() {
             this.$store.dispatch('projects/create', this.project).then(() => {
