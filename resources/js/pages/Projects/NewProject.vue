@@ -1,5 +1,4 @@
 <template>
-
     <sui-grid>
         <sui-grid-column :width="6">
             <step-list :selected="step" :steps="steps" />
@@ -13,30 +12,8 @@
             </sui-segment>
 
             <sui-segment v-else-if="step == 'source'">
-                <sui-form @submit.prevent="setAppSource()">
-                    <h3 is="sui-header" content="Where are the project files stored?" />
-                    <sui-form-fields inline>
-                        <label>Source Provider</label>
-                        <sui-form-field v-for="host in sources" :key="host.name">
-                            <sui-checkbox radio v-model="source.host"
-                                :value="host.name" :label="host.text" />
-                        </sui-form-field>
-                    </sui-form-fields>
-                    <sui-form-field v-if="source.host == 'custom'">
-                        <label>Repository URL:</label>
-                        <sui-input v-model="source.url" />
-                    </sui-form-field>
-                    <sui-form-field v-else>
-                        <label>Repository:</label>
-                        <sui-input placeholder="dshoreman/servidor-test-site"
-                            v-model="source.repo" />
-                    </sui-form-field>
-                    <sui-form-field>
-                        <label>Deployment Branch:</label>
-                        <sui-input v-model="source.branch" placeholder="master" />
-                    </sui-form-field>
-                    <step-buttons />
-                </sui-form>
+                <h3 is="sui-header">Where are the project files stored?</h3>
+                <source-selector :providers="providers" @selected="setAppSource" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'domain'">
@@ -46,7 +23,7 @@
 
             <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
                 <h3 is="sui-header">Let's get this Project started!</h3>
-                <confirmation-text :app="defaultApp" :source="source" />
+                <confirmation-text :app="defaultApp" :source="extraData" />
                 <confirmation-form v-model="project.name"
                     @enabled="createAndEnable"
                     @created="create" />
@@ -54,14 +31,13 @@
 
         </sui-grid-column>
     </sui-grid>
-
 </template>
 
 <script>
 import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DomainForm from '../../components/Projects/Apps/DomainForm';
-import StepButtons from '../../components/Projects/StepButtons';
+import SourceSelector from '../../components/Projects/Apps/SourceSelector';
 import StepList from '../../components/Projects/StepList';
 import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
 import providers from './source-providers.json';
@@ -72,23 +48,21 @@ export default {
         ConfirmationForm,
         ConfirmationText,
         DomainForm,
-        StepButtons,
         StepList,
+        SourceSelector,
         TemplateSelector,
     },
     data() {
         return {
+            extraData: {
+                repository: '',
+                provider: '',
+            },
             project: {
                 name: '',
                 applications: [],
             },
-            source: {
-                host: 'github',
-                branch: '',
-                repo: '',
-                url: '',
-            },
-            sources: providers,
+            providers,
             step: 'template',
             steps,
         };
@@ -120,18 +94,16 @@ export default {
 
             this.goto('source');
         },
-        setAppSource() {
-            const sourceHost = this.sources.find(s => s.name === this.source.host);
-            let { url } = this.source;
-
-            if ('urlFormat' in sourceHost) {
-                url = sourceHost.urlFormat.replace('%REPO%', this.source.repo);
-            }
-
+        setAppSource(source) {
             this.defaultApp = {
                 ...this.defaultApp,
-                source_repo: url,
-                source_branch: this.source.branch,
+                repository: source.repository,
+                branch: source.branch,
+            };
+
+            this.extraData = {
+                provider: source.provider,
+                repository: source.repoName,
             };
 
             this.goto('domain');
