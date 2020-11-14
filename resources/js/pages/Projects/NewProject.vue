@@ -16,7 +16,7 @@
                 <h3 is="sui-header">Where are the project files stored?</h3>
                 <source-selector :providers="providers"
                     @selected="setAppSource"
-                    @cancelled="cancel" />
+                    @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'domain'">
@@ -24,7 +24,7 @@
                 <domain-form
                     v-model="defaultApp.domain"
                     @next="nextStep('domain')"
-                    @cancelled="cancel" />
+                    @cancel="cancel" />
             </sui-segment>
 
             <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
@@ -36,12 +36,15 @@
             </sui-segment>
 
         </sui-grid-column>
+
+        <discard-prompt ref="discardProject" @leavebypass="bypassLeaveHandler = true" />
     </sui-grid>
 </template>
 
 <script>
 import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
+import DiscardPrompt from '../../components/Projects/DiscardPrompt.vue';
 import DomainForm from '../../components/Projects/Apps/DomainForm';
 import SourceSelector from '../../components/Projects/Apps/SourceSelector';
 import StepList from '../../components/Projects/StepList';
@@ -54,6 +57,7 @@ export default {
     components: {
         ConfirmationForm,
         ConfirmationText,
+        DiscardPrompt,
         DomainForm,
         StepList,
         SourceSelector,
@@ -61,6 +65,7 @@ export default {
     },
     data() {
         return {
+            bypassLeaveHandler: false,
             extraData: {
                 repository: '',
                 provider: '',
@@ -74,6 +79,17 @@ export default {
             steps,
             templates,
         };
+    },
+    beforeRouteLeave(to, from, next) {
+        if (this.bypassLeaveHandler) {
+            this.bypassLeaveHandler = false;
+            next();
+        } else {
+            this.$refs.discardProject.prompt(() => {
+                this.discard();
+                next();
+            }, () => next(false));
+        }
     },
     computed: {
         defaultApp: {
@@ -90,6 +106,11 @@ export default {
     },
     methods: {
         cancel() {
+            this.$refs.discardProject.prompt(this.discard, () => {
+                this.$refs.discardProject.hide();
+            }, 'projects');
+        },
+        discard() {
             this.extraData = {
                 repository: '',
                 provider: '',
