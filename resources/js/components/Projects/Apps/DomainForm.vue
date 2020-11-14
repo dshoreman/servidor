@@ -6,7 +6,7 @@
             <label>Domain name</label>
 
             <sui-input :value="value"
-                placeholder="example.com"
+                placeholder="example.com" required
                 @input="$emit('input', $event)" />
 
         </sui-form-field>

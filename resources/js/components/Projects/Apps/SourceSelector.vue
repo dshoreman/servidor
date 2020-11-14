@@ -4,25 +4,25 @@
         <sui-form-fields inline>
             <label>Source Provider</label>
             <sui-form-field v-for="p in providers" :key="p.name">
-                <sui-checkbox radio v-model="provider"
+                <sui-checkbox radio v-model="provider" required
                     :value="p.name" :label="p.text" />
             </sui-form-field>
         </sui-form-fields>
 
         <sui-form-field v-if="provider == 'custom'">
             <label>Repository URL:</label>
-            <sui-input v-model="url" />
+            <sui-input v-model="url" required />
         </sui-form-field>
 
         <sui-form-field v-else>
             <label>Repository:</label>
             <sui-input placeholder="dshoreman/servidor-test-site"
-                v-model="repository" />
+                v-model="repository" required />
         </sui-form-field>
 
         <sui-form-field>
             <label>Deployment Branch:</label>
-            <sui-input v-model="branch" placeholder="master" />
+            <sui-input v-model="branch" placeholder="master" required />
         </sui-form-field>
 
         <step-buttons @cancelled="$emit('cancelled')" />
