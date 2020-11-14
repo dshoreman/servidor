@@ -1,4 +1,3 @@
-import Dashboard from './pages/Dashboard.vue';
 import Databases from './pages/Databases.vue';
 import FileBrowser from './pages/Files/Browser.vue';
 import FileEditor from './pages/Files/Editor.vue';
@@ -21,9 +20,9 @@ const routes = [{
     path: '/',
     component: Layout,
     children: [{
-        component: Dashboard,
         name: 'dashboard',
         path: '/',
+        redirect: 'projects',
         meta: { auth: true },
     }, {
         path: '/apps',
