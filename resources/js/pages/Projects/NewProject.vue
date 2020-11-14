@@ -151,6 +151,12 @@ export default {
                 domain: '',
             });
 
+            this.steps.forEach(s => {
+                if (tpl.steps.includes(s.name)) {
+                    s.disabled = false;
+                }
+            });
+
             this.goto(firstStep);
         },
         setAppSource(source) {
