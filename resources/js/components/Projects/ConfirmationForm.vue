@@ -16,21 +16,26 @@
 
         <sui-divider hidden />
 
-        <sui-button positive size="big">
-            Save and start the application
+        <sui-button positive size="big" v-if="template == 'Clean Slate'">
+            Create Project
         </sui-button>
+        <div v-else>
+            <sui-button positive size="big">
+                Save and start the {{ template }} application
+            </sui-button>
 
-        <sui-divider horizontal>Or</sui-divider>
+            <sui-divider horizontal>Or</sui-divider>
 
-        <sui-button primary type="button"
-                    content="Just save the project"
-                    @click="$emit('create')" />
+            <sui-button primary type="button"
+                        content="Just save the project"
+                        @click="$emit('create')" />
+        </div>
     </sui-form>
 
 </template>
 
 <script>
 export default {
-    props: [ 'value' ],
+    props: ['template', 'value'],
 };
 </script>

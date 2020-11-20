@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="app.template != 'Clean Slate'">>
         <p>
             When you continue, the new project will be created with a
             <strong>{{ app.template }}</strong> application.

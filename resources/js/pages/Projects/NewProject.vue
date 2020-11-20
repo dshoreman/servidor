@@ -31,6 +31,7 @@
                 <h3 is="sui-header">Let's get this Project started!</h3>
                 <confirmation-text :app="defaultApp" :source="extraData" />
                 <confirmation-form v-model="project.name"
+                    :template="defaultApp.template"
                     @enabled="createAndEnable"
                     @created="create" />
             </sui-segment>
