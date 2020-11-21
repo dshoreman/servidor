@@ -10,9 +10,12 @@ export default {
         },
     },
     actions: {
-        create: ({ commit }, project) => {
-            commit('addNewProject', project);
-        },
+        create: ({ commit }, project) => new Promise((resolve, reject) => {
+            axios.post('/api/projects', project).then(response => {
+                commit('addNewProject', response.data);
+                resolve(response);
+            }).catch(error => reject(error));
+        }),
     },
     getters: {
         all: state => state.projects,

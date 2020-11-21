@@ -14,6 +14,10 @@ Route::middleware('auth:api')->group(function (): void {
     Route::post('sites/{site}/pull', 'SiteController@pull');
     Route::get('sites/{site}/logs/{log}', 'SiteController@showLog');
 
+    Route::name('projects.')->prefix('/projects')->group(function (): void {
+        Route::post('/', Projects\CreateProject::class);
+    });
+
     Route::resource('databases', 'DatabaseController', [
         'only' => ['index', 'store'],
     ]);
