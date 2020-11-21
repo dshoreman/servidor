@@ -79,6 +79,15 @@ const routes = [{
             name: 'projects.view',
             path: ':id',
             meta: { auth: true },
+            props: route => {
+                const id = parseInt(route.params.id);
+
+                if (Number.isNaN(id) || 0 > id) {
+                    return { id: 0 };
+                }
+
+                return { id };
+            },
         }],
     }, {
         component: Databases,

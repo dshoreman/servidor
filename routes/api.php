@@ -15,6 +15,7 @@ Route::middleware('auth:api')->group(function (): void {
     Route::get('sites/{site}/logs/{log}', 'SiteController@showLog');
 
     Route::name('projects.')->prefix('/projects')->group(function (): void {
+        Route::get('/', Projects\ListProjects::class);
         Route::post('/', Projects\CreateProject::class);
     });
 

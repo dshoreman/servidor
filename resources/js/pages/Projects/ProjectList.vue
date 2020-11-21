@@ -7,10 +7,10 @@
                      content="New Project" />
 
         <sui-table selectable>
-            <sui-table-row  v-for="p in projects" :key="p.name">
+            <sui-table-row  v-for="p in projects" :key="p.id">
                 <sui-table-cell>
                     <sui-icon color="violet" name="project" />
-                    <router-link :to="{ name: 'projects.view', params: { id: p.name }}">
+                    <router-link :to="{ name: 'projects.view', params: { id: p.id }}">
                         {{ p.name }}
                     </router-link>
                 </sui-table-cell>
@@ -35,6 +35,9 @@
 
 <script>
 export default {
+    mounted() {
+        this.$store.dispatch('projects/load');
+    },
     props: {
         projects: Array,
     },
