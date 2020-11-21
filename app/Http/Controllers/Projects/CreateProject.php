@@ -22,6 +22,7 @@ class CreateProject extends Controller
             return [
                 'template' => $app['template'],
                 'domain_name' => $app['domain'],
+                'source_provider' => $app['provider'],
                 'source_repository' => $app['repository'],
                 'source_branch' => $app['branch'],
             ];

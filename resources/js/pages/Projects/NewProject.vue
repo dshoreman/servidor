@@ -114,7 +114,6 @@ export default {
         discard() {
             this.extraData = {
                 repository: '',
-                provider: '',
             };
 
             this.project = {
@@ -149,6 +148,7 @@ export default {
 
             this.project.applications.push({
                 template: tpl.name,
+                provider: 'github',
                 domain: '',
             });
 
@@ -161,16 +161,10 @@ export default {
             this.goto(firstStep);
         },
         setAppSource(source) {
-            this.defaultApp = {
-                ...this.defaultApp,
-                repository: source.repository,
-                branch: source.branch,
-            };
+            const { branch, provider, repository, repoUri } = source;
 
-            this.extraData = {
-                provider: source.provider,
-                repository: source.repoName,
-            };
+            this.defaultApp = { ...this.defaultApp, repository, provider, branch };
+            this.extraData = { repoUri };
 
             this.nextStep('source');
         },

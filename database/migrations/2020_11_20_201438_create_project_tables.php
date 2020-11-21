@@ -20,6 +20,7 @@ class CreateProjectTables extends Migration
             $table->unsignedBigInteger('project_id');
             $table->string('template');
             $table->string('domain_name');
+            $table->string('source_provider');
             $table->string('source_repository');
             $table->string('source_branch');
             $table->timestamps();

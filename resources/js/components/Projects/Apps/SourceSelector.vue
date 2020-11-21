@@ -48,17 +48,16 @@ export default {
     },
     methods: {
         submit() {
-            let { repository } = this;
+            let repoUri = this.repository;
 
             const providerOpts = this.providers.find(p => p.name === this.provider),
-                { branch, provider } = this,
-                repoName = repository;
+                { repository, branch, provider } = this;
 
             if ('urlFormat' in providerOpts) {
-                repository = providerOpts.urlFormat.replace('%REPO%', repository);
+                repoUri = providerOpts.urlFormat.replace('%REPO%', repository);
             }
 
-            this.$emit('selected', { branch, provider, repository, repoName });
+            this.$emit('selected', { branch, provider, repository, repoUri });
         },
     },
 };
