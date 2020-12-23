@@ -17,6 +17,7 @@ Route::middleware('auth:api')->group(function (): void {
     Route::name('projects.')->prefix('/projects')->group(function (): void {
         Route::get('/', Projects\ListProjects::class);
         Route::post('/', Projects\CreateProject::class);
+        Route::get('{project}/logs/{log}.app-{app}.log', Projects\Applications\ViewLog::class);
     });
 
     Route::resource('databases', 'DatabaseController', [

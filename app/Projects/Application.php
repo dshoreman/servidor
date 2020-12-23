@@ -3,6 +3,7 @@
 namespace Servidor\Projects;
 
 use Illuminate\Database\Eloquent\Model;
+use Str;
 
 class Application extends Model
 {
@@ -12,6 +13,7 @@ class Application extends Model
     ];
 
     protected $appends = [
+        'logs',
         'source_uri',
     ];
 
@@ -25,9 +27,27 @@ class Application extends Model
 
     protected $table = 'project_applications';
 
+    public function getLogsAttribute(): array
+    {
+        return $this->template()->getLogPaths();
+    }
+
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function readLog(string $log): string
+    {
+        $path = $this->logs[$log]['path'];
+
+        if (!Str::startsWith($path, '/')) {
+            $path = $this->project_root . '/' . $path;
+        }
+
+        exec('sudo cat ' . escapeshellarg($path), $file);
+
+        return implode("\n", $file);
     }
 
     public function getSourceUriAttribute(): string
@@ -40,5 +60,12 @@ class Application extends Model
         }
 
         return $repo;
+    }
+
+    public function template()
+    {
+        $template = 'Servidor\Projects\Applications\Templates\\' . $this->attributes['template'];
+
+        return new $template();
     }
 }

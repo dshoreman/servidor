@@ -67,6 +67,19 @@
                                 </sui-header-subheader>
                             </sui-header>
                         </sui-segment>
+
+                        <sui-header v-if="app.logs.length" attached="top" :inverted="darkMode">
+                            Project Logs
+                        </sui-header>
+                        <sui-segment attached :inverted="darkMode" v-if="app.logs.length">
+                            <sui-menu pointing secondary :inverted="darkMode">
+                                <a is="sui-menu-item" v-for="(log, key) in app.logs" :key="key"
+                                    :active="activeLog === key" :content="log.title"
+                                    @click="viewLog(app.id, key)" />
+                            </sui-menu>
+                            <pre>{{ logContent }}</pre>
+                        </sui-segment>
+
                     </div>
                 </sui-grid-column>
             </sui-grid-row>
@@ -82,7 +95,9 @@ import templates from './templates.json';
 export default {
     mounted() {
         if (!this.$store.getters['projects/all'].length) {
-            this.$store.dispatch('projects/load');
+            this.$store.dispatch('projects/load').then(() => {
+                this.initLog();
+            });
         }
     },
     props: {
@@ -90,6 +105,12 @@ export default {
             type: Number,
             default: 0,
         },
+    },
+    data() {
+        return {
+            activeLog: '',
+            logContent: '',
+        };
     },
     computed: {
         appIcon() {
@@ -102,6 +123,32 @@ export default {
         },
         project() {
             return this.$store.getters['projects/find'](this.id);
+        },
+    },
+    methods: {
+        initLog() {
+            const [ app ] = this.project.applications;
+
+            if (app.logs.length) {
+                this.viewLog(app.id, 0);
+            } else {
+                this.logContent = '';
+                this.activeLog = '';
+            }
+        },
+        viewLog(appId, key) {
+            this.logContent = 'Loading...';
+            this.activeLog = key;
+
+            axios
+                .get(`/api/projects/${this.project.id}/logs/${this.activeLog}.app-${appId}.log`)
+                .then(response => {
+                    this.logContent = '' === response.data.trim()
+                        ? "Log file is empty or doesn't exist."
+                        : response.data;
+                }).catch(() => {
+                    this.logContent = `Failed to load ${this.activeLog} log!`;
+                });
         },
     },
 };
