@@ -68,13 +68,13 @@
                             </sui-header>
                         </sui-segment>
 
-                        <sui-header v-if="app.logs.length" attached="top" :inverted="darkMode">
+                        <sui-header v-if="logNames.length" attached="top" :inverted="darkMode">
                             Project Logs
                         </sui-header>
-                        <sui-segment attached :inverted="darkMode" v-if="app.logs.length">
+                        <sui-segment attached :inverted="darkMode" v-if="logNames.length">
                             <sui-menu pointing secondary :inverted="darkMode">
-                                <a is="sui-menu-item" v-for="(log, key) in app.logs" :key="key"
-                                    :active="activeLog === key" :content="log.title"
+                                <a is="sui-menu-item" v-for="(title, key) in app.logs" :key="key"
+                                    :active="activeLog === key" :content="title"
                                     @click="viewLog(app.id, key)" />
                             </sui-menu>
                             <pre>{{ logContent }}</pre>
@@ -121,6 +121,9 @@ export default {
                 color: tpl.colour,
             };
         },
+        logNames() {
+            return Object.keys(this.project.applications[0].logs);
+        },
         project() {
             return this.$store.getters['projects/find'](this.id);
         },
@@ -129,8 +132,8 @@ export default {
         initLog() {
             const [ app ] = this.project.applications;
 
-            if (app.logs.length) {
-                this.viewLog(app.id, 0);
+            if (this.logNames.length) {
+                this.viewLog(app.id, this.logNames[0]);
             } else {
                 this.logContent = '';
                 this.activeLog = '';

@@ -3,7 +3,6 @@
 namespace Servidor\Projects;
 
 use Illuminate\Database\Eloquent\Model;
-use Str;
 
 class Application extends Model
 {
@@ -29,25 +28,19 @@ class Application extends Model
 
     public function getLogsAttribute(): array
     {
-        return $this->template()->getLogPaths();
+        return array_map(function ($log) {
+            return $log->getTitle();
+        }, $this->logs());
+    }
+
+    public function logs()
+    {
+        return $this->template()->getLogs();
     }
 
     public function project()
     {
         return $this->belongsTo(Project::class);
-    }
-
-    public function readLog(string $log): string
-    {
-        $path = $this->logs[$log]['path'];
-
-        if (!Str::startsWith($path, '/')) {
-            $path = $this->project_root . '/' . $path;
-        }
-
-        exec('sudo cat ' . escapeshellarg($path), $file);
-
-        return implode("\n", $file);
     }
 
     public function getSourceUriAttribute(): string
@@ -66,6 +59,6 @@ class Application extends Model
     {
         $template = 'Servidor\Projects\Applications\Templates\\' . $this->attributes['template'];
 
-        return new $template();
+        return new $template($this);
     }
 }

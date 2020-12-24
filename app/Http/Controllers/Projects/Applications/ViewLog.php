@@ -11,6 +11,6 @@ class ViewLog extends Controller
 {
     public function __invoke(Project $project, string $log, Application $app): Response
     {
-        return response()->make($app->readLog($log));
+        return response()->make((string) $app->logs()[$log]);
     }
 }
