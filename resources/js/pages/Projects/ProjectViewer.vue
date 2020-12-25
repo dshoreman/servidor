@@ -23,6 +23,12 @@
 
                 <sui-grid-column :width="13">
                     <div v-for="app in project.applications" :key="app.id">
+                        <sui-segment inverted color="red"
+                            emphasis="secondary" v-if="!app.system_user">
+                            <sui-icon name="exclamation triangle" />
+                            The system user required by this project does not exist!
+                        </sui-segment>
+
                         <sui-header attached="top" :inverted="darkMode">Source Files</sui-header>
                         <sui-segment attached :inverted="darkMode">
                             <sui-grid>
@@ -69,6 +75,7 @@
                         </sui-segment>
 
                         <sui-header attached="top" :inverted="darkMode" v-if="app.system_user">
+                            <sui-icon name="check" color="green" style="float: right; margin: 0;" />
                             System User
                         </sui-header>
                         <sui-segment attached :inverted="darkMode" v-if="app.system_user">
