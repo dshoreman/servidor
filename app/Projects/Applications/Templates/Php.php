@@ -20,4 +20,9 @@ class Php
             PHP_MINOR_VERSION,
         ))];
     }
+
+    public function requiresUser(): bool
+    {
+        return true;
+    }
 }

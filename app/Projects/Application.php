@@ -3,6 +3,9 @@
 namespace Servidor\Projects;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use Servidor\Exceptions\System\UserNotFoundException;
+use Servidor\System\User as SystemUser;
 
 class Application extends Model
 {
@@ -14,6 +17,7 @@ class Application extends Model
     protected $appends = [
         'logs',
         'source_uri',
+        'system_user',
     ];
 
     protected $fillable = [
@@ -53,6 +57,21 @@ class Application extends Model
         }
 
         return $repo;
+    }
+
+    public function getSystemUserAttribute(): ?array
+    {
+        if (!$this->template()->requiresUser()) {
+            return null;
+        }
+
+        try {
+            $username = Str::slug($this->project->name);
+
+            return SystemUser::findByName($username)->toArray();
+        } catch (UserNotFoundException $e) {
+            return null;
+        }
     }
 
     public function template()

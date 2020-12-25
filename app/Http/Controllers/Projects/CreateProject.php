@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Servidor\Http\Controllers\Controller;
 use Servidor\Http\Requests\CreateProject as Request;
+use Servidor\Projects\Application;
 use Servidor\Projects\Project;
 
 class CreateProject extends Controller
@@ -18,16 +19,19 @@ class CreateProject extends Controller
             'name' => $data['name'],
         ]);
 
-        $project->applications()->createMany(array_map(function (array $app): array {
-            return [
+        $project->applications()->saveMany(array_map(function (array $app): Application {
+            return new Application([
                 'template' => $app['template'],
                 'domain_name' => $app['domain'],
                 'source_provider' => $app['provider'],
                 'source_repository' => $app['repository'],
                 'source_branch' => $app['branch'],
-            ];
-        }, $data['applications'] ?? []));
+            ]);
+        }, $data['applications']));
 
-        return response()->json($project->load('applications'), Response::HTTP_CREATED);
+        return response()->json(
+            $project->load('applications'),
+            Response::HTTP_CREATED
+        );
     }
 }
