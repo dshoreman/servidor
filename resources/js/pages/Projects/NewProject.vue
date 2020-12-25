@@ -169,8 +169,8 @@ export default {
             this.nextStep('source');
         },
         create() {
-            this.$store.dispatch('projects/create', this.project).then(() => {
-                this.$router.push({ name: 'projects.view', params: { id: this.project.name }});
+            this.$store.dispatch('projects/create', this.project).then(response => {
+                this.$router.push({ name: 'projects.view', params: { id: response.data.id }});
             });
         },
         createAndEnable() {
