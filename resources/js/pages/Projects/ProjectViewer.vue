@@ -60,8 +60,8 @@
                             </sui-grid>
 
                             <sui-header size="tiny" :inverted="darkMode" v-if="app.project_root">
-                                <router-link :to="{ name: 'files', params: { path: app.project_root } }"
-                                             content="Browse files" is="sui-button" floated="right"
+                                <router-link :to="filesLink(app.project_root)" is="sui-button"
+                                             content="Browse files" floated="right"
                                              basic primary icon="open folder" />
                                 Project Root
                                 <sui-header-subheader>{{ app.project_root }}</sui-header-subheader>
@@ -109,11 +109,13 @@
                             </sui-grid>
 
                             <sui-header size="tiny" :inverted="darkMode" v-if="app.system_user.dir">
-                                <router-link :to="{ name: 'files', params: { path: app.system_user.dir }}"
-                                             content="Browse files" is="sui-button" floated="right"
+                                <router-link :to="filesLink(app.system_user.dir)" is="sui-button"
+                                             content="Browse files" floated="right"
                                              basic primary icon="open folder" />
                                 Home Directory
-                                <sui-header-subheader>{{ app.system_user.dir }}</sui-header-subheader>
+                                <sui-header-subheader>
+                                    {{ app.system_user.dir }}
+                                </sui-header-subheader>
                             </sui-header>
                         </sui-segment>
 
@@ -187,6 +189,9 @@ export default {
                 this.logContent = '';
                 this.activeLog = '';
             }
+        },
+        filesLink(path) {
+            return { name: 'files', params: { path }};
         },
         viewLog(appId, key) {
             this.logContent = 'Loading...';
