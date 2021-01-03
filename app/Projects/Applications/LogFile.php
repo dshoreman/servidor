@@ -7,9 +7,9 @@ use Servidor\Projects\Application;
 
 class LogFile
 {
-    private string $path;
+    private $path;
 
-    private string $title;
+    private $title;
 
     public function __construct(Application $app, string $title, string $path)
     {
