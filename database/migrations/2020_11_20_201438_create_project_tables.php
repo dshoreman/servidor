@@ -18,11 +18,11 @@ class CreateProjectTables extends Migration
         Schema::create('project_applications', function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('project_id');
-            $table->string('template');
-            $table->string('domain_name');
-            $table->string('source_provider');
-            $table->string('source_repository');
-            $table->string('source_branch');
+            $table->string('template')->default('');
+            $table->string('domain_name')->default('');
+            $table->string('source_provider')->default('');
+            $table->string('source_repository')->default('');
+            $table->string('source_branch')->default('');
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('projects');

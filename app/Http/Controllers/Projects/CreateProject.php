@@ -17,17 +17,18 @@ class CreateProject extends Controller
 
         $project = Project::create([
             'name' => $data['name'],
+            'is_enabled' => $data['is_enabled'] ?? false,
         ]);
 
         $project->applications()->saveMany(array_map(function (array $app): Application {
             return new Application([
-                'template' => $app['template'],
-                'domain_name' => $app['domain'],
-                'source_provider' => $app['provider'],
-                'source_repository' => $app['repository'],
-                'source_branch' => $app['branch'],
+                'template' => $app['template'] ?? '',
+                'domain_name' => $app['domain'] ?? '',
+                'source_provider' => $app['provider'] ?? '',
+                'source_repository' => $app['repository'] ?? '',
+                'source_branch' => $app['branch'] ?? '',
             ]);
-        }, $data['applications']));
+        }, $data['applications'] ?? []));
 
         return response()->json(
             $project->load('applications'),

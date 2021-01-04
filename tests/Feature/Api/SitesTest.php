@@ -16,29 +16,6 @@ class SitesTest extends TestCase
     use RequiresAuth;
 
     /** @test */
-    public function guest_cannot_list_sites(): void
-    {
-        $response = $this->getJson('/api/sites');
-
-        $response->assertJsonCount(1);
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $response->assertJson(['message' => 'Unauthenticated.']);
-    }
-
-    /** @test */
-    public function authed_user_can_list_sites(): void
-    {
-        Site::create(['name' => 'Blog 1']);
-        Site::create(['name' => 'Blog 2']);
-
-        $response = $this->authed()->getJson('/api/sites');
-
-        $response->assertOk();
-        $response->assertJsonCount(2);
-        $response->assertJson(Site::all()->toArray());
-    }
-
-    /** @test */
     public function guest_cannot_list_a_sites_branches(): void
     {
         $site = Site::create([
@@ -78,70 +55,6 @@ class SitesTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['repo' => 'Missing repo']);
-    }
-
-    /** @test */
-    public function guest_cannot_create_site(): void
-    {
-        $response = $this->postJson('/api/sites', [
-            'name' => 'Test Site',
-            'primary_domain' => 'example.com',
-            'is_enabled' => true,
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $this->assertEquals(0, Site::count());
-        $this->assertEquals(null, Site::first());
-    }
-
-    /** @test */
-    public function authed_user_can_create_site(): void
-    {
-        $response = $this->authed()->postJson('/api/sites', [
-            'name' => 'Test Site',
-            'primary_domain' => 'example.com',
-            'is_enabled' => true,
-        ]);
-
-        $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJsonFragment([
-            'name' => 'Test Site',
-            'primary_domain' => 'example.com',
-            'is_enabled' => true,
-        ]);
-
-        $site = Site::firstOrFail();
-        $this->assertEquals('Test Site', $site->name);
-        $this->assertEquals('example.com', $site->primary_domain);
-        $this->assertTrue($site->is_enabled);
-    }
-
-    /** @test */
-    public function cannot_create_site_without_required_fields(): void
-    {
-        $response = $this->authed()->postJson('/api/sites', []);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrors(['name']);
-        $this->assertNull(Site::first());
-    }
-
-    /** @test */
-    public function cannot_create_site_with_invalid_data(): void
-    {
-        $response = $this->authed()->postJson('/api/sites', [
-            'name' => '',
-            'primary_domain' => '',
-            'is_enabled' => '',
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrors([
-            'name',
-            'primary_domain',
-            'is_enabled',
-        ]);
-        $this->assertNull(Site::first());
     }
 
     /** @test */
@@ -198,30 +111,6 @@ class SitesTest extends TestCase
         ]);
 
         $response->assertJsonMissingValidationErrors(['name']);
-    }
-
-    /** @test */
-    public function can_create_matching_user_when_updating_site(): void
-    {
-        $site = Site::create(['name' => 'Hello World']);
-
-        $response = $this->authed()->putJson('/api/sites/' . $site->id, [
-            'create_user' => true,
-            'name' => 'Hello World',
-            'project_root' => '/var/www/hello-world',
-            'primary_domain' => 'example.com',
-            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
-            'type' => 'basic',
-        ]);
-
-        exec('sudo userdel hello-world && sudo rm -rf /home/hello-world');
-
-        $response->assertOk();
-        $response->assertJsonStructure(['name', 'system_user', 'type']);
-        $this->assertArraySubset([
-            'dir' => '/home/hello-world',
-            'name' => 'hello-world',
-        ], $response->json()['system_user']);
     }
 
     /**

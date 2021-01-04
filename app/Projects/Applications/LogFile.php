@@ -19,12 +19,17 @@ class LogFile
             ? $path : $app->project_root . '/' . $path;
     }
 
-    public function getTitle()
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         exec('sudo cat ' . escapeshellarg($this->path), $file);
 

@@ -11,6 +11,10 @@ class Project extends Model
         'is_enabled',
     ];
 
+    protected $casts = [
+        'is_enabled' => 'boolean',
+    ];
+
     public function applications()
     {
         return $this->hasMany(Application::class);
