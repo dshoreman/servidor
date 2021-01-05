@@ -59,12 +59,12 @@
                                 </sui-grid-row>
                             </sui-grid>
 
-                            <sui-header size="tiny" :inverted="darkMode" v-if="app.project_root">
-                                <router-link :to="filesLink(app.project_root)" is="sui-button"
+                            <sui-header size="tiny" :inverted="darkMode" v-if="app.source_root">
+                                <router-link :to="filesLink(app.source_root)" is="sui-button"
                                              content="Browse files" floated="right"
                                              basic primary icon="open folder" />
                                 Project Root
-                                <sui-header-subheader>{{ app.project_root }}</sui-header-subheader>
+                                <sui-header-subheader>{{ app.source_root }}</sui-header-subheader>
                             </sui-header>
                             <sui-header size="tiny" :inverted="darkMode" v-else>
                                 Project Root

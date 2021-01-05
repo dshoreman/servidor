@@ -16,7 +16,7 @@ class LogFile
         $this->title = $title;
 
         $this->path = Str::startsWith($path, '/')
-            ? $path : $app->project_root . '/' . $path;
+            ? $path : $app->source_root . '/' . $path;
     }
 
     public function getPath(): string

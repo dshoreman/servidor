@@ -6,6 +6,10 @@ use Servidor\Projects\Application;
 
 class Html
 {
+    protected Application $app;
+
+    public string $publicDir = '';
+
     public function __construct(Application $app)
     {
         $this->app = $app;

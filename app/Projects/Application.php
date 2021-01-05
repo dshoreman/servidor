@@ -15,7 +15,9 @@ class Application extends Model
     ];
 
     protected $appends = [
+        'document_root',
         'logs',
+        'source_root',
         'source_uri',
         'system_user',
     ];
@@ -29,6 +31,13 @@ class Application extends Model
     ];
 
     protected $table = 'project_applications';
+
+    private $templatesNamespace = 'Servidor\Projects\Applications\Templates\\';
+
+    public function getDocumentRootAttribute(): string
+    {
+        return $this->sourceRoot . $this->template()->publicDir;
+    }
 
     public function getLogsAttribute(): array
     {
@@ -45,6 +54,26 @@ class Application extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function getSourceRepoNameAttribute(): string
+    {
+        $repo = $this->attributes['source_repository'];
+
+        return mb_substr($repo, mb_strpos($repo, '/') + 1);
+    }
+
+    public function getSourceRootAttribute(): string
+    {
+        $tpl = $this->template();
+
+        if ($tpl->requiresUser()) {
+            // TODO: If user doesn't exist, this should throw UserNotFoundException
+            //  (or some similar error) and NOT just default to a root-based path!
+            return ($this->systemUser['dir'] ?? '') . '/' . $this->sourceRepoName;
+        }
+
+        return '/var/www/' . Str::slug($this->project->name) . '/' . $this->sourceRepoName;
     }
 
     public function getSourceUriAttribute(): string
@@ -76,7 +105,7 @@ class Application extends Model
 
     public function template()
     {
-        $template = 'Servidor\Projects\Applications\Templates\\' . $this->attributes['template'];
+        $template = $this->templatesNamespace . Str::studly(Str::lower($this->attributes['template']));
 
         return new $template($this);
     }
