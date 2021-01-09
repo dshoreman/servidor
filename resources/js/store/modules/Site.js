@@ -75,11 +75,6 @@ export default {
                 ...state.sites.find(s => s.id === id),
             };
         },
-        removeSite: (state, id) => {
-            const index = state.sites.findIndex(s => s.id === id);
-
-            state.sites.splice(index, 1);
-        },
     },
     actions: {
         load: ({ commit }) => new Promise((resolve, reject) => {
@@ -140,18 +135,6 @@ export default {
                 }
             });
         },
-        delete: ({ commit }, id) => new Promise((resolve, reject) => {
-            axios.delete(`/api/sites/${id}`).then(response => {
-                commit('removeSite', id);
-                resolve(response);
-            }).catch(error => {
-                commit('setErrors', {
-                    message: error.message,
-                    action: 'delete',
-                });
-                reject(error);
-            });
-        }),
     },
     getters: {
         all: state => state.sites,

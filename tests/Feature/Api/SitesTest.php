@@ -127,28 +127,4 @@ class SitesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson(['error' => 'Project type does not support pull.']);
     }
-
-    /** @test */
-    public function guest_cannot_delete_site(): void
-    {
-        $site = Site::create(['name' => 'Primed for deletion']);
-
-        $response = $this->deleteJson('/api/sites/' . $site->id);
-
-        $response->assertJsonCount(1);
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $response->assertJson(['message' => 'Unauthenticated.']);
-        $this->assertArraySubset($site->toArray(), Site::firstOrFail()->toArray());
-    }
-
-    /** @test */
-    public function authed_user_can_delete_site(): void
-    {
-        $site = Site::create(['name' => 'Delete me!']);
-
-        $response = $this->authed()->deleteJson('/api/sites/' . $site->id);
-
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
-        $this->assertNull(Site::find($site->id));
-    }
 }

@@ -137,8 +137,6 @@
                 </p>
             </sui-segment>
 
-            <sui-button negative icon="trash" type="button"
-                content="Delete" floated="right" @click="deleteSite(site.id)" />
             <sui-button-group>
                 <router-link :to="{ name: 'apps.view', params: { id: site.id } }" is="sui-button"
                     type="button" content="Cancel" />
@@ -197,13 +195,6 @@ export default {
         }),
         updateSite(id) {
             this.$store.dispatch('sites/update', { id, data: this.tmpSite });
-        },
-        deleteSite() {
-            /* eslint-disable no-alert */
-            confirm('Deletion is permanent! Are you sure?')
-                && this.$store.dispatch('sites/delete', this.site.id).then(
-                    () => this.$router.push({ name: 'apps' }),
-                );
         },
         setDocroot() {
             const site = this.tmpSite;

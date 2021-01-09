@@ -8,7 +8,7 @@ Route::middleware('auth:api')->group(function (): void {
     Route::post('logout', 'Auth\LoginController@logout');
 
     Route::resource('sites', 'SiteController', [
-        'only' => ['index', 'store', 'update', 'destroy'],
+        'only' => ['index', 'store', 'update'],
     ]);
     Route::get('sites/{site}/branches', 'SiteController@branches');
     Route::get('sites/{site}/logs/{log}', 'SiteController@showLog');
@@ -20,6 +20,7 @@ Route::middleware('auth:api')->group(function (): void {
             Route::post('pull', Projects\Applications\PullCode::class);
         });
         Route::get('{project}/logs/{log}.app-{app}.log', Projects\Applications\ViewLog::class);
+        Route::delete('{project}', Projects\RemoveProject::class);
     });
 
     Route::resource('databases', 'DatabaseController', [

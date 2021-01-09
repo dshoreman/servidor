@@ -8,6 +8,11 @@ export default {
         addNewProject: (state, project) => {
             state.projects.push(project);
         },
+        removeProject: (state, project) => {
+            state.projects.splice(state.projects.findIndex(
+                p => p.id === project.id,
+            ), 1);
+        },
         setProjects: (state, projects) => {
             state.projects = projects;
         },
@@ -26,6 +31,18 @@ export default {
             }).catch(error => reject(error));
         }),
         pull: app => axios.post(`/api/projects/${app.project.id}/apps/${app.id}/pull`),
+        remove: ({ commit }, id) => new Promise((resolve, reject) => {
+            axios.delete(`/api/projects/${id}`).then(response => {
+                commit('removeProject', id);
+                resolve(response);
+            }).catch(error => {
+                commit('setErrors', {
+                    message: error.message,
+                    action: 'remove',
+                });
+                reject(error);
+            });
+        }),
     },
     getters: {
         all: state => state.projects,

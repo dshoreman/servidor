@@ -140,6 +140,11 @@
             </sui-grid-row>
         </sui-grid>
 
+        <sui-divider hidden />
+
+        <sui-button negative icon="trash" content="Delete Project"
+            floated="right" type="button" @click="removeProject()" />
+
     </div>
 
 </template>
@@ -200,6 +205,13 @@ export default {
         },
         filesLink(path) {
             return { name: 'files', params: { path }};
+        },
+        removeProject() {
+            /* eslint-disable no-alert */
+            confirm('Deletion is permanent! Are you sure?')
+                && this.$store.dispatch('projects/remove', this.project.id).then(
+                    () => this.$router.push({ name: 'projects' }),
+                );
         },
         viewLog(appId, key) {
             this.logContent = 'Loading...';

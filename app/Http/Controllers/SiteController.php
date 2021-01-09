@@ -83,16 +83,4 @@ class SiteController extends Controller
 
         return response()->json($site, Response::HTTP_OK);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
-     */
-    public function destroy(Site $site)
-    {
-        $site->delete();
-
-        return response(null, Response::HTTP_NO_CONTENT);
-    }
 }
