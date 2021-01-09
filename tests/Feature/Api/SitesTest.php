@@ -113,48 +113,6 @@ class SitesTest extends TestCase
         $response->assertJsonMissingValidationErrors(['name']);
     }
 
-    /**
-     * @test
-     * @depends authed_user_can_list_sites
-     */
-    public function guest_cannot_pull_site_files(): void
-    {
-        $site = Site::create([
-            'name' => 'Dummy Site',
-            'type' => 'basic',
-            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
-        ]);
-
-        $response = $this->postJson('/api/sites/' . $site->id . '/pull');
-
-        $response->assertJsonCount(1);
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $response->assertJson(['message' => 'Unauthenticated.']);
-        $this->assertArraySubset($site->toArray(), Site::firstOrFail()->toArray());
-    }
-
-    /** @test */
-    public function authed_user_can_pull_site_files(): void
-    {
-        // This would ideally be inside resources/test-skel somewhere, but
-        // for some reason Travis has permission issues creating in there.
-        $dir = storage_path('test-clone');
-
-        $site = Site::create([
-            'name' => 'Dummy Site',
-            'type' => 'basic',
-            'project_root' => $dir,
-            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
-        ]);
-
-        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
-
-        $response->assertOk();
-        $this->assertDirectoryExists($dir . '/.git');
-
-        exec('rm -rf "' . $site->project_root . '"');
-    }
-
     /** @test */
     public function cannot_pull_site_when_type_is_redirect(): void
     {
@@ -168,71 +126,6 @@ class SitesTest extends TestCase
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJson(['error' => 'Project type does not support pull.']);
-    }
-
-    /** @test */
-    public function cannot_pull_site_when_missing_project_root(): void
-    {
-        $site = Site::create([
-            'name' => 'Dummy Site',
-            'type' => 'basic',
-            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
-        ]);
-
-        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
-
-        $response->assertJsonCount(1);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJson(['error' => 'Project is missing its document root!']);
-    }
-
-    /** @test */
-    public function can_checkout_after_initial_pull(): void
-    {
-        $dir = resource_path('test-skel/checkedout');
-        $site = Site::create([
-            'name' => 'Site for checkout',
-            'type' => 'basic',
-            'project_root' => $dir,
-            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
-        ]);
-        $site->update(['is_enabled' => true]);
-
-        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
-
-        $response->assertOk();
-        $response->assertJsonFragment([
-            'name' => 'Site for checkout',
-            'project_root' => $dir,
-            'is_enabled' => true,
-        ]);
-
-        exec('rm -rf "' . $dir . '"');
-    }
-
-    /** @test */
-    public function pull_creates_docroot_if_it_doesnt_exist(): void
-    {
-        $dir = resource_path('test-skel/makeme');
-        $site = Site::create([
-            'type' => 'basic',
-            'name' => 'Creating Docroot',
-            'project_root' => $dir,
-            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
-        ]);
-
-        $this->assertDirectoryNotExists($dir);
-        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
-
-        $response->assertOk();
-        $response->assertJsonFragment([
-            'name' => 'Creating Docroot',
-            'project_root' => $dir,
-            'type' => 'basic',
-        ]);
-        $this->assertDirectoryExists($dir);
-
-        exec('rm -rf "' . $dir . '"');
     }
 
     /** @test */

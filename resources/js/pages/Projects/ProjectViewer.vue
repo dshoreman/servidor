@@ -48,6 +48,10 @@
                                     <sui-grid-column>
                                         <sui-header size="tiny" :inverted="darkMode">
                                             Tracking Branch
+                                            <sui-button basic positive icon="download"
+                                                floated="right" @click="pullFiles(app)">
+                                                Pull Latest Code
+                                            </sui-button>
                                             <sui-header-subheader v-if="app.source_branch">
                                                 {{ app.source_branch }}
                                             </sui-header-subheader>
@@ -141,6 +145,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import templates from './templates.json';
 
 export default {
@@ -180,6 +185,9 @@ export default {
         },
     },
     methods: {
+        ...mapActions({
+            pullFiles: 'projects/pull',
+        }),
         initLog() {
             const [ app ] = this.project.applications;
 

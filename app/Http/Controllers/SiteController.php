@@ -52,46 +52,6 @@ class SiteController extends Controller
         return response()->json($branches);
     }
 
-    /**
-     * Pull the latest commit from Git.
-     */
-    public function pull(Site $site): JsonResponse
-    {
-        $root = $site->project_root;
-        $branch = $site->source_branch;
-
-        if (!$site->type || 'redirect' == $site->type) {
-            $error = 'Project type does not support pull.';
-        } elseif (!$root) {
-            $error = 'Project is missing its document root!';
-        }
-
-        if (isset($error)) {
-            return response()->json(compact('error'), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        if (is_dir($root . '/.git')) {
-            $args = $branch ? ' && git checkout "' . $branch . '"' : '';
-
-            exec('cd "' . $root . '"' . $args . ' && git pull');
-
-            return response()->json($site, Response::HTTP_OK);
-        }
-
-        if (!is_dir($root)) {
-            mkdir($root);
-        }
-
-        $args = $branch ? ' --branch "' . $branch . '"' : '';
-        $paths = ' "' . $site->source_repo . '" "' . $root . '"';
-
-        $cmd = 'git clone' . $args . $paths;
-
-        exec($cmd);
-
-        return response()->json($site, Response::HTTP_OK);
-    }
-
     public function showLog(Site $site, string $log): Response
     {
         return response()->make($site->readLog($log));

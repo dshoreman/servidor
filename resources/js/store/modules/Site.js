@@ -140,7 +140,6 @@ export default {
                 }
             });
         },
-        pull: site => axios.post(`/api/sites/${site.id}/pull`),
         delete: ({ commit }, id) => new Promise((resolve, reject) => {
             axios.delete(`/api/sites/${id}`).then(response => {
                 commit('removeSite', id);

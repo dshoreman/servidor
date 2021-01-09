@@ -33,8 +33,6 @@
                         </sui-grid-column>
                         <sui-grid-column>
                             <sui-header size="tiny" :inverted="darkMode"> Tracking Branch
-                                <sui-button basic positive icon="download" floated="right"
-                                    content="Pull Latest Code" @click="pullFiles(site)" />
                                 <sui-header-subheader v-if="site.source_branch">
                                     {{ site.source_branch }}
                                 </sui-header-subheader>
@@ -153,8 +151,8 @@
 </style>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import SiteItem from '../../components/Sites/SiteItem';
+import { mapGetters } from 'vuex';
 
 export default {
     components: {
@@ -189,9 +187,6 @@ export default {
         },
     },
     methods: {
-        ...mapActions({
-            pullFiles: 'sites/pull',
-        }),
         initLog(siteId) {
             const logs = this.logNames(siteId);
 

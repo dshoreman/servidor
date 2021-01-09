@@ -25,6 +25,7 @@ export default {
                 resolve(response);
             }).catch(error => reject(error));
         }),
+        pull: app => axios.post(`/api/projects/${app.project.id}/apps/${app.id}/pull`),
     },
     getters: {
         all: state => state.projects,
