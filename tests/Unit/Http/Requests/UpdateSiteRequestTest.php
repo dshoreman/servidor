@@ -3,55 +3,20 @@
 namespace Tests\Unit\Http\Requests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Validation\Validator;
 use Servidor\Http\Requests\UpdateSite;
-use Servidor\Site;
 use Tests\TestCase;
+use Tests\ValidatesFormRequest;
 
 class UpdateSiteRequestTest extends TestCase
 {
     use RefreshDatabase;
-
-    /**
-     * @var array
-     */
-    private $rules;
-
-    /**
-     * @var \Illuminate\Validation\Factory
-     */
-    private $validator;
+    use ValidatesFormRequest;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->rules = (new UpdateSite)->rules();
-        $this->validator = $this->app['validator'];
-    }
-
-    /** @test */
-    public function site_name_is_required(): void
-    {
-        $this->assertFalse($this->validateField('name', ''));
-        $this->assertTrue($this->validateField('name', 'A name'));
-    }
-
-    /** @test */
-    public function site_name_must_be_a_string(): void
-    {
-        $this->assertFalse($this->validateField('name', true));
-        $this->assertFalse($this->validateField('name', 42));
-        $this->assertFalse($this->validateField('name', []));
-    }
-
-    /** @test */
-    public function site_name_must_be_unique(): void
-    {
-        Site::create(['name' => 'Duplicate me!']);
-
-        $this->assertFalse($this->validateField('name', 'Duplicate me!'));
-        $this->assertEquals(1, Site::count());
+        $this->shouldValidate(UpdateSite::class);
     }
 
     /** @test */
@@ -273,23 +238,5 @@ class UpdateSiteRequestTest extends TestCase
     {
         $this->assertFalse($this->validateField('is_enabled', 'yes'));
         $this->assertTrue($this->validateField('is_enabled', true));
-    }
-
-    private function validateAll(array $data): bool
-    {
-        return $this->getValidator($data)->passes();
-    }
-
-    private function validateField(string $field, $value): bool
-    {
-        return $this->getValidator(
-            [$field => $value],
-            [$field => $this->rules[$field]],
-        )->passes();
-    }
-
-    private function getValidator(array $data, array $rules = []): Validator
-    {
-        return $this->validator->make($data, $rules ?: $this->rules);
     }
 }

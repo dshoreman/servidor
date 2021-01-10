@@ -3,31 +3,21 @@
 namespace Tests\Unit\Http\Requests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Validation\Validator;
 use Servidor\Http\Requests\CreateSite;
 use Servidor\Site;
 use Tests\TestCase;
+use Tests\ValidatesFormRequest;
 
 class CreateSiteRequestTest extends TestCase
 {
     use RefreshDatabase;
-
-    /**
-     * @var array
-     */
-    private $rules;
-
-    /**
-     * @var \Illuminate\Validation\Factory
-     */
-    private $validator;
+    use ValidatesFormRequest;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->rules = (new CreateSite)->rules();
-        $this->validator = $this->app['validator'];
+        $this->shouldValidate(CreateSite::class);
     }
 
     /** @test */
@@ -66,23 +56,5 @@ class CreateSiteRequestTest extends TestCase
     {
         $this->assertFalse($this->validateField('is_enabled', 'yes'));
         $this->assertTrue($this->validateField('is_enabled', true));
-    }
-
-    private function validateAll(array $data): bool
-    {
-        return $this->getValidator($data)->passes();
-    }
-
-    private function validateField(string $field, $value): bool
-    {
-        return $this->getValidator(
-            [$field => $value],
-            [$field => $this->rules[$field]],
-        )->passes();
-    }
-
-    private function getValidator(array $data, array $rules = []): Validator
-    {
-        return $this->validator->make($data, $rules ?? $this->rules);
     }
 }

@@ -16,6 +16,7 @@ Route::middleware('auth:api')->group(function (): void {
     Route::name('projects.')->prefix('/projects')->group(function (): void {
         Route::get('/', Projects\ListProjects::class);
         Route::post('/', Projects\CreateProject::class);
+        Route::put('{project}', Projects\UpdateProject::class);
         Route::prefix('{project}/apps/{app}')->group(function (): void {
             Route::post('pull', Projects\Applications\PullCode::class);
         });

@@ -16,6 +16,9 @@ export default {
         setProjects: (state, projects) => {
             state.projects = projects;
         },
+        updateProject: (state, { id, project }) => {
+            Vue.set(state.projects, state.projects.findIndex(p => p.id === id), project);
+        },
     },
     actions: {
         load: ({ commit }) => new Promise((resolve, reject) => {
@@ -42,6 +45,12 @@ export default {
                 });
                 reject(error);
             });
+        }),
+        rename: ({ commit }, { id, name }) => new Promise((resolve, reject) => {
+            axios.put(`/api/projects/${id}`, { name }).then(response => {
+                commit('updateProject', { id, project: response.data });
+                resolve(response);
+            }).catch(error => reject(error));
         }),
     },
     getters: {

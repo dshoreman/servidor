@@ -3,7 +3,20 @@
     <div v-if="project">
 
         <h2 is="sui-header" size="huge" :inverted="darkMode" dividing>
-            {{ project.name }}
+            <div v-if="renaming">
+                <sui-input transparent v-model="project.name" @keyup.enter="renameProject()" />
+                <sui-button-group size="tiny">
+                    <sui-button positive icon="check" style="top: -0.3em;"
+                        compact attached="left" @click="renameProject()" />
+                    <sui-button negative icon="cancel" basic style="top: -0.3em;"
+                        compact attached="right" @click="renaming = false" />
+                </sui-button-group>
+            </div>
+            <div v-else>
+                {{ project.name }}
+                <sui-icon name="pencil" link size="tiny" @click="renaming = true"
+                    style="position: relative; bottom: 0.3em; left: 0.3em;" />
+            </div>
         </h2>
 
         <sui-grid>
@@ -171,6 +184,7 @@ export default {
         return {
             activeLog: '',
             logContent: '',
+            renaming: false,
         };
     },
     computed: {
@@ -212,6 +226,13 @@ export default {
                 && this.$store.dispatch('projects/remove', this.project.id).then(
                     () => this.$router.push({ name: 'projects' }),
                 );
+        },
+        renameProject() {
+            const { id, name } = this.project;
+
+            this.$store.dispatch('projects/rename', { id, name }).finally(() => {
+                this.renaming = false;
+            });
         },
         viewLog(appId, key) {
             this.logContent = 'Loading...';
