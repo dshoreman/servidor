@@ -7,8 +7,10 @@ use Servidor\Projects\Application;
 
 class LogFile
 {
+    /** @var string */
     private $path;
 
+    /** @var string */
     private $title;
 
     public function __construct(Application $app, string $title, string $path)

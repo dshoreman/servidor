@@ -3,6 +3,7 @@
 namespace Servidor\Projects;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -15,7 +16,9 @@ class Project extends Model
         'is_enabled' => 'boolean',
     ];
 
-    public function applications()
+    protected $table = 'projects';
+
+    public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
     }

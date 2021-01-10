@@ -12,6 +12,8 @@ class LogFileTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $baseDir = '/home/logrel/lararepo/';
+
     private $laravelLog = 'storage/logs/laravel.log';
 
     /** @test */
@@ -23,13 +25,13 @@ class LogFileTest extends TestCase
         ));
         exec(sprintf(
             'sudo mkdir -p /home/logrel/lararepo/storage/logs && sudo cp "%s" "%s"',
-            resource_path('test-skel/logrel/laravel.log'),
-            '/home/logrel/lararepo/' . $this->laravelLog,
+            resource_path('test-skel/logrel/' . $this->laravelLog),
+            $this->baseDir . $this->laravelLog,
         ));
 
         $log = new LogFile($app, 'My Test Log', $this->laravelLog);
 
-        $this->assertEquals('/home/logrel/lararepo/' . $this->laravelLog, $log->getPath());
+        $this->assertEquals($this->baseDir . $this->laravelLog, $log->getPath());
         $this->assertEquals('It works!', (string) $log);
     }
 }

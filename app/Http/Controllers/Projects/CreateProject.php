@@ -4,7 +4,6 @@ namespace Servidor\Http\Controllers\Projects;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Servidor\Http\Controllers\Controller;
 use Servidor\Http\Requests\CreateProject as Request;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;

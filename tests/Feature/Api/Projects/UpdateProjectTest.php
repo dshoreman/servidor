@@ -31,7 +31,6 @@ class UpdateProjectTest extends TestCase
     /** @test */
     public function authed_user_can_rename_project(): void
     {
-        $this->withoutExceptionHandling();
         $project = Project::create(['name' => 'My Other Blog']);
 
         $response = $this->authed()->putJson('/api/projects/' . $project->id, [

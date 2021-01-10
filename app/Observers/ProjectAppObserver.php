@@ -12,8 +12,11 @@ class ProjectAppObserver
     public function saved(Application $app): void
     {
         if ($app->template()->requiresUser() && !$app->system_user) {
+            /** @var \Servidor\Projects\Project */
+            $project = $app->project;
+
             SystemUser::createCustom((new LinuxUser([
-                'name' => Str::slug($app->project->name),
+                'name' => Str::slug($project->name),
             ]))->setCreateHome(true));
         }
     }

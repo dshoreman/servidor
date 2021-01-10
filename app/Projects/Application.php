@@ -2,9 +2,15 @@
 
 namespace Servidor\Projects;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 use Servidor\Exceptions\System\UserNotFoundException;
+use Servidor\Projects\Applications\LogFile;
+use Servidor\Projects\Applications\Templates\Html;
+use Servidor\Projects\Applications\Templates\Laravel;
+use Servidor\Projects\Applications\Templates\Php;
 use Servidor\System\User as SystemUser;
 
 class Application extends Model
@@ -32,6 +38,7 @@ class Application extends Model
 
     protected $table = 'project_applications';
 
+    /** @var string */
     private $templatesNamespace = 'Servidor\Projects\Applications\Templates\\';
 
     public function getDocumentRootAttribute(): string
@@ -41,17 +48,17 @@ class Application extends Model
 
     public function getLogsAttribute(): array
     {
-        return array_map(function ($log) {
+        return array_map(function (LogFile $log): string {
             return $log->getTitle();
         }, $this->logs());
     }
 
-    public function logs()
+    public function logs(): array
     {
         return $this->template()->getLogs();
     }
 
-    public function project()
+    public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
@@ -60,7 +67,11 @@ class Application extends Model
     {
         $repo = $this->attributes['source_repository'];
 
-        return mb_substr($repo, mb_strpos($repo, '/') + 1);
+        if (false === ($pos = mb_strpos($repo, '/'))) {
+            return $repo;
+        }
+
+        return mb_substr($repo, $pos + 1);
     }
 
     public function getSourceRootAttribute(): string
@@ -73,7 +84,10 @@ class Application extends Model
             return ($this->systemUser['dir'] ?? '') . '/' . $this->sourceRepoName;
         }
 
-        return '/var/www/' . Str::slug($this->project->name) . '/' . $this->sourceRepoName;
+        /** @var \Servidor\Projects\Project */
+        $project = $this->project;
+
+        return '/var/www/' . Str::slug($project->name) . '/' . $this->sourceRepoName;
     }
 
     public function getSourceUriAttribute(): string
@@ -95,7 +109,9 @@ class Application extends Model
         }
 
         try {
-            $username = Str::slug($this->project->name);
+            /** @var \Servidor\Projects\Project */
+            $project = $this->project;
+            $username = Str::slug($project->name);
 
             return SystemUser::findByName($username)->toArray();
         } catch (UserNotFoundException $e) {
@@ -103,10 +119,19 @@ class Application extends Model
         }
     }
 
-    public function template()
+    public function template(): object
     {
         $template = $this->templatesNamespace . Str::studly(Str::lower($this->attributes['template']));
 
-        return new $template($this);
+        switch ($template) {
+            case Html::class:
+                return new Html($this);
+            case Php::class:
+                return new Php($this);
+            case Laravel::class:
+                return new Laravel($this);
+            default:
+                throw new Exception("Invalid template '${template}'.");
+        }
     }
 }

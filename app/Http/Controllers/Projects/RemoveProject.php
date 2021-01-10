@@ -3,12 +3,12 @@
 namespace Servidor\Http\Controllers\Projects;
 
 use Illuminate\Http\Response;
-use Servidor\Http\Controllers\Controller;
 use Servidor\Projects\Project;
 
 class RemoveProject extends Controller
 {
-    public function __invoke(Project $project): Response
+    /** @return \Illuminate\Contracts\Routing\ResponseFactory|Response */
+    public function __invoke(Project $project)
     {
         $project->delete();
 

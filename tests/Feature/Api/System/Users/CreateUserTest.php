@@ -111,7 +111,7 @@ class CreateUserTest extends TestCase
         $response->assertJsonValidationErrors(['name', 'gid']);
 
         $updated = $this->authed()->getJson($this->endpoint);
-        $updated->assertJsonMissing(['uid' > 1337]);
+        $updated->assertJsonMissing(['uid' => 1337]);
     }
 
     /** @test */

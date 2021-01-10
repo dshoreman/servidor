@@ -1,12 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Projects;
 
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
 use Tests\PrunesDeletables;
+use Tests\RequiresAuth;
 use Tests\TestCase;
 
 class ApplicationTest extends TestCase
@@ -14,8 +15,10 @@ class ApplicationTest extends TestCase
     use ArraySubsetAsserts;
     use PrunesDeletables;
     use RefreshDatabase;
+    use RequiresAuth;
 
-    private Project $project;
+    /** @var Project */
+    private $project;
 
     public function setUp(): void
     {

@@ -4,6 +4,7 @@ namespace Servidor\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpFoundation\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -41,11 +42,9 @@ class Handler extends ExceptionHandler
      * @param \Illuminate\Http\Request $request
      *
      * @throws Exception
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e): Response
     {
-        return parent::render($request, $exception);
+        return parent::render($request, $e);
     }
 }
