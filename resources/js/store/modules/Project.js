@@ -33,6 +33,8 @@ export default {
                 resolve(response);
             }).catch(error => reject(error));
         }),
+        disable: ({ dispatch }, id) => dispatch('toggle', { id }),
+        enable: ({ dispatch }, id) => dispatch('toggle', { id, enabled: true }),
         pull: app => axios.post(`/api/projects/${app.project.id}/apps/${app.id}/pull`),
         remove: ({ commit }, id) => new Promise((resolve, reject) => {
             axios.delete(`/api/projects/${id}`).then(response => {
@@ -48,6 +50,12 @@ export default {
         }),
         rename: ({ commit }, { id, name }) => new Promise((resolve, reject) => {
             axios.put(`/api/projects/${id}`, { name }).then(response => {
+                commit('updateProject', { id, project: response.data });
+                resolve(response);
+            }).catch(error => reject(error));
+        }),
+        toggle: ({ commit }, { id, enabled = false }) => new Promise((resolve, reject) => {
+            axios.put(`/api/projects/${id}`, { is_enabled: enabled }).then(response => {
                 commit('updateProject', { id, project: response.data });
                 resolve(response);
             }).catch(error => reject(error));

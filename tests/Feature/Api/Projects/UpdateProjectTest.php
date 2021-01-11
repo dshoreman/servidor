@@ -44,6 +44,25 @@ class UpdateProjectTest extends TestCase
     }
 
     /** @test */
+    public function project_can_be_enabled(): void
+    {
+        $project = Project::create(['name' => 'My Enabling Blog']);
+
+        $response = $this->authed()->putJson('/api/projects/' . $project->id, [
+            'name' => 'My Enabled Blog',
+            'is_enabled' => true,
+        ]);
+
+        $updated = Project::findOrFail($project->id);
+
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'name' => 'My Enabled Blog',
+            'is_enabled' => true,
+        ]);
+    }
+
+    /** @test */
     public function can_update_project_while_retaining_the_same_name(): void
     {
         $project = Project::create(['name' => 'My New Blog']);

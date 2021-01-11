@@ -43,4 +43,11 @@ class UpdateProjectRequestTest extends TestCase
         $this->validateFieldFails('name', 'Duplicate me!');
         $this->assertEquals(1, Project::count());
     }
+
+    /** @test */
+    public function is_enabled_must_be_a_boolean(): void
+    {
+        $this->validateFieldFails('is_enabled', 'yes');
+        $this->validateFieldPasses('is_enabled', true);
+    }
 }

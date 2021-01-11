@@ -21,6 +21,7 @@ class UpdateProjectRequest extends FormRequest
                 'string',
                 Rule::unique('projects', 'name')->ignore($this->route('project')),
             ],
+            'is_enabled' => 'boolean',
         ];
     }
 }

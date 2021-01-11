@@ -232,11 +232,4 @@ class UpdateSiteRequestTest extends TestCase
         $this->assertFalse($this->validateField('redirect_to', ['a', 'b']));
         $this->assertFalse($this->validateField('redirect_to', (object) ['a', 'b']));
     }
-
-    /** @test */
-    public function site_is_enabled_must_be_a_boolean(): void
-    {
-        $this->assertFalse($this->validateField('is_enabled', 'yes'));
-        $this->assertTrue($this->validateField('is_enabled', true));
-    }
 }

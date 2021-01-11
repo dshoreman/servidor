@@ -31,9 +31,8 @@
                 <h3 is="sui-header">Let's get this Project started!</h3>
                 <confirmation-text :app="defaultApp" :source="extraData" />
                 <confirmation-form v-model="project.name"
-                    :template="defaultApp.template"
-                    @enabled="createAndEnable"
-                    @created="create" />
+                                   :template="defaultApp.template"
+                                   @created="create" @enabled="create(true)" />
             </sui-segment>
 
         </sui-grid-column>
@@ -168,13 +167,13 @@ export default {
 
             this.nextStep('source');
         },
-        create() {
+        create(enabled = false) {
+            if (enabled) {
+                this.project.is_enabled = true;
+            }
             this.$store.dispatch('projects/create', this.project).then(response => {
                 this.$router.push({ name: 'projects.view', params: { id: response.data.id }});
             });
-        },
-        createAndEnable() {
-            this.create();
         },
     },
 };

@@ -3,6 +3,9 @@
     <div v-if="project">
 
         <h2 is="sui-header" size="huge" :inverted="darkMode" dividing>
+            <sui-form-field class="enable-switch">
+                <sui-checkbox toggle v-model="project.is_enabled" @change="toggleProject" />
+            </sui-form-field>
             <div v-if="renaming">
                 <sui-input transparent v-model="project.name" @keyup.enter="renameProject()" />
                 <sui-button-group size="tiny">
@@ -162,6 +165,13 @@
 
 </template>
 
+<style scoped>
+.field.enable-switch {
+    float: right;
+    margin-top: 0;
+}
+</style>
+
 <script>
 import { mapActions } from 'vuex';
 import templates from './templates.json';
@@ -232,6 +242,14 @@ export default {
 
             this.$store.dispatch('projects/rename', { id, name }).finally(() => {
                 this.renaming = false;
+            });
+        },
+        toggleProject() {
+            const enabled = this.project.is_enabled,
+                endpoint = enabled ? 'enable' : 'disable';
+
+            this.$store.dispatch(`projects/${endpoint}`, this.project.id).catch(() => {
+                this.project.is_enabled = !enabled;
             });
         },
         viewLog(appId, key) {
