@@ -29,7 +29,7 @@ class UpdateProjectTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_rename_project(): void
+    public function authed_user_can_rename_project(): array
     {
         $project = Project::create(['name' => 'My Other Blog']);
 
@@ -41,6 +41,18 @@ class UpdateProjectTest extends TestCase
 
         $response->assertOk();
         $this->assertEquals('My Updated Blog', $updated->name);
+
+        return $response->json();
+    }
+
+    /**
+     * @test
+     * @depends authed_user_can_rename_project
+     */
+    public function update_response_includes_applications(array $data): void
+    {
+        $this->assertArrayHasKey('applications', $data);
+        $this->assertEmpty($data['applications']);
     }
 
     /** @test */
