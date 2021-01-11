@@ -3,7 +3,6 @@
 namespace Servidor\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Servidor\Rules\Domain;
 
 class UpdateSite extends FormRequest
 {
@@ -28,15 +27,8 @@ class UpdateSite extends FormRequest
     public function rules()
     {
         return [
-            'primary_domain' => ['required', new Domain()],
-            'type' => 'required|in:basic,php,laravel,redirect',
-            'source_repo' => 'required_unless:type,redirect|nullable|url',
-            'source_branch' => 'nullable|string',
-            'project_root' => 'required_unless:type,redirect|nullable|string',
-            'public_dir' => 'required_if:type,laravel|nullable|string',
             'redirect_type' => 'required_if:type,redirect|nullable|integer',
             'redirect_to' => 'required_if:type,redirect|nullable|string',
-            'is_enabled' => 'boolean',
         ];
     }
 

@@ -4,13 +4,13 @@ namespace Servidor\Http\Controllers\Projects;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Servidor\Http\Requests\CreateProject as Request;
+use Servidor\Http\Requests\CreateProjectRequest;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
 
 class CreateProject extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(CreateProjectRequest $request): JsonResponse
     {
         $data = $request->validated();
 

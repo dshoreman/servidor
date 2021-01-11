@@ -51,17 +51,26 @@ class CreateProjectTest extends TestCase
     /** @test */
     public function can_create_project_with_application(): void
     {
-        $this->withoutExceptionHandling();
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'Project with App',
-            'applications' => [['template' => 'php', 'domain' => 'example.com']],
+            'applications' => [[
+                'template' => 'php',
+                'domain' => 'example.com',
+                'provider' => 'github',
+                'repository' => 'foo/bar',
+            ]],
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure(['name', 'applications' => [
             ['template', 'domain_name', 'source_provider'],
         ]]);
-        $response->assertJsonFragment(['template' => 'php', 'domain_name' => 'example.com']);
+        $response->assertJsonFragment([
+            'template' => 'php',
+            'domain_name' => 'example.com',
+            'source_uri' => 'https://github.com/foo/bar.git',
+            'source_root' => '/home/project-with-app/bar',
+        ]);
 
         $project = Project::with('applications')->firstOrFail();
         $this->assertInstanceOf(Collection::class, $project->applications);

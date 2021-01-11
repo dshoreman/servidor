@@ -56,19 +56,4 @@ class SitesTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['repo' => 'Missing repo']);
     }
-
-    /** @test */
-    public function cannot_pull_site_when_type_is_redirect(): void
-    {
-        $site = Site::create([
-            'name' => 'Primed for deletion',
-            'type' => 'redirect',
-        ]);
-
-        $response = $this->authed()->postJson('/api/sites/' . $site->id . '/pull');
-
-        $response->assertJsonCount(1);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJson(['error' => 'Project type does not support pull.']);
-    }
 }

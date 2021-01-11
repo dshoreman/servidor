@@ -3,7 +3,6 @@
 namespace Servidor\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Servidor\Rules\Domain;
 
 class CreateSite extends FormRequest
 {
@@ -25,9 +24,6 @@ class CreateSite extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|unique:sites,name',
-            'primary_domain' => [new Domain()],
-            'is_enabled' => 'boolean',
         ];
     }
 }

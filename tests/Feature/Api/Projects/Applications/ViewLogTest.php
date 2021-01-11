@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\Sites;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
 use Tests\RequiresAuth;
@@ -20,8 +21,27 @@ class ViewLogTest extends TestCase
         $project = Project::create(['name' => 'logtest']);
         $project->applications()->save($app);
 
-        $response = $this->authed()->getJson('/api/projects/' . $project->id . '/logs/php.app-' . $app->id . '.log');
+        $response = $this->authed()->getJson("/api/projects/{$project->id}/logs/php.app-{$app->id}.log");
 
         $response->assertOk();
+    }
+
+    /** @test */
+    public function cannot_get_log_if_project_id_does_not_match(): void
+    {
+        $app1 = new Application(['template' => 'php']);
+        $app2 = new Application(['template' => 'laravel']);
+        $project1 = Project::create(['name' => 'mismatch1']);
+        $project2 = Project::create(['name' => 'mismatch2']);
+        $project1->applications()->save($app1);
+        $project2->applications()->save($app1);
+
+        $response = $this->authed()->getJson("/api/projects/{$project1->id}/logs/php.app-{$app1->id}.log");
+
+        $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+        $response->assertJsonFragment([
+            'message' => 'Project mismatch',
+            'exception' => 'Exception',
+        ]);
     }
 }
