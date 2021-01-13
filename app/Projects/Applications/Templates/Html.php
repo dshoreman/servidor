@@ -9,6 +9,7 @@ class Html
     /** @var Application */
     protected $app;
 
+    /** @var string */
     public $nginxTemplate = 'basic';
 
     /** @var string */
@@ -17,6 +18,34 @@ class Html
     public function __construct(Application $app)
     {
         $this->app = $app;
+    }
+
+    public function disable(): void
+    {
+        $config = $this->app->domain_name . '.conf';
+        $symlink = '/etc/nginx/sites-enabled/' . $config;
+
+        if (!is_link($symlink) || readlink($symlink) !== '/etc/nginx/sites-available/' . $config) {
+            return;
+        }
+
+        exec('sudo rm "' . $symlink . '"');
+    }
+
+    public function enable(): void
+    {
+        $symlink = "/etc/nginx/sites-enabled/{$this->app->domain_name}.conf";
+        $target = "/etc/nginx/sites-available/{$this->app->domain_name}.conf";
+
+        if (is_link($symlink) && readlink($symlink) === $target) {
+            return;
+        }
+
+        if (file_exists($symlink)) {
+            exec('sudo rm "' . $symlink . '"');
+        }
+
+        exec("sudo ln -s \"{$target}\" \"{$symlink}\"");
     }
 
     public function getLogs(): array

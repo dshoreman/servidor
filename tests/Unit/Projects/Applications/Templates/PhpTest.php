@@ -16,12 +16,13 @@ class PhpTest extends TestCase
     {
         $app = new Application([
             'template' => 'php',
-            'source_repository' => 'test/foo',
+            'source_provider' => 'github',
+            'source_repository' => 'dshoreman/servidor-test-site',
         ]);
         $project = Project::create(['name' => 'phproot']);
         $project->applications()->save($app);
 
-        $this->assertEquals('/home/phproot/foo', $app->document_root);
+        $this->assertEquals('/home/phproot/servidor-test-site', $app->document_root);
     }
 
     /** @test */

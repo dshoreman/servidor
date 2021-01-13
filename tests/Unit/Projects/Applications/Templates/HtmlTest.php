@@ -16,12 +16,81 @@ class HtmlTest extends TestCase
     {
         $app = new Application([
             'template' => 'html',
-            'source_repository' => 'test/foo',
+            'source_provider' => 'github',
+            'source_repository' => 'dshoreman/servidor-test-site',
         ]);
         $project = Project::create(['name' => 'htmlroot']);
         $project->applications()->save($app);
 
-        $this->assertEquals('/var/www/htmlroot/foo', $app->document_root);
+        $this->assertEquals('/var/www/htmlroot/servidor-test-site', $app->document_root);
+    }
+
+    /** @test */
+    public function enabling_project_creates_config_symlink(): Application
+    {
+        $this->assertFileNotExists($link = '/etc/nginx/sites-enabled/symlinkery.dev.conf');
+
+        $project = Project::create(['name' => 'symlinkery', 'is_enabled' => true]);
+        $project->applications()->save($app = new Application([
+            'domain_name' => 'symlinkery.dev',
+            'source_repository' => 'dshoreman/servidor-test-site',
+            'source_provider' => 'github',
+            'source_branch' => 'develop',
+        ]));
+
+        $this->assertFileExists($link);
+        $this->assertTrue(is_link($link));
+        $this->assertEquals('/etc/nginx/sites-available/symlinkery.dev.conf', readlink($link));
+
+        return $app;
+    }
+
+    /**
+     * @test
+     * @depends enabling_project_creates_config_symlink
+     */
+    public function enabling_project_does_not_create_symlink_when_already_valid(Application $app): void
+    {
+        $linkBefore = readlink($link = '/etc/nginx/sites-enabled/symlinkery.dev.conf');
+
+        $app->source_branch = 'master';
+        $app->save();
+
+        $this->assertEquals('master', $app->source_branch);
+        $this->assertSame($linkBefore, readlink($link));
+    }
+
+    /**
+     * @test
+     * @depends enabling_project_creates_config_symlink
+     */
+    public function outdated_symlinks_get_replaced(Application $app): void
+    {
+        $link = '/etc/nginx/sites-enabled/symlinkery.dev.conf';
+        exec("sudo rm ${link} && sudo ln -s /dev/null ${link}");
+        $this->assertNotEquals($link, readlink($link));
+
+        $app->source_branch = 'develop';
+        $app->save();
+
+        $this->assertFileExists($link);
+        $this->assertFileExists($vhost = '/etc/nginx/sites-available/symlinkery.dev.conf');
+        $this->assertTrue(is_link($link));
+        $this->assertEquals($vhost, readlink($link));
+    }
+
+    /**
+     * @test
+     * @depends enabling_project_creates_config_symlink
+     */
+    public function disabling_project_removes_nginx_symlink(Application $app): void
+    {
+        $this->assertFileExists('/etc/nginx/sites-enabled/symlinkery.dev.conf');
+
+        $app->project->is_enabled = false;
+        $app->save();
+
+        $this->assertFileNotExists('/etc/nginx/sites-enabled/symlinkery.dev.conf');
     }
 
     /** @test */
@@ -75,6 +144,7 @@ class HtmlTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         exec('grep ^pull-sans-root /etc/passwd && sudo userdel -r pull-sans-root 2>/dev/null');
-        exec('sudo rm -rf /var/www/rootperms');
+        exec('sudo rm -rf /var/www/rootperms /var/www/symlinkery');
+        exec('sudo rm -rf /etc/nginx/sites-enabled/symlinkery.dev.conf /etc/nginx/sites-available/symlinkery.dev.conf');
     }
 }

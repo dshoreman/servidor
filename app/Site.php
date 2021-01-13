@@ -4,7 +4,6 @@ namespace Servidor;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Servidor\Events\SiteUpdated;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\System\User as SystemUser;
 
@@ -14,10 +13,6 @@ class Site extends Model
 
     protected $casts = [
         'is_enabled' => 'boolean',
-    ];
-
-    protected $dispatchesEvents = [
-        'updated' => SiteUpdated::class,
     ];
 
     protected $fillable = [

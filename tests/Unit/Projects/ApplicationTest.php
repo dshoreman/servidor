@@ -109,6 +109,7 @@ class ApplicationTest extends TestCase
     {
         $this->project->applications()->save($app = new Application([
             'domain_name' => 'basicdefault.example',
+            'source_provider' => 'github',
             'source_repository' => 'dshoreman/servidor-test-site',
         ]));
 

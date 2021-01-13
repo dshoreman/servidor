@@ -16,18 +16,23 @@ class LaravelTest extends TestCase
     {
         $app = new Application([
             'template' => 'laravel',
-            'source_repository' => 'test/foo',
+            'source_provider' => 'github',
+            'source_repository' => 'dshoreman/servidor-test-site',
         ]);
         $project = Project::create(['name' => 'lararoot']);
         $project->applications()->save($app);
 
-        $this->assertEquals('/home/lararoot/foo/public', $app->document_root);
+        $this->assertEquals('/home/lararoot/servidor-test-site/public', $app->document_root);
     }
 
     /** @test */
     public function getLogs_includes_php_and_laravel_logs(): void
     {
-        $app = new Application(['template' => 'laravel', 'source_repository' => 'a/b']);
+        $app = new Application([
+            'template' => 'laravel',
+            'source_provider' => 'github',
+            'source_repository' => 'dshoreman/servidor-test-site',
+        ]);
         Project::create(['name' => 'laralog'])->applications()->save($app);
         $logs = $app->template()->getLogs();
 

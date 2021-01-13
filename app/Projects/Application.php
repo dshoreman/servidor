@@ -138,17 +138,14 @@ class Application extends Model
 
     public function writeNginxConfig(): void
     {
-        try {
-            $tpl = $this->template()->nginxTemplate;
-            $view = view('projects.app-templates.' . $tpl);
-        } catch (Exception $e) {
-            $view = view('projects.app-templates.basic');
-        } finally {
-            $src = "vhosts/{$this->domain_name}.conf";
-            Storage::put($src, (string) $view->with('app', $this));
+        $tpl = $this->template()->nginxTemplate;
+        /** @var \Illuminate\View\View */
+        $view = view('projects.app-templates.' . $tpl);
 
-            $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
-            exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
-        }
+        $src = "vhosts/{$this->domain_name}.conf";
+        $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
+
+        Storage::put($src, (string) $view->with('app', $this));
+        exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
     }
 }

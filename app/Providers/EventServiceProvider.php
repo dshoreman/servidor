@@ -14,9 +14,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        'Servidor\Events\SiteUpdated' => [
-            'Servidor\Listeners\WriteSiteConfig',
-        ],
     ];
 
     public function boot(): void

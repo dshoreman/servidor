@@ -11,10 +11,10 @@ class ProjectAppObserver
 {
     public function saved(Application $app): void
     {
-        if ($app->template()->requiresUser() && !$app->system_user) {
-            /** @var \Servidor\Projects\Project */
-            $project = $app->project;
+        /** @var \Servidor\Projects\Project */
+        $project = $app->project;
 
+        if ($app->template()->requiresUser() && !$app->system_user) {
             SystemUser::createCustom((new LinuxUser([
                 'name' => Str::slug($project->name),
             ]))->setCreateHome(true));
@@ -24,5 +24,9 @@ class ProjectAppObserver
             $app->writeNginxConfig();
             $app->template()->pullCode();
         }
+
+        $project->is_enabled ? $app->template()->enable() : $app->template()->disable();
+
+        exec('sudo systemctl reload-or-restart nginx.service');
     }
 }
