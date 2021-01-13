@@ -92,27 +92,9 @@ class WriteSiteConfigTest extends TestCase
     }
 
     /** @test */
-    public function update_defaults_to_basic_project_type(): void
-    {
-        $path = resource_path('test-skel/foo');
-        $site = Site::create(['name' => 'Untitled']);
-
-        $site->project_root = $path;
-        $site->update([
-            'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
-            'primary_domain' => 'basicdefault.example',
-            'source_branch' => 'develop',
-        ]);
-
-        $config = storage_path('app/vhosts/' . $site->primary_domain . '.conf');
-        $this->assertStringContainsString('index index.html index.htm;', file_get_contents($config));
-    }
-
-    /** @test */
-    public function laravel_projects_use_php_nginx_config(): Site
+    public function disabling_project_removes_nginx_symlink(): void
     {
         $site = Site::create(['name' => 'laratest']);
-
         $site->project_root = resource_path('test-skel/larafoo');
         $site->update([
             'source_repo' => 'https://github.com/dshoreman/servidor-test-site.git',
@@ -121,20 +103,8 @@ class WriteSiteConfigTest extends TestCase
             'is_enabled' => true,
             'type' => 'laravel',
         ]);
+        $this->assertFileExists('/etc/nginx/sites-enabled/laratest.dev.conf');
 
-        $config = file_get_contents(storage_path('app/vhosts/laratest.dev.conf'));
-        $this->assertStringContainsString('index index.php index.html index.htm;', $config);
-        $this->assertStringContainsString('try_files $uri $uri/ /index.php?query_string', $config);
-
-        return $site;
-    }
-
-    /**
-     * @test
-     * @depends laravel_projects_use_php_nginx_config
-     */
-    public function disabling_project_removes_nginx_symlink(Site $site): void
-    {
         $site->update(['is_enabled' => false]);
 
         $this->assertFileNotExists('/etc/nginx/sites-enabled/laratest.dev.conf');

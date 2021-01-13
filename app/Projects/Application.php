@@ -5,6 +5,7 @@ namespace Servidor\Projects;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Projects\Applications\LogFile;
@@ -121,9 +122,9 @@ class Application extends Model
 
     public function template(): object
     {
-        $template = $this->templatesNamespace . Str::studly(Str::lower($this->attributes['template']));
+        $template = $this->attributes['template'] ?? null ?: 'html';
 
-        switch ($template) {
+        switch ($this->templatesNamespace . Str::studly(Str::lower($template))) {
             case Html::class:
                 return new Html($this);
             case Php::class:
@@ -132,6 +133,22 @@ class Application extends Model
                 return new Laravel($this);
             default:
                 throw new Exception("Invalid template '${template}'.");
+        }
+    }
+
+    public function writeNginxConfig(): void
+    {
+        try {
+            $tpl = $this->template()->nginxTemplate;
+            $view = view('projects.app-templates.' . $tpl);
+        } catch (Exception $e) {
+            $view = view('projects.app-templates.basic');
+        } finally {
+            $src = "vhosts/{$this->domain_name}.conf";
+            Storage::put($src, (string) $view->with('app', $this));
+
+            $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
+            exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
         }
     }
 }

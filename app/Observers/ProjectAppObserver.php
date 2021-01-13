@@ -19,5 +19,9 @@ class ProjectAppObserver
                 'name' => Str::slug($project->name),
             ]))->setCreateHome(true));
         }
+
+        if ($app->source_repository) {
+            $app->writeNginxConfig();
+        }
     }
 }

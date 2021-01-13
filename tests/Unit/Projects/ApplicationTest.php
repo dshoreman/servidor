@@ -3,6 +3,7 @@
 namespace Tests\Unit\Projects;
 
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
@@ -28,7 +29,7 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
-    public function can_set_template_with_new_application(): Application
+    public function template_can_be_set_with_new_application(): Application
     {
         $app = new Application(['template' => 'php']);
 
@@ -37,9 +38,20 @@ class ApplicationTest extends TestCase
         return $app;
     }
 
+    /** @test */
+    public function template_throws_exception_when_invalid(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Invalid template 'bla'");
+
+        $this->project->applications()->save($app = new Application([
+            'template' => 'bla',
+        ]));
+    }
+
     /**
      * @test
-     * @depends can_set_template_with_new_application
+     * @depends template_can_be_set_with_new_application
      */
     public function can_access_project(Application $app): Application
     {
@@ -92,8 +104,36 @@ class ApplicationTest extends TestCase
         $this->assertArraySubset(['name' => 'ghosty', 'dir' => '/home/ghosty'], $app->systemUser);
     }
 
+    /** @test */
+    public function nginx_config_defaults_to_basic_template(): void
+    {
+        $this->project->applications()->save($app = new Application([
+            'domain_name' => 'basicdefault.example',
+            'source_repository' => 'dshoreman/servidor-test-site',
+        ]));
+
+        $this->assertFileExists($config = storage_path('app/vhosts/basicdefault.example.conf'));
+        $this->assertStringContainsString('index index.html index.htm;', file_get_contents($config));
+    }
+
+    /**
+     * @test
+     * @depends can_access_project
+     */
+    public function laravel_apps_use_php_nginx_template(Application $app): void
+    {
+        $app->template = 'laravel';
+        $app->domain_name = 'laratest.dev';
+        $app->save();
+
+        $this->assertFileExists($p = storage_path('app/vhosts/laratest.dev.conf'));
+        $this->assertStringContainsString('index index.php index.html index.htm;', $s = file_get_contents($p));
+        $this->assertStringContainsString('try_files $uri $uri/ /index.php?query_string', $s);
+    }
+
     public static function tearDownAfterClass(): void
     {
         exec('grep ^ghosty /etc/passwd && sudo userdel -r ghosty 2>/dev/null');
+        exec('cd /var/servidor/storage/app/vhosts; sudo rm basicdefault.example.conf laratest.dev.conf');
     }
 }

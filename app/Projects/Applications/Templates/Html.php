@@ -9,6 +9,8 @@ class Html
     /** @var Application */
     protected $app;
 
+    public $nginxTemplate = 'basic';
+
     /** @var string */
     public $publicDir = '';
 
