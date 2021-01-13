@@ -26,10 +26,14 @@ class Html
 
     public function pullCode(): bool
     {
+        if (!$this->app->source_repository) {
+            return false;
+        }
+
         $status = 0;
         $output = [];
         $root = $this->app->source_root;
-        $cmd = $this->makePullCommand($root, $this->app->source_branch);
+        $cmd = $this->makePullCommand($root, $this->app->source_branch ?: '');
 
         if (!is_dir($root)) {
             $dirCmd = 'sudo mkdir -p "%s" && sudo chown www-data:www-data "%s"';

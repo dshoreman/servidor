@@ -57,7 +57,7 @@ class CreateProjectTest extends TestCase
                 'template' => 'php',
                 'domain' => 'example.com',
                 'provider' => 'github',
-                'repository' => 'foo/bar',
+                'repository' => 'dshoreman/servidor-test-site',
             ]],
         ]);
 
@@ -68,8 +68,8 @@ class CreateProjectTest extends TestCase
         $response->assertJsonFragment([
             'template' => 'php',
             'domain_name' => 'example.com',
-            'source_uri' => 'https://github.com/foo/bar.git',
-            'source_root' => '/home/project-with-app/bar',
+            'source_uri' => 'https://github.com/dshoreman/servidor-test-site.git',
+            'source_root' => '/home/project-with-app/servidor-test-site',
         ]);
 
         $project = Project::with('applications')->firstOrFail();

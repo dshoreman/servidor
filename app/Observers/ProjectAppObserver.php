@@ -22,6 +22,7 @@ class ProjectAppObserver
 
         if ($app->source_repository) {
             $app->writeNginxConfig();
+            $app->template()->pullCode();
         }
     }
 }

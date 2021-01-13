@@ -69,9 +69,9 @@ class ApplicationTest extends TestCase
     public function source_repo_is_parsed_correctly(Application $app): void
     {
         $app->source_provider = 'github';
-        $app->source_repository = 'foo/bar';
+        $app->source_repository = 'dshoreman/servidor-test-site';
 
-        $this->assertEquals('https://github.com/foo/bar.git', $app->source_uri);
+        $this->assertEquals('https://github.com/dshoreman/servidor-test-site.git', $app->source_uri);
     }
 
     /**

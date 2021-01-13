@@ -48,7 +48,6 @@ class WriteSiteConfig
         $this->symlink = '/etc/nginx/sites-enabled/' . $filename;
 
         $this->updateConfig();
-        $this->pullSite();
 
         $site->is_enabled
             ? $this->createSymlink()
@@ -71,29 +70,6 @@ class WriteSiteConfig
         $disk = Storage::disk('local');
         $file = $disk->path('vhosts/' . $this->filename);
         exec('sudo cp "' . $file . '" "' . $this->configPath . '"');
-    }
-
-    private function pullSite(): void
-    {
-        $root = $this->site->project_root;
-        $branch = $this->site->source_branch;
-
-        if (!$this->site->type || 'redirect' == $this->site->type || !$root) {
-            return;
-        }
-
-        if (is_dir($root . '/.git')) {
-            exec('cd "' . $root . '"' . ($branch ? ' && git checkout "' . $branch . '"' : '') . ' && git pull');
-
-            return;
-        }
-
-        if (!is_dir($root)) {
-            mkdir($root, 0755, true);
-        }
-
-        $cloneCmd = $branch ? 'git clone --branch "' . $branch . '"' : 'git clone';
-        exec($cloneCmd . ' "' . $this->site->source_repo . '" "' . $root . '"');
     }
 
     private function createSymlink(): void

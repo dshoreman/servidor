@@ -77,28 +77,18 @@ class PullCodeTest extends TestCase
             'system_user' => null,
             'template' => 'html',
         ]);
-
-        exec('sudo rm -rf /var/www/pullable-project');
     }
 
     /** @test */
     public function pull_creates_source_root_if_it_doesnt_exist(): void
     {
-        $root = '/var/www/initially-appless';
-
-        $app = new Application([
+        $this->assertDirectoryNotExists($root = '/var/www/initially-appless');
+        $project = Project::create(['name' => 'Initially Appless']);
+        $project->applications()->save($app = new Application([
             'source_provider' => 'github',
             'source_repository' => self::TEST_REPO,
             'template' => 'html',
-        ]);
-        $project = Project::create([
-            'name' => 'Initially Appless',
-        ]);
-        $app->project_id = $project->id;
-        $app->save();
-
-        $this->assertDirectoryNotExists($root . '/servidor-test-site');
-        $this->assertDirectoryNotExists($root);
+        ]));
 
         $response = $this->authed()->postJson('/api/projects/' . $project->id . '/apps/' . $app->id . '/pull');
 
@@ -109,7 +99,10 @@ class PullCodeTest extends TestCase
             'template' => 'html',
         ]);
         $this->assertDirectoryExists($root . '/servidor-test-site');
+    }
 
-        exec('sudo rm -rf ' . $root);
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo rm -rf /var/www/initially-appless /var/www/pullable-project');
     }
 }

@@ -31,4 +31,50 @@ class HtmlTest extends TestCase
 
         $this->assertEmpty($app->template()->getLogs());
     }
+
+    /** @test */
+    public function pull_creates_project_root_if_it_does_not_exist(): void
+    {
+        $path = '/home/pull-sans-root/servidor-test-site';
+        $this->assertDirectoryNotExists($path);
+
+        $project = Project::create(['name' => 'pull sans root']);
+        $project->applications()->save($app = new Application([
+            'source_repository' => 'dshoreman/servidor-test-site',
+            'source_provider' => 'github',
+            'source_branch' => 'develop',
+            'template' => 'php',
+        ]));
+        $app->template()->pullCode();
+
+        $this->assertDirectoryExists($path);
+    }
+
+    /** @test */
+    public function pull_creates_root_with_correct_permissions(): void
+    {
+        $path = '/var/www/rootperms/servidor-test-site';
+        $this->assertDirectoryNotExists($path);
+
+        $project = Project::create(['name' => 'rootperms']);
+        $project->applications()->save($app = new Application([
+            'domain_name' => 'rootperms.example',
+            'source_repository' => 'dshoreman/servidor-test-site',
+            'source_provider' => 'github',
+            'source_branch' => 'develop',
+            'template' => 'html',
+        ]));
+        $app->template()->pullCode();
+
+        $stat = system("stat -c '%a' \"${path}\"");
+
+        $this->assertDirectoryExists($path);
+        $this->assertEquals(755, $stat);
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('grep ^pull-sans-root /etc/passwd && sudo userdel -r pull-sans-root 2>/dev/null');
+        exec('sudo rm -rf /var/www/rootperms');
+    }
 }
