@@ -30,6 +30,7 @@ class Html
         }
 
         exec('sudo rm "' . $symlink . '"');
+        clearstatcache(true, $symlink);
     }
 
     public function enable(): void
