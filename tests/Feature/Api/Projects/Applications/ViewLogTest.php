@@ -1,7 +1,8 @@
 <?php
 
-namespace Tests\Feature\Api\Sites;
+namespace Tests\Feature\Api\Projects\Applications;
 
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Servidor\Projects\Application;
@@ -29,6 +30,9 @@ class ViewLogTest extends TestCase
     /** @test */
     public function cannot_get_log_if_project_id_does_not_match(): void
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Project mismatch');
+
         $app1 = new Application(['template' => 'php']);
         $app2 = new Application(['template' => 'laravel']);
         $project1 = Project::create(['name' => 'mismatch1']);
@@ -36,12 +40,10 @@ class ViewLogTest extends TestCase
         $project1->applications()->save($app1);
         $project2->applications()->save($app1);
 
+        $this->withoutExceptionHandling();
         $response = $this->authed()->getJson("/api/projects/{$project1->id}/logs/php.app-{$app1->id}.log");
 
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
-        $response->assertJsonFragment([
-            'message' => 'Project mismatch',
-            'exception' => 'Exception',
-        ]);
+        $this->withExceptionHandling();
     }
 }
