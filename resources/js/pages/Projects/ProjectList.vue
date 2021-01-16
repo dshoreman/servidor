@@ -6,15 +6,17 @@
                      is="sui-button" primary icon="add"
                      content="New Project" />
 
-        <sui-table selectable>
-            <sui-table-row  v-for="p in projects" :key="p.id">
-                <sui-table-cell>
-                    <sui-icon :color="getIcon(p).color" :name="getIcon(p).name" />
-                    <router-link :to="{ name: 'projects.view', params: { id: p.id }}">
-                        {{ p.name }}
-                    </router-link>
-                </sui-table-cell>
-            </sui-table-row>
+        <sui-table>
+            <sui-table-body>
+                <sui-table-row v-for="p in projects" :key="p.id">
+                    <sui-table-cell selectable>
+                        <router-link :to="{ name: 'projects.view', params: { id: p.id }}">
+                            <sui-icon :color="getIcon(p).color" :name="getIcon(p).name" />
+                            {{ p.name }}
+                        </router-link>
+                    </sui-table-cell>
+                </sui-table-row>
+            </sui-table-body>
         </sui-table>
 
     </div>
