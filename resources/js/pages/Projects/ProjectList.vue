@@ -9,7 +9,7 @@
         <sui-table selectable>
             <sui-table-row  v-for="p in projects" :key="p.id">
                 <sui-table-cell>
-                    <sui-icon color="violet" name="project" />
+                    <sui-icon :color="getIcon(p).color" :name="getIcon(p).name" />
                     <router-link :to="{ name: 'projects.view', params: { id: p.id }}">
                         {{ p.name }}
                     </router-link>
@@ -34,12 +34,25 @@
 </template>
 
 <script>
+import templates from './templates.json';
+
 export default {
     mounted() {
         this.$store.dispatch('projects/load');
     },
     props: {
         projects: Array,
+    },
+    methods: {
+        getIcon(project) {
+            let tpl = { icon: 'question mark', colour: 'grey' };
+
+            if (project.applications && 0 < project.applications.length) {
+                tpl = templates.find(t => t.name === project.applications[0].template);
+            }
+
+            return { name: tpl.icon, color: tpl.colour };
+        },
     },
 };
 </script>
