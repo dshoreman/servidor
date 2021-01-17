@@ -200,7 +200,7 @@ export default {
     computed: {
         appIcon() {
             const tpl = templates.find(
-                t => t.name.toLowerCase() === this.project.applications[0].template,
+                t => t.name.toLowerCase() === this.project.applications[0].template.toLowerCase(),
             );
 
             return {

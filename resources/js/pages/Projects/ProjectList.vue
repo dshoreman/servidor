@@ -2,13 +2,16 @@
 
     <div v-if="projects.length">
 
+        <sui-input placeholder="Search..." icon="search"
+            v-model="filter" @keyup.enter="viewSelected" />
+
         <router-link :to="{ name: 'projects.new' }"
                      is="sui-button" primary icon="add"
                      content="New Project" />
 
         <sui-table selectable>
             <sui-table-body>
-                <sui-table-row v-for="p in projects" :key="p.id">
+                <sui-table-row v-for="p in filteredProjects" :key="p.id">
                     <sui-table-cell selectable :colspan="getColspan(p)">
                         <router-link :to="{ name: 'projects.view', params: { id: p.id }}">
                             <sui-icon :color="getIcon(p).color" :name="getIcon(p).name" />
@@ -48,6 +51,12 @@
 </template>
 
 <style scoped>
+div.input {
+    float: right;
+}
+td.collapsing.selectable {
+    min-width: 15rem;
+}
 i.external {
     float: right;
     margin-right: 0.75rem;
@@ -64,6 +73,18 @@ export default {
     },
     props: {
         projects: Array,
+    },
+    data() {
+        return {
+            filter: '',
+        };
+    },
+    computed: {
+        filteredProjects() {
+            return this.projects.filter(
+                p => p.name.toLowerCase().includes(this.filter.toLowerCase()),
+            );
+        },
     },
     methods: {
         getColspan(project) {
@@ -96,6 +117,15 @@ export default {
                 name: 'files',
                 params: { path: project.applications[0].source_root },
             };
+        },
+        viewSelected() {
+            if (0 === this.filteredProjects.length) {
+                return;
+            }
+
+            const [ project ] = this.filteredProjects;
+
+            this.$router.push({ name: 'projects.view', params: { id: project.id }});
         },
     },
 };

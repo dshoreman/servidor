@@ -2,9 +2,9 @@
     <sui-grid container>
         <sui-grid-row>
             <sui-grid-column>
-                <sui-input placeholder="Type a name for your Application..." :icon="filterIcon"
+                <sui-input placeholder="Type a name for your Application..." icon="plus"
                            class="fluid massive" :inverted="darkMode" :transparent="darkMode"
-                           v-model="site.name" @input="filterSites" @keyup.enter="createOrEdit" />
+                           v-model="site.name" @keyup.enter="createOrEdit" />
             </sui-grid-column>
         </sui-grid-row>
         <router-view id="sites" :sites="sites" />
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import store from '../store';
 
 export default {
@@ -24,26 +24,10 @@ export default {
             site: state => state.sites.site,
         }),
         ...mapGetters({
-            sites: 'sites/filtered',
+            sites: 'sites/all',
         }),
-        filterIcon() {
-            const match = this.site.name.toLowerCase();
-
-            if ('' === match) {
-                return 'search';
-            }
-
-            if ('object' === typeof this.sites.find(s => s.name.toLowerCase() === match)) {
-                return 'cogs';
-            }
-
-            return 'plus';
-        },
     },
     methods: {
-        ...mapMutations({
-            filterSites: 'sites/setFilter',
-        }),
         createOrEdit() {
             const match = this.site.name.toLowerCase();
 

@@ -5,7 +5,6 @@ export default {
     state: {
         alerts: [],
         current: {},
-        currentFilter: '',
         errors: [],
         sites: [],
         site: {
@@ -35,9 +34,6 @@ export default {
         clearMessages: state => {
             state.alerts = [];
             state.errors = [];
-        },
-        setFilter: (state, value) => {
-            state.currentFilter = value;
         },
         setSites: (state, sites) => {
             state.sites = sites;
@@ -113,9 +109,6 @@ export default {
     },
     getters: {
         all: state => state.sites,
-        filtered: state => state.sites.filter(
-            site => site.name.toLowerCase().includes(state.currentFilter.toLowerCase()),
-        ),
         findById: state => id => state.sites.find(s => s.id === id),
         findByDocroot: state => path => state.sites.find(s => s.project_root === path),
     },
