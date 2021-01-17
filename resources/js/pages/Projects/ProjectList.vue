@@ -15,6 +15,12 @@
                             {{ p.name }}
                         </router-link>
                     </sui-table-cell>
+                    <sui-table-cell collapsing>
+                        <router-link is="sui-button" basic size="tiny" compact
+                            :to="makeBrowseLink(p)" v-if="canBrowse(p)">
+                            <sui-icon name="open folder" /> Browse Source
+                        </router-link>
+                    </sui-table-cell>
                 </sui-table-row>
             </sui-table-body>
         </sui-table>
@@ -50,10 +56,21 @@ export default {
             let tpl = { icon: 'question mark', colour: 'grey' };
 
             if (project.applications && 0 < project.applications.length) {
-                tpl = templates.find(t => t.name === project.applications[0].template);
+                tpl = templates.find(
+                    t => t.name.toLowerCase() === project.applications[0].template.toLowerCase(),
+                );
             }
 
             return { name: tpl.icon, color: tpl.colour };
+        },
+        canBrowse(project) {
+            return project.applications.length && 'source_root' in project.applications[0];
+        },
+        makeBrowseLink(project) {
+            return {
+                name: 'files',
+                params: { path: project.applications[0].source_root },
+            };
         },
     },
 };

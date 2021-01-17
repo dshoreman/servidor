@@ -101,7 +101,7 @@ export default {
             },
         },
         template() {
-            return this.templates.find(t => t.name === this.defaultApp.template);
+            return this.templates.find(t => t.name.toLowerCase() === this.defaultApp.template);
         },
     },
     methods: {
@@ -146,7 +146,7 @@ export default {
             const [ firstStep ] = tpl.steps;
 
             this.project.applications.push({
-                template: tpl.name,
+                template: tpl.name.toLowerCase(),
                 provider: 'github',
                 domain: '',
             });
