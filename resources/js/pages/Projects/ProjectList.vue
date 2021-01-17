@@ -6,16 +6,22 @@
                      is="sui-button" primary icon="add"
                      content="New Project" />
 
-        <sui-table>
+        <sui-table selectable>
             <sui-table-body>
                 <sui-table-row v-for="p in projects" :key="p.id">
-                    <sui-table-cell selectable>
+                    <sui-table-cell selectable :colspan="getColspan(p)">
                         <router-link :to="{ name: 'projects.view', params: { id: p.id }}">
                             <sui-icon :color="getIcon(p).color" :name="getIcon(p).name" />
                             {{ p.name }}
                         </router-link>
                     </sui-table-cell>
-                    <sui-table-cell collapsing>
+                    <sui-table-cell selectable collapsing v-if="p.applications.length">
+                        <a :href="'https://' + p.applications[0].domain_name">
+                            <sui-icon name="external" />
+                            {{ p.applications[0].domain_name }}
+                        </a>
+                    </sui-table-cell>
+                    <sui-table-cell collapsing v-if="p.applications.length">
                         <router-link is="sui-button" basic size="tiny" compact
                             :to="makeBrowseLink(p)" v-if="canBrowse(p)">
                             <sui-icon name="open folder" /> Browse Source
@@ -41,6 +47,14 @@
 
 </template>
 
+<style scoped>
+i.external {
+    float: right;
+    margin-right: 0.75rem;
+    padding-left: 0.75rem;
+}
+</style>
+
 <script>
 import templates from './templates.json';
 
@@ -52,6 +66,17 @@ export default {
         projects: Array,
     },
     methods: {
+        getColspan(project) {
+            const WIDTH_NO_APP = 3,
+                WIDTH_NO_DOMAIN = 2,
+                WIDTH_WITH_DOMAIN = 1;
+
+            if (!project.applications.length) {
+                return WIDTH_NO_APP;
+            }
+
+            return project.applications[0].domain_name ? WIDTH_WITH_DOMAIN : WIDTH_NO_DOMAIN;
+        },
         getIcon(project) {
             let tpl = { icon: 'question mark', colour: 'grey' };
 
