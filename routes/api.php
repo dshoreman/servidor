@@ -10,7 +10,6 @@ Route::middleware('auth:api')->group(function (): void {
     Route::resource('sites', 'SiteController', [
         'only' => ['index', 'store', 'update'],
     ]);
-    Route::get('sites/{site}/branches', 'SiteController@branches');
     Route::get('sites/{site}/logs/{log}', 'SiteController@showLog');
 
     Route::name('projects.')->prefix('/projects')->group(function (): void {
@@ -35,6 +34,8 @@ Route::middleware('auth:api')->group(function (): void {
     Route::delete('files', 'FileController@delete');
 
     Route::name('system')->prefix('/system')->namespace('System')->group(function (): void {
+        Route::get('git/branches', Git\ListBranches::class);
+
         Route::resource('groups', 'GroupsController', [
             'only' => ['index', 'store', 'update', 'destroy'],
         ]);

@@ -3,10 +3,8 @@
 namespace Servidor\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Http\Requests\CreateSite;
 use Servidor\Http\Requests\UpdateSite;
@@ -34,22 +32,6 @@ class SiteController extends Controller
         $site = Site::create($request->validated());
 
         return response()->json($site, Response::HTTP_CREATED);
-    }
-
-    /**
-     * Display a list of branches on the given site's repository.
-     */
-    public function branches(Request $request, Site $site): JsonResponse
-    {
-        $cmd = "git ls-remote --heads '%s' | sed 's^.*refs/heads/^^'";
-        $repo = $request->query('repo', $site->source_repo);
-        if (!$repo || !is_string($repo)) {
-            throw ValidationException::withMessages(['repo' => 'Missing repo and site does not have one set.']);
-        }
-
-        exec(sprintf($cmd, $repo), $branches);
-
-        return response()->json($branches);
     }
 
     public function showLog(Site $site, string $log): Response

@@ -16,9 +16,10 @@ use Servidor\System\User as SystemUser;
 
 class Application extends Model
 {
-    private const SOURCE_PROVIDERS = [
+    public const SOURCE_PROVIDERS = [
         'bitbucket' => 'https://bitbucket.org/{repo}.git',
         'github' => 'https://github.com/{repo}.git',
+        'custom' => '{repo}',
     ];
 
     protected $appends = [
@@ -96,11 +97,7 @@ class Application extends Model
         $provider = $this->attributes['source_provider'] ?? '';
         $repo = $this->attributes['source_repository'] ?? '';
 
-        if (array_key_exists($provider, self::SOURCE_PROVIDERS)) {
-            return str_replace('{repo}', $repo, self::SOURCE_PROVIDERS[$provider]);
-        }
-
-        return $repo;
+        return str_replace('{repo}', $repo, self::SOURCE_PROVIDERS[(string) $provider ?: 'custom']);
     }
 
     public function getSystemUserAttribute(): ?array

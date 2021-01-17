@@ -4,8 +4,6 @@ export default {
     namespaced: true,
     state: {
         alerts: [],
-        branches: [],
-        branchesLoading: false,
         current: {},
         currentFilter: '',
         errors: [],
@@ -55,13 +53,6 @@ export default {
 
             state.current = site;
         },
-        setSiteBranches: (state, branches) => {
-            state.branches = branches;
-            state.branchesLoading = false;
-        },
-        branchesLoading: state => {
-            state.branchesLoading = true;
-        },
         addSite: (state, site) => {
             state.sites.push(site);
             state.site.name = '';
@@ -83,24 +74,8 @@ export default {
                 resolve(response);
             }).catch(error => reject(error));
         }),
-        loadBranches: ({ commit, state }, repo = '') => {
-            commit('branchesLoading');
-            let url = `/api/sites/${state.current.id}/branches`;
-
-            if ('' !== repo) {
-                url += `?repo=${repo}`;
-            }
-
-            return new Promise((resolve, reject) => {
-                axios.get(url).then(response => {
-                    commit('setSiteBranches', response.data);
-                    resolve(response);
-                }).catch(error => reject(error));
-            });
-        },
-        edit: ({ commit, dispatch }, site) => {
+        edit: ({ commit }, site) => {
             commit('setEditorSite', site);
-            dispatch('loadBranches');
         },
         create: ({ commit, state }) => new Promise((resolve, reject) => {
             axios.post('/api/sites', state.site).then(response => {
@@ -143,6 +118,5 @@ export default {
         ),
         findById: state => id => state.sites.find(s => s.id === id),
         findByDocroot: state => path => state.sites.find(s => s.project_root === path),
-        branchOptions: state => state.branches.map(b => ({ text: b, value: b })),
     },
 };

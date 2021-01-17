@@ -16,13 +16,14 @@
 
         <sui-form-field v-else>
             <label>Repository:</label>
-            <sui-input placeholder="dshoreman/servidor-test-site"
-                v-model="repository" required />
+            <sui-input placeholder="dshoreman/servidor-test-site" required
+                v-model="repository" @change="loadBranches(repository)" />
         </sui-form-field>
 
         <sui-form-field>
             <label>Deployment Branch:</label>
-            <sui-input v-model="branch" placeholder="master" required />
+            <sui-dropdown search selection :loading="branchesLoading" required
+                :options="branchOptions" v-model="branch" placeholder="Select branch..." />
         </sui-form-field>
 
         <step-buttons @cancel="$emit('cancel')" />
@@ -41,12 +42,35 @@ export default {
     data() {
         return {
             branch: '',
+            branches: [],
+            branchesLoading: false,
             provider: 'github',
             repository: '',
             url: '',
         };
     },
+    computed: {
+        branchOptions() {
+            return this.branches.map(b => ({ text: b, value: b }));
+        },
+    },
     methods: {
+        loadBranches(repo) {
+            if ('' === repo) {
+                this.branches = [];
+
+                return;
+            }
+
+            this.branchesLoading = true;
+
+            axios.get(`/api/system/git/branches?provider=${this.provider}&repository=${repo}`).then(
+                response => {
+                    this.branches = response.data;
+                    this.branchesLoading = false;
+                },
+            );
+        },
         submit() {
             let repoUri = this.repository;
 

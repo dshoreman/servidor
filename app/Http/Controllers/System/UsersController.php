@@ -5,11 +5,9 @@ namespace Servidor\Http\Controllers\System;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Exceptions\System\UserNotModifiedException;
 use Servidor\Exceptions\System\UserSaveException;
-use Servidor\Http\Controllers\Controller;
 use Servidor\Http\Requests\System\CreateUser;
 use Servidor\Http\Requests\System\UpdateUser;
 use Servidor\System\User as SystemUser;
@@ -62,9 +60,9 @@ class UsersController extends Controller
                 Response::HTTP_OK
             );
         } catch (UserNotFoundException $e) {
-            throw $this->fail('No user found matching the given criteria.');
+            throw $this->fail('uid', 'No user found matching the given criteria.');
         } catch (UserNotModifiedException $e) {
-            throw $this->fail('Nothing to update!');
+            throw $this->fail('uid', 'Nothing to update!');
         }
     }
 
@@ -78,10 +76,5 @@ class UsersController extends Controller
         SystemUser::find($uid)->delete($withHome);
 
         return response(null, Response::HTTP_NO_CONTENT);
-    }
-
-    protected function fail(string $message, string $key = 'uid'): ValidationException
-    {
-        return ValidationException::withMessages([$key => $message]);
     }
 }
