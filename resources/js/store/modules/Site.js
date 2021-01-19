@@ -1,11 +1,7 @@
-const HTTP_UNPROCESSABLE_ENTITY = 422;
-
 export default {
     namespaced: true,
     state: {
-        alerts: [],
         current: {},
-        errors: [],
         sites: [],
         site: {
             name: '',
@@ -13,28 +9,6 @@ export default {
         },
     },
     mutations: {
-        setSuccess: (state, message) => {
-            state.alerts.push({
-                title: 'Success!',
-                message,
-                isSuccess: true,
-            });
-        },
-        setErrors: (state, { message, errors, action = 'save' }) => {
-            state.alerts.push({
-                title: `Could not ${action} Site!`,
-                message,
-                isSuccess: false,
-            });
-
-            if (errors) {
-                state.errors = errors;
-            }
-        },
-        clearMessages: state => {
-            state.alerts = [];
-            state.errors = [];
-        },
         setSites: (state, sites) => {
             state.sites = sites;
         },
@@ -76,34 +50,15 @@ export default {
         create: ({ commit, state }) => new Promise((resolve, reject) => {
             axios.post('/api/sites', state.site).then(response => {
                 commit('addSite', response.data);
-                commit('clearMessages');
-                commit('setSuccess', `The site '${response.data.name}' has been created.`);
                 resolve(response);
             }).catch(error => reject(error));
         }),
         update: ({ commit }, site) => {
             axios.put(`/api/sites/${site.id}`, site.data).then(response => {
-                commit('clearMessages');
                 commit('updateSite', {
                     id: site.id,
                     site: response.data,
                 });
-                commit('setSuccess', `The site '${site.data.name}' has been saved.`);
-            }).catch(error => {
-                const res = error.response;
-
-                commit('clearMessages');
-
-                if (res && HTTP_UNPROCESSABLE_ENTITY === res.status) {
-                    commit('setErrors', {
-                        message: 'Fix the validation errors below and try again.',
-                        errors: res.data.errors,
-                    });
-                } else if (res) {
-                    commit('setErrors', res.statusText);
-                } else {
-                    commit('setErrors', error.message);
-                }
             });
         },
     },

@@ -1,19 +1,23 @@
 [{
+  "errorKey": "applications.0.template",
   "icon": "rocket",
   "name": "template",
   "title": "Project Template"
 }, {
   "disabled": true,
+  "errorKeys": ["applications.0.repository", "applications.0.branch"],
   "icon": "code",
   "name": "source",
   "title": "Source Location"
 }, {
   "disabled": true,
+  "errorKey": "applications.0.domain",
   "icon": "globe",
   "name": "domain",
   "title": "Primary Domain"
 }, {
   "disabled": true,
+  "errorKey": "name",
   "icon": "question mark",
   "name": "confirm",
   "title": "Confirmation"

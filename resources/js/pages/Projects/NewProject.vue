@@ -1,5 +1,8 @@
 <template>
     <sui-grid>
+        <sui-grid-column :width="16" v-if="error">
+            <sui-message negative :content="error" header="Couldn't create the project!" />
+        </sui-grid-column>
         <sui-grid-column :width="6">
             <step-list :selected="step" :steps="steps" />
         </sui-grid-column>
@@ -8,29 +11,28 @@
 
             <sui-segment v-if="step == 'template'">
                 <h3 is="sui-header">First pick a template to get started</h3>
+                <sui-message negative v-if="'template' in errors"
+                    :content="errors['applications.0.template'][0]" />
                 <template-selector :templates="templates"
                     @selected="setAppTemplate" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'source'">
                 <h3 is="sui-header">Where are the project files stored?</h3>
-                <source-selector :providers="providers"
-                    @selected="setAppSource"
-                    @cancel="cancel" />
+                <source-selector :errors="errors" :providers="providers"
+                    @selected="setAppSource" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'domain'">
                 <h3 is="sui-header">Set the main entry point for your app</h3>
-                <domain-form
-                    v-model="defaultApp.domain"
-                    @next="nextStep('domain')"
-                    @cancel="cancel" />
+                <domain-form :errors="errors" v-model="defaultApp.domain"
+                    @next="nextStep('domain')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
                 <h3 is="sui-header">Let's get this Project started!</h3>
                 <confirmation-text :app="defaultApp" :source="extraData" />
-                <confirmation-form v-model="project.name"
+                <confirmation-form :errors="errors" v-model="project.name"
                                    :template="defaultApp.template"
                                    @created="create" @enabled="create(true)" />
             </sui-segment>
@@ -66,6 +68,8 @@ export default {
     data() {
         return {
             bypassLeaveHandler: false,
+            error: '',
+            errors: {},
             extraData: {
                 repository: '',
                 provider: '',
@@ -137,6 +141,19 @@ export default {
             nextStep.disabled = false;
             this.step = nextStep.name;
         },
+        jumpToFirstError() {
+            for (const step of this.steps) {
+                const keys = 'errorKeys' in step ? step.errorKeys : [ step.errorKey ];
+
+                for (const field of keys) {
+                    if (field in this.errors && !step.disabled) {
+                        this.step = step.name;
+
+                        return;
+                    }
+                }
+            }
+        },
         nextStep(from) {
             const step = this.template.steps.findIndex(s => s === from);
 
@@ -168,11 +185,28 @@ export default {
             this.nextStep('source');
         },
         create(enabled = false) {
+            this.error = '';
+            this.errors = {};
+
             if (enabled) {
                 this.project.is_enabled = true;
             }
+
             this.$store.dispatch('projects/create', this.project).then(response => {
                 this.$router.push({ name: 'projects.view', params: { id: response.data.id }});
+            }).catch(error => {
+                const res = error.response, validationError = 422;
+
+                if (res && validationError === res.status) {
+                    this.error = 'Please fix the highlighted issues and try again.';
+                    this.errors = res.data.errors;
+
+                    this.jumpToFirstError();
+
+                    return;
+                }
+
+                this.error = res && 'statusText' in res ? res.statusText : error.message;
             });
         },
     },

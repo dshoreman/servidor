@@ -14,39 +14,6 @@
 
             <alerts :alerts="alerts" />
 
-            <sui-form-field :error="'name' in errors">
-                <label>App Name</label>
-                <sui-input v-model="tmpSite.name" @input="setDocroot" placeholder="My Blog" />
-                <sui-label basic color="red" pointing v-if="'name' in errors">
-                    {{ errors.name[0] }}
-                </sui-label>
-            </sui-form-field>
-
-            <sui-header content="Primary Domain" />
-            <sui-form-fields>
-                <sui-form-field :width="11" :error="'primary_domain' in errors">
-                    <label>Domain Name</label>
-                    <sui-input placeholder="example.com" @input="setDocroot"
-                        v-model="tmpSite.primary_domain" />
-                        <sui-label basic color="red" pointing
-                            v-if="'primary_domain' in errors">
-                            {{ errors.primary_domain[0] }}
-                        </sui-label>
-                </sui-form-field>
-                <sui-form-field :width="5" :error="'type' in errors">
-                    <label>Project type</label>
-                    <sui-dropdown selection :options="[
-                        { text: 'Redirect', value: 'redirect' },
-                        { text: 'Basic Website', value: 'basic' },
-                        { text: 'PHP Website', value: 'php' },
-                        { text: 'Laravel App', value: 'laravel' },
-                    ]" v-model="tmpSite.type" />
-                    <sui-label basic color="red" pointing v-if="'type' in errors">
-                        {{ errors.type[0] }}
-                    </sui-label>
-                </sui-form-field>
-            </sui-form-fields>
-
             <sui-form-field v-if="tmpSite.type == 'redirect'"
                 :error="'redirect_to' in errors">
                 <label>Destination</label>
@@ -71,55 +38,8 @@
                 </sui-form-field>
             </sui-form-fields>
 
-            <sui-form-fields v-if="tmpSite.type && tmpSite.type != 'redirect'">
-                <sui-form-field :width="11" :error="'source_repo' in errors">
-                    <label>Clone URL</label>
-                    <sui-input v-model="tmpSite.source_repo" />
-                    <sui-label basic color="red" pointing v-if="'source_repo' in errors">
-                        {{ errors.source_repo[0] }}
-                    </sui-label>
-                </sui-form-field>
-                <sui-form-field :width="5" :error="'source_branch' in errors">
-                    <label>Branch</label>
-                    <sui-input v-model="tmpSite.source_branch" placeholder="master" />
-                    <sui-label basic color="red" pointing v-if="'source_branch' in errors">
-                        {{ errors.source_branch[0] }}
-                    </sui-label>
-                </sui-form-field>
-            </sui-form-fields>
-
-            <sui-form-field v-if="['basic', 'php'].includes(tmpSite.type)"
-                :error="'project_root' in errors">
-                <label>Document Root</label>
-                <sui-input readonly v-model="tmpSite.project_root" />
-                <sui-label basic color="red" pointing v-if="'project_root' in errors">
-                    {{ errors.project_root[0] }}
-                </sui-label>
-            </sui-form-field>
-
-            <sui-form-fields v-else-if="tmpSite.type == 'laravel'">
-                <sui-form-field :width="11" :error="'project_root' in errors">
-                    <label>Document Root</label>
-                    <sui-input v-model="tmpSite.project_root" />
-                    <sui-label basic color="red" pointing v-if="'project_root' in errors">
-                        {{ errors.project_root[0] }}
-                    </sui-label>
-                </sui-form-field>
-
-                <sui-form-field :width="5" :error="'public_dir' in errors">
-                    <label>Public Folder</label>
-                    <sui-input v-model="tmpSite.public_dir" />
-                    <sui-label basic color="red" pointing v-if="'public_dir' in errors">
-                        {{ errors.public_dir[0] }}
-                    </sui-label>
-                </sui-form-field>
-            </sui-form-fields>
-
             <sui-header content="System User" />
             <sui-segment :inverted="darkMode" v-if="!tmpSite.system_user">
-                <sui-label basic color="red" pointing="below" v-if="'system_user' in errors">
-                    {{ errors.system_user[0] }}
-                </sui-label>
                 <sui-form-field :error="'system_user' in errors">
                     <sui-checkbox toggle v-model="tmpSite.create_user" value="1">
                         Create a user named '<code>{{ tmpSite.name }}</code>' for this project
@@ -152,8 +72,8 @@
 </style>
 
 <script>
-import { mapActions, mapState } from 'vuex';
 import Alerts from '../Alerts';
+import { mapState } from 'vuex';
 
 export default {
     props: {
@@ -172,33 +92,14 @@ export default {
             tmpSite: state => state.sites.current,
         }),
     },
-    watch: {
-        'tmpSite.type': function () {
-            this.setDocroot();
-        },
-    },
     data() {
         return {
             clonedSite: {},
         };
     },
     methods: {
-        ...mapActions({
-        }),
         updateSite(id) {
             this.$store.dispatch('sites/update', { id, data: this.tmpSite });
-        },
-        setDocroot() {
-            const site = this.tmpSite;
-            let dir = '', root = '';
-
-            if (['basic', 'php', 'laravel'].includes(site.type)) {
-                dir = 'laravel' === site.type ? '/public' : '/';
-                root = `/var/www/${site.primary_domain || _.kebabCase(site.name)}`;
-            }
-
-            site.project_root = root;
-            site.public_dir = dir;
         },
     },
 };

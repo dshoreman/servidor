@@ -5,11 +5,14 @@
 
         <sui-grid textAlign="center">
             <sui-grid-column centered :width="11">
-                <sui-form-field>
+                <sui-form-field :error="'name' in errors">
                     <label>Give your project a name:</label>
                     <sui-input :value="value"
                         placeholder="My new Blog"
                         @input="$emit('input', $event)" />
+                    <sui-label basic color="red" pointing v-if="'name' in errors">
+                        {{ errors.name[0] }}
+                    </sui-label>
                 </sui-form-field>
             </sui-grid-column>
         </sui-grid>
@@ -36,6 +39,10 @@
 
 <script>
 export default {
-    props: ['template', 'value'],
+    props: {
+        errors: { type: Object, default: () => ({}) },
+        template: { type: String, default: '' },
+        value: { type: String, default: '' },
+    },
 };
 </script>

@@ -16,44 +16,6 @@
                 </sui-header-subheader>
             </h2>
 
-            <sui-header attached="top" :inverted="darkMode">Source Files</sui-header>
-            <sui-segment attached :inverted="darkMode">
-                <sui-grid>
-                    <sui-grid-row :columns="2">
-                        <sui-grid-column>
-                            <sui-header size="tiny" :inverted="darkMode">
-                                Repository Clone URL
-                                <sui-header-subheader v-if="site.source_repo">
-                                    {{ site.source_repo }}
-                                </sui-header-subheader>
-                                <sui-header-subheader v-else>
-                                    No source repository has been set for this project!
-                                </sui-header-subheader>
-                            </sui-header>
-                        </sui-grid-column>
-                        <sui-grid-column>
-                            <sui-header size="tiny" :inverted="darkMode"> Tracking Branch
-                                <sui-header-subheader v-if="site.source_branch">
-                                    {{ site.source_branch }}
-                                </sui-header-subheader>
-                                <sui-header-subheader v-else>
-                                    Using default branch
-                                </sui-header-subheader>
-                            </sui-header>
-                        </sui-grid-column>
-                    </sui-grid-row>
-                </sui-grid>
-
-                <sui-header size="tiny" :inverted="darkMode" v-if="site.project_root">
-                    <router-link :to="{ name: 'files', params: {path: site.project_root } }"
-                                 content="Browse files" is="sui-button" floated="right"
-                                 basic primary icon="open folder" />
-                    Project Root
-                    <sui-header-subheader>{{ site.project_root }}</sui-header-subheader>
-                </sui-header>
-                <p v-else>This project doesn't have a project root defined.</p>
-            </sui-segment>
-
             <sui-header v-if="site.type == 'redirect'" attached="top" :inverted="darkMode">
                 Redirection
             </sui-header>

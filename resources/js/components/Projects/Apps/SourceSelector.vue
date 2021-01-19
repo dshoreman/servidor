@@ -9,21 +9,30 @@
             </sui-form-field>
         </sui-form-fields>
 
-        <sui-form-field v-if="provider == 'custom'">
+        <sui-form-field :error="'applications.0.repository' in errors" v-if="provider == 'custom'">
             <label>Repository URL:</label>
             <sui-input v-model="url" required />
+            <sui-label basic color="red" pointing v-if="'applications.0.repository' in errors">
+                {{ errors['applications.0.repository'][0] }}
+            </sui-label>
         </sui-form-field>
 
-        <sui-form-field v-else>
+        <sui-form-field :error="'applications.0.repository' in errors" v-else>
             <label>Repository:</label>
             <sui-input placeholder="dshoreman/servidor-test-site" required
                 v-model="repository" @change="loadBranches(repository)" />
+            <sui-label basic color="red" pointing v-if="'applications.0.repository' in errors">
+                {{ errors['applications.0.repository'][0] }}
+            </sui-label>
         </sui-form-field>
 
-        <sui-form-field>
+        <sui-form-field :error="'applications.0.branch' in errors">
             <label>Deployment Branch:</label>
             <sui-dropdown search selection :loading="branchesLoading" required
                 :options="branchOptions" v-model="branch" placeholder="Select branch..." />
+            <sui-label basic color="red" pointing v-if="'applications.0.branch' in errors">
+                {{ errors['applications.0.branch'][0] }}
+            </sui-label>
         </sui-form-field>
 
         <step-buttons @cancel="$emit('cancel')" />
@@ -38,7 +47,10 @@ export default {
     components: {
         StepButtons,
     },
-    props: [ 'providers' ],
+    props: {
+        errors: { type: Object, default: () => ({}) },
+        providers: { type: Array, default: () => []},
+    },
     data() {
         return {
             branch: '',
