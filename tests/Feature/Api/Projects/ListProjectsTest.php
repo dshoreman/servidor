@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
+use Servidor\Projects\Redirect;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
@@ -67,5 +68,24 @@ class ListProjectsTest extends TestCase
         $this->assertArrayHasKey('logs', $app);
         $this->assertArraySubset(['php' => 'PHP Error Log'], $app['logs']);
         $this->assertArraySubset(['laravel' => 'Laravel Log'], $app['logs']);
+    }
+
+    /** @test */
+    public function listed_projects_include_redirects(): array
+    {
+        $project = Project::create(['name' => 'Redirtest']);
+        $project->redirects()->save(new Redirect([
+            'domain_name' => 'a',
+            'target' => 'b',
+            'type' => 301,
+        ]));
+
+        $response = $this->authed()->getJson('/api/projects');
+
+        $response->assertOk();
+        $response->assertJsonCount(1);
+        $response->assertJson(Project::with('redirects')->get()->toArray());
+
+        return $response->json()[0];
     }
 }

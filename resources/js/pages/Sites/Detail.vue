@@ -16,38 +16,6 @@
                 </sui-header-subheader>
             </h2>
 
-            <sui-header v-if="site.type == 'redirect'" attached="top" :inverted="darkMode">
-                Redirection
-            </sui-header>
-            <sui-segment v-if="site.type == 'redirect'" attached :inverted="darkMode">
-                <sui-grid>
-                    <sui-grid-row :columns="2">
-                        <sui-grid-column>
-                            <sui-header size="tiny" :inverted="darkMode">
-                                Target URL
-                                <sui-header-subheader>
-                                    {{ site.redirect_to }}
-                                </sui-header-subheader>
-                            </sui-header>
-                        </sui-grid-column>
-                        <sui-grid-column>
-                            <sui-header size="tiny" :inverted="darkMode">
-                                Redirect Type
-                                <sui-header-subheader v-if="site.redirect_type == 301">
-                                    Permanent
-                                </sui-header-subheader>
-                                <sui-header-subheader v-else-if="site.redirect_type == 302">
-                                    Temporary
-                                </sui-header-subheader>
-                                <sui-header-subheader v-else>
-                                    {{ site.redirect_type }}
-                                </sui-header-subheader>
-                            </sui-header>
-                        </sui-grid-column>
-                    </sui-grid-row>
-                </sui-grid>
-            </sui-segment>
-
             <sui-header attached="top" :inverted="darkMode" v-if="site.system_user">
                 System User
             </sui-header>

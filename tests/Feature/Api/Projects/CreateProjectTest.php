@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
+use Servidor\Projects\Redirect;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
@@ -62,6 +63,7 @@ class CreateProjectTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonCount(1, 'applications');
         $response->assertJsonStructure(['name', 'applications' => [
             ['template', 'domain_name', 'source_provider'],
         ]]);
@@ -78,6 +80,37 @@ class CreateProjectTest extends TestCase
         $app = $project->applications->first();
         $this->assertInstanceOf(Application::class, $app);
         $this->assertArraySubset(['template' => 'php', 'domain_name' => 'example.com'], $app->toArray());
+    }
+
+    /** @test */
+    public function can_create_project_with_redirect(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, [
+            'name' => 'Project with Redirect',
+            'redirects' => [[
+                'type' => 301,
+                'domain' => 'example.com',
+                'target' => 'https://example.com',
+            ]],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonCount(1, 'redirects');
+        $response->assertJsonStructure(['name', 'redirects' => [
+            ['domain_name', 'target', 'type'],
+        ]]);
+        $response->assertJsonFragment([
+            'type' => 301,
+            'domain_name' => 'example.com',
+            'target' => 'https://example.com',
+        ]);
+
+        $project = Project::with('redirects')->firstOrFail();
+        $this->assertInstanceOf(Collection::class, $project->redirects);
+
+        $redirect = $project->redirects->first();
+        $this->assertInstanceOf(Redirect::class, $redirect);
+        $this->assertArraySubset(['type' => 301, 'target' => 'https://example.com'], $redirect->toArray());
     }
 
     /** @test */

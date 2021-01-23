@@ -17,6 +17,12 @@
   "title": "Primary Domain"
 }, {
   "disabled": true,
+  "errorKeys": ["redirects.0.type", "redirects.0.target"],
+  "icon": "archive",
+  "name": "redirect",
+  "title": "Archived Copy"
+}, {
+  "disabled": true,
   "errorKey": "name",
   "icon": "question mark",
   "name": "confirm",

@@ -6,7 +6,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Servidor\Observers\ProjectAppObserver;
+use Servidor\Observers\ProjectRedirectObserver;
 use Servidor\Projects\Application;
+use Servidor\Projects\Redirect;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -21,5 +23,6 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         Application::observe(ProjectAppObserver::class);
+        Redirect::observe(ProjectRedirectObserver::class);
     }
 }

@@ -101,4 +101,43 @@ class CreateProjectRequestTest extends TestCase
         $this->validateChildFieldFails('repository', 'applications', true);
         $this->validateChildFieldFails('repository', 'applications', ['a', 'b']);
     }
+
+    /** @test */
+    public function redirect_type_is_required(): void
+    {
+        $v = $this->getValidator(['name' => 'redir', 'redirects' => [[
+            'target' => 'example.com',
+        ]]]);
+
+        $this->assertStringContainsString('required', $v->errors()->first('redirects.*.type'));
+    }
+
+    /** @test */
+    public function redirect_type_must_be_an_integer(): void
+    {
+        $this->validateChildFieldPasses('type', 'redirects', 301);
+        $this->validateChildFieldFails('type', 'redirects', ['a']);
+        $this->validateChildFieldFails('type', 'redirects', 'string');
+        $this->validateChildFieldFails('type', 'redirects', (object) ['a']);
+    }
+
+    /** @test */
+    public function redirect_target_is_required_when_type_is_redirect(): void
+    {
+        $v = $this->getValidator(['name' => 'redir', 'redirects' => [[
+            'type' => 301,
+        ]]]);
+
+        $this->assertStringContainsString('required', $v->errors()->first('redirects.*.target'));
+    }
+
+    /** @test */
+    public function redirect_target_must_be_a_string(): void
+    {
+        $this->validateChildFieldPasses('target', 'redirects', '/');
+        $this->validateChildFieldFails('target', 'redirects', 42);
+        $this->validateChildFieldFails('target', 'redirects', true);
+        $this->validateChildFieldFails('target', 'redirects', ['a', 'redirects', 'b']);
+        $this->validateChildFieldFails('target', 'redirects', (object) ['a', 'redirects', 'b']);
+    }
 }

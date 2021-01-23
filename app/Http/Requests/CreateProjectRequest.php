@@ -22,6 +22,10 @@ class CreateProjectRequest extends FormRequest
             'applications.*.provider' => 'required|in:github,bitbucket',
             'applications.*.repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
             'applications.*.branch' => 'nullable|string',
+            'redirects' => 'array',
+            'redirects.*.domain' => ['required', new Domain()],
+            'redirects.*.target' => 'required|string',
+            'redirects.*.type' => 'required|integer',
             'is_enabled' => 'boolean',
         ];
     }

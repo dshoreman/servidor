@@ -29,6 +29,12 @@
                     @next="nextStep('domain')" @cancel="cancel" />
             </sui-segment>
 
+            <sui-segment v-else-if="step == 'redirect'">
+                <h3 is="sui-header">Configure the preferred target archive on WayBack Machine</h3>
+                <redirect-form :errors="errors" :domain="defaultApp.domain"
+                    @next="setRedirect" @cancel="cancel" />
+            </sui-segment>
+
             <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
                 <h3 is="sui-header">Let's get this Project started!</h3>
                 <confirmation-text :app="defaultApp" :source="extraData" />
@@ -48,6 +54,7 @@ import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DiscardPrompt from '../../components/Projects/DiscardPrompt.vue';
 import DomainForm from '../../components/Projects/Apps/DomainForm';
+import RedirectForm from '../../components/Projects/Apps/RedirectForm';
 import SourceSelector from '../../components/Projects/Apps/SourceSelector';
 import StepList from '../../components/Projects/StepList';
 import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
@@ -61,6 +68,7 @@ export default {
         ConfirmationText,
         DiscardPrompt,
         DomainForm,
+        RedirectForm,
         StepList,
         SourceSelector,
         TemplateSelector,
@@ -77,6 +85,7 @@ export default {
             project: {
                 name: '',
                 applications: [],
+                redirects: [],
             },
             providers,
             step: 'template',
@@ -102,6 +111,14 @@ export default {
             },
             set(data) {
                 Vue.set(this.project.applications, 0, data);
+            },
+        },
+        defaultRedirect: {
+            get() {
+                return this.project.redirects[0];
+            },
+            set(data) {
+                Vue.set(this.project.redirects, 0, data);
             },
         },
         template() {
@@ -162,11 +179,20 @@ export default {
         setAppTemplate(tpl) {
             const [ firstStep ] = tpl.steps;
 
-            this.project.applications.push({
-                template: tpl.name.toLowerCase(),
-                provider: 'github',
-                domain: '',
-            });
+            if (tpl.isApp) {
+                this.project.applications.push({
+                    template: tpl.name.toLowerCase(),
+                    provider: 'github',
+                    domain: '',
+                });
+            } else {
+                this.project.applications.push({ template: 'archive', domain: '' });
+                this.project.redirects.push({
+                    domain: '',
+                    target: '',
+                    type: 301,
+                });
+            }
 
             this.steps.forEach(s => {
                 if (tpl.steps.includes(s.name)) {
@@ -183,6 +209,11 @@ export default {
             this.extraData = { repoUri };
 
             this.nextStep('source');
+        },
+        setRedirect(redirect) {
+            this.defaultRedirect = { ...this.defaultRedirect, ...redirect };
+
+            this.nextStep('redirect');
         },
         create(enabled = false) {
             this.error = '';

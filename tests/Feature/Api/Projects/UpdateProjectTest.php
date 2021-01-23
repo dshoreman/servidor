@@ -55,6 +55,16 @@ class UpdateProjectTest extends TestCase
         $this->assertEmpty($data['applications']);
     }
 
+    /**
+     * @test
+     * @depends authed_user_can_rename_project
+     */
+    public function update_response_includes_redirects(array $data): void
+    {
+        $this->assertArrayHasKey('redirects', $data);
+        $this->assertEmpty($data['redirects']);
+    }
+
     /** @test */
     public function project_can_be_enabled(): void
     {

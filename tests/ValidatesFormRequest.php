@@ -80,7 +80,8 @@ trait ValidatesFormRequest
     private function validationMessage(string $field, $value, string $expected, string $actual): string
     {
         return "Expected field '{$field}' to {$expected} validation with value '"
-             . (is_array($value) ? json_encode($value) : $value) . "', but it {$actual}.";
+            . (is_array($value) || is_object($value)
+            ? json_encode($value) : $value) . "', but it {$actual}.";
     }
 
     private function getValidator(array $data, array $rules = []): Validator

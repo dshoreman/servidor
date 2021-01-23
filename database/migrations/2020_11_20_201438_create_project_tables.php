@@ -10,7 +10,7 @@ class CreateProjectTables extends Migration
     {
         Schema::create('projects', function (Blueprint $table): void {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->boolean('is_enabled')->default(false);
             $table->timestamps();
         });
@@ -27,10 +27,22 @@ class CreateProjectTables extends Migration
 
             $table->foreign('project_id')->references('id')->on('projects');
         });
+
+        Schema::create('project_redirects', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('project_id');
+            $table->string('domain_name');
+            $table->string('target');
+            $table->smallInteger('type');
+            $table->timestamps();
+
+            $table->foreign('project_id')->references('id')->on('projects');
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('project_redirects');
         Schema::dropIfExists('project_applications');
         Schema::dropIfExists('projects');
     }

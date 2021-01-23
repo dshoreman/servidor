@@ -34,6 +34,13 @@
                                 <a is="sui-list-description">{{ app.template }}</a>
                             </sui-list-content>
                         </sui-list-item>
+                        <sui-list-item v-for="redir in project.redirects" :key="redir.id">
+                            <sui-list-icon name="archive" size="large" color="brown" />
+                            <sui-list-content>
+                                <a is="sui-list-header">{{ redir.domain_name }}</a>
+                                <a is="sui-list-description">Archive</a>
+                            </sui-list-content>
+                        </sui-list-item>
                     </sui-list>
                 </sui-grid-column>
 
@@ -152,6 +159,42 @@
                         </sui-segment>
 
                     </div>
+
+                    <div v-for="redir in project.redirects" :key="redir.id">
+
+                        <sui-header attached="top" :inverted="darkMode">
+                            Domain Redirection
+                        </sui-header>
+                        <sui-segment attached :inverted="darkMode">
+                            <sui-grid>
+                                <sui-grid-row>
+                                    <sui-grid-column :width="11">
+                                        <sui-header size="tiny" :inverted="darkMode">
+                                            Target URL
+                                            <sui-header-subheader>
+                                                {{ redir.target }}
+                                            </sui-header-subheader>
+                                        </sui-header>
+                                    </sui-grid-column>
+                                    <sui-grid-column :width="5">
+                                        <sui-header size="tiny" :inverted="darkMode">
+                                            Redirect Type
+                                            <sui-header-subheader v-if="redir.type == 301">
+                                                Permanent
+                                            </sui-header-subheader>
+                                            <sui-header-subheader v-else-if="redir.type == 302">
+                                                Temporary
+                                            </sui-header-subheader>
+                                            <sui-header-subheader v-else>
+                                                {{ redir.type }}
+                                            </sui-header-subheader>
+                                        </sui-header>
+                                    </sui-grid-column>
+                                </sui-grid-row>
+                            </sui-grid>
+                        </sui-segment>
+
+                    </div>
                 </sui-grid-column>
             </sui-grid-row>
         </sui-grid>
@@ -209,6 +252,10 @@ export default {
             };
         },
         logNames() {
+            if (0 === this.project.applications.length) {
+                return [];
+            }
+
             return Object.keys(this.project.applications[0].logs);
         },
         project() {

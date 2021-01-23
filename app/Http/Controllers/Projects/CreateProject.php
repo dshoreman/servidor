@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Servidor\Http\Requests\CreateProjectRequest;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
+use Servidor\Projects\Redirect;
 
 class CreateProject extends Controller
 {
@@ -29,8 +30,16 @@ class CreateProject extends Controller
             ]);
         }, $data['applications'] ?? []));
 
+        $project->redirects()->saveMany(array_map(function (array $redirect): Redirect {
+            return new Redirect([
+                'domain_name' => $redirect['domain'],
+                'target' => $redirect['target'],
+                'type' => $redirect['type'],
+            ]);
+        }, $data['redirects'] ?? []));
+
         return response()->json(
-            $project->load('applications'),
+            $project->load(['applications', 'redirects']),
             Response::HTTP_CREATED
         );
     }

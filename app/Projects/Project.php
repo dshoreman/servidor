@@ -22,4 +22,9 @@ class Project extends Model
     {
         return $this->hasMany(Application::class);
     }
+
+    public function redirects(): HasMany
+    {
+        return $this->hasMany(Redirect::class);
+    }
 }

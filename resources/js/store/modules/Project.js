@@ -28,7 +28,13 @@ export default {
             }).catch(error => reject(error));
         }),
         create: ({ commit }, project) => new Promise((resolve, reject) => {
-            axios.post('/api/projects', project).then(response => {
+            const data = {...project};
+
+            if ('archive' === data.applications[0].template) {
+                data.applications = [];
+            }
+
+            axios.post('/api/projects', data).then(response => {
                 commit('addNewProject', response.data);
                 resolve(response);
             }).catch(error => reject(error));
