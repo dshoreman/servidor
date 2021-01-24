@@ -1,15 +1,14 @@
-import Dashboard from './pages/Dashboard.vue';
 import Databases from './pages/Databases.vue';
 import FileBrowser from './pages/Files/Browser.vue';
 import FileEditor from './pages/Files/Editor.vue';
 import Layout from './layouts/Servidor.vue';
 import Login from './pages/Auth/Login.vue';
 import NotFound from './pages/NotFound.vue';
+import ProjectCreator from './pages/Projects/NewProject.vue';
+import ProjectIndex from './pages/Projects.vue';
+import ProjectList from './pages/Projects/ProjectList.vue';
+import ProjectViewer from './pages/Projects/ProjectViewer.vue';
 import Register from './pages/Auth/Register.vue';
-import SiteEditor from './pages/Sites/Edit.vue';
-import SiteList from './pages/Sites/List.vue';
-import SiteViewer from './pages/Sites/Detail.vue';
-import Sites from './pages/Sites.vue';
 import SystemGroups from './components/System/Groups.vue';
 import SystemUsers from './components/System/Users.vue';
 
@@ -17,36 +16,27 @@ const routes = [{
     path: '/',
     component: Layout,
     children: [{
-        component: Dashboard,
         name: 'dashboard',
         path: '/',
+        redirect: 'projects',
         meta: { auth: true },
     }, {
-        path: '/apps',
-        component: Sites,
+        path: '/projects',
+        component: ProjectIndex,
         children: [{
-            component: SiteList,
-            name: 'apps',
-            path: '/',
+            component: ProjectList,
+            name: 'projects',
+            path: '',
             meta: { auth: true },
         }, {
-            component: SiteViewer,
-            name: 'apps.view',
-            path: '/apps/:id',
+            component: ProjectCreator,
+            name: 'projects.new',
+            path: 'new',
             meta: { auth: true },
-            props: route => {
-                const id = parseInt(route.params.id);
-
-                if (Number.isNaN(id) || 0 > id) {
-                    return { id: 0 };
-                }
-
-                return { id };
-            },
         }, {
-            component: SiteEditor,
-            name: 'apps.edit',
-            path: '/apps/:id/edit',
+            component: ProjectViewer,
+            name: 'projects.view',
+            path: ':id',
             meta: { auth: true },
             props: route => {
                 const id = parseInt(route.params.id);

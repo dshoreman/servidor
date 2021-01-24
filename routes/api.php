@@ -7,12 +7,16 @@ Route::middleware('auth:api')->group(function (): void {
     Route::get('/user', 'User\ShowProfile');
     Route::post('logout', 'Auth\LoginController@logout');
 
-    Route::resource('sites', 'SiteController', [
-        'only' => ['index', 'store', 'update', 'destroy'],
-    ]);
-    Route::get('sites/{site}/branches', 'SiteController@branches');
-    Route::post('sites/{site}/pull', 'SiteController@pull');
-    Route::get('sites/{site}/logs/{log}', 'SiteController@showLog');
+    Route::name('projects.')->prefix('/projects')->group(function (): void {
+        Route::get('/', Projects\ListProjects::class);
+        Route::post('/', Projects\CreateProject::class);
+        Route::put('{project}', Projects\UpdateProject::class);
+        Route::prefix('{project}/apps/{app}')->group(function (): void {
+            Route::post('pull', Projects\Applications\PullCode::class);
+        });
+        Route::get('{project}/logs/{log}.app-{app}.log', Projects\Applications\ViewLog::class);
+        Route::delete('{project}', Projects\RemoveProject::class);
+    });
 
     Route::resource('databases', 'DatabaseController', [
         'only' => ['index', 'store'],
@@ -25,6 +29,8 @@ Route::middleware('auth:api')->group(function (): void {
     Route::delete('files', 'FileController@delete');
 
     Route::name('system')->prefix('/system')->namespace('System')->group(function (): void {
+        Route::get('git/branches', Git\ListBranches::class);
+
         Route::resource('groups', 'GroupsController', [
             'only' => ['index', 'store', 'update', 'destroy'],
         ]);

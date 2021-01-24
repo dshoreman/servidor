@@ -4,11 +4,9 @@ namespace Servidor\Http\Controllers\System;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 use Servidor\Exceptions\System\GroupNotFoundException;
 use Servidor\Exceptions\System\GroupNotModifiedException;
 use Servidor\Exceptions\System\GroupSaveException;
-use Servidor\Http\Controllers\Controller;
 use Servidor\Http\Requests\System\CreateGroup;
 use Servidor\Http\Requests\System\UpdateGroup;
 use Servidor\System\Group as SystemGroup;
@@ -49,11 +47,11 @@ class GroupsController extends Controller
                 Response::HTTP_OK
             );
         } catch (GroupNotFoundException $e) {
-            throw $this->fail('No group found matching the given criteria.');
+            throw $this->fail('gid', 'No group found matching the given criteria.');
         } catch (GroupNotModifiedException $e) {
-            throw $this->fail('Nothing to update!');
+            throw $this->fail('gid', 'Nothing to update!');
         } catch (GroupSaveException $e) {
-            throw $this->fail($e->getMessage());
+            throw $this->fail('gid', $e->getMessage());
         }
     }
 
@@ -65,10 +63,5 @@ class GroupsController extends Controller
         SystemGroup::find($gid)->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
-    }
-
-    protected function fail(string $message, string $key = 'gid'): ValidationException
-    {
-        return ValidationException::withMessages([$key => $message]);
     }
 }

@@ -172,6 +172,7 @@ class FileManager
 
     /**
      * @param SplFileInfo|string $file
+     * @SuppressWarnings(PHPMD.ErrorControlOperator)
      */
     private function loadFile($file): array
     {
