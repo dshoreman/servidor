@@ -138,4 +138,37 @@ class CreateProjectTest extends TestCase
         ]);
         $this->assertNull(Project::first());
     }
+
+    /** @test */
+    public function cannot_create_project_when_repository_not_found(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, ['applications' => [[
+            'template' => 'php',
+            'provider' => 'custom',
+            'repository' => 'some/missing-test-site',
+        ]], 'name' => 'repo404']);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors('applications.0.repository');
+        $response->assertJsonFragment(['applications.0.repository' => [
+            "This repo couldn't be found. Does it require auth?",
+        ]]);
+    }
+
+    /** @test */
+    public function cannot_create_project_when_branch_not_found(): void
+    {
+        $response = $this->authed()->postJson($this->endpoint, ['applications' => [[
+            'template' => 'html',
+            'branch' => 'unicoorn',
+            'provider' => 'github',
+            'repository' => 'dshoreman/servidor-test-site',
+        ]], 'name' => 'branch404']);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors('applications.0.branch');
+        $response->assertJsonFragment(['applications.0.branch' => [
+            "This branch doesn't exist.",
+        ]]);
+    }
 }
