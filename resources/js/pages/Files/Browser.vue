@@ -2,11 +2,10 @@
     <sui-grid container>
         <sui-grid-column id="file-browser">
             <path-bar :path="currentPath">
-                <router-link :to="{ name: 'apps.view', params: { id: site.id }}"
+                <router-link :to="{ name: 'projects.view', params: { id: project.id }}"
                     is="sui-button" color="teal" icon="globe" floated="right"
-                    id="back2site" content="View Application" v-if="site"
-                    :data-tooltip="'Open overview for ' + site.name"
-                    data-position="left center" />
+                    :data-tooltip="'Open overview for ' + project.name" data-position="left center"
+                    content="View Project" v-if="project" />
 
                 <sui-button class="icon" floated="right" @click.native="toggleNewFile">
                     <i class="icons">
@@ -59,7 +58,7 @@ import { mapGetters } from 'vuex';
 
 export default {
     mounted() {
-        this.$store.dispatch('sites/load');
+        this.$store.dispatch('projects/load');
         this.$store.dispatch('files/load', { path: this.path });
     },
     beforeRouteUpdate(to, from, next) {
@@ -84,14 +83,13 @@ export default {
     computed: {
         ...mapGetters({
             currentPath: 'files/currentPath',
-            findSite: 'sites/findByDocroot',
             files: 'files/all',
         }),
         createPath() {
             return `${this.currentPath}/${this.filename}`;
         },
-        site() {
-            return this.findSite(this.currentPath);
+        project() {
+            return this.$store.getters['projects/findByDocroot'](this.currentPath);
         },
     },
     methods: {

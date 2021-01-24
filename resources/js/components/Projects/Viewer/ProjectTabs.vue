@@ -38,11 +38,22 @@
 </style>
 
 <script>
+import templates from '../../../pages/Projects/templates.json';
+
 export default {
     props: {
         project: {
             type: Object,
             default: () => ({}),
+        },
+    },
+    computed: {
+        appIcon() {
+            const tpl = templates.find(
+                t => t.name.toLowerCase() === this.project.applications[0].template.toLowerCase(),
+            );
+
+            return { name: tpl.icon, color: tpl.colour };
         },
     },
 };

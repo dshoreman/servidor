@@ -7,11 +7,6 @@ Route::middleware('auth:api')->group(function (): void {
     Route::get('/user', 'User\ShowProfile');
     Route::post('logout', 'Auth\LoginController@logout');
 
-    Route::resource('sites', 'SiteController', [
-        'only' => ['index', 'store', 'update'],
-    ]);
-    Route::get('sites/{site}/logs/{log}', 'SiteController@showLog');
-
     Route::name('projects.')->prefix('/projects')->group(function (): void {
         Route::get('/', Projects\ListProjects::class);
         Route::post('/', Projects\CreateProject::class);

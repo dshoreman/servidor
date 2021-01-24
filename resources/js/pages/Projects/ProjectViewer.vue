@@ -193,7 +193,6 @@
 <script>
 import ProjectTabs from '../../components/Projects/Viewer/ProjectTabs';
 import { mapActions } from 'vuex';
-import templates from './templates.json';
 
 export default {
     components: {
@@ -217,16 +216,6 @@ export default {
         };
     },
     computed: {
-        appIcon() {
-            const tpl = templates.find(
-                t => t.name.toLowerCase() === this.project.applications[0].template.toLowerCase(),
-            );
-
-            return {
-                name: tpl.icon,
-                color: tpl.colour,
-            };
-        },
         logNames() {
             if (0 === this.project.applications.length) {
                 return [];

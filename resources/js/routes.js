@@ -9,10 +9,6 @@ import ProjectIndex from './pages/Projects.vue';
 import ProjectList from './pages/Projects/ProjectList.vue';
 import ProjectViewer from './pages/Projects/ProjectViewer.vue';
 import Register from './pages/Auth/Register.vue';
-import SiteEditor from './pages/Sites/Edit.vue';
-import SiteList from './pages/Sites/List.vue';
-import SiteViewer from './pages/Sites/Detail.vue';
-import Sites from './pages/Sites.vue';
 import SystemGroups from './components/System/Groups.vue';
 import SystemUsers from './components/System/Users.vue';
 
@@ -24,43 +20,6 @@ const routes = [{
         path: '/',
         redirect: 'projects',
         meta: { auth: true },
-    }, {
-        path: '/apps',
-        component: Sites,
-        children: [{
-            component: SiteList,
-            name: 'apps',
-            path: '/',
-            meta: { auth: true },
-        }, {
-            component: SiteViewer,
-            name: 'apps.view',
-            path: '/apps/:id',
-            meta: { auth: true },
-            props: route => {
-                const id = parseInt(route.params.id);
-
-                if (Number.isNaN(id) || 0 > id) {
-                    return { id: 0 };
-                }
-
-                return { id };
-            },
-        }, {
-            component: SiteEditor,
-            name: 'apps.edit',
-            path: '/apps/:id/edit',
-            meta: { auth: true },
-            props: route => {
-                const id = parseInt(route.params.id);
-
-                if (Number.isNaN(id) || 0 > id) {
-                    return { id: 0 };
-                }
-
-                return { id };
-            },
-        }],
     }, {
         path: '/projects',
         component: ProjectIndex,

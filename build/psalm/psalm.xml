@@ -24,7 +24,6 @@
                 <directory name="app/Http/Requests" />
                 <file name="app/Console/Commands/Version.php" />
                 <file name="app/Projects/*.php" />
-                <file name="app/Site.php" />
                 <file name="app/User.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>

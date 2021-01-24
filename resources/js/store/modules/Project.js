@@ -70,5 +70,9 @@ export default {
     getters: {
         all: state => state.projects,
         find: state => id => state.projects.find(p => id === p.id),
+        findByDocroot: state => path => state.projects.find(
+            p => p.applications && 0 < p.applications.length
+                && path === p.applications[0].document_root,
+        ),
     },
 };

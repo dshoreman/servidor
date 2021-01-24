@@ -28,9 +28,6 @@ export default {
     data() {
         return {
             menu: [{
-                name: 'Applications',
-                href: 'apps',
-            }, {
                 name: 'Databases',
                 href: 'databases',
             }, {
