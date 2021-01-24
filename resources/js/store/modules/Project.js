@@ -28,7 +28,7 @@ export default {
             }).catch(error => reject(error));
         }),
         create: ({ commit }, project) => new Promise((resolve, reject) => {
-            const data = {...project};
+            const data = { ...project };
 
             if ('archive' === data.applications[0].template) {
                 data.applications = [];

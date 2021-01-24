@@ -25,23 +25,7 @@
         <sui-grid>
             <sui-grid-row>
                 <sui-grid-column :width="3">
-                    <sui-list divided relaxed style="margin-top: 10px;">
-                        <sui-list-item v-for="app in project.applications" :key="app.id">
-                            <sui-list-icon :name="appIcon.name"
-                                size="large" :color="appIcon.color" />
-                            <sui-list-content>
-                                <a is="sui-list-header">{{ app.domain_name }}</a>
-                                <a is="sui-list-description">{{ app.template }}</a>
-                            </sui-list-content>
-                        </sui-list-item>
-                        <sui-list-item v-for="redir in project.redirects" :key="redir.id">
-                            <sui-list-icon name="archive" size="large" color="brown" />
-                            <sui-list-content>
-                                <a is="sui-list-header">{{ redir.domain_name }}</a>
-                                <a is="sui-list-description">Archive</a>
-                            </sui-list-content>
-                        </sui-list-item>
-                    </sui-list>
+                    <project-tabs :project="project" />
                 </sui-grid-column>
 
                 <sui-grid-column :width="13">
@@ -57,8 +41,7 @@
                             <sui-grid>
                                 <sui-grid-row :columns="2">
                                     <sui-grid-column>
-                                        <sui-header size="tiny" :inverted="darkMode">
-                                            Repository
+                                        <sui-header size="tiny" :inverted="darkMode">Repository
                                             <sui-header-subheader v-if="app.source_repository">
                                                 <sui-icon :name="app.source_provider" />
                                                 <span>{{ app.source_repository }}</span>
@@ -69,12 +52,10 @@
                                         </sui-header>
                                     </sui-grid-column>
                                     <sui-grid-column>
-                                        <sui-header size="tiny" :inverted="darkMode">
-                                            Tracking Branch
+                                        <sui-header size="tiny" :inverted="darkMode">Tracking Branch
                                             <sui-button basic positive icon="download"
-                                                floated="right" @click="pullFiles(app)">
-                                                Pull Latest Code
-                                            </sui-button>
+                                                content="Pull Latest Code" floated="right"
+                                                @click="pullFiles(app)" />
                                             <sui-header-subheader v-if="app.source_branch">
                                                 {{ app.source_branch }}
                                             </sui-header-subheader>
@@ -109,24 +90,21 @@
                             <sui-grid>
                                 <sui-grid-row>
                                     <sui-grid-column :width="8">
-                                        <sui-header size="tiny" :inverted="darkMode">
-                                            Username
+                                        <sui-header size="tiny" :inverted="darkMode">Username
                                             <sui-header-subheader>
                                                 {{ app.system_user.name }}
                                             </sui-header-subheader>
                                         </sui-header>
                                     </sui-grid-column>
                                     <sui-grid-column :width="4">
-                                        <sui-header size="tiny" :inverted="darkMode">
-                                            User ID
+                                        <sui-header size="tiny" :inverted="darkMode">User ID
                                             <sui-header-subheader>
                                                 {{ app.system_user.uid }}
                                             </sui-header-subheader>
                                         </sui-header>
                                     </sui-grid-column>
                                     <sui-grid-column :width="4">
-                                        <sui-header size="tiny" :inverted="darkMode">
-                                            Group ID
+                                        <sui-header size="tiny" :inverted="darkMode">Group ID
                                             <sui-header-subheader>
                                                 {{ app.system_user.gid }}
                                             </sui-header-subheader>
@@ -157,11 +135,9 @@
                             </sui-menu>
                             <pre>{{ logContent }}</pre>
                         </sui-segment>
-
                     </div>
 
                     <div v-for="redir in project.redirects" :key="redir.id">
-
                         <sui-header attached="top" :inverted="darkMode">
                             Domain Redirection
                         </sui-header>
@@ -193,7 +169,6 @@
                                 </sui-grid-row>
                             </sui-grid>
                         </sui-segment>
-
                     </div>
                 </sui-grid-column>
             </sui-grid-row>
@@ -216,10 +191,14 @@
 </style>
 
 <script>
+import ProjectTabs from '../../components/Projects/Viewer/ProjectTabs';
 import { mapActions } from 'vuex';
 import templates from './templates.json';
 
 export default {
+    components: {
+        ProjectTabs,
+    },
     mounted() {
         if (!this.$store.getters['projects/all'].length) {
             this.$store.dispatch('projects/load').then(() => {
@@ -228,10 +207,7 @@ export default {
         }
     },
     props: {
-        id: {
-            type: Number,
-            default: 0,
-        },
+        id: { type: Number, default: 0 },
     },
     data() {
         return {

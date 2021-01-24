@@ -8,6 +8,7 @@ use Servidor\Projects\Redirect;
 
 trait TogglesNginxConfigs
 {
+    /** @var string */
     private $nginxRoot = '/etc/nginx/';
 
     public function disable(): void
@@ -38,12 +39,12 @@ trait TogglesNginxConfigs
         exec("sudo ln -s \"{$target}\" \"{$symlink}\"");
     }
 
-    private function configAvailable()
+    private function configAvailable(): string
     {
         return $this->nginxRoot . 'sites-available/' . $this->configFilename();
     }
 
-    private function configEnabled()
+    private function configEnabled(): string
     {
         return $this->nginxRoot . 'sites-enabled/' . $this->configFilename();
     }
