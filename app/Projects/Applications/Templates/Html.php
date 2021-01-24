@@ -33,7 +33,7 @@ class Html implements Template
         return [];
     }
 
-    public function pullCode(): bool
+    public function pullCode(bool $autoEnable = false): bool
     {
         $status = 0;
         $output = [];
@@ -47,6 +47,9 @@ class Html implements Template
         }
         if (0 === $status) {
             exec($cmd, $output, $status);
+        }
+        if ($autoEnable && 0 === $status) {
+            $this->enable();
         }
 
         return 0 === $status;
