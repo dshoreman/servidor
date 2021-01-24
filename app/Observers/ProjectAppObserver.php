@@ -20,10 +20,12 @@ class ProjectAppObserver
             ]))->setCreateHome(true));
         }
 
-        if ($app->source_repository) {
-            $app->writeNginxConfig();
-            $app->template()->pullCode();
+        if (!$app->source_repository || !$app->domain_name) {
+            return;
         }
+
+        $app->writeNginxConfig();
+        $app->template()->pullCode();
 
         $project->is_enabled ? $app->template()->enable() : $app->template()->disable();
 

@@ -60,6 +60,21 @@ class HtmlTest extends TestCase
         $this->assertSame($linkBefore, readlink($link));
     }
 
+    /** @test */
+    public function toggling_project_with_missing_domain_throws_exception(): void
+    {
+        $this->expectExceptionMessage('Project missing domain name');
+
+        $project = Project::create(['name' => 'nodomain', 'is_enabled' => true]);
+        $project->applications()->save($app = new Application([
+            'source_repository' => 'dshoreman/servidor-test-site',
+            'source_provider' => 'github',
+            'source_branch' => 'develop',
+        ]));
+
+        $app->template()->enable();
+    }
+
     /**
      * @test
      * @depends enabling_project_creates_config_symlink

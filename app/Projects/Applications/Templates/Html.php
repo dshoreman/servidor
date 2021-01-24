@@ -5,7 +5,7 @@ namespace Servidor\Projects\Applications\Templates;
 use Servidor\Projects\Application;
 use Servidor\Traits\TogglesNginxConfigs;
 
-class Html
+class Html implements Template
 {
     use TogglesNginxConfigs;
 
@@ -23,6 +23,11 @@ class Html
         $this->app = $app;
     }
 
+    public function getApp(): Application
+    {
+        return $this->app;
+    }
+
     public function getLogs(): array
     {
         return [];
@@ -30,10 +35,6 @@ class Html
 
     public function pullCode(): bool
     {
-        if (!$this->app->source_repository) {
-            return false;
-        }
-
         $status = 0;
         $output = [];
         $root = $this->app->source_root;

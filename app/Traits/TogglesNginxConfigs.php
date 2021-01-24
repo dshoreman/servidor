@@ -2,6 +2,8 @@
 
 namespace Servidor\Traits;
 
+use Exception;
+use Servidor\Projects\Applications\Templates\Template;
 use Servidor\Projects\Redirect;
 
 trait TogglesNginxConfigs
@@ -48,10 +50,14 @@ trait TogglesNginxConfigs
 
     private function configFilename(): string
     {
+        if ($this instanceof Template && $domain = $this->getApp()->domain_name) {
+            return "${domain}.conf";
+        }
+
         if ($this instanceof Redirect) {
             return $this->domain_name . '.conf';
         }
 
-        return $this->app->domain_name . '.conf';
+        throw new Exception('Project missing domain name');
     }
 }
