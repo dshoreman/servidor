@@ -40,7 +40,7 @@
                 <confirmation-text :app="defaultApp" :source="extraData" />
                 <confirmation-form :errors="errors" v-model="project.name"
                                    :template="defaultApp.template"
-                                   @created="create" @enabled="create(true)" />
+                                   @created="create" />
             </sui-segment>
 
         </sui-grid-column>

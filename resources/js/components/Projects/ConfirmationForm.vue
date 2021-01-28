@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="$emit('enabled')">
+    <sui-form @submit.prevent="$emit('created', true)">
 
         <sui-divider />
 
@@ -31,7 +31,7 @@
 
             <sui-button primary type="button"
                         content="Just save the project"
-                        @click="$emit('create')" />
+                        @click="$emit('created', false)" />
         </div>
     </sui-form>
 
