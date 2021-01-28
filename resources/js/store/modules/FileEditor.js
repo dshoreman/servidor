@@ -13,10 +13,16 @@ export default {
             indentUnit: 4,
             tabSize: 4,
             styleActiveLine: true,
+            showTrailingSpace: true,
             lineWrapping: true,
             lineNumbers: true,
             autofocus: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            autoCloseTags: true,
+            continueComments: true,
             cursorScrollMargin: 75,
+            scrollbarStyle: 'overlay',
         },
         themes: [
             { text: '3024 Day', value: '3024-day' },
@@ -101,12 +107,10 @@ export default {
             commit('setTheme', theme);
         },
         async setMode({ commit }, value) {
-            const filename = (/.+\.(?<ext>[^.]+)$/u).exec(value);
             let mode = '';
 
-            const info = filename
-                ? CodeMirror.findModeByExtension(filename.groups.ext)
-                : CodeMirror.findModeByMIME(value);
+            const info = CodeMirror.findModeByFileName(value)
+                ?? CodeMirror.findModeByMIME(value);
 
             if (info) {
                 ({ mode } = info);

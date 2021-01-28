@@ -71,7 +71,7 @@ class CreateGroupTest extends TestCase
         $response->assertJsonValidationErrors(['name']);
 
         $updated = $this->authed()->getJson($this->endpoint);
-        $updated->assertJsonMissing(['gid' > 1337]);
+        $updated->assertJsonMissing(['gid' => 1337]);
     }
 
     /** @test */

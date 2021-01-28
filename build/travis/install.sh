@@ -21,7 +21,11 @@ php_install() {
 
     cp build/travis/dotenv ./.env
     git config --global pull.ff only
-    travis_retry composer install --no-interaction
+    if [[ "${TRAVIS_PHP_VERSION:0:3}" == "7.3" ]]; then
+        travis_retry composer install -n --ignore-platform-req=php
+    else
+        travis_retry composer install --no-interaction
+    fi
 
     php artisan key:generate
     php artisan migrate && php artisan passport:install

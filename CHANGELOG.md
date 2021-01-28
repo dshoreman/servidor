@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.11.0] - 2021-01-28
+### Added
+* [projects] New project creation page showing only relevant steps
+* [projects] New table-based list view with template icons
+* [workflow] Added husky to auto-build installer on commit when changed
+* [workflow] Support for automatic hostfile config via vagrant-hostmanager
+
+### Changed
+* [editor] Improved scrollbars
+* [editor] Added emphasis to trailing spaces
+* [editor] Most brackets and quotes will now auto-close and highlight matches
+* [editor] Pressing `>` or `/` will now auto-close tags
+* [editor] Added highlight for the currently active line(s)
+* [editor] Added support for smart continuation of code comments
+* [projects] Attempting to set a repository will now verify it exists
+* [projects] Document root and public dir are now defined in the Template
+* [projects] System user creation is now fully automatic
+
+### Removed
+* [sites] All functionality relating to Sites has been replaced by Projects.  
+   The old `sites` table can be removed from the database
+
+### Fixed
+* [editor] Nginx config files are now correctly detected
+* [ui] Missing/invalid theme value no longer requires extra click to toggle
+
+
 ## [0.10.0] - 2020-10-06
 ### Added
 * An install script! Installation is now the same across dev *and* "prod"
@@ -156,7 +183,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.10.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.11.0...develop
+[0.11.0]: https://github.com/dshoreman/servidor/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/dshoreman/servidor/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/dshoreman/servidor/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/dshoreman/servidor/compare/v0.7.0...v0.8.0
