@@ -12,9 +12,9 @@ cache:
 
 jobs:
   include:
-    - php: 7.3
-      env: RUN_MODE=php
     - php: 7.4
+      env: RUN_MODE=php
+    - php: 8.0
       env: RUN_MODE=php-latest
     - node_js: 12
       language: node_js
