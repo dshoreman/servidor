@@ -25,7 +25,7 @@ class MovePathTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $this->assertFileExists($file);
-        $this->assertFileNotExists($newFile);
+        $this->assertFileDoesNotExist($newFile);
     }
 
     /** @test */
@@ -41,7 +41,7 @@ class MovePathTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertFileNotExists($file);
+        $this->assertFileDoesNotExist($file);
         $this->assertFileExists($newFile);
         $this->assertStringEqualsFile($newFile, 'temp');
 

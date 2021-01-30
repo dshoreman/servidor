@@ -82,7 +82,7 @@ class PullCodeTest extends TestCase
     /** @test */
     public function pull_creates_source_root_if_it_doesnt_exist(): void
     {
-        $this->assertDirectoryNotExists($root = '/var/www/initially-appless');
+        $this->assertDirectoryDoesNotExist($root = '/var/www/initially-appless');
         $project = Project::create(['name' => 'Initially Appless']);
         $project->applications()->save($app = new Application([
             'source_provider' => 'github',
