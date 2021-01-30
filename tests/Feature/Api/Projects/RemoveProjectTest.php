@@ -9,7 +9,7 @@ use Servidor\Projects\Project;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
-class DeleteProjectTest extends TestCase
+class RemoveProjectTest extends TestCase
 {
     use ArraySubsetAsserts;
     use RefreshDatabase;
