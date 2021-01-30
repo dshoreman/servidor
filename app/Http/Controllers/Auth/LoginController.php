@@ -54,10 +54,7 @@ class LoginController extends Controller
             $this->incrementLoginAttempts($request);
             $response = $e->getResponse();
 
-            return response(
-                $response ? (string) $response->getBody() : '',
-                (int) $e->getCode(),
-            );
+            return response((string) $response->getBody(), (int) $e->getCode());
         }
     }
 
