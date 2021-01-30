@@ -50,9 +50,7 @@ class Application extends Model
 
     public function getLogsAttribute(): array
     {
-        return array_map(function (LogFile $log): string {
-            return $log->getTitle();
-        }, $this->logs());
+        return array_map(fn (LogFile $log): string => $log->getTitle(), $this->logs());
     }
 
     public function logs(): array

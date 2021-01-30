@@ -23,6 +23,7 @@ return PhpCsFixer\Config::create()
         ],
         'new_with_braces' => false,
         'no_short_bool_cast' => false,
+        'php_unit_method_casing' => false,
 
         // Other Rules
         'array_indentation' => true,
@@ -39,8 +40,9 @@ return PhpCsFixer\Config::create()
         'phpdoc_order' => true,
 
         // New PHP Functionality
-        '@PHP73Migration' => true,
-        '@PHP71Migration:risky' => true,
+        '@PHP80Migration' => true,
+        '@PHP80Migration:risky' => true,
+        '@PHPUnit84Migration:risky' => true,
         'declare_strict_types' => false,
     ]);
 

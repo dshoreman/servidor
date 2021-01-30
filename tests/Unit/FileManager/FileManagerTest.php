@@ -84,14 +84,7 @@ class FileManagerTest extends TestCase
     /** @test */
     public function list_can_show_files_in_system_root(): void
     {
-        $list = $this->manager->list('/');
-
-        $this->assertIsArray($list);
-
-        $matches = array_filter($list, function ($a) {
-            return in_array($a['filename'], ['bin', 'etc', 'home', 'usr', 'var']);
-        });
-
+        $dirs = ['bin', 'etc', 'home', 'usr', 'var'];
         $expected = [
             'isDir' => true,
             'isFile' => false,
@@ -102,6 +95,11 @@ class FileManagerTest extends TestCase
                 'octal' => '0755',
             ],
         ];
+        $list = $this->manager->list('/');
+
+        $this->assertIsArray($list);
+
+        $matches = array_filter($list, fn ($a) => in_array($a['filename'], $dirs));
 
         $this->assertCount(5, $matches);
         foreach ($matches as $match) {
