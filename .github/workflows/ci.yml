@@ -1,0 +1,55 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      shell: bash
+      working-directory: build/ci
+
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, windows-2019]
+        php: ['7.3', '7.4']
+        nodejs: ['12']
+
+    services:
+      db:
+        image: mariadb:latest
+        env:
+          MYSQL_USER: root
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: servidor_testing
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 5s
+          --health-timeout 2s
+          --health-retries 5
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup PHP Environment
+      uses: nanasess/setup-php@master
+      with:
+        php-version: ${{ matrix.php }}
+
+    - name: Setup NodeJS Environment
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.nodejs }}
+
+    - run: ./install.sh
+    - run: ./prepare.sh
+    - run: ./script.sh
+    - run: bash <(curl -s https://codecov.io/bash)
+
+    - name: Print Laravel logs
+      if: always()
+      run: cat storage/logs/laravel.log
