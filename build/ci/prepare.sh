@@ -5,8 +5,8 @@ main() {
         return
     fi
 
-    svc="${TRAVIS_BUILD_DIR}/build/travis/nginx.service"
-    skeleton="${TRAVIS_BUILD_DIR}/resources/test-skel"
+    svc="${CI_BUILD_DIR}/build/travis/nginx.service"
+    skeleton="${CI_BUILD_DIR}/resources/test-skel"
 
     sudo cp "${svc}" /etc/systemd/system/ && sudo systemctl daemon-reload
     sudo mkdir -p /var/www /etc/nginx/sites-enabled /etc/nginx/sites-available

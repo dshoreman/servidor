@@ -11,13 +11,13 @@ main() {
 test_npm() {
     npm run prod
 
-    "${TRAVIS_BUILD_DIR}/node_modules/.bin/eslint" \
+    "${CI_BUILD_DIR}/node_modules/.bin/eslint" \
         -c build/eslint/config.json "resources/js/**/*.{js,vue}" \
         && echo "Eslint ran without errors"
 }
 
 test_php() {
-    local scriptDir="${TRAVIS_BUILD_DIR}/vendor/bin"
+    local scriptDir="${CI_BUILD_DIR}/vendor/bin"
 
     if [[ "${RUN_MODE}" == "php-latest" ]]; then
         run_php_cs "${scriptDir}"

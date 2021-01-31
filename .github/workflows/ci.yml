@@ -3,15 +3,25 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  test:
+
+  # ----------------------------------------------------------------------------
+  # PHP Tests
+  # ----------------------------------------------------------------------------
+
+  test_php:
+    name: Test PHP
 
     runs-on: ${{ matrix.os }}
+
+    env:
+      RUN_MODE: php
+      CI_BUILD_DIR: ${{ env.GITHUB_WORKSPACE }}
+      CI_PHP_VERSION: ${{ matrix.php }}
 
     strategy:
       matrix:
         os: [ubuntu-18.04, windows-2019]
         php: ['7.3', '7.4']
-        nodejs: ['12']
 
     services:
       db:
@@ -36,6 +46,37 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
 
+    - run: ./build/ci/install.sh
+    - run: ./build/ci/prepare.sh
+    - run: ./build/ci/script.sh
+    - run: bash <(curl -s https://codecov.io/bash)
+
+    - name: Print Laravel logs on failure
+      if: failure()
+      run: cat storage/logs/laravel.log
+
+  # ----------------------------------------------------------------------------
+  # Javasvript Tests
+  # ----------------------------------------------------------------------------
+
+  test_js:
+    name: Test Javascript
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      RUN_MODE: npm
+      CI_BUILD_DIR: ${{ env.GITHUB_WORKSPACE }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, windows-2019]
+        nodejs: ['12']
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
     - name: Setup NodeJS Environment
       uses: actions/setup-node@v2
       with:
@@ -45,7 +86,3 @@ jobs:
     - run: ./build/ci/prepare.sh
     - run: ./build/ci/script.sh
     - run: bash <(curl -s https://codecov.io/bash)
-
-    - name: Print Laravel logs on failure
-      if: failure()
-      run: cat storage/logs/laravel.log

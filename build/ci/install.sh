@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # shellcheck source=retry.sh
-source "${TRAVIS_BUILD_DIR}/build/travis/retry.sh"
+source "${CI_BUILD_DIR}/build/ci/retry.sh"
 
 main() {
     if [[ "${RUN_MODE}" == "npm" ]]; then
