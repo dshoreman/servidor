@@ -19,7 +19,7 @@ test_npm() {
 test_php() {
     local scriptDir="${CI_BUILD_DIR}/vendor/bin"
 
-    if [[ "${CI_PHP_VERSION}" != "7.3" ]]; then
+    if [[ "${CI_PHP_VERSION}" > "7.3" ]]; then
         run_php_cs "${scriptDir}"
     fi
 
