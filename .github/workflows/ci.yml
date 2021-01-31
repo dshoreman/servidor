@@ -7,10 +7,6 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    defaults:
-      shell: bash
-      working-directory: build/ci
-
     strategy:
       matrix:
         os: [ubuntu-18.04, windows-2019]
@@ -45,9 +41,9 @@ jobs:
       with:
         node-version: ${{ matrix.nodejs }}
 
-    - run: ./install.sh
-    - run: ./prepare.sh
-    - run: ./script.sh
+    - run: ./build/ci/install.sh
+    - run: ./build/ci/prepare.sh
+    - run: ./build/ci/script.sh
     - run: bash <(curl -s https://codecov.io/bash)
 
     - name: Print Laravel logs
