@@ -46,6 +46,6 @@ jobs:
     - run: ./build/ci/script.sh
     - run: bash <(curl -s https://codecov.io/bash)
 
-    - name: Print Laravel logs
-      if: always()
+    - name: Print Laravel logs on failure
+      if: failure()
       run: cat storage/logs/laravel.log
