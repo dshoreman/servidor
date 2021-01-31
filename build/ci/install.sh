@@ -12,7 +12,7 @@ main() {
 }
 
 npm_install() {
-    travis_retry npm clean-install
+    ci_retry npm clean-install
 }
 
 php_install() {
@@ -21,7 +21,7 @@ php_install() {
 
     cp build/ci/dotenv ./.env
     git config --global pull.ff only
-    travis_retry composer install --no-interaction
+    ci_retry composer install --no-interaction
 
     php artisan key:generate
     php artisan migrate && php artisan passport:install

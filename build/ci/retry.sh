@@ -3,7 +3,7 @@
 # Pulled from Github to replace the travis_retry function which is unavailable within scripts:
 # https://github.com/travis-ci/travis-build/blob/9ec05b37295a6d9/lib/travis/build/bash/travis_retry.bash
 
-travis_retry() {
+ci_retry() {
     local result=0
     local count=1
     while [[ "${count}" -le 3 ]]; do
