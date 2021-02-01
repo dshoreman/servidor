@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
 main() {
-    if [[ "${RUN_MODE}" == "npm" ]]; then
-        return
-    fi
-
     svc="${CI_BUILD_DIR}/.github/scripts/nginx.service"
     skeleton="${CI_BUILD_DIR}/resources/test-skel"
 

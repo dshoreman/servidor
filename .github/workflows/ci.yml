@@ -61,6 +61,5 @@ jobs:
         node-version: ${{ matrix.nodejs }}
 
     - run: .github/scripts/install.sh
-    - run: .github/scripts/prepare.sh
     - run: .github/scripts/script.sh
     - run: bash <(curl -s https://codecov.io/bash)
