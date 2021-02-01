@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 main() {
-    svc="${CI_BUILD_DIR}/.github/scripts/nginx.service"
-    skeleton="${CI_BUILD_DIR}/resources/test-skel"
+    svc="${GITHUB_WORKSPACE}/.github/scripts/nginx.service"
+    skeleton="${GITHUB_WORKSPACE}/resources/test-skel"
 
     sudo cp "${svc}" /etc/systemd/system/ && sudo systemctl daemon-reload
     sudo mkdir -p /var/www /etc/nginx/sites-enabled /etc/nginx/sites-available

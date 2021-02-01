@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # shellcheck source=retry.sh
-source "${CI_BUILD_DIR}/.github/scripts/retry.sh"
+source "${GITHUB_WORKSPACE}/.github/scripts/retry.sh"
 
 main() {
     if [[ "${RUN_MODE}" == "npm" ]]; then

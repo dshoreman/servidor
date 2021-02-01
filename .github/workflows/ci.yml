@@ -11,7 +11,6 @@ jobs:
 
     env:
       RUN_MODE: php
-      CI_BUILD_DIR: ${{ env.GITHUB_WORKSPACE }}
       CI_PHP_VERSION: ${{ matrix.php }}
 
     strategy:
@@ -44,7 +43,6 @@ jobs:
 
     env:
       RUN_MODE: npm
-      CI_BUILD_DIR: ${{ env.GITHUB_WORKSPACE }}
 
     strategy:
       matrix:

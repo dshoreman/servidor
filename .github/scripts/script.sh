@@ -11,13 +11,13 @@ main() {
 test_npm() {
     npm run prod
 
-    "${CI_BUILD_DIR}/node_modules/.bin/eslint" \
+    "${GITHUB_WORKSPACE}/node_modules/.bin/eslint" \
         -c build/eslint/config.json "resources/js/**/*.{js,vue}" \
         && echo "Eslint ran without errors"
 }
 
 test_php() {
-    local scriptDir="${CI_BUILD_DIR}/vendor/bin"
+    local scriptDir="${GITHUB_WORKSPACE}/vendor/bin"
 
     if [[ "${CI_PHP_VERSION}" > "7.3" ]]; then
         run_php_cs "${scriptDir}"
