@@ -19,7 +19,7 @@ test_npm() {
 test_php() {
     local scriptDir="${GITHUB_WORKSPACE}/vendor/bin"
 
-    if [[ "${CI_PHP_VERSION}" > "7.3" ]]; then
+    if [[ "${CI_PHP_VERSION}" == "8.0" ]]; then
         run_php_cs "${scriptDir}"
     fi
 
