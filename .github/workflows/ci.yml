@@ -4,10 +4,6 @@ on: [push, pull_request]
 
 jobs:
 
-  # ----------------------------------------------------------------------------
-  # PHP Tests
-  # ----------------------------------------------------------------------------
-
   test_php:
     name: Test PHP
 
@@ -22,20 +18,6 @@ jobs:
       matrix:
         os: [ubuntu-18.04, windows-2019]
         php: ['7.4', '8.0']
-
-    services:
-      db:
-        image: mariadb:latest
-        env:
-          MYSQL_USER: root
-          MYSQL_PASSWORD: password
-          MYSQL_DATABASE: servidor_testing
-        ports: ['3306:3306']
-        options: >-
-          --health-cmd "mysqladmin ping"
-          --health-interval 5s
-          --health-timeout 2s
-          --health-retries 5
 
     steps:
     - name: Checkout
@@ -54,10 +36,6 @@ jobs:
     - name: Print Laravel logs on failure
       if: failure()
       run: cat storage/logs/laravel.log
-
-  # ----------------------------------------------------------------------------
-  # Javasvript Tests
-  # ----------------------------------------------------------------------------
 
   test_js:
     name: Test Javascript
