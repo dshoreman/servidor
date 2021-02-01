@@ -5,7 +5,7 @@ main() {
         return
     fi
 
-    svc="${CI_BUILD_DIR}/build/ci/nginx.service"
+    svc="${CI_BUILD_DIR}/.github/scripts/nginx.service"
     skeleton="${CI_BUILD_DIR}/resources/test-skel"
 
     sudo cp "${svc}" /etc/systemd/system/ && sudo systemctl daemon-reload

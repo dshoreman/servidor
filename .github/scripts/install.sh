@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # shellcheck source=retry.sh
-source "${CI_BUILD_DIR}/build/ci/retry.sh"
+source "${CI_BUILD_DIR}/.github/scripts/retry.sh"
 
 main() {
     if [[ "${RUN_MODE}" == "npm" ]]; then
@@ -19,7 +19,7 @@ php_install() {
     pecl install pcov
     mysql -e 'CREATE DATABASE servidor_testing;'
 
-    cp build/ci/dotenv ./.env
+    cp .github/scripts/dotenv ./.env
     git config --global pull.ff only
     ci_retry composer install --no-interaction
 

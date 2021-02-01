@@ -24,13 +24,13 @@ before_install:
   - if [[ "${RUN_MODE}" != "npm" ]]; then phpenv config-rm xdebug.ini; fi
 
 install:
-  - build/ci/install.sh
+  - .github/scripts/install.sh
 
 before_script:
-  - build/ci/prepare.sh
+  - .github/scripts/prepare.sh
 
 script:
-  - build/ci/script.sh
+  - .github/scripts/script.sh
 
 after_failure:
   - if [[ "${RUN_MODE}" != "npm" ]]; then cat storage/logs/laravel.log; fi
