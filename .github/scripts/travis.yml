@@ -16,12 +16,9 @@ jobs:
       env: RUN_MODE=php
     - php: 8.0
       env: RUN_MODE=php-latest
-    - node_js: 12
-      language: node_js
-      env: RUN_MODE=npm
 
 before_install:
-  - if [[ "${RUN_MODE}" != "npm" ]]; then phpenv config-rm xdebug.ini; fi
+  - phpenv config-rm xdebug.ini
 
 install:
   - .github/scripts/install.sh
@@ -33,7 +30,7 @@ script:
   - .github/scripts/script.sh
 
 after_failure:
-  - if [[ "${RUN_MODE}" != "npm" ]]; then cat storage/logs/laravel.log; fi
+  - cat storage/logs/laravel.log
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

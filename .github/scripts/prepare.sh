@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
 main() {
-    if [[ "${RUN_MODE}" == "npm" ]]; then
-        return
-    fi
-
     svc="${GITHUB_WORKSPACE}/.github/scripts/nginx.service"
     skeleton="${GITHUB_WORKSPACE}/resources/test-skel"
 

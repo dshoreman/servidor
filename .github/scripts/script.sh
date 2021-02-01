@@ -1,22 +1,6 @@
 #!/usr/bin/env bash
 
 main() {
-    if [[ "${RUN_MODE}" == "npm" ]]; then
-        test_npm
-    else
-        test_php
-    fi
-}
-
-test_npm() {
-    npm run prod
-
-    "${GITHUB_WORKSPACE}/node_modules/.bin/eslint" \
-        -c build/eslint/config.json "resources/js/**/*.{js,vue}" \
-        && echo "Eslint ran without errors"
-}
-
-test_php() {
     local scriptDir="${GITHUB_WORKSPACE}/vendor/bin"
 
     if [[ "${CI_PHP_VERSION}" == "8.0" ]]; then
