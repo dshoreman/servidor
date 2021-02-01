@@ -3,61 +3,46 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-
-  test_php:
-    name: Test PHP
-
-    runs-on: ${{ matrix.os }}
-
-    env:
-      RUN_MODE: php
-      CI_PHP_VERSION: ${{ matrix.php }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-18.04, windows-2019]
-        php: ['7.4', '8.0']
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Setup PHP Environment
-      uses: nanasess/setup-php@master
-      with:
-        php-version: ${{ matrix.php }}
-
-    - run: .github/scripts/install.sh
-    - run: .github/scripts/prepare.sh
-    - run: .github/scripts/script.sh
-    - run: bash <(curl -s https://codecov.io/bash)
-
-    - name: Print Laravel logs on failure
-      if: failure()
-      run: cat storage/logs/laravel.log
-
   test_js:
     name: Test Javascript
-
     runs-on: ${{ matrix.os }}
-
     env:
       RUN_MODE: npm
-
     strategy:
       matrix:
         os: [ubuntu-18.04, windows-2019]
         nodejs: ['12']
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
     - name: Setup NodeJS Environment
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.nodejs }}
-
     - run: .github/scripts/install.sh
     - run: .github/scripts/script.sh
+
+  test_php:
+    name: Test PHP
+    runs-on: ${{ matrix.os }}
+    env:
+      RUN_MODE: php
+      CI_PHP_VERSION: ${{ matrix.php }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, windows-2019]
+        php: ['7.4', '8.0']
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup PHP Environment
+      uses: nanasess/setup-php@master
+      with:
+        php-version: ${{ matrix.php }}
+    - run: .github/scripts/install.sh
+    - run: .github/scripts/prepare.sh
+    - run: .github/scripts/script.sh
     - run: bash <(curl -s https://codecov.io/bash)
+    - name: Print Laravel logs on failure
+      if: failure()
+      run: cat storage/logs/laravel.log
