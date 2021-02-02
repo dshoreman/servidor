@@ -4,9 +4,10 @@
 source "${GITHUB_WORKSPACE}/.github/scripts/retry.sh"
 
 main() {
-    pecl install pcov
+    sudo pecl install pcov
     sudo systemctl start mysql.service
-    mysql -e 'CREATE DATABASE servidor_testing;'
+    ( mysql -e 'CREATE DATABASE servidor_testing;' -uroot -proot && \
+        echo "MySQL Database created!" ) || ( echo "Database creation failed"; exit 1 )
 
     cp .github/scripts/dotenv ./.env
     git config --global pull.ff only
