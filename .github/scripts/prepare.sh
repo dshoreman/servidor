@@ -4,6 +4,8 @@ main() {
     svc="${GITHUB_WORKSPACE}/.github/scripts/nginx.service"
     skeleton="${GITHUB_WORKSPACE}/resources/test-skel"
 
+    sudo ln -s "${GITHUB_WORKSPACE}" /var/servidor
+
     sudo cp "${svc}" /etc/systemd/system/ && sudo systemctl daemon-reload
     sudo mkdir -p /var/www /etc/nginx/sites-enabled /etc/nginx/sites-available
     sudo chmod -R 777 /etc/nginx /var/www
