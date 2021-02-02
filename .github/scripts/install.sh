@@ -5,6 +5,7 @@ source "${GITHUB_WORKSPACE}/.github/scripts/retry.sh"
 
 main() {
     pecl install pcov
+    sudo systemctl start mysql.service
     mysql -e 'CREATE DATABASE servidor_testing;'
 
     cp .github/scripts/dotenv ./.env

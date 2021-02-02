@@ -3,4 +3,4 @@ APP_KEY=SuperRandomAppKey
 
 DB_DATABASE=servidor_testing
 DB_USERNAME=root
-DB_PASSWORD=password
+DB_PASSWORD=root
