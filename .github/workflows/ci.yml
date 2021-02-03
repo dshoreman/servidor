@@ -10,13 +10,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-18.04, windows-2019]
-        php: ['7.4', '8.0']
+        php: ['7.4']
         experimental: [false]
         fail-fast: false
         include:
           - php: '8.0'
-            experimental: true
-          - os: windows-2019
             experimental: true
     steps:
       - name: Checkout
@@ -34,7 +32,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
+          key: composer-${{ hashFiles('composer.lock') }}-${{ matrix.os }}-${{ matrix.php }}
       - name: Install application
         run: .github/scripts/install.sh
       - name: Prepare permissions
