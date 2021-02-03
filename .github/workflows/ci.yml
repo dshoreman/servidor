@@ -23,27 +23,33 @@ jobs:
       matrix:
         os: [ubuntu-18.04, windows-2019]
         php: ['7.4', '8.0']
-      fail-fast: false
+        experimental: [false]
+        fail-fast: false
+        include:
+          - php: '8.0'
+            experimental: true
+          - os: windows-2019
+            experimental: true
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Setup PHP Environment
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        coverage: pcov
-    - name: Setup problem matchers
-      run: |
-        echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-        echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-    - name: Install application
-      run: .github/scripts/install.sh
-    - name: Prepare permissions
-      run: .github/scripts/prepare.sh
-    - name: Lint and Test
-      run: .github/scripts/script.sh
-    - name: Upload coverage results
-      uses: codecov/codecov-action@v1
-    - name: Print Laravel logs on failure
-      if: failure()
-      run: cat storage/logs/laravel.log
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: pcov
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Install application
+        run: .github/scripts/install.sh
+      - name: Prepare permissions
+        run: .github/scripts/prepare.sh
+      - name: Lint and Test
+        run: .github/scripts/script.sh
+      - name: Upload coverage results
+        uses: codecov/codecov-action@v1
+      - name: Print Laravel logs on failure
+        if: failure()
+        run: cat storage/logs/laravel.log
