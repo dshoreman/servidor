@@ -1,6 +1,39 @@
 on: [push, pull_request]
 
 jobs:
+  build-js:
+    name: Frontend (Node${{ matrix.nodejs }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+    env:
+      CI_NODE_VERSION: ${{ matrix.nodejs }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        nodejs: [12, 14]
+        experimental: [false]
+        include:
+          - nodejs: 14
+            os: windows-latest
+            experimental: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup NodeJS Environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.nodejs }}
+      - name: NPM node_modules cache
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: npm-${{ matrix.os }}-node${{ matrix.nodejs }}-${{ hashFiles('package-lock.json') }}
+      - name: Install npm modules
+        run: npm clean-install
+      - name: Build frontend assets
+        run: npm run prod
+      - name: Run ESLint
+        run: make eslint
+
   test-php:
     name: Backend/API (PHP${{ matrix.php }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -15,6 +48,7 @@ jobs:
         fail-fast: false
         include:
           - php: '8.0'
+            os: ubuntu-18.04
             experimental: true
     steps:
       - name: Checkout
@@ -32,7 +66,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}-${{ matrix.os }}-${{ matrix.php }}
+          key: composer-${{ matrix.os }}-php${{ matrix.php }}-${{ hashFiles('composer.lock') }}
       - name: Install application
         run: .github/scripts/install.sh
       - name: Prepare permissions
@@ -44,20 +78,3 @@ jobs:
       - name: Print Laravel logs on failure
         if: failure()
         run: cat storage/logs/laravel.log
-
-  build-js:
-    name: Frontend
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: NPM node_modules cache
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: npm-${{ hashFiles('package-lock.json') }}
-      - name: Install npm modules
-        run: npm clean-install
-      - name: Build frontend assets
-        run: npm run prod
-      - name: Run ESLint
-        run: make eslint
