@@ -11,7 +11,7 @@ main() {
 
     cp .github/scripts/dotenv ./.env
     git config --global pull.ff only
-    ci_retry composer install --no-interaction
+    ci_retry composer install --no-interaction --ignore-platform-req=php
 
     php artisan key:generate
     php artisan migrate && php artisan passport:install
