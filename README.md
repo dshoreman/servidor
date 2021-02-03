@@ -4,6 +4,7 @@
 [![Build Status](https://travis-ci.com/dshoreman/servidor.svg?branch=develop)](https://travis-ci.com/dshoreman/servidor)
 [![codecov](https://codecov.io/gh/dshoreman/servidor/branch/develop/graph/badge.svg)](https://codecov.io/gh/dshoreman/servidor)
 [![Depfu](https://badges.depfu.com/badges/2c958ee33ec51367189f2762a8814dc5/count.svg)](https://depfu.com/github/dshoreman/servidor?project_id=5912)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdshoreman%2Fservidor.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdshoreman%2Fservidor?ref=badge_shield)
 
 A modern web application for managing servers. Built on Laravel, using Semantic-UI-Vue for the frontend.
 
@@ -102,3 +103,7 @@ If you use IRC, find me in *#servidor* on Freenode where I'll be happy to answer
 [Contributing]: #contributing
 [Vagrant]: https://vagrantup.com
 [vagrant-hostsupdater]: https://github.com/agiledivider/vagrant-hostsupdater#installation
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdshoreman%2Fservidor.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdshoreman%2Fservidor?ref=badge_large)
