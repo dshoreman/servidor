@@ -2,6 +2,7 @@ on: [push, pull_request]
 
 jobs:
   build-js:
+    name: Frontend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -12,8 +13,8 @@ jobs:
       - name: Run ESLint
         run: make eslint
 
-  test_php:
-    name: Test PHP
+  test-php:
+    name: Backend/API (PHP${{ matrix.php }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     env:
       RUN_MODE: php
@@ -26,17 +27,18 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Setup PHP Environment
-      uses: nanasess/setup-php@master
+      uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
+        coverage: pcov
     - name: Install application
       run: .github/scripts/install.sh
     - name: Prepare permissions
       run: .github/scripts/prepare.sh
     - name: Lint and Test
       run: .github/scripts/script.sh
-    - name: Ping codecov.io
-      run: bash <(curl -s https://codecov.io/bash)
+    - name: Upload coverage results
+      uses: codecov/codecov-action@v1
     - name: Print Laravel logs on failure
       if: failure()
       run: cat storage/logs/laravel.log
