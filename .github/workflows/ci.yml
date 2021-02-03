@@ -32,6 +32,10 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: pcov
+    - name: Setup problem matchers
+      run: |
+        echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+        echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
     - name: Install application
       run: .github/scripts/install.sh
     - name: Prepare permissions
