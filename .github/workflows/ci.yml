@@ -1,18 +1,6 @@
 on: [push, pull_request]
 
 jobs:
-  build-js:
-    name: Frontend
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install npm modules
-        run: npm clean-install
-      - name: Build frontend assets
-        run: npm run prod
-      - name: Run ESLint
-        run: make eslint
-
   test-php:
     name: Backend/API (PHP${{ matrix.php }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -42,6 +30,11 @@ jobs:
         run: |
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Composer vendor cache
+        uses: actions/cache@v1
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
       - name: Install application
         run: .github/scripts/install.sh
       - name: Prepare permissions
@@ -53,3 +46,20 @@ jobs:
       - name: Print Laravel logs on failure
         if: failure()
         run: cat storage/logs/laravel.log
+
+  build-js:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: NPM node_modules cache
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('package-lock.json') }}
+      - name: Install npm modules
+        run: npm clean-install
+      - name: Build frontend assets
+        run: npm run prod
+      - name: Run ESLint
+        run: make eslint
