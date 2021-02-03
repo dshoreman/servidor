@@ -35,7 +35,7 @@ jobs:
         run: make eslint
 
   test-php:
-    name: Backend/API (PHP${{ matrix.php }} on ${{ matrix.os }})
+    name: Backend (php${{ matrix.php }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     env:
       RUN_MODE: php
@@ -51,7 +51,7 @@ jobs:
             os: ubuntu-18.04
             experimental: true
     steps:
-      - name: Checkout
+      - name: Checkout the code
         uses: actions/checkout@v2
       - name: Setup PHP Environment
         uses: shivammathur/setup-php@v2
@@ -78,3 +78,4 @@ jobs:
       - name: Print Laravel logs on failure
         if: failure()
         run: cat storage/logs/laravel.log
+
