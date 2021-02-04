@@ -69,8 +69,6 @@ jobs:
           key: composer-${{ matrix.os }}-php${{ matrix.php }}-${{ hashFiles('composer.lock') }}
       - name: Install application
         run: .github/scripts/install.sh
-      - name: Prepare permissions
-        run: .github/scripts/prepare.sh
       - name: Lint and Test
         run: .github/scripts/script.sh
       - name: Upload coverage results
@@ -78,4 +76,3 @@ jobs:
       - name: Print Laravel logs on failure
         if: failure()
         run: cat storage/logs/laravel.log
-
