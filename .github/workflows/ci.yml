@@ -1,7 +1,4 @@
 on: [push, pull_request]
-defaults:
-  run:
-    shell: bash
 
 jobs:
   build-js:
@@ -71,11 +68,11 @@ jobs:
           path: vendor
           key: composer-${{ matrix.os }}-php${{ matrix.php }}-${{ hashFiles('composer.lock') }}
       - name: Install application
-        run: .github/scripts/install.sh
+        run: bash .github/scripts/install.sh
       - name: Lint and Test
-        run: .github/scripts/script.sh
+        run: bash .github/scripts/script.sh
       - name: Upload coverage results
         uses: codecov/codecov-action@v1
       - name: Print Laravel logs on failure
         if: failure()
-        run: cat storage/logs/laravel.log
+        run: [[ -f storage/logs/laravel.log ]] && cat storage/logs/laravel.log
