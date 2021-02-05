@@ -15,13 +15,18 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.nodejs }}
-      - name: NPM node_modules cache
-        uses: actions/cache@v1
+      - name: Cache node modules
+        uses: actions/cache@v2
         with:
-          path: node_modules
-          key: npm-${{ matrix.os }}-node${{ matrix.nodejs }}-${{ hashFiles('package-lock.json') }}
+          path: ~/.npm
+          key: npm-node${{ matrix.nodejs }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: npm-node${{ matrix.nodejs }}-
       - name: Install npm modules
-        run: npm clean-install
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 45
+          max_attempts: 3
+          command: npm clean-install
       - name: Build frontend assets
         run: npm run prod
       - name: Run ESLint
@@ -35,8 +40,18 @@ jobs:
         uses: actions/checkout@v2
       - name: Validate composer.json and lockfile
         run: composer validate
+      - uses: actions/cache@v2
+        id: composer-lint-cache
+        with:
+          path: ~/.cache/composer/files
+          key: composer-php8.0-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-php8.0-
       - name: Install composer packages
-        run: composer install --no-interaction --no-progress --prefer-dist
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 45
+          max_attempts: 3
+          command: composer install --no-interaction --no-progress --prefer-dist
       - name: Run PHP CS Fixer
         run: make phpcsf CS_ARGS="--verbose"
       - name: Check PSR12 compliance
@@ -51,6 +66,7 @@ jobs:
         run: make psalm
 
   test-php:
+    if: always()
     needs: lint-php
     name: Test Backend (php-${{ matrix.php }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -77,11 +93,18 @@ jobs:
         run: |
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-      - name: Composer vendor cache
-        uses: actions/cache@v1
+      - uses: actions/cache@v2
+        id: composer-test-cache
         with:
-          path: vendor
-          key: composer-${{ matrix.os }}-php${{ matrix.php }}-${{ hashFiles('composer.lock') }}
+          path: ~/.cache/composer/files
+          key: composer-php${{ runner.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-php${{ runner.php }}-
+      - name: Install composer packages
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 45
+          max_attempts: 3
+          command: composer install --no-interaction --no-progress --prefer-dist
       - name: Install application
         run: bash .github/scripts/install.sh
       - name: Run tests with PHPUnit

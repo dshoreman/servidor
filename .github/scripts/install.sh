@@ -1,21 +1,9 @@
 #!/usr/bin/env bash
 
-# shellcheck source=retry.sh
-source "${GITHUB_WORKSPACE}/.github/scripts/retry.sh"
 # shellcheck source=common.sh
 source "${GITHUB_WORKSPACE}/.github/scripts/common.sh"
 
 main() {
-    local svc="${GITHUB_WORKSPACE}/.github/scripts/nginx.service"
-    local skeleton="${GITHUB_WORKSPACE}/resources/test-skel"
-
-    # TODO:
-    # Lost the link, but there's a retry action we can use for this.
-    # Not sure if running before there's a db is an issue, we'll see.
-    group_start "Install composer packages" && \
-        ci_retry composer install --no-interaction --ignore-platform-req=php
-    group_end
-
     group_start "Prepare test database" && \
         start_mysql "Starting mysql.service" && \
         create_database "Creating database"
@@ -54,6 +42,8 @@ mk_app_key() {
 }
 
 set_test_skel_permissions() {
+    local skeleton="${GITHUB_WORKSPACE}/resources/test-skel"
+
     sudo chown -Rv www-data:www-data "${skeleton}"
     sudo chown -Rv root:root "${skeleton}/protected"
 
