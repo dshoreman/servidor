@@ -1,6 +1,8 @@
 .PHONY: test
 
 GNU_SED := $(shell command -v gsed || command -v sed)
+PHP_CSF_ARGS := --diff --dry-run $(CS_ARGS)
+PHP_MND_ARGS := --progress $(MND_ARGS) --exclude tests
 now := `date '+%Y-%m-%d_%H%M'`
 
 installer: thinkdifferent
@@ -46,6 +48,9 @@ endif
 test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
 
+test-for-ci:
+	vendor/bin/phpunit -c build/phpunit/config.xml --coverage-clover=coverage.xml --exclude-group "broken-travis"
+
 coverage:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
 	@echo
@@ -74,7 +79,7 @@ psalm:
 	vendor/bin/psalm -c build/psalm/psalm.xml
 
 phpcsf:
-	vendor/bin/php-cs-fixer fix --diff --dry-run --config build/php-cs-fixer/config.php
+	vendor/bin/php-cs-fixer fix $(PHP_CSF_ARGS) --config build/php-cs-fixer/config.php
 	@echo
 
 phpcs:
@@ -85,7 +90,7 @@ phpmd:
 	@echo
 
 phpmnd:
-	vendor/bin/phpmnd . --progress --exclude tests
+	vendor/bin/phpmnd . $(PHP_MND_ARGS)
 	@echo
 
 syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm

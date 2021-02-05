@@ -2,10 +2,8 @@ on: [push, pull_request]
 
 jobs:
   build-js:
-    name: Frontend (nodejs-${{ matrix.nodejs }} on ${{ matrix.os }})
+    name: Lint frontend (nodejs-${{ matrix.nodejs }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    env:
-      CI_NODE_VERSION: ${{ matrix.nodejs }}
     strategy:
       fail-fast: false
       matrix:
@@ -29,13 +27,34 @@ jobs:
       - name: Run ESLint
         run: make eslint
 
+  lint-php:
+    name: Lint PHP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Validate composer.json and lockfile
+        run: composer validate
+      - name: Install composer packages
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Run PHP CS Fixer
+        run: make phpcsf CS_ARGS="--verbose"
+      - name: Check PSR12 compliance
+        run: make phpcs
+      - name: Run PHP Mess Detector
+        run: make phpmd
+      - name: Detect magic numbers
+        run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
+      - name: Run PHPStan checks
+        run: make phpstan
+      - name: Run Psalm checks
+        run: make psalm
+
   test-php:
-    name: Backend (php-${{ matrix.php }} on ${{ matrix.os }})
+    needs: lint-php
+    name: Test Backend (php-${{ matrix.php }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
-    env:
-      RUN_MODE: php
-      CI_PHP_VERSION: ${{ matrix.php }}
     strategy:
       fail-fast: false
       matrix:
@@ -65,8 +84,8 @@ jobs:
           key: composer-${{ matrix.os }}-php${{ matrix.php }}-${{ hashFiles('composer.lock') }}
       - name: Install application
         run: bash .github/scripts/install.sh
-      - name: Lint and Test
-        run: bash .github/scripts/script.sh
+      - name: Run tests with PHPUnit
+        run: make test-for-ci
       - name: Upload coverage results
         uses: codecov/codecov-action@v1
       - name: Check Laravel log
