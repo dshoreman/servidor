@@ -37,14 +37,8 @@ main() {
         migrate_db && install_auth
     group_end
 
-    group_start "Install dummy Nginx service" && \
-        install_nginx && reload_services
-    group_end
-
     group_start "Prepare test filesystem" && \
-        echo "Linking workspace to installation dir..." && \
         sudo ln -sv "${GITHUB_WORKSPACE}" /var/servidor && \
-        set_nginx_permissions && \
         set_test_skel_permissions
     group_end
 }
@@ -65,18 +59,6 @@ mk_app_key() {
     echo "${1}" && php artisan key:generate
 }
 
-install_nginx() {
-    sudo cp -v "${svc}" /etc/systemd/system/
-}
-reload_services() {
-    echo -n "Reloading systemd services..."
-    ( sudo systemctl daemon-reload && msg_ok ) || msg_err
-}
-
-set_nginx_permissions() {
-    sudo mkdir -pv /var/www /etc/nginx/sites-enabled /etc/nginx/sites-available
-    sudo chmod -Rv 777 /etc/nginx /var/www
-}
 set_test_skel_permissions() {
     sudo chown -Rv www-data:www-data "${skeleton}"
     sudo chown -Rv root:root "${skeleton}/protected"
