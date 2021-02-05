@@ -12,7 +12,9 @@ main() {
     # TODO:
     # Lost the link, but there's a retry action we can use for this.
     # Not sure if running before there's a db is an issue, we'll see.
-    ci_retry composer install --no-interaction --ignore-platform-req=php
+    group_start "Install composer packages" && \
+        ci_retry composer install --no-interaction --ignore-platform-req=php
+    group_end
 
     group_start "Prepare test database" && \
         start_mysql "Starting mysql.service" && \
@@ -53,7 +55,7 @@ start_mysql() {
 }
 create_database() {
     echo "${1}..."
-    ( sudo mysql -e 'CREATE DATABASE servidor_testing;' && msg_ok ) || msg_err
+    ( sudo mysql -proot -e 'CREATE DATABASE servidor_testing;' && msg_ok ) || msg_err
 }
 
 copy_dotenv() {
