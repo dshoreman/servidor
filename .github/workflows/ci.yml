@@ -2,20 +2,15 @@ on: [push, pull_request]
 
 jobs:
   build-js:
-    name: Frontend (Node${{ matrix.nodejs }} on ${{ matrix.os }})
+    name: Frontend (nodejs-${{ matrix.nodejs }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
     env:
       CI_NODE_VERSION: ${{ matrix.nodejs }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
         nodejs: [12, 14]
-        experimental: [false]
-        include:
-          - nodejs: 14
-            os: windows-latest
-            experimental: true
     steps:
       - uses: actions/checkout@v2
       - name: Setup NodeJS Environment
@@ -35,20 +30,21 @@ jobs:
         run: make eslint
 
   test-php:
-    name: Backend (php${{ matrix.php }} on ${{ matrix.os }})
+    name: Backend (php-${{ matrix.php }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     env:
       RUN_MODE: php
       CI_PHP_VERSION: ${{ matrix.php }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-18.04, windows-2019]
-        php: ['7.4']
+        os: [ubuntu-18.04, ubuntu-20.04]
+        php: ['7.4', '8.0']
         experimental: [false]
-        fail-fast: [false]
         include:
-          - php: '8.0'
-            os: ubuntu-18.04
+          - php: '8.1'
+            os: ubuntu-20.04
             experimental: true
     steps:
       - name: Checkout the code
@@ -73,6 +69,6 @@ jobs:
         run: bash .github/scripts/script.sh
       - name: Upload coverage results
         uses: codecov/codecov-action@v1
-      - name: Print Laravel logs on failure
+      - name: Check Laravel log
         if: failure()
         run: test -f storage/logs/laravel.log && cat storage/logs/laravel.log
