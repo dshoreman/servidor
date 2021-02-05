@@ -15,7 +15,8 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^6.2",
         "laravel/passport": "^9.4",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "ramsey/uuid": "3.x-dev"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.2.1",
