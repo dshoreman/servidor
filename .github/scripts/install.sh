@@ -26,12 +26,9 @@ main() {
         mk_app_key "Generating app encryption key"
     group_end
 
-    # TODO:
-    # This may not be required - remove it if that proves to be true.
-    # It was previously added because git as www-data in the Travis VM
-    # did not have any git config (or homedir) and caused warning spam
-    #
-    # git config --global pull.ff only
+    group_start "Set Git's pull method" && \
+        git config --global pull.ff only
+    group_end
 
     group_start "Run database migrations" && \
         migrate_db && install_auth
