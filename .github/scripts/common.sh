@@ -11,5 +11,5 @@ msg_ok() {
     echo -e "\e[1;32m [OK]\e[0m"
 }
 msg_err() {
-    echo -e "\e[1;32m [ERR]\e[0m" && exit 1
+    echo -e "\e[1;31m [ERR]\e[0m" && exit 1
 }

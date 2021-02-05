@@ -1,4 +1,7 @@
 on: [push, pull_request]
+defaults:
+  run:
+    shell: bash
 
 jobs:
   build-js:
