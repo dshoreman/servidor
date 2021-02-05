@@ -23,10 +23,7 @@ main() {
 
     group_start "Set app config" && \
         copy_dotenv "Copying .env file from template" && \
-        mk_app_key "Generating app encryption key"
-    group_end
-
-    group_start "Set Git's pull method" && \
+        mk_app_key "Generating app encryption key" && \
         git config --global pull.ff only
     group_end
 
