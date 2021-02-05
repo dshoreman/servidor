@@ -1,9 +1,11 @@
 .PHONY: test
 
+SHELL = bash -eo pipefail
 GNU_SED := $(shell command -v gsed || command -v sed)
+
+now := `date '+%Y-%m-%d_%H%M'`
 PHP_CSF_ARGS := --diff --dry-run $(CS_ARGS)
 PHP_MND_ARGS := --progress $(MND_ARGS) --exclude tests
-now := `date '+%Y-%m-%d_%H%M'`
 
 installer: thinkdifferent
 	@echo -n "Building unified install script... "
@@ -80,18 +82,15 @@ psalm:
 
 phpcsf:
 	vendor/bin/php-cs-fixer fix $(PHP_CSF_ARGS) --config build/php-cs-fixer/config.php
-	@echo
 
 phpcs:
 	vendor/bin/phpcs app -p --standard=PSR12
 
 phpmd:
 	vendor/bin/phpmd app ansi build/phpmd/rules.xml
-	@echo
 
 phpmnd:
 	vendor/bin/phpmnd . $(PHP_MND_ARGS)
-	@echo
 
 syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm
 
