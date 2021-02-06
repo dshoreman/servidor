@@ -2,7 +2,7 @@ on: [push, pull_request]
 
 jobs:
   build-js:
-    name: Lint frontend (nodejs-${{ matrix.nodejs }} on ${{ matrix.os }})
+    name: Build and lint frontend (nodejs-${{ matrix.nodejs }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -95,8 +95,8 @@ jobs:
         id: composer-test-cache
         with:
           path: ~/.cache/composer/files
-          key: composer-php${{ runner.php }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: composer-php${{ runner.php }}-
+          key: composer-php${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-php${{ matrix.php }}-
       - name: Install composer packages
         uses: nick-invision/retry@v2
         with:
