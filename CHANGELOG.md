@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Changed
+* [chore] Migrated CI from Travis to GitHub Actions
+
+### Fixed
+* [installer] Resolved an issue in Makefile that prevented running on GHA
 
 
 ## [0.11.0] - 2021-01-28
