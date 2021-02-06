@@ -235,7 +235,7 @@ class FileManager
             $data['contents'] = '';
             $data['error'] = ['code' => 418, 'msg' => $msg];
 
-            if (Str::contains($msg, 'failed to open stream: Permission denied')) {
+            if (Str::contains(mb_strtolower($msg), 'failed to open stream: permission denied')) {
                 $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
             }
         }
