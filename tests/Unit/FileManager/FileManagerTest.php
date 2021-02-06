@@ -90,10 +90,6 @@ class FileManagerTest extends TestCase
             'isFile' => false,
             'owner' => 'root',
             'group' => 'root',
-            'perms' => [
-                'text' => 'drwxr-xr-x',
-                'octal' => '0755',
-            ],
         ];
         $list = $this->manager->list('/');
 
