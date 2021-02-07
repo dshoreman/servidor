@@ -1,4 +1,9 @@
-on: [push, pull_request]
+name: Servidor CI
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [master, develop]
 
 jobs:
   build-js:
