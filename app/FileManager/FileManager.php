@@ -162,7 +162,7 @@ class FileManager
         exec('cd "' . $path . '" && stat -c "%n %A %a" ' . $name . ' 2>/dev/null', $files);
 
         foreach ($files as $file) {
-            list($filename, $text, $octal) = explode(' ', $file);
+            [$filename, $text, $octal] = explode(' ', $file);
 
             $perms[$filename] = compact('text', 'octal');
         }
@@ -212,14 +212,14 @@ class FileManager
      */
     private function fileToArray(string $file): array
     {
-        list($file, $data) = $this->loadFile($file);
+        [$file, $data] = $this->loadFile($file);
 
         return $data;
     }
 
     private function fileWithContents(string $file): array
     {
-        list($file, $data) = $this->loadFile($file);
+        [$file, $data] = $this->loadFile($file);
 
         if ($data['mimetype'] && 'text/' != mb_substr($data['mimetype'], 0, 5)) {
             return array_merge($data, ['error' => [
@@ -235,7 +235,7 @@ class FileManager
             $data['contents'] = '';
             $data['error'] = ['code' => 418, 'msg' => $msg];
 
-            if (Str::contains($msg, 'failed to open stream: Permission denied')) {
+            if (Str::contains(mb_strtolower($msg), 'failed to open stream: permission denied')) {
                 $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
             }
         }

@@ -32,7 +32,7 @@ class LinuxUserTest extends TestCase
         $user->setUserGroup(false);
         $user->setUserGroup(true);
 
-        $this->assertEquals(1, count($user->getArgs()));
+        $this->assertCount(1, $user->getArgs());
         $this->assertEquals(['-U'], array_values($user->getArgs()));
         $this->assertEquals('-U', $user->toArgs());
         $this->assertTrue($user->isDirty());
