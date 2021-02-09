@@ -125,10 +125,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: technote-space/workflow-conclusion-action@v2
-      - name: Send failure notification
+      - id: get-ref
+        run: |
+          branch=$(echo ${{github.event.ref}} | cut -d'/' -f3)
+          echo "::set-output name=branch::$branch"
+      - if: github.event_name == 'push'
+        name: Send notification for push event
         uses: rectalogic/notify-irc@v1
         with:
           channel: '#servidor'
           nickname: 'servidor-bot'
           message: |-
             ${{ github.event.ref }} pushed to by ${{ github.actor }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.compare }}
+      - if: github.event_name == 'workflow_dispatch'
+        name: Send notification for manual trigger
+        uses: rectalogic/notify-irc@v1
+        with:
+          channel: '#servidor'
+          nickname: 'servidor-bot'
+          message: |-
+            Manual CI run completed on ${{ steps.get-ref.outputs.branch }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
