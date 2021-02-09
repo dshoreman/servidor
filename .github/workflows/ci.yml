@@ -144,7 +144,7 @@ jobs:
           channel: '#servidor'
           nickname: 'servidor-bot'
           message: |-
-            ${{ github.event.ref }} pushed to by ${{ github.actor }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.html_url }}
+            Completed build for PR #${{ github.event.number }} from ${{ github.event.pull_request.head.label }} (${{ github.event.pull_request.commits }} commits, +${{ github.event.pull_request.additions }} -${{ github.event.pull_request.deletions }}) (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.pull_request.html_url }}
       - if: github.event_name == 'workflow_dispatch'
         name: Send notification for manual trigger
         uses: rectalogic/notify-irc@v1
