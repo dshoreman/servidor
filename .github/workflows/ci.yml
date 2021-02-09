@@ -137,6 +137,14 @@ jobs:
           nickname: 'servidor-bot'
           message: |-
             ${{ github.event.ref }} pushed to by ${{ github.actor }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.compare }}
+      - if: github.event_name == 'pull_request'
+        name: Send failure notification (Pull Request)
+        uses: rectalogic/notify-irc@v1
+        with:
+          channel: '#servidor'
+          nickname: 'servidor-bot'
+          message: |-
+            ${{ github.event.ref }} pushed to by ${{ github.actor }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.html_url }}
       - if: github.event_name == 'workflow_dispatch'
         name: Send notification for manual trigger
         uses: rectalogic/notify-irc@v1
