@@ -124,7 +124,9 @@ jobs:
     needs: [build-js, test-php]
     runs-on: ubuntu-latest
     steps:
-      - uses: technote-space/workflow-conclusion-action@v2
+      - uses: dshoreman/workflow-conclusion-action@v2.2
+        with:
+          exclude_jobs: 'php-8.1 on ubuntu-.*$'
       - id: get-ref
         run: |
           branch=$(echo ${{github.event.ref}} | cut -d'/' -f3)
