@@ -1,4 +1,4 @@
-name: Servidor CI
+name: build
 on:
   workflow_dispatch:
   pull_request:
@@ -124,11 +124,35 @@ jobs:
     needs: [build-js, test-php]
     runs-on: ubuntu-latest
     steps:
-      - uses: technote-space/workflow-conclusion-action@v2
-      - name: Send failure notification
+      - uses: dshoreman/workflow-conclusion-action@v2.2
+        with:
+          exclude_jobs: 'php-8.1 on ubuntu-.*$'
+      - id: get-ref
+        run: |
+          branch=$(echo ${{github.event.ref}} | cut -d'/' -f3)
+          echo "::set-output name=branch::$branch"
+          echo "::set-output name=commits::$(jq -r '.commits | length' $GITHUB_EVENT_PATH)"
+      - if: github.event_name == 'push'
+        name: Send notification for push event
         uses: rectalogic/notify-irc@v1
         with:
           channel: '#servidor'
           nickname: 'servidor-bot'
           message: |-
-            ${{ github.event.ref }} pushed to by ${{ github.actor }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.compare }}
+            ${{ github.actor }} pushed ${{ steps.get-ref.outputs.commits }} commit(s) to ${{ steps.get-ref.outputs.branch }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.compare }}
+      - if: github.event_name == 'pull_request'
+        name: Send failure notification (Pull Request)
+        uses: rectalogic/notify-irc@v1
+        with:
+          channel: '#servidor'
+          nickname: 'servidor-bot'
+          message: |-
+            ${{ github.actor }} pushed to PR #${{ github.event.number }} from ${{ github.event.pull_request.head.label }} (${{ github.event.pull_request.commits }} commits, +${{ github.event.pull_request.additions }} -${{ github.event.pull_request.deletions }}) (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.pull_request.html_url }}
+      - if: github.event_name == 'workflow_dispatch'
+        name: Send notification for manual trigger
+        uses: rectalogic/notify-irc@v1
+        with:
+          channel: '#servidor'
+          nickname: 'servidor-bot'
+          message: |-
+            Manual CI run completed on ${{ steps.get-ref.outputs.branch }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
