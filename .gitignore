@@ -9,6 +9,7 @@
 /public/storage
 /storage/test-clone
 /storage/*.key
+/tests/reports/*
 /vendor
 /.idea
 /.vscode
@@ -19,5 +20,6 @@
 .composer
 .php_cs.cache
 .phpunit.result.cache
+_ide_helper.php
 npm-debug.log
 yarn-error.log

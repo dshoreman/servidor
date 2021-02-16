@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Servidor\FileManager\FileManager;
+use Symfony\Component\HttpFoundation\Response as SfResponse;
 
 class FileController extends Controller
 {
@@ -97,7 +98,10 @@ class FileController extends Controller
         return response()->json($file, $file['error']['code'] ?? Response::HTTP_OK);
     }
 
-    public function delete(Request $request): Response
+    /**
+     * @return Response|JsonResponse
+     */
+    public function delete(Request $request): SfResponse
     {
         if (!($filepath = $request->query('file')) || !is_string($filepath)) {
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);

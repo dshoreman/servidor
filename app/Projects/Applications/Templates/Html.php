@@ -3,9 +3,10 @@
 namespace Servidor\Projects\Applications\Templates;
 
 use Servidor\Projects\Application;
+use Servidor\Projects\Domainable;
 use Servidor\Traits\TogglesNginxConfigs;
 
-class Html implements Template
+class Html implements Template, Domainable
 {
     use TogglesNginxConfigs;
 
@@ -26,6 +27,11 @@ class Html implements Template
     public function getApp(): Application
     {
         return $this->app;
+    }
+
+    public function domainName(): string
+    {
+        return $this->getApp()->domain_name ?? '';
     }
 
     public function getLogs(): array

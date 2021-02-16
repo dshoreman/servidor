@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 use Servidor\Traits\TogglesNginxConfigs;
 
-class Redirect extends Model
+class Redirect extends Model implements Domainable
 {
     use TogglesNginxConfigs;
 
@@ -18,6 +18,11 @@ class Redirect extends Model
     ];
 
     protected $table = 'project_redirects';
+
+    public function domainName(): string
+    {
+        return $this->attributes['domain_name'] ?? '';
+    }
 
     public function project(): BelongsTo
     {
