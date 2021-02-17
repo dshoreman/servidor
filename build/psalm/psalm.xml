@@ -34,8 +34,6 @@
 
         <!-- Level 1 Errors -->
         <MixedArgument errorLevel="suppress" />
-        <MixedArrayAccess errorLevel="suppress" />
-        <MixedArrayAssignment errorLevel="suppress" />
         <MixedAssignment errorLevel="suppress" />
         <MixedInferredReturnType errorLevel="suppress" />
         <MixedMethodCall errorLevel="suppress" />

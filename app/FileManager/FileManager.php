@@ -11,15 +11,12 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class FileManager
 {
-    /**
-     * @var Finder
-     */
-    private $finder;
+    private Finder $finder;
 
     /**
-     * @var array
+     * @var array<string, array{text: string, octal: string}>
      */
-    private $filePerms = [];
+    private array $filePerms = [];
 
     public function __construct()
     {
@@ -39,13 +36,7 @@ class FileManager
         try {
             return $this->getFiles($path);
         } catch (DirectoryNotFoundException $e) {
-            return [
-                'filepath' => $path,
-                'error' => [
-                    'code' => 404,
-                    'msg' => "This directory doesn't exist.",
-                ],
-            ];
+            throw new PathNotFound("This directory doesn't exist.");
         }
     }
 
@@ -71,12 +62,7 @@ class FileManager
             return ['error' => ['code' => 500, 'msg' => 'Could not create ' . $path]];
         }
 
-        $dir = $this->open($path);
-        if ('Unsupported filetype' === ($dir['error']['msg'] ?? '')) {
-            unset($dir['error']);
-        }
-
-        return $dir;
+        return $this->open($path, false);
     }
 
     public function createFile(string $file, string $contents): array
@@ -91,13 +77,17 @@ class FileManager
         return $this->open($file);
     }
 
-    public function open(string $file): array
+    public function open(string $file, bool $includeContent = true): array
     {
         if (!file_exists($file)) {
-            return ['error' => ['code' => 404, 'msg' => 'File not found']];
+            throw new PathNotFound('File not found');
         }
 
         $this->loadFilePermissions($file);
+
+        if (false === $includeContent) {
+            return $this->fileToArray($file);
+        }
 
         return $this->fileWithContents($file);
     }
@@ -127,19 +117,19 @@ class FileManager
         return $item;
     }
 
-    public function delete(string $path): array
+    public function delete(string $path): bool
     {
-        $remove = is_dir($path) ? 'rmdir' : 'unlink';
-        $error = ['code' => 500, 'msg' => 'Failed removing' . $path];
-
         if (!file_exists($path)) {
-            return ['error' => null];
-        }
-        if (!is_writable($path)) {
-            return ['error' => ['code' => 403, 'msg' => 'No permission to write path']];
+            return true;
+        } elseif (!is_writable($path)) {
+            throw new PathNotWritable('No permission to write path');
         }
 
-        return ['error' => $remove($path) ? null : $error];
+        if (!(is_dir($path) ? rmdir($path) : unlink($path))) {
+            throw new PathDeletionFailed('Failed removing ' . $path);
+        }
+
+        return true;
     }
 
     private function loadFilePermissions(string $path): array
@@ -171,8 +161,13 @@ class FileManager
     }
 
     /**
+     * TODO: See if the ErrorControlOperator still needs
+     * to be suppressed once phpmd is working on PHP 8.x.
+     *
      * @param SplFileInfo|string $file
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     *
+     * @return array{0: SplFileInfo, 1: array}
      */
     private function loadFile($file): array
     {
@@ -207,9 +202,6 @@ class FileManager
         return [$file, $data];
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
     private function fileToArray(string $file): array
     {
         [$file, $data] = $this->loadFile($file);
@@ -222,10 +214,7 @@ class FileManager
         [$file, $data] = $this->loadFile($file);
 
         if ($data['mimetype'] && 'text/' != mb_substr($data['mimetype'], 0, 5)) {
-            return array_merge($data, ['error' => [
-                'code' => 415,
-                'msg' => 'Unsupported filetype',
-            ]]);
+            throw new UnsupportedFileType('Unsupported filetype');
         }
 
         try {

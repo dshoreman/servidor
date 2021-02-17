@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Servidor\FileManager\FileManager;
+use Servidor\FileManager\PathDeletionFailed;
+use Servidor\FileManager\PathNotFound;
+use Servidor\FileManager\PathNotWritable;
+use Servidor\FileManager\UnsupportedFileType;
 use Symfony\Component\HttpFoundation\Response as SfResponse;
 
 class FileController extends Controller
@@ -26,21 +30,26 @@ class FileController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        if ($filepath = $request->get('file')) {
-            $file = $this->fm->open($filepath);
+        $data = [];
+        $status = Response::HTTP_OK;
+        $file = $request->get('file');
+        $path = $file ?? $request->get('path');
 
-            if (array_key_exists('error', $file)) {
-                return response()->json($file, $file['error']['code']);
-            }
-
-            return response()->json($file);
+        try {
+            $data = $file ? $this->fm->open($path) : $this->fm->list($path);
+        } catch (PathNotFound $e) {
+            $error = $e->getMessage();
+            $status = Response::HTTP_NOT_FOUND;
+        } catch (UnsupportedFileType $e) {
+            $error = $e->getMessage();
+            $status = Response::HTTP_UNSUPPORTED_MEDIA_TYPE;
+        } finally {
+            return response()->json(isset($error) ? [
+                'filename' => $path,
+                'filepath' => $path,
+                'error' => ['code' => $status, 'msg' => $error],
+            ] : $data, $status);
         }
-
-        $path = $request->get('path');
-        $list = $this->fm->list($path);
-        $error = (array) ($list['error'] ?? []);
-
-        return response()->json($list, (int) ($error['code'] ?? Response::HTTP_OK));
     }
 
     public function create(Request $request): JsonResponse
@@ -71,10 +80,14 @@ class FileController extends Controller
             'contents' => 'required|nullable',
         ]);
 
-        $file = $this->fm->open($filepath);
+        try {
+            $file = $this->fm->open($filepath);
+        } catch (PathNotFound $e) {
+            $status = Response::HTTP_NOT_FOUND;
 
-        if (array_key_exists('error', $file)) {
-            return response()->json($file, $file['error']['code']);
+            return response()->json([
+                'error' => ['code' => $status, 'msg' => $e->getMessage()],
+            ], $status);
         }
 
         if ($file['contents'] == $data['contents']) {
@@ -107,10 +120,14 @@ class FileController extends Controller
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 
-        $data = $this->fm->delete($filepath);
+        try {
+            $this->fm->delete($filepath);
+        } catch (PathNotWritable $e) {
+            return response()->json($e->getMessage(), Response::HTTP_FORBIDDEN);
+        } catch (PathDeletionFailed $e) {
+            return response()->json($e->getMessage(), Response::HTTP_NOT_MODIFIED);
+        }
 
-        return null === $data['error']
-            ? response(null, Response::HTTP_NO_CONTENT)
-            : response()->json($data, $data['error']['code']);
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
