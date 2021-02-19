@@ -5,6 +5,7 @@ namespace Servidor\Http\Controllers\Auth;
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Servidor\Http\Controllers\Controller;
@@ -41,7 +42,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    protected function registered(User $user): JsonResponse
+    protected function registered(Request $request, User $user): JsonResponse
     {
         return response()->json($user);
     }

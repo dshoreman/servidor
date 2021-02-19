@@ -93,10 +93,10 @@ class Application extends Model
 
     public function getSourceUriAttribute(): string
     {
-        $provider = $this->attributes['source_provider'] ?? '';
-        $repo = $this->attributes['source_repository'] ?? '';
+        $provider = (string) $this->attributes['source_provider'];
+        $repo = (string) $this->attributes['source_repository'];
 
-        return str_replace('{repo}', $repo, self::SOURCE_PROVIDERS[(string) $provider ?: 'custom']);
+        return str_replace('{repo}', $repo, self::SOURCE_PROVIDERS[$provider ?: 'custom']);
     }
 
     public function getSystemUserAttribute(): ?array
@@ -118,7 +118,7 @@ class Application extends Model
 
     public function template(): Template
     {
-        $template = $this->attributes['template'] ?? null ?: 'html';
+        $template = (string) ($this->attributes['template'] ?? 'html');
 
         switch ($this->templatesNamespace . Str::studly(Str::lower($template))) {
             case Html::class:

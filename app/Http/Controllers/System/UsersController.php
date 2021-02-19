@@ -23,7 +23,7 @@ class UsersController extends Controller
     public function store(CreateUser $request): JsonResponse
     {
         $data = $request->validated();
-        $createGroup = $request->input('user_group', false);
+        $createGroup = (bool) $request->input('user_group', false);
 
         try {
             $user = new LinuxUser(['name' => $data['name']]);

@@ -14,8 +14,8 @@ class ListOrShowPath extends Controller
     {
         $data = [];
         $status = Response::HTTP_OK;
-        $file = $request->get('file');
-        $path = $file ?? $request->get('path');
+        $file = (string) $request->get('file');
+        $path = $file ?: (string) $request->get('path');
 
         try {
             $data = $file ? $this->fm->open($path) : $this->fm->list($path);

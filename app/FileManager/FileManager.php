@@ -150,6 +150,8 @@ class FileManager
         exec('cd "' . $path . '" && stat -c "%n %A %a" ' . $name . ' 2>/dev/null', $files);
 
         foreach ($files as $file) {
+            assert(is_string($file));
+
             [$filename, $text, $octal] = explode(' ', $file);
 
             $perms[$filename] = compact('text', 'octal');

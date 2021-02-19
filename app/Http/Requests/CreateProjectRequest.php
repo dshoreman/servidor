@@ -41,10 +41,7 @@ class CreateProjectRequest extends FormRequest
         ];
     }
 
-    /**
-     * @param Validator $validator
-     */
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
             $apps = $validator->getData()['applications'] ?? [];
@@ -53,6 +50,9 @@ class CreateProjectRequest extends FormRequest
                 return;
             }
 
+            /**
+             * @var array{provider: string, repository: string, branch?: string}
+             */
             $app = $apps[0];
 
             if (isset($app['repository'], $app['provider'])) {

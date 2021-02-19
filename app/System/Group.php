@@ -129,6 +129,8 @@ class Group
         $groups = collect();
 
         foreach ($lines as $line) {
+            assert(is_string($line));
+
             $group = array_combine($keys, explode(':', $line));
             $group['users'] = '' == $group['users'] ? [] : explode(',', $group['users']);
 

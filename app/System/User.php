@@ -68,6 +68,8 @@ class User
         $users = collect();
 
         foreach ($lines as $line) {
+            assert(is_string($line));
+
             $user = new self(
                 array_combine($keys, explode(':', $line)),
             );
@@ -118,7 +120,7 @@ class User
 
     private function commit(string $cmd): self
     {
-        $name = $this->user->getOriginal('name');
+        $name = (string) $this->user->getOriginal('name');
 
         exec("sudo {$cmd} {$this->user->toArgs()} {$name}", $output, $retval);
         unset($output);
