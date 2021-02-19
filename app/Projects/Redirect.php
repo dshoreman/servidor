@@ -21,7 +21,7 @@ class Redirect extends Model implements Domainable
 
     public function domainName(): string
     {
-        return $this->attributes['domain_name'] ?? '';
+        return (string) $this->attributes['domain_name'];
     }
 
     public function project(): BelongsTo

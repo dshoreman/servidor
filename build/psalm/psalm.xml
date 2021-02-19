@@ -35,9 +35,6 @@
         <!-- Level 1 Errors -->
         <MixedArgument errorLevel="suppress" />
         <MixedAssignment errorLevel="suppress" />
-        <MixedInferredReturnType errorLevel="suppress" />
-        <MixedMethodCall errorLevel="suppress" />
         <MixedOperand errorLevel="suppress" />
-        <MixedReturnStatement errorLevel="suppress" />
     </issueHandlers>
 </psalm>

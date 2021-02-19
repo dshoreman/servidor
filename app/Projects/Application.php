@@ -12,6 +12,7 @@ use Servidor\Projects\Applications\LogFile;
 use Servidor\Projects\Applications\Templates\Html;
 use Servidor\Projects\Applications\Templates\Laravel;
 use Servidor\Projects\Applications\Templates\Php;
+use Servidor\Projects\Applications\Templates\Template;
 use Servidor\System\User as SystemUser;
 
 class Application extends Model
@@ -45,7 +46,7 @@ class Application extends Model
 
     public function getDocumentRootAttribute(): string
     {
-        return $this->sourceRoot . $this->template()->publicDir;
+        return $this->sourceRoot . $this->template()->publicDir();
     }
 
     public function getLogsAttribute(): array
@@ -65,7 +66,7 @@ class Application extends Model
 
     public function getSourceRepoNameAttribute(): string
     {
-        $repo = $this->attributes['source_repository'];
+        $repo = (string) $this->attributes['source_repository'];
 
         if (false === ($pos = mb_strpos($repo, '/'))) {
             return $repo;
@@ -115,7 +116,7 @@ class Application extends Model
         }
     }
 
-    public function template(): object
+    public function template(): Template
     {
         $template = $this->attributes['template'] ?? null ?: 'html';
 
@@ -133,9 +134,7 @@ class Application extends Model
 
     public function writeNginxConfig(): void
     {
-        $tpl = $this->template()->nginxTemplate;
-        /** @var \Illuminate\View\View */
-        $view = view('projects.app-templates.' . $tpl);
+        $view = $this->template()->nginxTemplate();
 
         $src = "vhosts/{$this->domain_name}.conf";
         $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";

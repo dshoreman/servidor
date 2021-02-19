@@ -6,8 +6,7 @@ use Servidor\Projects\Applications\LogFile;
 
 class Laravel extends Php
 {
-    /** @var string */
-    public $publicDir = '/public';
+    protected string $publicDir = '/public';
 
     public function getLogs(): array
     {

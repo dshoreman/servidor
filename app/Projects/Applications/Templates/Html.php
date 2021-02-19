@@ -2,6 +2,7 @@
 
 namespace Servidor\Projects\Applications\Templates;
 
+use Illuminate\View\View;
 use Servidor\Projects\Application;
 use Servidor\Projects\Domainable;
 use Servidor\Traits\TogglesNginxConfigs;
@@ -10,14 +11,13 @@ class Html implements Template, Domainable
 {
     use TogglesNginxConfigs;
 
-    /** @var Application */
-    protected $app;
+    protected Application $app;
 
-    /** @var string */
-    public $nginxTemplate = 'basic';
+    protected string $nginxTemplate = 'basic';
 
-    /** @var string */
-    public $publicDir = '';
+    protected string $publicDir = '';
+
+    protected bool $requiresUser = false;
 
     public function __construct(Application $app)
     {
@@ -37,6 +37,16 @@ class Html implements Template, Domainable
     public function getLogs(): array
     {
         return [];
+    }
+
+    public function nginxTemplate(): View
+    {
+        return view('projects.app-templates.' . $this->nginxTemplate);
+    }
+
+    public function publicDir(): string
+    {
+        return $this->publicDir;
     }
 
     public function pullCode(bool $autoEnable = false): bool
@@ -76,6 +86,6 @@ class Html implements Template, Domainable
 
     public function requiresUser(): bool
     {
-        return false;
+        return $this->requiresUser;
     }
 }
