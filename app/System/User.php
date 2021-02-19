@@ -101,13 +101,13 @@ class User
 
     public function update(array $data): array
     {
-        $this->user->setName($data['name'])
-                   ->setUid($data['uid'] ?? null)
-                   ->setGid($data['gid'] ?? null)
-                   ->setShell($data['shell'] ?? null)
-                   ->setGroups($data['groups'] ?? null)
-                   ->setMoveHome($data['move_home'] ?? false)
-                   ->setHomeDirectory($data['dir'] ?? '');
+        $this->user->setName((string) $data['name'])
+                   ->setUid(isset($data['uid']) ? (int) $data['uid'] : null)
+                   ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
+                   ->setShell((string) ($data['shell'] ?? ''))
+                   ->setGroups(isset($data['groups']) ? (array) $data['groups'] : null)
+                   ->setMoveHome((bool) ($data['move_home'] ?? false))
+                   ->setHomeDirectory((string) ($data['dir'] ?? ''));
 
         if (!$this->user->isDirty()) {
             throw new UserNotModifiedException();

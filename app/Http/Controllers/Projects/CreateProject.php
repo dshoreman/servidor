@@ -28,7 +28,7 @@ class CreateProject extends Controller
                 'source_repository' => $app['repository'] ?? '',
                 'source_branch' => $app['branch'] ?? '',
             ]);
-        }, $data['applications'] ?? []));
+        }, (array) ($data['applications'] ?? [])));
 
         $project->redirects()->saveMany(array_map(function (array $redirect): Redirect {
             return new Redirect([
@@ -36,7 +36,7 @@ class CreateProject extends Controller
                 'target' => $redirect['target'],
                 'type' => $redirect['type'],
             ]);
-        }, $data['redirects'] ?? []));
+        }, (array) ($data['redirects'] ?? [])));
 
         return response()->json(
             $project->load(['applications', 'redirects']),

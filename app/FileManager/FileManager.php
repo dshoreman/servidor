@@ -47,10 +47,10 @@ class FileManager
                       ->sortByName(true)
                       ->ignoreDotFiles(false);
 
-        return array_map(
-            [$this, 'fileToArray'],
-            iterator_to_array($files, false),
-        );
+        /** @var array{SplFileInfo|string} */
+        $files = iterator_to_array($files, false);
+
+        return array_map([$this, 'fileToArray'], $files);
     }
 
     public function createDir(string $path): array
@@ -202,7 +202,8 @@ class FileManager
         return [$file, $data];
     }
 
-    private function fileToArray(string $file): array
+    /** @param SplFileInfo|string $file */
+    private function fileToArray($file): array
     {
         [$file, $data] = $this->loadFile($file);
 
@@ -213,7 +214,7 @@ class FileManager
     {
         [$file, $data] = $this->loadFile($file);
 
-        if ($data['mimetype'] && 'text/' != mb_substr($data['mimetype'], 0, 5)) {
+        if ($data['mimetype'] && 'text/' != mb_substr((string) $data['mimetype'], 0, 5)) {
             throw new UnsupportedFileType('Unsupported filetype');
         }
 

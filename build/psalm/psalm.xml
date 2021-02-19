@@ -31,8 +31,5 @@
                 <file name="app/User.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>
-
-        <!-- Level 1 Errors -->
-        <MixedArgument errorLevel="suppress" />
     </issueHandlers>
 </psalm>

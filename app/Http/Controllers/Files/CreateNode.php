@@ -16,9 +16,9 @@ class CreateNode extends Controller
             'contents' => 'required_with:file|nullable',
         ]);
 
-        $res = $data['dir'] ?? null ? $this->fm->createDir($data['dir'])
-             : $this->fm->createFile($data['file'], $data['contents']);
+        $res = $data['dir'] ?? null ? $this->fm->createDir((string) $data['dir'])
+             : $this->fm->createFile((string) $data['file'], (string) $data['contents']);
 
-        return response()->json($res, $res['error']['code'] ?? Response::HTTP_CREATED);
+        return response()->json($res, (int) ($res['error']['code'] ?? Response::HTTP_CREATED));
     }
 }

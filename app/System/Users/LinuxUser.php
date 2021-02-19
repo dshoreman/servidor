@@ -86,9 +86,9 @@ class LinuxUser extends LinuxCommand
         return $this;
     }
 
-    public function setShell(?string $shell): self
+    public function setShell(string $shell): self
     {
-        if (!is_null($shell)) {
+        if ('' !== $shell) {
             $this->shell = $shell;
         }
 

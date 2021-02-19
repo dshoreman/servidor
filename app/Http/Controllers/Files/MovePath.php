@@ -15,8 +15,10 @@ class MovePath extends Controller
             'newPath' => 'required|string',
         ]);
 
-        $file = $this->fm->move($data['oldPath'], $data['newPath']);
+        $file = $this->fm->move((string) $data['oldPath'], (string) $data['newPath']);
 
-        return response()->json($file, $file['error']['code'] ?? Response::HTTP_OK);
+        return response()->json($file, (int) (
+            $file['error']['code'] ?? Response::HTTP_OK
+        ));
     }
 }

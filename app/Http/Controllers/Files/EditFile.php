@@ -37,7 +37,7 @@ class EditFile extends Controller
             return response(null, Response::HTTP_NOT_MODIFIED);
         }
 
-        $this->fm->save($filepath, $data['contents']);
+        $this->fm->save($filepath, (string) $data['contents']);
 
         return response()->json($this->fm->open($filepath));
     }

@@ -11,7 +11,7 @@ class NoComma implements Rule
     {
         unset($attribute);
 
-        return !Str::contains($value, ',');
+        return !Str::contains((string) $value, ',');
     }
 
     public function message(): string

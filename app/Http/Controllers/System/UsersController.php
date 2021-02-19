@@ -28,14 +28,15 @@ class UsersController extends Controller
         try {
             $user = new LinuxUser(['name' => $data['name']]);
 
-            $user->setCreateHome($request->input('create_home', false))
-                        ->setHomeDirectory($data['dir'] ?? '')
-                        ->setShell($data['shell'] ?? null)
-                        ->setSystem($data['system'] ?? false)
-                        ->setUid($data['uid'] ?? null);
+            $user->setCreateHome((bool) $request->input('create_home', false))
+                ->setHomeDirectory((string) ($data['dir'] ?? ''))
+                ->setShell((string) ($data['shell'] ?? ''))
+                ->setSystem((bool) ($data['system'] ?? false))
+                ->setUid(isset($data['uid']) ? (int) $data['uid'] : null);
 
-            if (!$createGroup && ($data['gid'] ?? null)) {
-                $user->setGid($data['gid']);
+            $gid = isset($data['gid']) ? (int) $data['gid'] : null;
+            if (!$createGroup && $gid) {
+                $user->setGid($gid);
             }
 
             $user->setUserGroup($createGroup);
