@@ -105,16 +105,14 @@ class FileManager
         if (file_exists($target)) {
             return ['error' => ['code' => 409, 'msg' => 'Target already exists']];
         }
-        if (!rename($path, $target)) {
-            return ['error' => ['code' => 500, 'msg' => 'Rename operation failed']];
-        }
 
-        $item = $this->open($target);
-        if ($item['isDir'] && 'Unsupported filetype' === ($item['error']['msg'] ?? '')) {
-            unset($item['error']);
-        }
+        try {
+            rename($path, $target);
 
-        return $item;
+            return $this->open($target);
+        } catch (UnsupportedFileType $e) {
+            return $this->open($target, false);
+        }
     }
 
     public function delete(string $path): bool
