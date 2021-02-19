@@ -33,7 +33,18 @@ class DeletePathTest extends TestCase
     }
 
     /** @test */
-    public function delete_returns_204_response_when_file_does_not_exist(): void
+    public function authed_user_can_delete_a_directory(): void
+    {
+        $path = resource_path('test-skel/deletable-dir');
+        mkdir($path, 0777);
+
+        $response = $this->authed()->deleteJson($this->endpoint(['file' => $path]));
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $this->assertFileDoesNotExist($path);
+    }
+
+    /** @test */
+    public function delete_returns_no_content_response_when_file_does_not_exist(): void
     {
         $response = $this->authed()->deleteJson($this->endpoint([
             'file' => resource_path('test-skel/non-existant.md'),
@@ -49,5 +60,15 @@ class DeletePathTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['file' => 'File path must be specified.']);
+    }
+
+    /** @test */
+    public function deleting_unwritable_files_is_forbidden(): void
+    {
+        $response = $this->authed()->deleteJson($this->endpoint([
+            'file' => resource_path('test-skel/protected/forbidden'),
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 }

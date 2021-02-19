@@ -22,11 +22,11 @@ Route::middleware('auth:api')->group(function (): void {
         'only' => ['index', 'store'],
     ]);
 
-    Route::get('files', 'FileController@index');
-    Route::put('files', 'FileController@update');
-    Route::post('files', 'FileController@create');
-    Route::post('files/rename', 'FileController@rename');
-    Route::delete('files', 'FileController@delete');
+    Route::get('files', Files\ListOrShowPath::class);
+    Route::put('files', Files\EditFile::class);
+    Route::post('files', Files\CreateNode::class);
+    Route::post('files/rename', Files\MovePath::class);
+    Route::delete('files', Files\DeletePath::class);
 
     Route::name('system')->prefix('/system')->namespace('System')->group(function (): void {
         Route::get('git/branches', Git\ListBranches::class);

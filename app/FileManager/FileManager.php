@@ -125,11 +125,11 @@ class FileManager
             throw new PathNotWritable('No permission to write path');
         }
 
-        if (!(is_dir($path) ? rmdir($path) : unlink($path))) {
-            throw new PathDeletionFailed('Failed removing ' . $path);
+        if (is_dir($path)) {
+            return rmdir($path);
         }
 
-        return true;
+        return unlink($path);
     }
 
     private function loadFilePermissions(string $path): array
