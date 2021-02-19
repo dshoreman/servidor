@@ -35,6 +35,5 @@
         <!-- Level 1 Errors -->
         <MixedArgument errorLevel="suppress" />
         <MixedAssignment errorLevel="suppress" />
-        <MixedOperand errorLevel="suppress" />
     </issueHandlers>
 </psalm>

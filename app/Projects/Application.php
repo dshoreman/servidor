@@ -79,10 +79,10 @@ class Application extends Model
     {
         $tpl = $this->template();
 
-        if ($tpl->requiresUser()) {
+        if ($tpl->requiresUser() && $this->systemUser) {
             // TODO: If user doesn't exist, this should throw UserNotFoundException
             //  (or some similar error) and NOT just default to a root-based path!
-            return ($this->systemUser['dir'] ?? '') . '/' . $this->sourceRepoName;
+            return ((string) $this->systemUser['dir']) . '/' . $this->sourceRepoName;
         }
 
         /** @var \Servidor\Projects\Project */
