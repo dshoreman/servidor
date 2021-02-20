@@ -13,7 +13,7 @@ class DeleteGroupTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->pruneDeletable('groups');
+        $this->pruneDeletableGroups();
 
         parent::tearDown();
     }
@@ -22,7 +22,7 @@ class DeleteGroupTest extends TestCase
     public function guest_cannot_delete_group(): void
     {
         exec('sudo groupadd -g 333 guestdeletetest');
-        $this->addDeletable('group', 333);
+        $this->addDeletableGroup('guestdeletetest');
 
         $response = $this->deleteJson($this->endpoint(333));
 

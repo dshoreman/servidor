@@ -2,50 +2,42 @@
 
 namespace Tests;
 
-use Exception;
-
 trait PrunesDeletables
 {
-    private $deletables = [
-        'groups' => [
-            'items' => [],
-            'key' => 'gid',
-        ],
-        'users' => [
-            'items' => [],
-            'key' => 'uid',
-        ],
-    ];
+    /** @var string[] */
+    private array $deletableGroups = [];
 
-    private function addDeletable($type, $data): int
+    /** @var array<string, bool> */
+    private array $deletableUsers = [];
+
+    private function addDeletableGroup(string $group): void
     {
-        $key = mb_strtolower($type) . 's';
-
-        if (!array_key_exists($key, $this->deletables)) {
-            throw new Exception('Invalid deletable type "' . $type . '".');
-        }
-
-        if (is_int($data)) {
-            return $this->deletables[$key]['items'][] = $data;
-        }
-
-        $filter = $this->deletables[$key]['key'];
-
-        return $this->deletables[$key]['items'][] = $data->json()[$filter];
+        $this->deletableGroups[] = $group;
     }
 
-    private function pruneDeletable($types = []): void
+    private function addDeletableUser(string $user, bool $purgeHome = false): void
     {
-        if (!is_array($types)) {
-            $types = [$types];
+        $this->deletableUsers[$user] = $purgeHome;
+    }
+
+    private function pruneDeletableGroups(): void
+    {
+        foreach ($this->deletableGroups as $group) {
+            exec('sudo groupdel ' . escapeshellarg($group));
         }
+    }
 
-        foreach ($types as $type) {
-            $endpoint = "/api/system/{$type}/";
+    private function pruneDeletableUsers(): void
+    {
+        foreach ($this->deletableUsers as $user => $prune) {
+            $user = escapeshellarg($user);
+            $command = 'sudo id ' . $user . ' &>/dev/null && sudo userdel ' . $user;
 
-            foreach ($this->deletables[$type]['items'] as $id) {
-                $this->authed()->deleteJson($endpoint . $id, []);
+            if ($prune) {
+                $command .= ' --remove --force';
             }
+
+            exec($command);
         }
     }
 }
