@@ -74,6 +74,9 @@ eslint:
 	node_modules/.bin/eslint -c build/eslint/config.json resources/js --ext .js,.vue
 	@echo -e "\n\e[1;32m✔ 0 problems (0 errors, 0 warnings)\e[0m"
 
+phan:
+	vendor/bin/phan --config-file build/phan/config.php --color
+
 phpstan:
 	php -d memory_limit=-1 vendor/bin/phpstan analyze -c build/phpstan/config.neon
 
