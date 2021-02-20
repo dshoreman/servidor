@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * [installer] Resolved an issue in Makefile that prevented running on GHA
 * [editor] Permission denied errors weren't being caught on PHP 8.x
+* [sys-users] Clicking delete on a user would also submit the update form
 
 
 ## [0.11.0] - 2021-01-28
