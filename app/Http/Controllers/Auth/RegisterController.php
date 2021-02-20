@@ -35,11 +35,14 @@ class RegisterController extends Controller
 
     protected function create(array $data): User
     {
-        return User::create([
-            'name' => (string) $data['name'],
-            'email' => (string) $data['email'],
-            'password' => Hash::make((string) $data['password']),
-        ]);
+        $user = new User();
+        $user->name = (string) $data['name'];
+        $user->email = (string) $data['email'];
+        $user->password = Hash::make((string) $data['password']);
+
+        $user->save();
+
+        return $user;
     }
 
     protected function registered(Request $request, User $user): JsonResponse

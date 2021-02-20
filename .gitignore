@@ -19,7 +19,8 @@
 .env.*
 .composer
 .php_cs.cache
+.phpstorm.meta.php
 .phpunit.result.cache
-_ide_helper.php
+_ide_helper*.php
 npm-debug.log
 yarn-error.log

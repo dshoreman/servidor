@@ -3,8 +3,10 @@
 namespace Servidor\Projects;
 
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Servidor\Exceptions\System\UserNotFoundException;
@@ -15,6 +17,40 @@ use Servidor\Projects\Applications\Templates\Php;
 use Servidor\Projects\Applications\Templates\Template;
 use Servidor\System\User as SystemUser;
 
+/**
+ * An Application is a Project component for websites, apps or server processes.
+ *
+ * @property int     $id
+ * @property int     $project_id
+ * @property string  $template
+ * @property string  $domain_name
+ * @property string  $source_provider
+ * @property string  $source_repository
+ * @property string  $source_branch
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property string  $document_root
+ * @property array   $logs
+ * @property string  $source_repo_name
+ * @property string  $source_root
+ * @property string  $source_uri
+ * @property ?array  $system_user
+ * @property Project $project
+ *
+ * @method static Builder|Application newModelQuery()
+ * @method static Builder|Application newQuery()
+ * @method static Builder|Application query()
+ * @method static Builder|Application whereCreatedAt($value)
+ * @method static Builder|Application whereDomainName($value)
+ * @method static Builder|Application whereId($value)
+ * @method static Builder|Application whereProjectId($value)
+ * @method static Builder|Application whereSourceBranch($value)
+ * @method static Builder|Application whereSourceProvider($value)
+ * @method static Builder|Application whereSourceRepository($value)
+ * @method static Builder|Application whereTemplate($value)
+ * @method static Builder|Application whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Application extends Model
 {
     public const SOURCE_PROVIDERS = [
