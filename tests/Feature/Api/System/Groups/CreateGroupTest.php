@@ -13,7 +13,7 @@ class CreateGroupTest extends TestCase
 
     public function tearDown(): void
     {
-        $this->pruneDeletable('groups');
+        $this->pruneDeletableGroups();
 
         parent::tearDown();
     }
@@ -39,12 +39,11 @@ class CreateGroupTest extends TestCase
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'newtestgroup',
         ]);
+        $this->addDeletableGroup('newtestgroup');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestgroup']);
         $response->assertJsonStructure($this->expectedKeys);
-
-        $this->addDeletable('group', $response);
     }
 
     /** @test */
@@ -54,8 +53,7 @@ class CreateGroupTest extends TestCase
             'name' => 'systemsal',
             'system' => true,
         ]);
-
-        $this->addDeletable('group', $response);
+        $this->addDeletableGroup('systemsal');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure($this->expectedKeys);
@@ -213,11 +211,10 @@ class CreateGroupTest extends TestCase
         $response = $this->authed()->postJson($this->endpoint, [
             'name' => 'testgroup ',
         ]);
+        $this->addDeletableGroup('testgroup');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'testgroup']);
-
-        $this->addDeletable('group', $response);
     }
 
     /** @test */

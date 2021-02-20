@@ -13,7 +13,8 @@ class UpdateUserTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->pruneDeletable(['users', 'groups']);
+        $this->pruneDeletableUsers();
+        $this->pruneDeletableGroups();
 
         parent::tearDown();
     }
@@ -22,7 +23,7 @@ class UpdateUserTest extends TestCase
     public function guest_cannot_update_user(): void
     {
         exec('sudo useradd -u 4270 guestupduser');
-        $this->addDeletable('user', 4270);
+        $this->addDeletableUser('guestupduser');
 
         $response = $this->putJson($this->endpoint(4270), [
             'name' => 'guestupdateduser',
@@ -44,17 +45,17 @@ class UpdateUserTest extends TestCase
             'name' => 'updatetestuser',
             'user_group' => true,
         ])->json();
+        $this->addDeletableUser('updatetestuser', true);
+        $this->addDeletableGroup('updatetestuser');
 
         $response = $this->authed()->putJson($this->endpoint($user['uid']), [
             'name' => 'updatetestuser-renamed',
         ]);
+        $this->addDeletableUser('updatetestuser-renamed', true);
 
         $response->assertOk();
         $response->assertJsonFragment(['name' => 'updatetestuser-renamed']);
         $response->assertJsonStructure($this->expectedKeys);
-
-        $this->addDeletable('user', $response);
-        $this->addDeletable('group', $response);
     }
 
     /** @test */
@@ -64,6 +65,7 @@ class UpdateUserTest extends TestCase
             'name' => 'uidchanger',
             'user_group' => true,
         ])->json();
+        $this->addDeletableUser('uidchanger');
 
         $response = $this->authed()->putJson($this->endpoint($user['uid']), [
             'name' => $user['name'],
@@ -73,8 +75,6 @@ class UpdateUserTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment(['uid' => $user['uid'] + 1]);
         $response->assertJsonStructure($this->expectedKeys);
-
-        $this->addDeletable('user', $response);
     }
 
     /** @test */
@@ -84,6 +84,7 @@ class UpdateUserTest extends TestCase
             'name' => 'dirchanger',
             'user_group' => true,
         ])->json();
+        $this->addDeletableUser('dirchanger');
 
         $response = $this->authed()->putJson($this->endpoint($user['uid']), [
             'dir' => '/home/changeddir',
@@ -93,24 +94,22 @@ class UpdateUserTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment(['dir' => '/home/changeddir']);
         $response->assertJsonStructure($this->expectedKeys);
-
-        $this->addDeletable('user', $response);
     }
 
     /** @test */
     public function authed_user_can_change_a_users_shell(): void
     {
         $user = $this->authed()->postJson($this->endpoint, [
-            'name' => 'shelly',
+            'name' => 'shelly-mk-ii',
             'user_group' => true,
         ]);
+        $this->addDeletableUser('shelly-mk-ii');
+        $user->assertStatus(Response::HTTP_CREATED);
 
         $response = $this->authed()->putJson($this->endpoint($user['uid']), [
             'name' => $user['name'],
             'shell' => '/bin/zsh',
         ]);
-
-        $this->addDeletable('user', $response);
 
         $response->assertOk();
         $response->assertJsonFragment(['shell' => '/bin/zsh']);
@@ -134,6 +133,7 @@ class UpdateUserTest extends TestCase
             'name' => 'changeless',
             'user_group' => true,
         ]);
+        $this->addDeletableUser('changeless');
 
         $response = $this->authed()->putJson(
             $this->endpoint($user->json()['uid']),
@@ -143,8 +143,6 @@ class UpdateUserTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['uid']);
         $response->assertJsonFragment(['uid' => ['Nothing to update!']]);
-
-        $this->addDeletable('user', $user);
     }
 
     /**
@@ -157,6 +155,7 @@ class UpdateUserTest extends TestCase
             'name' => 'userhasgroups',
             'user_group' => true,
         ])->json();
+        $this->addDeletableUser('userhasgroups');
 
         $response = $this->authed()->putJson($this->endpoint($user['uid']), [
             'name' => 'userhasgroups',
@@ -166,8 +165,5 @@ class UpdateUserTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment(['groups' => ['adm']]);
         $response->assertJsonStructure($this->expectedKeys);
-
-        $this->addDeletable('user', $response);
-        $this->addDeletable('group', $response);
     }
 }

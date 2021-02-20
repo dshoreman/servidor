@@ -41,25 +41,32 @@ class CreateProjectRequest extends FormRequest
         ];
     }
 
-    /**
-     * @param Validator $validator
-     */
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
             $apps = $validator->getData()['applications'] ?? [];
 
-            if (!empty($apps) && isset($apps[0]['repository'], $apps[0]['provider'])) {
-                $this->validateAppRepository($validator, $apps[0]);
+            if (!is_array($apps) || empty($apps)) {
+                return;
+            }
+
+            /**
+             * @var array{provider: string, repository: string, branch?: string}
+             */
+            $app = $apps[0];
+
+            if (isset($app['repository'], $app['provider'])) {
+                $this->validateAppRepository($validator, $app);
             }
         });
     }
 
+    /** @param array{provider: string, repository: string, branch?: string} $app */
     private function validateAppRepository(Validator $validator, array $app): void
     {
         $branch = $app['branch'] ?? '';
         $branch = $branch ? escapeshellarg($branch) : '';
-        $repo = Application::SOURCE_PROVIDERS[(string) $app['provider']];
+        $repo = Application::SOURCE_PROVIDERS[$app['provider']];
         $repo = str_replace('{repo}', $app['repository'], $repo);
 
         exec(sprintf(self::BRANCH_CMD, $repo, $branch), $o, $status);

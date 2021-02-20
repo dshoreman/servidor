@@ -63,7 +63,7 @@ class Group
                 break;
         }
 
-        throw new GroupSaveException($error ?? 'Something unexpected happened! Exit code: ' . $retval);
+        throw new GroupSaveException((string) ($error ?? 'Something unexpected happened! Exit code: ' . $retval));
     }
 
     private function commitMod(): self
@@ -129,6 +129,8 @@ class Group
         $groups = collect();
 
         foreach ($lines as $line) {
+            assert(is_string($line));
+
             $group = array_combine($keys, explode(':', $line));
             $group['users'] = '' == $group['users'] ? [] : explode(',', $group['users']);
 
@@ -140,9 +142,9 @@ class Group
 
     public function update(array $data): array
     {
-        $this->group->setName($data['name'])
-                    ->setGid($data['gid'] ?? null)
-                    ->setUsers($data['users'] ?? null);
+        $this->group->setName((string) $data['name'])
+                    ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
+                    ->setUsers(isset($data['users']) ? (array) $data['users'] : null);
 
         if (!$this->group->isDirty()) {
             throw new GroupNotModifiedException();

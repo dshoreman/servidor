@@ -35,11 +35,11 @@ class DatabaseTest extends TestCase
     /** @test */
     public function authed_user_can_create_a_database(): void
     {
-        $db = 'caniplz';
-        $response = $this->authed()->postJson($this->endpoint, ['database' => $db]);
+        $data = ['database' => 'caniplz'];
+        $response = $this->authed()->postJson($this->endpoint, $data);
 
         $response->assertOk();
-        $this->assertSame($db, $response->json());
+        $this->assertSame($data, $response->json());
     }
 
     /** @test */

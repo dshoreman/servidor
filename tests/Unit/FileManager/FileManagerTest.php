@@ -5,6 +5,7 @@ namespace Tests\Unit\FileManager;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use PHPUnit\Framework\TestCase;
 use Servidor\FileManager\FileManager;
+use Servidor\FileManager\PathNotFound;
 
 class FileManagerTest extends TestCase
 {
@@ -134,15 +135,9 @@ class FileManagerTest extends TestCase
     /** @test */
     public function open_catches_stat_failed_error_when_file_does_not_exist(): void
     {
-        $file = $this->manager->open($this->dummy('invalid/file'));
+        $this->expectException(PathNotFound::class);
 
-        $this->assertIsArray($file);
-        $this->assertArrayHasKey('error', $file);
-        $this->assertIsArray($file['error']);
-        $this->assertSame([
-            'code' => 404,
-            'msg' => 'File not found',
-        ], $file['error']);
+        $this->manager->open($this->dummy('invalid/file'));
     }
 
     /** @test */

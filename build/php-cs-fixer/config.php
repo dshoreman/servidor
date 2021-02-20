@@ -1,7 +1,8 @@
 <?php
 
-$finder = (new PhpCsFixer\Finder)
+$finder = (new PhpCsFixer\Finder())
     ->notName('*.blade.php')
+    ->notName('_ide_helper.php')
     ->notPath('bootstrap/cache')
     ->notPath('storage')
     ->in(dirname(__DIR__, 2));
@@ -45,5 +46,3 @@ return PhpCsFixer\Config::create()
         '@PHPUnit84Migration:risky' => true,
         'declare_strict_types' => false,
     ]);
-
-// vim: ft=php

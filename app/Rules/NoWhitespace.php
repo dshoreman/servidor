@@ -11,7 +11,7 @@ class NoWhitespace implements Rule
     {
         unset($attribute);
 
-        return !Str::contains($value, ["\t", "\n", ' ']);
+        return !Str::contains((string) $value, ["\t", "\n", ' ']);
     }
 
     public function message(): string

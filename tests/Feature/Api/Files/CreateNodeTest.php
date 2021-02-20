@@ -6,7 +6,7 @@ use Illuminate\Http\Response;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
-class CreatePathTest extends TestCase
+class CreateNodeTest extends TestCase
 {
     use RequiresAuth;
 

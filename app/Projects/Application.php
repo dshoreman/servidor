@@ -3,8 +3,10 @@
 namespace Servidor\Projects;
 
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Servidor\Exceptions\System\UserNotFoundException;
@@ -12,8 +14,43 @@ use Servidor\Projects\Applications\LogFile;
 use Servidor\Projects\Applications\Templates\Html;
 use Servidor\Projects\Applications\Templates\Laravel;
 use Servidor\Projects\Applications\Templates\Php;
+use Servidor\Projects\Applications\Templates\Template;
 use Servidor\System\User as SystemUser;
 
+/**
+ * An Application is a Project component for websites, apps or server processes.
+ *
+ * @property int     $id
+ * @property int     $project_id
+ * @property string  $template
+ * @property string  $domain_name
+ * @property string  $source_provider
+ * @property string  $source_repository
+ * @property string  $source_branch
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property string  $document_root
+ * @property array   $logs
+ * @property string  $source_repo_name
+ * @property string  $source_root
+ * @property string  $source_uri
+ * @property ?array  $system_user
+ * @property Project $project
+ *
+ * @method static Builder|Application newModelQuery()
+ * @method static Builder|Application newQuery()
+ * @method static Builder|Application query()
+ * @method static Builder|Application whereCreatedAt($value)
+ * @method static Builder|Application whereDomainName($value)
+ * @method static Builder|Application whereId($value)
+ * @method static Builder|Application whereProjectId($value)
+ * @method static Builder|Application whereSourceBranch($value)
+ * @method static Builder|Application whereSourceProvider($value)
+ * @method static Builder|Application whereSourceRepository($value)
+ * @method static Builder|Application whereTemplate($value)
+ * @method static Builder|Application whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Application extends Model
 {
     public const SOURCE_PROVIDERS = [
@@ -45,7 +82,7 @@ class Application extends Model
 
     public function getDocumentRootAttribute(): string
     {
-        return $this->sourceRoot . $this->template()->publicDir;
+        return $this->sourceRoot . $this->template()->publicDir();
     }
 
     public function getLogsAttribute(): array
@@ -65,7 +102,7 @@ class Application extends Model
 
     public function getSourceRepoNameAttribute(): string
     {
-        $repo = $this->attributes['source_repository'];
+        $repo = (string) $this->attributes['source_repository'];
 
         if (false === ($pos = mb_strpos($repo, '/'))) {
             return $repo;
@@ -78,10 +115,10 @@ class Application extends Model
     {
         $tpl = $this->template();
 
-        if ($tpl->requiresUser()) {
+        if ($tpl->requiresUser() && $this->systemUser) {
             // TODO: If user doesn't exist, this should throw UserNotFoundException
             //  (or some similar error) and NOT just default to a root-based path!
-            return ($this->systemUser['dir'] ?? '') . '/' . $this->sourceRepoName;
+            return ((string) $this->systemUser['dir']) . '/' . $this->sourceRepoName;
         }
 
         /** @var \Servidor\Projects\Project */
@@ -92,10 +129,10 @@ class Application extends Model
 
     public function getSourceUriAttribute(): string
     {
-        $provider = $this->attributes['source_provider'] ?? '';
-        $repo = $this->attributes['source_repository'] ?? '';
+        $provider = (string) $this->attributes['source_provider'];
+        $repo = (string) $this->attributes['source_repository'];
 
-        return str_replace('{repo}', $repo, self::SOURCE_PROVIDERS[(string) $provider ?: 'custom']);
+        return str_replace('{repo}', $repo, self::SOURCE_PROVIDERS[$provider ?: 'custom']);
     }
 
     public function getSystemUserAttribute(): ?array
@@ -115,9 +152,9 @@ class Application extends Model
         }
     }
 
-    public function template(): object
+    public function template(): Template
     {
-        $template = $this->attributes['template'] ?? null ?: 'html';
+        $template = (string) ($this->attributes['template'] ?? 'html');
 
         switch ($this->templatesNamespace . Str::studly(Str::lower($template))) {
             case Html::class:
@@ -133,9 +170,7 @@ class Application extends Model
 
     public function writeNginxConfig(): void
     {
-        $tpl = $this->template()->nginxTemplate;
-        /** @var \Illuminate\View\View */
-        $view = view('projects.app-templates.' . $tpl);
+        $view = $this->template()->nginxTemplate();
 
         $src = "vhosts/{$this->domain_name}.conf";
         $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";

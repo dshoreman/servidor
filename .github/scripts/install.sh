@@ -23,6 +23,10 @@ main() {
         sudo ln -sv "${GITHUB_WORKSPACE}" /var/servidor && \
         set_test_skel_permissions
     group_end
+
+    group_start "Build frontend assets" && \
+        npm ci && npm run dev
+    group_end
 }
 
 start_mysql() {

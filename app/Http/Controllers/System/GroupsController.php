@@ -24,9 +24,9 @@ class GroupsController extends Controller
 
         try {
             $group = SystemGroup::create(
-                $data['name'],
-                $data['system'] ?? false,
-                $data['gid'] ?? null,
+                (string) $data['name'],
+                (bool) ($data['system'] ?? false),
+                isset($data['gid']) ? (int) $data['gid'] : null,
             );
         } catch (GroupSaveException $e) {
             $data['error'] = $e->getMessage();

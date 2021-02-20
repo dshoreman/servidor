@@ -1,8 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\App;
+
 function smart_asset(string $path, string $ext = 'css'): string
 {
-    $func = 'local' === app()->environment() ? 'mix' : 'asset';
+    $path = $ext . '/' . $path . '.' . $ext;
 
-    return $func($ext . '/' . $path . '.' . $ext);
+    if (App::environment('local')) {
+        return (string) mix($path);
+    }
+
+    return asset($path);
 }

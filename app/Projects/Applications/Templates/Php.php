@@ -6,7 +6,9 @@ use Servidor\Projects\Applications\LogFile;
 
 class Php extends Html
 {
-    public $nginxTemplate = 'php';
+    protected string $nginxTemplate = 'php';
+
+    protected bool $requiresUser = true;
 
     public function getLogs(): array
     {
@@ -15,10 +17,5 @@ class Php extends Html
             PHP_MAJOR_VERSION,
             PHP_MINOR_VERSION,
         ))];
-    }
-
-    public function requiresUser(): bool
-    {
-        return true;
     }
 }

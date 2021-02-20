@@ -13,7 +13,7 @@ class CreateUserTest extends TestCase
 
     public function tearDown(): void
     {
-        $this->pruneDeletable('users');
+        $this->pruneDeletableUsers();
 
         parent::tearDown();
     }
@@ -40,12 +40,11 @@ class CreateUserTest extends TestCase
             'name' => 'newtestuser',
             'user_group' => true,
         ]);
+        $this->addDeletableUser('newtestuser');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'newtestuser']);
         $response->assertJsonStructure($this->expectedKeys);
-
-        $this->addDeletable('user', $response);
     }
 
     /** @test */
@@ -55,6 +54,7 @@ class CreateUserTest extends TestCase
             'name' => 'customgid',
             'gid' => 1,
         ]);
+        $this->addDeletableUser('customgid');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure($this->expectedKeys);
@@ -62,8 +62,6 @@ class CreateUserTest extends TestCase
             'name' => 'customgid',
             'gid' => 1,
         ]);
-
-        $this->addDeletable('user', $response);
     }
 
     /** @test */
@@ -74,8 +72,7 @@ class CreateUserTest extends TestCase
             'user_group' => true,
             'shell' => '/bin/zsh',
         ]);
-
-        $this->addDeletable('user', $response);
+        $this->addDeletableUser('shelly');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure($this->expectedKeys);
@@ -93,8 +90,7 @@ class CreateUserTest extends TestCase
             'system' => true,
             'user_group' => true,
         ]);
-
-        $this->addDeletable('user', $response);
+        $this->addDeletableUser('systemsam');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure($this->expectedKeys);
@@ -256,11 +252,10 @@ class CreateUserTest extends TestCase
             'name' => 'testuser ',
             'user_group' => true,
         ]);
+        $this->addDeletableUser('testuser');
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonFragment(['name' => 'testuser']);
-
-        $this->addDeletable('user', $response);
     }
 
     /** @test */

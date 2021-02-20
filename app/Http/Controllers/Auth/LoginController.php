@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Servidor\Http\Controllers\Controller;
 
 class LoginController extends Controller
@@ -36,7 +37,9 @@ class LoginController extends Controller
         }
 
         try {
-            $response = $client->post(config('app.url') . '/oauth/token', [
+            $appUrl = (string) Config::get('app.url');
+
+            $response = $client->post($appUrl . '/oauth/token', [
                 'form_params' => [
                     'grant_type' => 'password',
                     'client_id' => config('passport.client_id'),

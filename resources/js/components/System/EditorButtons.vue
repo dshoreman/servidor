@@ -12,8 +12,8 @@
                 <slot />
             </sui-modal-content>
             <sui-modal-actions>
-                <sui-button basic inverted @click="toggle">Cancel</sui-button>
-                <sui-button basic inverted negative @click="$emit('delete')">
+                <sui-button basic type="button" inverted @click="toggle">Cancel</sui-button>
+                <sui-button basic type="button" inverted negative @click="$emit('delete')">
                     Delete
                 </sui-button>
             </sui-modal-actions>

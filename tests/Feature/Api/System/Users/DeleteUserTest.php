@@ -16,7 +16,7 @@ class DeleteUserTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->pruneDeletable('users');
+        $this->pruneDeletableUsers();
 
         parent::tearDown();
     }
@@ -25,9 +25,8 @@ class DeleteUserTest extends TestCase
     public function guest_cannot_delete_user(): void
     {
         exec('sudo useradd -u 4269 guestdeleteuser');
-        $this->addDeletable('user', 4269);
+        $this->addDeletableUser('guestdeleteuser');
 
-        $endpoint = $this->endpoint(4269);
         $response = $this->deleteJson($this->endpoint(4269));
 
         $response->assertJsonCount(1);
