@@ -30,6 +30,7 @@ class FallbackRouteTest extends TestCase
 
         $response = $this->get('/');
 
+        $response->assertDontSee('#message: "The Mix manifest does not exist.');
         $response->assertViewIs('servidor');
         $response->assertSee('router-view id="app"');
         $response->assertSee('/js/app.js');
