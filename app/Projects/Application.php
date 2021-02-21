@@ -105,7 +105,7 @@ class Application extends Model
             return $repo;
         }
 
-        return mb_substr($repo, $pos + 1);
+        return (string) mb_substr($repo, $pos + 1);
     }
 
     public function getSourceRootAttribute(): string
@@ -172,7 +172,7 @@ class Application extends Model
         $src = "vhosts/{$this->domain_name}.conf";
         $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
 
-        Storage::put($src, (string) $view->with('app', $this));
+        Storage::put($src, $view->with('app', $this)->render());
         exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
     }
 }

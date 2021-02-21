@@ -140,7 +140,7 @@ class FileManager
         if (false === ($pos = mb_strrpos($path, '/'))) {
             throw new InvalidArgumentException();
         }
-        $path = mb_substr($path, 0, $pos);
+        $path = (string) mb_substr($path, 0, $pos);
 
         return $this->loadPermissions($path, $name);
     }
@@ -186,7 +186,7 @@ class FileManager
         $data = [
             'filename' => $file->getFilename(),
             'filepath' => $file->getPath(),
-            'mimetype' => @mime_content_type($file->getRealPath()),
+            'mimetype' => @mime_content_type((string) $file->getRealPath()),
             'isDir' => $file->isDir(),
             'isFile' => $file->isFile(),
             'isLink' => $file->isLink(),
@@ -227,7 +227,7 @@ class FileManager
             $data['contents'] = '';
             $data['error'] = ['code' => 418, 'msg' => $msg];
 
-            if (Str::contains(mb_strtolower($msg), 'failed to open stream: permission denied')) {
+            if (Str::contains((string) mb_strtolower($msg), 'failed to open stream: permission denied')) {
                 $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
             }
         }

@@ -55,7 +55,7 @@ class User
              ? posix_getpwuid((int) $nameOrUid)
              : posix_getpwnam($nameOrUid);
 
-        $this->user = new LinuxUser($arr, true);
+        $this->user = new LinuxUser((array) $arr, true);
 
         return $this;
     }

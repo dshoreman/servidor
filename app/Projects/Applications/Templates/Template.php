@@ -2,7 +2,7 @@
 
 namespace Servidor\Projects\Applications\Templates;
 
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 use Servidor\Projects\Application;
 
 interface Template

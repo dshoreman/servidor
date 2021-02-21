@@ -165,7 +165,7 @@ class Group
              ? posix_getgrgid($nameOrGid)
              : posix_getgrnam($nameOrGid);
 
-        $this->group = new LinuxGroup($arr);
+        $this->group = new LinuxGroup((array) $arr);
 
         return $this;
     }

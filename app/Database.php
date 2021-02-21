@@ -39,12 +39,12 @@ class Database
 
     public function create(string $dbname): bool
     {
-        if (in_array($dbname, $this->listDatabases())) {
+        if (in_array($dbname, $this->listDatabases(), true)) {
             return true;
         }
 
         $this->dbal()->createDatabase($dbname);
 
-        return in_array($dbname, $this->listDatabases());
+        return in_array($dbname, $this->listDatabases(), true);
     }
 }
