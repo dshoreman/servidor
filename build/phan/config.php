@@ -66,12 +66,12 @@ return [
     //
     // This is an incremental step in migrating away from `null_casts_as_any_type`.
     // If `null_casts_as_any_type` is true, this has no effect.
-    'null_casts_as_array' => true,
+    'null_casts_as_array' => false,
 
     // If enabled, allow any array-like type to be cast to null.
     // This is an incremental step in migrating away from `null_casts_as_any_type`.
     // If `null_casts_as_any_type` is true, this has no effect.
-    'array_casts_as_null' => true,
+    'array_casts_as_null' => false,
 
     // If enabled, scalars (int, float, bool, string, null)
     // are treated as if they can cast to each other.
@@ -82,7 +82,7 @@ return [
     // are treated as if they can cast to each other.
     // E.g. `array<int,stdClass>` can cast to `array<string,stdClass>` and vice versa.
     // Normally, a scalar type such as int could only cast to/from int and mixed.
-    'scalar_array_key_cast' => true,
+    'scalar_array_key_cast' => false,
 
     // If this has entries, scalars (int, float, bool, string, null)
     // are allowed to perform the casts listed.
@@ -97,7 +97,7 @@ return [
     // or if **any** type in an invoked expression is not a callable.
     // Setting this to true will introduce numerous false positives
     // (and reveal some bugs).
-    'strict_method_checking' => false,
+    'strict_method_checking' => true,
 
     // If enabled, Phan will warn if **any** type of the object expression for a property access
     // does not contain that property.
@@ -126,7 +126,7 @@ return [
     //
     // This is useful for projects with complicated cross-file
     // globals that you have no hope of fixing.
-    'ignore_undeclared_variables_in_global_scope' => true,
+    'ignore_undeclared_variables_in_global_scope' => false,
 
     // Set this to false to emit `PhanUndeclaredFunction` issues for internal functions that Phan has signatures for,
     // but aren't available in the codebase, or from Reflection.
@@ -159,7 +159,7 @@ return [
     // If true, check to make sure the return type declared
     // in the doc-block (if any) matches the return type
     // declared in the method signature.
-    'check_docblock_signature_return_type_match' => false,
+    'check_docblock_signature_return_type_match' => true,
 
     // This setting maps case-insensitive strings to union types.
     //
@@ -203,14 +203,14 @@ return [
     //
     // This has some false positives involving loops,
     // variables set in branches of loops, and global variables.
-    'redundant_condition_detection' => false,
+    'redundant_condition_detection' => true,
 
     // If enabled, Phan will act as though it's certain of real return types of a subset of internal functions,
     // even if those return types aren't available in reflection (real types were taken from php 7.3 or 8.0-dev, depending on target_php_version).
     //
     // Note that with php 7 and earlier, php would return null or false for many internal functions if the argument types or counts were incorrect.
     // As a result, enabling this setting with target_php_version 8.0 may result in false positives for `--redundant-condition-detection` when codebases also support php 7.x.
-    'assume_real_types_for_internal_functions' => false,
+    'assume_real_types_for_internal_functions' => true,
 
     // If true, this runs a quick version of checks that takes less
     // time at the cost of not running as thorough
@@ -245,9 +245,9 @@ return [
 
     // Override to hardcode existence and types of (non-builtin) globals in the global scope.
     // Class names should be prefixed with `\`.
-    //
-    // (E.g. `['_FOO' => '\FooClass', 'page' => '\PageClass', 'userId' => 'int']`)
-    'globals_type_map' => [],
+    'globals_type_map' => [
+        'factory' => '\Illuminate\Database\Eloquent\Factory',
+    ],
 
     // The minimum severity level to report on. This can be
     // set to `Issue::SEVERITY_LOW`, `Issue::SEVERITY_NORMAL` or
@@ -325,8 +325,15 @@ return [
     // Alternately, you can pass in the full path to a PHP file with the plugin's implementation (e.g. `'vendor/phan/phan/.phan/plugins/AlwaysReturnPlugin.php'`)
     'plugins' => [
         'AlwaysReturnPlugin',
+        'DollarDollarPlugin',
+        'DuplicateArrayKeyPlugin',
+        'DuplicateExpressionPlugin',
         'PregRegexCheckerPlugin',
+        'PrintfCheckerPlugin',
+        'SleepCheckerPlugin',
         'UnreachableCodePlugin',
+        'UseReturnValuePlugin',
+        'EmptyStatementListPlugin',
     ],
 
     // A list of directories that should be parsed for class and

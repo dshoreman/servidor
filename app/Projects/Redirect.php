@@ -2,6 +2,7 @@
 
 namespace Servidor\Projects;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,8 +56,8 @@ class Redirect extends Model implements Domainable
 
     public function writeNginxConfig(): void
     {
-        /** @var \Illuminate\View\View */
         $view = view('projects.app-templates.redirect');
+        assert($view instanceof View);
 
         $src = "vhosts/{$this->domain_name}.conf";
         $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";

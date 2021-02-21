@@ -11,6 +11,8 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class FileManager
 {
+    public const DECIMAL_PERMISSION_LENGTH = 3;
+
     private Finder $finder;
 
     /**
@@ -195,7 +197,7 @@ class FileManager
 
         $data['perms'] = $this->filePerms[$data['filename']];
 
-        if (intval(3) === mb_strlen($data['perms']['octal'])) {
+        if (self::DECIMAL_PERMISSION_LENGTH === mb_strlen($data['perms']['octal'])) {
             $data['perms']['octal'] = '0' . $data['perms']['octal'];
         }
 

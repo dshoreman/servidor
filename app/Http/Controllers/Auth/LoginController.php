@@ -4,6 +4,7 @@ namespace Servidor\Http\Controllers\Auth;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -72,8 +73,9 @@ class LoginController extends Controller
      */
     public function logout()
     {
-        /** @var \Illuminate\Contracts\Auth\Guard */
         $auth = auth();
+        assert($auth instanceof Guard);
+
         $user = $auth->user();
         assert($user instanceof User);
 

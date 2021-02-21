@@ -48,6 +48,8 @@ class Group
             return $this;
         }
 
+        $error = 'Something unexpected happened! Exit code: ' . $retval;
+
         switch ($retval) {
             case self::GROUP_SYNTAX_INVALID:
                 $error = 'Invalid command syntax.';
@@ -63,7 +65,7 @@ class Group
                 break;
         }
 
-        throw new GroupSaveException((string) ($error ?? 'Something unexpected happened! Exit code: ' . $retval));
+        throw new GroupSaveException($error);
     }
 
     private function commitMod(): self
