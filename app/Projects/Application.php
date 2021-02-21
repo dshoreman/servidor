@@ -47,7 +47,6 @@ use Servidor\System\User as SystemUser;
  * @method static Builder|Application whereSourceRepository($value)
  * @method static Builder|Application whereTemplate($value)
  * @method static Builder|Application whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 class Application extends Model
 {

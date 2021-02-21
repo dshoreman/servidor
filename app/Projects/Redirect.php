@@ -30,7 +30,6 @@ use Servidor\Traits\TogglesNginxConfigs;
  * @method static Builder|Redirect whereTarget($value)
  * @method static Builder|Redirect whereType($value)
  * @method static Builder|Redirect whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 class Redirect extends Model implements Domainable
 {

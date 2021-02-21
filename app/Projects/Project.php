@@ -27,7 +27,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Project whereIsEnabled($value)
  * @method static Builder|Project whereName($value)
  * @method static Builder|Project whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 class Project extends Model
 {
