@@ -22,7 +22,7 @@ class Domain implements Rule
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
-     * @param string $attribute
+     * @param string $attribute @unused-param
      * @param mixed  $value
      */
     public function passes($attribute, $value): bool

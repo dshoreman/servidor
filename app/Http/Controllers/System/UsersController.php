@@ -60,9 +60,9 @@ class UsersController extends Controller
                 $user->update($request->validated()),
                 Response::HTTP_OK
             );
-        } catch (UserNotFoundException $e) {
+        } catch (UserNotFoundException $_) {
             throw $this->fail('uid', 'No user found matching the given criteria.');
-        } catch (UserNotModifiedException $e) {
+        } catch (UserNotModifiedException $_) {
             throw $this->fail('uid', 'Nothing to update!');
         }
     }

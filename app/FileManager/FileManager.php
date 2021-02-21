@@ -37,7 +37,7 @@ class FileManager
 
         try {
             return $this->getFiles($path);
-        } catch (DirectoryNotFoundException $e) {
+        } catch (DirectoryNotFoundException $_) {
             throw new PathNotFound("This directory doesn't exist.");
         }
     }
@@ -112,7 +112,7 @@ class FileManager
             rename($path, $target);
 
             return $this->open($target);
-        } catch (UnsupportedFileType $e) {
+        } catch (UnsupportedFileType $_) {
             return $this->open($target, false);
         }
     }
@@ -207,7 +207,7 @@ class FileManager
     /** @param SplFileInfo|string $file */
     private function fileToArray($file): array
     {
-        [$file, $data] = $this->loadFile($file);
+        [$_, $data] = $this->loadFile($file);
 
         return $data;
     }

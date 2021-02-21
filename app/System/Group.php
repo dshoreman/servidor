@@ -34,8 +34,7 @@ class Group
         $name = (string) $this->group->getOriginal('name');
         $args = $args ?: $this->group->toArgs();
 
-        exec("sudo {$cmd} {$args} {$name}", $output, $retval);
-        unset($output);
+        exec("sudo {$cmd} {$args} {$name}", $_, $retval);
 
         return $retval;
     }

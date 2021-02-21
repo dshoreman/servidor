@@ -144,7 +144,7 @@ class Application extends Model
             $username = Str::slug($project->name);
 
             return SystemUser::findByName($username)->toArray();
-        } catch (UserNotFoundException $e) {
+        } catch (UserNotFoundException $_) {
             return null;
         }
     }

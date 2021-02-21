@@ -7,10 +7,12 @@ use Illuminate\Support\Str;
 
 class NoComma implements Rule
 {
+    /**
+     * @param string $attribute @unused-param
+     * @param mixed  $value
+     */
     public function passes($attribute, $value): bool
     {
-        unset($attribute);
-
         return !Str::contains((string) $value, ',');
     }
 

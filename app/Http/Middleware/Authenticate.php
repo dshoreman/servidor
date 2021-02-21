@@ -11,7 +11,7 @@ class Authenticate extends Middleware
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request @unused-param
      *
      * @return string|null
      */
