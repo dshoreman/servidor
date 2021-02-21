@@ -37,8 +37,6 @@ use Servidor\System\User as SystemUser;
  * @property ?array  $system_user
  * @property Project $project
  *
- * @method static Builder|Application newModelQuery()
- * @method static Builder|Application newQuery()
  * @method static Builder|Application query()
  * @method static Builder|Application whereCreatedAt($value)
  * @method static Builder|Application whereDomainName($value)

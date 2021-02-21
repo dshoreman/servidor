@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Servidor\Http\Controllers\Controller;
+use Servidor\User;
 
 class LoginController extends Controller
 {
@@ -73,8 +74,8 @@ class LoginController extends Controller
     {
         /** @var \Illuminate\Contracts\Auth\Guard */
         $auth = auth();
-        /** @var \Servidor\User */
         $user = $auth->user();
+        assert($user instanceof User);
 
         if ($token = $user->token()) {
             $token->delete();

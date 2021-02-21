@@ -22,8 +22,6 @@ use Servidor\Traits\TogglesNginxConfigs;
  * @property ?Carbon $updated_at
  * @property Project $project
  *
- * @method static Builder|Redirect newModelQuery()
- * @method static Builder|Redirect newQuery()
  * @method static Builder|Redirect query()
  * @method static Builder|Redirect whereCreatedAt($value)
  * @method static Builder|Redirect whereDomainName($value)
