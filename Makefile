@@ -70,6 +70,9 @@ metrics-html:
 
 reports: coverage-html metrics-html
 
+clear-cscache:
+	vendor/bin/psalm -c build/psalm/psalm.xml --clear-cache
+
 eslint:
 	node_modules/.bin/eslint -c build/eslint/config.json resources/js --ext .js,.vue
 	@echo -e "\n\e[1;32m✔ 0 problems (0 errors, 0 warnings)\e[0m"
@@ -95,6 +98,6 @@ phpmd:
 phpmnd:
 	vendor/bin/phpmnd . $(PHP_MND_ARGS)
 
-syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm
+syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm phan
 
-kitchen-sink: syntax coverage metrics
+kitchen-sink: clear-cscache syntax coverage metrics
