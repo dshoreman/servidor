@@ -69,8 +69,7 @@ class CreateProjectRequest extends FormRequest
         $repo = Application::SOURCE_PROVIDERS[$app['provider']];
         $repo = str_replace('{repo}', $app['repository'], $repo);
 
-        exec(sprintf(self::BRANCH_CMD, $repo, $branch), $o, $status);
-        unset($o);
+        exec(sprintf(self::BRANCH_CMD, $repo, $branch), $_, $status);
 
         if (self::GIT_NO_REFS === $status) {
             $validator->errors()->add('applications.0.branch', self::ERR_NO_REFS);

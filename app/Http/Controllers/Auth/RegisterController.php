@@ -45,6 +45,7 @@ class RegisterController extends Controller
         return $user;
     }
 
+    /** @param Request $request @unused-param */
     protected function registered(Request $request, User $user): JsonResponse
     {
         return response()->json($user);

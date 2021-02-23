@@ -7,10 +7,12 @@ use Illuminate\Support\Str;
 
 class NoColon implements Rule
 {
+    /**
+     * @param string $attribute @unused-param
+     * @param mixed  $value
+     */
     public function passes($attribute, $value): bool
     {
-        unset($attribute);
-
         return !Str::contains((string) $value, ':');
     }
 

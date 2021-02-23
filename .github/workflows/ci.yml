@@ -35,45 +35,10 @@ jobs:
       - name: Run ESLint
         run: make eslint
 
-  lint-php:
-    name: Lint PHP
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-      - name: Validate composer.json and lockfile
-        run: composer validate
-      - uses: actions/cache@v2
-        id: composer-lint-cache
-        with:
-          path: ~/.cache/composer/files
-          key: composer-php8.0-${{ hashFiles('**/composer.lock') }}
-          restore-keys: composer-php8.0-
-      - name: Install composer packages
-        uses: nick-invision/retry@v2
-        with:
-          timeout_seconds: 45
-          max_attempts: 3
-          command: composer install --no-interaction --no-progress --prefer-dist
-      - name: Run PHP CS Fixer
-        run: make phpcsf CS_ARGS="--verbose"
-      - name: Check PSR12 compliance
-        run: make phpcs
-      - name: Run PHP Mess Detector
-        run: make phpmd
-      - name: Detect magic numbers
-        run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
-      - name: Run PHPStan checks
-        run: make phpstan
-      - name: Run Psalm checks
-        run: make psalm
-
   test-php:
-    if: always()
-    needs: lint-php
     name: Test Backend (php-${{ matrix.php }} on ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -96,6 +61,8 @@ jobs:
         run: |
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Validate composer.json and lockfile
+        run: composer validate
       - uses: actions/cache@v2
         id: composer-test-cache
         with:
@@ -110,6 +77,26 @@ jobs:
           command: composer install --no-interaction --no-progress --prefer-dist
       - name: Install application
         run: bash .github/scripts/install.sh
+      - name: Check for code style issues
+        run: |
+          echo "::group::$ vendor/bin/php-cs-fixer fix"
+          make phpcsf CS_ARGS="--verbose"
+          echo "::endgroup::\n::group::$ vendor/bin/phpcs --standard=PSR12"
+          make phpcs
+          echo "::endgroup::"
+      - name: Run PHP mess detection tool
+        run: make phpmd
+      - name: Check for magic numbers
+        run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
+      - name: Run static analysis checks
+        run: |
+          echo "::group::$ vendor/bin/phpstan analyze"
+          make phpstan
+          echo "::endgroup::$ vendor/bin/phan"
+          make phan
+          echo "::endgroup::$ vendor/bin/psalm"
+          make psalm
+          echo "::endgroup::"
       - name: Run tests with PHPUnit
         run: make test-for-ci
       - name: Upload coverage results

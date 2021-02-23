@@ -2,6 +2,7 @@
 
 namespace Servidor;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification as Notification;
@@ -30,8 +31,6 @@ use Laravel\Passport\Token;
  * @property Collection|Token[]           $tokens
  * @property ?int                         $tokens_count
  *
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
  * @method static Builder|User query()
  * @method static Builder|User whereCreatedAt($value)
  * @method static Builder|User whereEmail($value)
@@ -41,7 +40,6 @@ use Laravel\Passport\Token;
  * @method static Builder|User wherePassword($value)
  * @method static Builder|User whereRememberToken($value)
  * @method static Builder|User whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 class User extends Authenticatable
 {

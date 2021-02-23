@@ -2,6 +2,7 @@
 
 namespace Servidor\Projects;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,8 +23,6 @@ use Servidor\Traits\TogglesNginxConfigs;
  * @property ?Carbon $updated_at
  * @property Project $project
  *
- * @method static Builder|Redirect newModelQuery()
- * @method static Builder|Redirect newQuery()
  * @method static Builder|Redirect query()
  * @method static Builder|Redirect whereCreatedAt($value)
  * @method static Builder|Redirect whereDomainName($value)
@@ -32,7 +31,6 @@ use Servidor\Traits\TogglesNginxConfigs;
  * @method static Builder|Redirect whereTarget($value)
  * @method static Builder|Redirect whereType($value)
  * @method static Builder|Redirect whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 class Redirect extends Model implements Domainable
 {
@@ -58,8 +56,8 @@ class Redirect extends Model implements Domainable
 
     public function writeNginxConfig(): void
     {
-        /** @var \Illuminate\View\View */
         $view = view('projects.app-templates.redirect');
+        assert($view instanceof View);
 
         $src = "vhosts/{$this->domain_name}.conf";
         $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";

@@ -46,9 +46,9 @@ class GroupsController extends Controller
                 $group->update($request->validated()),
                 Response::HTTP_OK
             );
-        } catch (GroupNotFoundException $e) {
+        } catch (GroupNotFoundException $_) {
             throw $this->fail('gid', 'No group found matching the given criteria.');
-        } catch (GroupNotModifiedException $e) {
+        } catch (GroupNotModifiedException $_) {
             throw $this->fail('gid', 'Nothing to update!');
         } catch (GroupSaveException $e) {
             throw $this->fail('gid', $e->getMessage());

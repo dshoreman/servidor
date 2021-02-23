@@ -7,12 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Servidor\FileManager\PathNotFound;
-use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 class EditFile extends Controller
 {
-    /** @return JsonResponse|Response */
-    public function __invoke(Request $request): BaseResponse
+    public function __invoke(Request $request): JsonResponse
     {
         if (!($filepath = $request->query('file')) || !is_string($filepath)) {
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);
@@ -34,7 +32,7 @@ class EditFile extends Controller
         }
 
         if ($file['contents'] == $data['contents']) {
-            return response(null, Response::HTTP_NOT_MODIFIED);
+            return response()->json('', Response::HTTP_NOT_MODIFIED);
         }
 
         $this->fm->save($filepath, (string) $data['contents']);

@@ -4,10 +4,12 @@ namespace Servidor\Http\Controllers\Auth;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Servidor\Http\Controllers\Controller;
+use Servidor\User;
 
 class LoginController extends Controller
 {
@@ -71,10 +73,11 @@ class LoginController extends Controller
      */
     public function logout()
     {
-        /** @var \Illuminate\Contracts\Auth\Guard */
         $auth = auth();
-        /** @var \Servidor\User */
+        assert($auth instanceof Guard);
+
         $user = $auth->user();
+        assert($user instanceof User);
 
         if ($token = $user->token()) {
             $token->delete();

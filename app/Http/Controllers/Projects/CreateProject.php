@@ -15,10 +15,11 @@ class CreateProject extends Controller
     {
         $data = $request->validated();
 
-        $project = Project::create([
+        $project = new Project([
             'name' => $data['name'],
             'is_enabled' => $data['is_enabled'] ?? false,
         ]);
+        $project->save();
 
         $project->applications()->saveMany(array_map(function (array $app): Application {
             return new Application([

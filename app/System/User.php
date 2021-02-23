@@ -55,7 +55,7 @@ class User
              ? posix_getpwuid((int) $nameOrUid)
              : posix_getpwnam($nameOrUid);
 
-        $this->user = new LinuxUser($arr, true);
+        $this->user = new LinuxUser((array) $arr, true);
 
         return $this;
     }
@@ -122,8 +122,7 @@ class User
     {
         $name = (string) $this->user->getOriginal('name');
 
-        exec("sudo {$cmd} {$this->user->toArgs()} {$name}", $output, $retval);
-        unset($output);
+        exec("sudo {$cmd} {$this->user->toArgs()} {$name}", $_, $retval);
 
         if (0 !== $retval) {
             throw new UserSaveException("Something went wrong (exit code: {$retval})");

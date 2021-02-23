@@ -33,7 +33,7 @@ class DatabaseController extends Controller
 
         try {
             $db->create($dbname);
-        } catch (Exception $e) {
+        } catch (Exception $_) {
             return response()->json(['error' => 'Could not create database'], 500);
         }
 

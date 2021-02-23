@@ -34,8 +34,7 @@ class Group
         $name = (string) $this->group->getOriginal('name');
         $args = $args ?: $this->group->toArgs();
 
-        exec("sudo {$cmd} {$args} {$name}", $output, $retval);
-        unset($output);
+        exec("sudo {$cmd} {$args} {$name}", $_, $retval);
 
         return $retval;
     }
@@ -47,6 +46,8 @@ class Group
         if (0 === $retval) {
             return $this;
         }
+
+        $error = 'Something unexpected happened! Exit code: ' . $retval;
 
         switch ($retval) {
             case self::GROUP_SYNTAX_INVALID:
@@ -63,7 +64,7 @@ class Group
                 break;
         }
 
-        throw new GroupSaveException((string) ($error ?? 'Something unexpected happened! Exit code: ' . $retval));
+        throw new GroupSaveException($error);
     }
 
     private function commitMod(): self
@@ -164,7 +165,7 @@ class Group
              ? posix_getgrgid($nameOrGid)
              : posix_getgrnam($nameOrGid);
 
-        $this->group = new LinuxGroup($arr);
+        $this->group = new LinuxGroup((array) $arr);
 
         return $this;
     }

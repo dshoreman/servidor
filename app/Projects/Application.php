@@ -37,8 +37,6 @@ use Servidor\System\User as SystemUser;
  * @property ?array  $system_user
  * @property Project $project
  *
- * @method static Builder|Application newModelQuery()
- * @method static Builder|Application newQuery()
  * @method static Builder|Application query()
  * @method static Builder|Application whereCreatedAt($value)
  * @method static Builder|Application whereDomainName($value)
@@ -49,7 +47,6 @@ use Servidor\System\User as SystemUser;
  * @method static Builder|Application whereSourceRepository($value)
  * @method static Builder|Application whereTemplate($value)
  * @method static Builder|Application whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 class Application extends Model
 {
@@ -108,7 +105,7 @@ class Application extends Model
             return $repo;
         }
 
-        return mb_substr($repo, $pos + 1);
+        return (string) mb_substr($repo, $pos + 1);
     }
 
     public function getSourceRootAttribute(): string
@@ -147,7 +144,7 @@ class Application extends Model
             $username = Str::slug($project->name);
 
             return SystemUser::findByName($username)->toArray();
-        } catch (UserNotFoundException $e) {
+        } catch (UserNotFoundException $_) {
             return null;
         }
     }
@@ -175,7 +172,7 @@ class Application extends Model
         $src = "vhosts/{$this->domain_name}.conf";
         $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
 
-        Storage::put($src, (string) $view->with('app', $this));
+        Storage::put($src, $view->with('app', $this)->render());
         exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
     }
 }

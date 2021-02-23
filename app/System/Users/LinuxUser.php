@@ -139,7 +139,7 @@ class LinuxUser extends LinuxCommand
         $primaryMembers = explode(',', end($primary));
 
         foreach ($effective as $group) {
-            if ($group == $primaryName && !in_array($group, $primaryMembers)) {
+            if ($group == $primaryName && !in_array($group, $primaryMembers, true)) {
                 continue;
             }
 

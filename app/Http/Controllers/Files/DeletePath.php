@@ -23,6 +23,6 @@ class DeletePath extends Controller
             return response()->json($e->getMessage(), Response::HTTP_FORBIDDEN);
         }
 
-        return response(null, Response::HTTP_NO_CONTENT);
+        return response()->noContent();
     }
 }
