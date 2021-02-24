@@ -45,6 +45,7 @@
             "app/helpers.php"
         ],
         "psr-4": {
+            "PHPMD\\Rule\\Servidor\\": "build/phpmd/",
             "Servidor\\": "app/"
         }
     },

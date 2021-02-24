@@ -56,6 +56,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: ast
           coverage: pcov
       - name: Setup problem matchers
         run: |
@@ -81,7 +82,7 @@ jobs:
         run: |
           echo "::group::$ vendor/bin/php-cs-fixer fix"
           make phpcsf CS_ARGS="--verbose"
-          echo "::endgroup::\n::group::$ vendor/bin/phpcs --standard=PSR12"
+          echo -e "::endgroup::\n::group::$ vendor/bin/phpcs --standard=PSR12"
           make phpcs
           echo "::endgroup::"
       - name: Run PHP mess detection tool
@@ -92,9 +93,9 @@ jobs:
         run: |
           echo "::group::$ vendor/bin/phpstan analyze"
           make phpstan
-          echo "::endgroup::$ vendor/bin/phan"
+          echo -e "::endgroup::\n::group::$ vendor/bin/phan"
           make phan
-          echo "::endgroup::$ vendor/bin/psalm"
+          echo -e "::endgroup::\n::group::$ vendor/bin/psalm"
           make psalm
           echo "::endgroup::"
       - name: Run tests with PHPUnit

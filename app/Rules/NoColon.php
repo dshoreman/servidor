@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 class NoColon implements Rule
 {
     /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
      * @param string $attribute @unused-param
      * @param mixed  $value
      */

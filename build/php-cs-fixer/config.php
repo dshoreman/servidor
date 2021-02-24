@@ -4,6 +4,7 @@ $finder = (new PhpCsFixer\Finder())
     ->notName('*.blade.php')
     ->notName('_ide_helper.php')
     ->notPath('bootstrap/cache')
+    ->notPath('node_modules')
     ->notPath('storage')
     ->in(dirname(__DIR__, 2));
 
