@@ -18,8 +18,6 @@ class Domain implements Rule
         ))\.?$/ixu';
 
     /**
-     * Determine if the validation rule passes.
-     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
      * @param string $attribute @unused-param

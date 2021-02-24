@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 class NoComma implements Rule
 {
     /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
      * @param string $attribute @unused-param
      * @param mixed  $value
      */
