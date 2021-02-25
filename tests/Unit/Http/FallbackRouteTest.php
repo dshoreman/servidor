@@ -19,7 +19,7 @@ class FallbackRouteTest extends TestCase
         $response = $this->get('/');
 
         $response->assertViewIs('servidor');
-        $response->assertSee('router-view id="app"');
+        $response->assertSee('router-view id="app"', $escape = false);
         $response->assertSee('/js/app.js');
     }
 
@@ -30,9 +30,9 @@ class FallbackRouteTest extends TestCase
 
         $response = $this->get('/');
 
-        $response->assertDontSee('#message: "The Mix manifest does not exist.');
+        $response->assertDontSee('#message: "The Mix manifest does not exist.', $escape = false);
         $response->assertViewIs('servidor');
-        $response->assertSee('router-view id="app"');
+        $response->assertSee('router-view id="app"', $escape = false);
         $response->assertSee('/js/app.js');
     }
 

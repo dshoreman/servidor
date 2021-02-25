@@ -2,15 +2,17 @@
 
 return [
     'name' => 'Servidor',
-    'debug' => env('APP_DEBUG', false),
+    'debug' => (bool) env('APP_DEBUG', false),
     'env' => env('APP_ENV', 'production'),
 
     'url' => env('APP_URL', 'http://servidor.local') . ':8042',
+    'asset_url' => env('ASSET_URL', null),
     'registration_enabled' => env('APP_REGISTRATION', false),
 
     'locale' => 'en',
     'timezone' => 'UTC',
     'fallback_locale' => 'en',
+    'faker_locale' => 'en_GB',
 
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
@@ -68,6 +70,7 @@ return [
         'File' => Illuminate\Support\Facades\File::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
+        'Http' => Illuminate\Support\Facades\Http::class,
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,

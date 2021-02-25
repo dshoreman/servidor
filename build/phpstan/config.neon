@@ -5,6 +5,3 @@ parameters:
   paths:
     - ../../app
     - ../../tests
-  ignoreErrors:
-    - message: '#Function factory invoked with 1 parameter, 0 required.#'
-      path: '../../tests/RequiresAuth.php'

@@ -16,7 +16,7 @@ class Version extends Command
     /**
      * The console command description.
      *
-     * @var string
+     * @var ?string
      */
     protected $description = 'Print the current version of Servidor.';
 
