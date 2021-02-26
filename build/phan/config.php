@@ -344,7 +344,7 @@ return [
     'directory_list' => [
         'app',
         'database/factories',
-        'database/seeds',
+        'database/seeders',
         'vendor/doctrine/dbal/lib/Doctrine/DBAL',
         'vendor/fakerphp/faker/src/Faker',
         'vendor/fideloper/proxy/src',

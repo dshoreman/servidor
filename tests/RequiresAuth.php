@@ -14,7 +14,7 @@ trait RequiresAuth
     protected function authed()
     {
         if (!isset($this->user)) {
-            $this->user = factory(User::class)->create();
+            $this->user = User::factory()->create();
         }
 
         return $this->actingAs($this->user, 'api');

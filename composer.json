@@ -13,11 +13,10 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^7.30",
-        "laravel/passport": "^9.4",
+        "laravel/framework": "^8.29",
+        "laravel/passport": "^10.1",
         "laravel/tinker": "^2.6",
-        "laravel/ui": "^2.0",
-        "ramsey/uuid": "3.x-dev#ec2f6b0"
+        "laravel/ui": "^3.2"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.2.1",
@@ -25,7 +24,7 @@
         "fakerphp/faker": "^1.13",
         "friendsofphp/php-cs-fixer": "~2.18",
         "mockery/mockery": "^1.4",
-        "nunomaduro/collision": "^4.3",
+        "nunomaduro/collision": "^5.3",
         "nunomaduro/larastan": "^0.7.0",
         "phan/phan": "4.x",
         "phpmd/phpmd": "^2.8",
@@ -38,14 +37,12 @@
         "vimeo/psalm": "^4.4"
     },
     "autoload": {
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
         "files": [
             "app/helpers.php"
         ],
         "psr-4": {
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/",
             "PHPMD\\Rule\\Servidor\\": "build/phpmd/",
             "Servidor\\": "app/"
         }
