@@ -36,7 +36,7 @@ class DeletePathTest extends TestCase
     public function authed_user_can_delete_a_directory(): void
     {
         $path = resource_path('test-skel/deletable-dir');
-        mkdir($path, 0777);
+        is_dir($path) || mkdir($path, 0777);
 
         $response = $this->authed()->deleteJson($this->endpoint(['file' => $path]));
         $response->assertStatus(Response::HTTP_NO_CONTENT);
