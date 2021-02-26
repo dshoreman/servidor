@@ -348,6 +348,7 @@ return [
         'vendor/doctrine/dbal/lib/Doctrine/DBAL',
         'vendor/fakerphp/faker/src/Faker',
         'vendor/fideloper/proxy/src',
+        'vendor/fruitcake/laravel-cors/src',
         'vendor/guzzlehttp/guzzle/src',
         'vendor/laravel/framework/src/Illuminate',
         'vendor/laravel/passport/src',

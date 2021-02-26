@@ -11,6 +11,7 @@
         "php": "^7.4 || ^8.0",
         "doctrine/dbal": "^2.12",
         "fideloper/proxy": "^4.4",
+        "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^7.30",
         "laravel/passport": "^9.4",
