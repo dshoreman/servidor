@@ -14,7 +14,7 @@ return [
     'fallback_locale' => 'en',
     'faker_locale' => 'en_GB',
 
-    'key' => env('APP_KEY'),
+    'key' => env('APP_KEY', ''),
     'cipher' => 'AES-256-CBC',
 
     'providers' => [
