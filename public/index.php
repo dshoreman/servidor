@@ -2,6 +2,11 @@
 
 define('LARAVEL_START', microtime(true));
 
+$maintenanceCache = __DIR__ . '/../storage/framework/maintenance.php';
+if (file_exists($maintenanceCache)) {
+    require $maintenanceCache;
+}
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = require_once __DIR__ . '/../bootstrap/app.php';
