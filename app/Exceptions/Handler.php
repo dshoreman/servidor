@@ -3,8 +3,6 @@
 namespace Servidor\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -22,29 +20,8 @@ class Handler extends ExceptionHandler
      * @var string[]
      */
     protected $dontFlash = [
+        'current_password',
         'password',
         'password_confirmation',
     ];
-
-    /**
-     * Report or log an exception.
-     *
-     * @throws Throwable
-     */
-    public function report(Throwable $exception): void
-    {
-        parent::report($exception);
-    }
-
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @throws Throwable
-     */
-    public function render($request, Throwable $e): Response
-    {
-        return parent::render($request, $e);
-    }
 }

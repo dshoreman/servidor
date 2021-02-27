@@ -195,5 +195,5 @@ return [
     |
     */
 
-    'same_site' => null, // change to 'lax'? investigate!
+    'same_site' => 'lax',
 ];
