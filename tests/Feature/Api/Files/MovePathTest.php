@@ -54,7 +54,7 @@ class MovePathTest extends TestCase
         $this->withoutExceptionHandling();
         $dir = resource_path('test-skel/moveme');
         $newDir = $dir . '.moved';
-        mkdir($dir, 0777);
+        is_dir($dir) || mkdir($dir, 0777);
 
         $response = $this->authed()->postJson($this->endpoint(), [
             'oldPath' => $dir,
