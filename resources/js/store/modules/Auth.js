@@ -41,23 +41,26 @@ export default {
                 reject(error);
             });
         }),
-        login: ({ commit }, data) => new Promise((resolve, reject) => {
-            axios.post('/api/login', {
-                username: data.username,
-                password: data.password,
-            }).then(response => {
+        async login({ commit, dispatch }, credentials) {
+            try {
+                await axios.get('/sanctum/csrf-cookie');
+                await axios.post('/login', {
+                    email: credentials.username,
+                    password: credentials.password,
+                });
                 commit('clearAlert');
-                commit('setToken', response.data.access_token);
-                resolve(response);
-            }).catch(error => {
+
+                return Promise.resolve();
+            } catch (error) {
                 commit('clearAlert');
                 commit('setAlert', {
                     title: "We couldn't get you logged in :(",
                     msg: error.response.data.message,
                 });
-                reject(error);
-            });
-        }),
+
+                return Promise.reject(error);
+            }
+        },
         logout: ({ commit }) => new Promise((resolve, reject) => {
             axios.post('/api/logout').then(response => {
                 resolve(response);
