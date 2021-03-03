@@ -2,9 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use Servidor\Http\Controllers\Auth\ForgotPasswordController;
+use Servidor\Http\Controllers\Auth\LoginWithEmail;
 use Servidor\Http\Controllers\Auth\ResetPasswordController;
 use Servidor\Http\Controllers\Auth\VerificationController;
 use Servidor\Http\Controllers\FallbackController;
+
+Route::post('login', LoginWithEmail::class);
 
 // Auth routes copied from Illuminate\Routing\Router@auth
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
