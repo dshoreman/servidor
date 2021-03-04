@@ -3,6 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
 use Servidor\User;
 use Tests\TestCase;
 
@@ -26,5 +27,20 @@ class LoginTest extends TestCase
 
         $response->assertNoContent();
         $this->assertAuthenticated();
+    }
+
+    /** @test */
+    public function user_cannot_login_with_invalid_password(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->postJson('/api/session', [
+            'email' => $user->email,
+            'password' => 'incorrect',
+        ]);
+
+        $this->assertGuest();
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors(['email']);
     }
 }
