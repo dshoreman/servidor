@@ -46,10 +46,10 @@ export default {
                     password: credentials.password,
                 });
                 commit('clearAlert');
+                await dispatch('fetchProfile');
 
                 return Promise.resolve();
             } catch (error) {
-                commit('clearAlert');
                 commit('setAlert', {
                     title: "We couldn't get you logged in :(",
                     msg: 'response' in error
@@ -69,10 +69,10 @@ export default {
                 commit('clearUser');
             });
         }),
-        fetchProfile: ({ commit }) => {
-            axios.get('/api/user').then(response => {
-                commit('setUser', response.data);
-            });
+        async fetchProfile({ commit }) {
+            const response = await axios.get('/api/user');
+
+            commit('setUser', response.data);
         },
         forceLogin: ({ commit }, reason) => {
             commit('setAlert', { title: reason, msg: 'Please login again.' });

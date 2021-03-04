@@ -64,9 +64,6 @@ export default {
             user: state => state.Auth.user,
         }),
     },
-    created() {
-        this.$store.dispatch('fetchProfile');
-    },
     methods: {
         logout() {
             this.$store.dispatch('logout').then(() => {
