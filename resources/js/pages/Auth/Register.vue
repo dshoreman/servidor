@@ -1,59 +1,42 @@
 <template>
-    <div class="ui middle aligned center aligned grid">
-        <div class="column">
-            <h2 class="ui teal header centered">
-                <i class="server icon"></i>
-                Create your Servidor Account
+    <sui-grid is="themed-page" layout="login" textAlign="center" verticalAlign="middle">
+        <sui-grid-column>
+            <h2 is="sui-header">
+                <sui-icon name="server" /> Create your Servidor Account
             </h2>
-            <form class="ui form" method="POST" @submit.prevent="register">
-                <div class="ui stacked segment">
-                    <div class="field left aligned">
-                        <label for="name">Name</label>
+            <sui-form @submit.prevent="register">
+                <sui-segment stacked inverted>
+                    <sui-form-field class="left aligned">
+                        <sui-input inverted transparent required autofocus
+                                   type="text" id="name" placeholder="Display name"
+                                   v-model="name" icon="user" icon-position="left"/>
+                    </sui-form-field>
 
-                        <div class="ui left icon input">
-                            <input id="name" type="text" name="name"
-                                v-model="name" required autofocus>
-                            <i class="user icon"></i>
-                        </div>
-                    </div>
+                    <sui-form-field class="left aligned">
+                        <sui-input inverted transparent required
+                                   type="email" id="email" placeholder="Email address"
+                                   v-model="email" icon="envelope" icon-position="left" />
+                    </sui-form-field>
 
-                    <div class="field left aligned">
-                        <label for="email">E-Mail Address</label>
+                    <sui-form-field class="left aligned">
+                        <sui-input inverted transparent required
+                                   type="password" id="password" placeholder="Password"
+                                   v-model="password" icon="key" icon-position="left" />
+                    </sui-form-field>
 
-                        <div class="ui left icon input">
-                            <input id="email" type="email" name="email"
-                                v-model="email" required>
-                            <i class="envelope icon"></i>
-                        </div>
-                    </div>
+                    <sui-form-field class="left aligned">
+                        <sui-input inverted transparent required
+                                   type="password" id="passconfirm" placeholder="Password (again)"
+                                   v-model="passwordConfirm" icon="blank" icon-position="left" />
+                    </sui-form-field>
 
-                    <div class="field left aligned">
-                        <label for="password">Password</label>
-
-                        <div class="ui left icon input">
-                            <input id="password" type="password" name="password"
-                                v-model="password" required>
-                            <i class="lock icon"></i>
-                        </div>
-                    </div>
-
-                    <div class="field left aligned">
-                        <label for="passconfirm">Confirm Password</label>
-
-                        <div class="ui left icon input">
-                            <input id="passconfirm" type="password" name="passconfirm"
-                                v-model="passwordConfirm" required>
-                            <i class="lock icon"></i>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="ui teal large fluid button">
+                    <sui-button positive fluid type="submit" size="large">
                         Register
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+                    </sui-button>
+                </sui-segment>
+            </sui-form>
+        </sui-grid-column>
+    </sui-grid>
 </template>
 
 <script>

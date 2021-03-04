@@ -2,21 +2,19 @@
 
 namespace Servidor\Http\Controllers\Auth;
 
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Servidor\Http\Controllers\Controller;
-use Servidor\Providers\RouteServiceProvider;
 use Servidor\User;
 
 class Register extends Controller
 {
-    use RegistersUsers;
-
-    protected string $redirectTo = RouteServiceProvider::HOME;
+    private array $validationRules = [
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
+    ];
 
     public function __construct()
     {
@@ -24,34 +22,16 @@ class Register extends Controller
         $this->middleware('register');
     }
 
-    protected function validator(array $data): ValidatorContract
+    public function __invoke(Request $request): JsonResponse
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-    }
+        $request->validate($this->validationRules);
 
-    protected function create(array $data): User
-    {
         $user = new User();
-        $user->name = (string) $data['name'];
-        $user->email = (string) $data['email'];
-        $user->password = Hash::make((string) $data['password']);
-
+        $user->name = (string) $request->name;
+        $user->email = (string) $request->email;
+        $user->password = Hash::make((string) $request->password);
         $user->save();
 
-        return $user;
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     *
-     * @param Request $request @unused-param
-     */
-    protected function registered(Request $request, User $user): JsonResponse
-    {
-        return response()->json($user);
+        return new JsonResponse($user, JsonResponse::HTTP_CREATED);
     }
 }

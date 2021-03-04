@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * [accounts] Fixed an issue where data was missing from the register request
+* [accounts] The register page was completely unstyled. Now it looks not-terrible
 * [editor] Permission denied errors weren't being caught on PHP 8.x
 * [installer] Resolved an issue in Makefile that prevented running on GHA
 * [sys-users] Clicking delete on a user would also submit the update form
