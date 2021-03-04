@@ -12,7 +12,7 @@ use Servidor\Http\Controllers\Controller;
 use Servidor\Providers\RouteServiceProvider;
 use Servidor\User;
 
-class RegisterController extends Controller
+class Register extends Controller
 {
     use RegistersUsers;
 

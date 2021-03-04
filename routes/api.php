@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Servidor\Http\Controllers\Auth\RegisterController;
 use Servidor\Http\Controllers\DatabaseController;
 use Servidor\Http\Controllers\FallbackController;
 use Servidor\Http\Controllers\Files\CreateNode;
@@ -20,8 +19,6 @@ use Servidor\Http\Controllers\System\GroupsController;
 use Servidor\Http\Controllers\System\UsersController;
 use Servidor\Http\Controllers\SystemInformationController;
 use Servidor\Http\Controllers\User\ShowProfile;
-
-Route::post('register', [RegisterController::class, 'register']);
 
 Route::middleware('auth:api')->group(function (): void {
     Route::name('projects.')->prefix('/projects')->group(function (): void {

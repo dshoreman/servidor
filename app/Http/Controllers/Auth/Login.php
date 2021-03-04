@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Servidor\Http\Controllers\Controller;
 
-class LoginWithEmail extends Controller
+class Login extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {

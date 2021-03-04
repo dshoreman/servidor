@@ -26,8 +26,8 @@ export default {
         },
     },
     actions: {
-        register: data => new Promise((resolve, reject) => {
-            axios.post('/api/register', {
+        register: (_, data) => new Promise((resolve, reject) => {
+            axios.post('/register', {
                 name: data.name,
                 email: data.email,
                 password: data.password,
