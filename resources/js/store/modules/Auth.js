@@ -4,8 +4,9 @@ export default {
             title: '',
             msg: '',
         },
-        token: localStorage.getItem('accessToken') || null,
-        user: {},
+        user: sessionStorage.user
+            ? JSON.parse(sessionStorage.getItem('user'))
+            : {},
     },
     mutations: {
         setAlert: (state, { msg, title }) => {
@@ -15,17 +16,13 @@ export default {
         clearAlert: state => {
             state.alert = {};
         },
-        setToken: (state, token) => {
-            window.axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-            localStorage.setItem('accessToken', token);
-            state.token = token;
-        },
-        clearToken: state => {
-            localStorage.removeItem('accessToken');
-            state.token = null;
-        },
         setUser: (state, user) => {
+            sessionStorage.setItem('user', JSON.stringify(user));
             state.user = user;
+        },
+        clearUser: state => {
+            sessionStorage.removeItem('user');
+            state.user = {};
         },
     },
     actions: {
@@ -69,7 +66,7 @@ export default {
             }).catch(error => {
                 reject(error);
             }).then(() => {
-                commit('clearToken');
+                commit('clearUser');
             });
         }),
         fetchProfile: ({ commit }) => {
@@ -79,12 +76,11 @@ export default {
         },
         forceLogin: ({ commit }, reason) => {
             commit('setAlert', { title: reason, msg: 'Please login again.' });
-            commit('clearToken');
+            commit('clearUser');
         },
     },
     getters: {
         authMsg: state => state.alert,
-        token: state => state.token,
-        loggedIn: state => null !== state.token,
+        loggedIn: state => 0 !== Object.keys(state.user).length,
     },
 };
