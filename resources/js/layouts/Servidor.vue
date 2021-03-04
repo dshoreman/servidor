@@ -65,12 +65,9 @@ export default {
         }),
     },
     methods: {
-        logout() {
-            this.$store.dispatch('logout').then(() => {
-                this.$nextTick(() => {
-                    this.$router.push({ name: 'login' });
-                });
-            });
+        async logout() {
+            await this.$store.dispatch('logout');
+            await this.$router.push({ name: 'login' });
         },
     },
 };
