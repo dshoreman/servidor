@@ -55,7 +55,9 @@ export default {
                 commit('clearAlert');
                 commit('setAlert', {
                     title: "We couldn't get you logged in :(",
-                    msg: error.response.data.message,
+                    msg: 'response' in error
+                        ? error.response.data.message
+                        : error.message,
                 });
 
                 return Promise.reject(error);
