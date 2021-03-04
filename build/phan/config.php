@@ -351,7 +351,7 @@ return [
         'vendor/fruitcake/laravel-cors/src',
         'vendor/guzzlehttp/guzzle/src',
         'vendor/laravel/framework/src/Illuminate',
-        'vendor/laravel/passport/src',
+        'vendor/laravel/sanctum/src/Http/Middleware',
         'vendor/laravel/ui/auth-backend',
         'vendor/psr/http-message/src',
         'vendor/symfony/finder',

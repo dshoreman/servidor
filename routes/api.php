@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Servidor\Http\Controllers\Auth\LoginController;
 use Servidor\Http\Controllers\Auth\RegisterController;
 use Servidor\Http\Controllers\DatabaseController;
 use Servidor\Http\Controllers\FallbackController;
@@ -22,13 +21,9 @@ use Servidor\Http\Controllers\System\UsersController;
 use Servidor\Http\Controllers\SystemInformationController;
 use Servidor\Http\Controllers\User\ShowProfile;
 
-Route::post('login', [LoginController::class, 'login']);
 Route::post('register', [RegisterController::class, 'register']);
 
 Route::middleware('auth:api')->group(function (): void {
-    Route::get('/user', ShowProfile::class);
-    Route::post('logout', [LoginController::class, 'logout']);
-
     Route::name('projects.')->prefix('/projects')->group(function (): void {
         Route::get('/', ListProjects::class);
         Route::post('/', CreateProject::class);
@@ -63,6 +58,7 @@ Route::middleware('auth:api')->group(function (): void {
     });
 
     Route::get('system-info', SystemInformationController::class);
+    Route::get('user', ShowProfile::class);
 });
 
 Route::any('/{all?}', [FallbackController::class, 'api'])->where('all', '.*');
