@@ -1,6 +1,9 @@
 <?php
 
 return [
+    // Don't generate the sanctum/csrf-cookie route
+    'routes' => false,
+
     /*
     |--------------------------------------------------------------------------
     | Stateful Domains

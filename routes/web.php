@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use Servidor\Http\Controllers\Auth\ForgotPasswordController;
 use Servidor\Http\Controllers\Auth\LoginWithEmail;
 use Servidor\Http\Controllers\Auth\ResetPasswordController;
 use Servidor\Http\Controllers\Auth\VerificationController;
 use Servidor\Http\Controllers\FallbackController;
 
+Route::get('csrf', [CsrfCookieController::class, 'show']);
 Route::post('login', LoginWithEmail::class);
 
 // Auth routes copied from Illuminate\Routing\Router@auth
