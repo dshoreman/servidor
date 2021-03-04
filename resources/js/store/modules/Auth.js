@@ -27,7 +27,7 @@ export default {
     },
     actions: {
         register: (_, data) => new Promise((resolve, reject) => {
-            axios.post('/register', {
+            axios.post('/api/register', {
                 name: data.name,
                 email: data.email,
                 password: data.password,
@@ -41,7 +41,7 @@ export default {
         async login({ commit, dispatch }, credentials) {
             try {
                 await axios.get('/csrf');
-                await axios.post('/login', {
+                await axios.post('/api/session', {
                     email: credentials.username,
                     password: credentials.password,
                 });
@@ -61,7 +61,7 @@ export default {
             }
         },
         logout: ({ commit }) => new Promise((resolve, reject) => {
-            axios.post('/api/logout').then(response => {
+            axios.delete('/api/session').then(response => {
                 resolve(response);
             }).catch(error => {
                 reject(error);

@@ -2,6 +2,7 @@
 
 namespace Servidor\Http\Controllers\Auth;
 
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,8 +12,10 @@ class Logout extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
-        Auth::logout();
+        $guard = Auth::guard('web');
+        assert($guard instanceof StatefulGuard);
 
+        $guard->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

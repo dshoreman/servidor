@@ -49,7 +49,7 @@ class RegisterTest extends TestCase
 
         $response = $this->postJson('/api/register', $this->jill);
 
-        $response->assertOk();
+        $response->assertCreated();
         $response->assertJson($this->jillClean);
     }
 }

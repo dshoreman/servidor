@@ -1,3 +1,7 @@
+/.config/psysh
+/.idea
+/.vscode
+/.vagrant
 /node_modules
 /public/mix-manifest.json
 /public/css/app.css
@@ -11,9 +15,6 @@
 /storage/*.key
 /tests/reports/*
 /vendor
-/.idea
-/.vscode
-/.vagrant
 /*.log
 .env
 .env.*
