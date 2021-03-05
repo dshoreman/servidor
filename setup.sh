@@ -75,7 +75,7 @@ install_servidor() {
     info "Installing Servidor..."
     prepare_home && clone_and_install
     info "Configuring application..."
-    configure_application && install_passport
+    configure_application
     log "Patching nginx config..."
     patch_nginx && systemctl reload nginx.service
     finalise && print_success
@@ -131,13 +131,6 @@ create_database() {
         echo "CREATE DATABASE servidor;" | mysql
     is_vagrant && echo "DROP DATABASE IF EXISTS servidor_testing; CREATE DATABASE servidor_testing;" | mysql
     edit_line .env "DB_PASSWORD" "\"${password}\""
-}
-install_passport() {
-    local client
-    has_passport_keys || sudo -Hu servidor php artisan passport:keys
-    client="$(create_oauth_client)"
-    edit_line .env "PASSPORT_CLIENT_ID" "$(head -n1 <<< "${client}")"
-    edit_line .env "PASSPORT_CLIENT_SECRET" "$(tail -n1 <<< "${client}")"
 }
 patch_nginx() {
     nginx_config > /etc/nginx/sites-enabled/servidor.conf
@@ -282,30 +275,6 @@ safe_srch() {
 }
 safe_repl() {
     printf '%s\n' "${*}" | sed -e 's/[\/&]/\\&/g'
-}
-has_passport_keys() {
-    [ -f storage/oauth-private.key ] && [ -f storage/oauth-public.key ]
-}
-create_oauth_client() {
-    if [ "$(oauth_clients)" = "0" ]; then
-        log "Creating new oauth client..."
-        sudo -Hu servidor php artisan passport:client -n --password \
-            --name="Servidor API Client" | tail -n2 | cut -f3 -d' '
-    else
-        log "Fetching existing client..."
-        local client_id
-        client_id=$(oauth_client_id)
-        echo -e "${client_id}\n$(oauth_secret "${client_id}")"
-    fi
-}
-oauth_clients() {
-    mysql -Ne "SELECT COUNT(*) FROM servidor.oauth_clients WHERE password_client=1"
-}
-oauth_client_id() {
-    mysql -Ne "SELECT id FROM servidor.oauth_clients WHERE password_client=1 LIMIT 1"
-}
-oauth_secret() {
-    mysql -Ne "SELECT secret FROM servidor.oauth_clients WHERE id=${1}"
 }
 export DEBIAN_FRONTEND=noninteractive
 start_install() {

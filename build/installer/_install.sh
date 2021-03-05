@@ -5,7 +5,7 @@ install_servidor() {
     prepare_home && clone_and_install
 
     info "Configuring application..."
-    configure_application && install_passport
+    configure_application
 
     log "Patching nginx config..."
     patch_nginx && systemctl reload nginx.service
@@ -79,16 +79,6 @@ create_database() {
     is_vagrant && echo "DROP DATABASE IF EXISTS servidor_testing; CREATE DATABASE servidor_testing;" | mysql
 
     edit_line .env "DB_PASSWORD" "\"${password}\""
-}
-
-install_passport() {
-    local client
-
-    has_passport_keys || sudo -Hu servidor php artisan passport:keys
-
-    client="$(create_oauth_client)"
-    edit_line .env "PASSPORT_CLIENT_ID" "$(head -n1 <<< "${client}")"
-    edit_line .env "PASSPORT_CLIENT_SECRET" "$(tail -n1 <<< "${client}")"
 }
 
 patch_nginx() {

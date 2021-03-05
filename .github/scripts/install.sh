@@ -16,7 +16,7 @@ main() {
     group_end
 
     group_start "Run database migrations" && \
-        migrate_db && install_auth
+        migrate_db
     group_end
 
     group_start "Prepare test filesystem" && \
@@ -59,9 +59,6 @@ set_test_skel_permissions() {
 
 migrate_db() {
     php artisan migrate
-}
-install_auth() {
-    php artisan passport:install
 }
 
 main
