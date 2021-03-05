@@ -3,16 +3,12 @@
 namespace Servidor;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification as Notification;
 use Illuminate\Notifications\DatabaseNotificationCollection as Notifications;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Laravel\Passport\Client;
-use Laravel\Passport\HasApiTokens;
-use Laravel\Passport\Token;
 
 /**
  * A User is a Servidor *backend* user; not to be confused with SystemUsers!
@@ -25,12 +21,8 @@ use Laravel\Passport\Token;
  * @property ?string                      $remember_token
  * @property ?Carbon                      $created_at
  * @property ?Carbon                      $updated_at
- * @property Collection|Client[]          $clients
- * @property ?int                         $clients_count
  * @property Notifications|Notification[] $notifications
  * @property ?int                         $notifications_count
- * @property Collection|Token[]           $tokens
- * @property ?int                         $tokens_count
  *
  * @method static Builder|User query()
  * @method static Builder|User whereCreatedAt($value)
@@ -44,7 +36,6 @@ use Laravel\Passport\Token;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens;
     use HasFactory;
     use Notifiable;
 

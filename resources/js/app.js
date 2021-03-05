@@ -30,13 +30,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const nextpage = {}, { token } = store.getters;
-    let authed = store.getters.loggedIn;
-
-    if (token && token !== localStorage.getItem('accessToken')) {
-        store.dispatch('forceLogin', 'Token mismatch');
-        authed = false;
-    }
+    const authed = store.getters.loggedIn, nextpage = {};
 
     if (!authed && to.matched.some(route => route.meta.auth)) {
         nextpage.name = 'login';

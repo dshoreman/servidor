@@ -3,23 +3,44 @@
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\RequiresAuth;
+use Illuminate\Http\Response;
+use Servidor\User;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
     use RefreshDatabase;
-    use RequiresAuth;
 
     private $jill = [
         'password_confirmation' => 'hunter42',
     ];
 
     /** @test */
-    public function user_can_logout(): void
+    public function user_can_login_with_email(): void
     {
-        $response = $this->authed()->postJson('/api/logout');
+        $user = User::factory()->create();
+
+        $response = $this->postJson('/api/session', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
 
         $response->assertNoContent();
+        $this->assertAuthenticated();
+    }
+
+    /** @test */
+    public function user_cannot_login_with_invalid_password(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->postJson('/api/session', [
+            'email' => $user->email,
+            'password' => 'incorrect',
+        ]);
+
+        $this->assertGuest();
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrors(['email']);
     }
 }
