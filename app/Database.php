@@ -19,7 +19,7 @@ class Database
         $this->connection = DriverManager::getConnection([
             'user' => config('database.dbal.user'),
             'password' => config('database.dbal.password'),
-            'host' => config('database.connections.mysql.host'),
+            'unix_socket' => config('database.connections.mysql.unix_socket'),
             'driver' => 'pdo_mysql',
         ]);
 
