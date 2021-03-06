@@ -12,8 +12,8 @@
         "doctrine/dbal": "^2.12",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
-        "laravel/framework": "^8.29",
-        "laravel/sanctum": "^2.9",
+        "laravel/framework": "^8.34",
+        "laravel/sanctum": "^2.9.1",
         "laravel/tinker": "^2.6"
     },
     "require-dev": {
