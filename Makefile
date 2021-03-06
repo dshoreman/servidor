@@ -6,6 +6,7 @@ GNU_SED := $(shell command -v gsed || command -v sed)
 now := `date '+%Y-%m-%d_%H%M'`
 PHP_CSF_ARGS := --diff --dry-run $(CS_ARGS)
 PHP_MND_ARGS := --progress $(MND_ARGS) --exclude tests
+PHP_STAN_CMD := analyze $(STAN_ARGS)
 
 installer: thinkdifferent
 	@echo -n "Building unified install script... "
@@ -81,7 +82,7 @@ phan:
 	vendor/bin/phan --config-file build/phan/config.php --color
 
 phpstan:
-	php -d memory_limit=-1 vendor/bin/phpstan analyze -c build/phpstan/config.neon
+	php -d memory_limit=-1 vendor/bin/phpstan $(PHP_STAN_CMD) -c build/phpstan/config.neon
 
 psalm:
 	vendor/bin/psalm -c build/psalm/psalm.xml
