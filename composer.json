@@ -8,6 +8,9 @@
         "url": "https://github.com/dshoreman/framework"
     }, {
         "type": "vcs",
+        "url": "https://github.com/dshoreman/sanctum"
+    }, {
+        "type": "vcs",
         "url": "https://github.com/dshoreman/phpmnd"
     }],
     "require": {
@@ -16,7 +19,7 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "laravel/framework": "dev-fixformatter",
-        "laravel/sanctum": "^2.9",
+        "laravel/sanctum": "dev-php81",
         "laravel/tinker": "^2.6"
     },
     "require-dev": {

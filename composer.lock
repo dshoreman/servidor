@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd9d430076bfa55a3cbf883bdad14a9c",
+    "content-hash": "5b09ae683b01c8d70950145df5a2d2ee",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1143,16 +1143,16 @@
         },
         {
             "name": "laravel/sanctum",
-            "version": "v2.9.0",
+            "version": "dev-php81",
             "source": {
                 "type": "git",
-                "url": "https://github.com/laravel/sanctum.git",
-                "reference": "eb191ddfc3ec04bbead33593bf982e871095f25c"
+                "url": "https://github.com/dshoreman/sanctum.git",
+                "reference": "bc9ef4606e6b6b879e97ca16597195151c4df929"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sanctum/zipball/eb191ddfc3ec04bbead33593bf982e871095f25c",
-                "reference": "eb191ddfc3ec04bbead33593bf982e871095f25c",
+                "url": "https://api.github.com/repos/dshoreman/sanctum/zipball/bc9ef4606e6b6b879e97ca16597195151c4df929",
+                "reference": "bc9ef4606e6b6b879e97ca16597195151c4df929",
                 "shasum": ""
             },
             "require": {
@@ -1183,7 +1183,11 @@
                     "Laravel\\Sanctum\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Laravel\\Sanctum\\Tests\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -1203,7 +1207,7 @@
                 "issues": "https://github.com/laravel/sanctum/issues",
                 "source": "https://github.com/laravel/sanctum"
             },
-            "time": "2021-01-26T19:47:38+00:00"
+            "time": "2021-03-07T00:25:57+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -11064,6 +11068,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "laravel/framework": 20,
+        "laravel/sanctum": 20,
         "povils/phpmnd": 20
     },
     "prefer-stable": true,
