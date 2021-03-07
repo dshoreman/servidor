@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7191734c34a3151036fffe251aade357",
+    "content-hash": "bd9d430076bfa55a3cbf883bdad14a9c",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -967,16 +967,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v8.31.0",
+            "version": "dev-fixformatter",
             "source": {
                 "type": "git",
-                "url": "https://github.com/laravel/framework.git",
-                "reference": "2aa5c2488d25178ebc097052c7897a0e463ddc35"
+                "url": "https://github.com/dshoreman/framework.git",
+                "reference": "057b226c460d1f39ea70ad7148f3783adfd866ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/2aa5c2488d25178ebc097052c7897a0e463ddc35",
-                "reference": "2aa5c2488d25178ebc097052c7897a0e463ddc35",
+                "url": "https://api.github.com/repos/dshoreman/framework/zipball/057b226c460d1f39ea70ad7148f3783adfd866ec",
+                "reference": "057b226c460d1f39ea70ad7148f3783adfd866ec",
                 "shasum": ""
             },
             "require": {
@@ -1093,7 +1093,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "8.x-dev"
+                    "dev-master": "8.x-dev",
+                    "dev-fixformatter": "8.x-dev"
                 }
             },
             "autoload": {
@@ -1111,7 +1112,14 @@
                     ]
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "files": [
+                    "tests/Database/stubs/MigrationCreatorFakeMigration.php"
+                ],
+                "psr-4": {
+                    "Illuminate\\Tests\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -1131,7 +1139,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-03-04T15:22:36+00:00"
+            "time": "2021-03-06T23:58:55+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -11055,6 +11063,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "laravel/framework": 20,
         "povils/phpmnd": 20
     },
     "prefer-stable": true,

@@ -5,6 +5,9 @@
     "type": "project",
     "repositories": [{
         "type": "vcs",
+        "url": "https://github.com/dshoreman/framework"
+    }, {
+        "type": "vcs",
         "url": "https://github.com/dshoreman/phpmnd"
     }],
     "require": {
@@ -12,7 +15,7 @@
         "doctrine/dbal": "^2.12",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
-        "laravel/framework": "^8.29",
+        "laravel/framework": "dev-fixformatter",
         "laravel/sanctum": "^2.9",
         "laravel/tinker": "^2.6"
     },
