@@ -21,6 +21,7 @@
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.13",
         "friendsofphp/php-cs-fixer": "~2.18",
+        "itsgoingd/clockwork": "^5.0",
         "mockery/mockery": "^1.4",
         "nunomaduro/collision": "^5.3",
         "nunomaduro/larastan": "^0.7.0",
