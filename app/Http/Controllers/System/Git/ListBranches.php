@@ -18,9 +18,9 @@ class ListBranches extends Controller
 
     public function __invoke(Request $request): JsonResponse
     {
-        list($repo, $provider) = $this->validateParams((array) $request->query());
+        [$repo, $provider] = $this->validateParams((array) $request->query());
 
-        $repo = str_replace('{repo}', $repo, $this->patterns[(string) $provider]);
+        $repo = str_replace('{repo}', (string) $repo, (string) $this->patterns[(string) $provider]);
 
         exec(sprintf(self::GIT_COMMAND, $repo), $branches);
 

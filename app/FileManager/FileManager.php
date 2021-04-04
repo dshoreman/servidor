@@ -11,15 +11,14 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class FileManager
 {
-    /**
-     * @var Finder
-     */
-    private $finder;
+    public const DECIMAL_PERMISSION_LENGTH = 3;
+
+    private Finder $finder;
 
     /**
-     * @var array
+     * @var array<string, array{text: string, octal: string}>
      */
-    private $filePerms = [];
+    private array $filePerms = [];
 
     public function __construct()
     {
@@ -38,14 +37,8 @@ class FileManager
 
         try {
             return $this->getFiles($path);
-        } catch (DirectoryNotFoundException $e) {
-            return [
-                'filepath' => $path,
-                'error' => [
-                    'code' => 404,
-                    'msg' => "This directory doesn't exist.",
-                ],
-            ];
+        } catch (DirectoryNotFoundException $_) {
+            throw new PathNotFound("This directory doesn't exist.");
         }
     }
 
@@ -56,10 +49,10 @@ class FileManager
                       ->sortByName(true)
                       ->ignoreDotFiles(false);
 
-        return array_map(
-            [$this, 'fileToArray'],
-            iterator_to_array($files, false),
-        );
+        /** @var array{SplFileInfo|string} */
+        $files = iterator_to_array($files, false);
+
+        return array_map([$this, 'fileToArray'], $files);
     }
 
     public function createDir(string $path): array
@@ -71,12 +64,7 @@ class FileManager
             return ['error' => ['code' => 500, 'msg' => 'Could not create ' . $path]];
         }
 
-        $dir = $this->open($path);
-        if ('Unsupported filetype' === ($dir['error']['msg'] ?? '')) {
-            unset($dir['error']);
-        }
-
-        return $dir;
+        return $this->open($path, false);
     }
 
     public function createFile(string $file, string $contents): array
@@ -91,13 +79,17 @@ class FileManager
         return $this->open($file);
     }
 
-    public function open(string $file): array
+    public function open(string $file, bool $includeContent = true): array
     {
         if (!file_exists($file)) {
-            return ['error' => ['code' => 404, 'msg' => 'File not found']];
+            throw new PathNotFound('File not found');
         }
 
         $this->loadFilePermissions($file);
+
+        if (false === $includeContent) {
+            return $this->fileToArray($file);
+        }
 
         return $this->fileWithContents($file);
     }
@@ -115,31 +107,29 @@ class FileManager
         if (file_exists($target)) {
             return ['error' => ['code' => 409, 'msg' => 'Target already exists']];
         }
-        if (!rename($path, $target)) {
-            return ['error' => ['code' => 500, 'msg' => 'Rename operation failed']];
-        }
 
-        $item = $this->open($target);
-        if ($item['isDir'] && 'Unsupported filetype' === ($item['error']['msg'] ?? '')) {
-            unset($item['error']);
-        }
+        try {
+            rename($path, $target);
 
-        return $item;
+            return $this->open($target);
+        } catch (UnsupportedFileType $_) {
+            return $this->open($target, false);
+        }
     }
 
-    public function delete(string $path): array
+    public function delete(string $path): bool
     {
-        $remove = is_dir($path) ? 'rmdir' : 'unlink';
-        $error = ['code' => 500, 'msg' => 'Failed removing' . $path];
-
         if (!file_exists($path)) {
-            return ['error' => null];
-        }
-        if (!is_writable($path)) {
-            return ['error' => ['code' => 403, 'msg' => 'No permission to write path']];
+            return true;
+        } elseif (!is_writable($path)) {
+            throw new PathNotWritable('No permission to write path');
         }
 
-        return ['error' => $remove($path) ? null : $error];
+        if (is_dir($path)) {
+            return rmdir($path);
+        }
+
+        return unlink($path);
     }
 
     private function loadFilePermissions(string $path): array
@@ -150,7 +140,7 @@ class FileManager
         if (false === ($pos = mb_strrpos($path, '/'))) {
             throw new InvalidArgumentException();
         }
-        $path = mb_substr($path, 0, $pos);
+        $path = (string) mb_substr($path, 0, $pos);
 
         return $this->loadPermissions($path, $name);
     }
@@ -162,7 +152,9 @@ class FileManager
         exec('cd "' . $path . '" && stat -c "%n %A %a" ' . $name . ' 2>/dev/null', $files);
 
         foreach ($files as $file) {
-            list($filename, $text, $octal) = explode(' ', $file);
+            assert(is_string($file));
+
+            [$filename, $text, $octal] = explode(' ', $file);
 
             $perms[$filename] = compact('text', 'octal');
         }
@@ -171,8 +163,13 @@ class FileManager
     }
 
     /**
+     * TODO: See if the ErrorControlOperator still needs
+     * to be suppressed once phpmd is working on PHP 8.x.
+     *
      * @param SplFileInfo|string $file
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     *
+     * @return array{0: SplFileInfo, 1: array}
      */
     private function loadFile($file): array
     {
@@ -189,7 +186,7 @@ class FileManager
         $data = [
             'filename' => $file->getFilename(),
             'filepath' => $file->getPath(),
-            'mimetype' => @mime_content_type($file->getRealPath()),
+            'mimetype' => @mime_content_type((string) $file->getRealPath()),
             'isDir' => $file->isDir(),
             'isFile' => $file->isFile(),
             'isLink' => $file->isLink(),
@@ -200,32 +197,27 @@ class FileManager
 
         $data['perms'] = $this->filePerms[$data['filename']];
 
-        if (intval(3) === mb_strlen($data['perms']['octal'])) {
+        if (self::DECIMAL_PERMISSION_LENGTH === mb_strlen($data['perms']['octal'])) {
             $data['perms']['octal'] = '0' . $data['perms']['octal'];
         }
 
         return [$file, $data];
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     */
-    private function fileToArray(string $file): array
+    /** @param SplFileInfo|string $file */
+    private function fileToArray($file): array
     {
-        list($file, $data) = $this->loadFile($file);
+        [$_, $data] = $this->loadFile($file);
 
         return $data;
     }
 
     private function fileWithContents(string $file): array
     {
-        list($file, $data) = $this->loadFile($file);
+        [$file, $data] = $this->loadFile($file);
 
-        if ($data['mimetype'] && 'text/' != mb_substr($data['mimetype'], 0, 5)) {
-            return array_merge($data, ['error' => [
-                'code' => 415,
-                'msg' => 'Unsupported filetype',
-            ]]);
+        if ($data['mimetype'] && 'text/' != mb_substr((string) $data['mimetype'], 0, 5)) {
+            throw new UnsupportedFileType('Unsupported filetype');
         }
 
         try {
@@ -235,7 +227,7 @@ class FileManager
             $data['contents'] = '';
             $data['error'] = ['code' => 418, 'msg' => $msg];
 
-            if (Str::contains($msg, 'failed to open stream: Permission denied')) {
+            if (Str::contains((string) mb_strtolower($msg), 'failed to open stream: permission denied')) {
                 $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
             }
         }

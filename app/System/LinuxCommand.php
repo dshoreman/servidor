@@ -4,15 +4,9 @@ namespace Servidor\System;
 
 abstract class LinuxCommand
 {
-    /**
-     * @var array
-     */
-    protected $args = [];
+    protected array $args = [];
 
-    /**
-     * @var array
-     */
-    protected $original = [];
+    protected array $original = [];
 
     public function getArgs(): array
     {

@@ -9,26 +9,17 @@ class LinuxGroup extends LinuxCommand
 {
     use ToggleCommandArgs;
 
-    /**
-     * @var ?int
-     */
-    public $gid;
+    public ?int $gid;
 
-    /**
-     * @var string
-     */
-    public $name;
+    public string $name;
 
-    /**
-     * @var mixed
-     */
-    public $users = '';
+    public array $users;
 
     public function __construct(array $group = [])
     {
         $this->gid = ($group['gid'] ?? null) ? (int) $group['gid'] : null;
         $this->name = (string) $group['name'];
-        $this->users = $group['members'] ?? [];
+        $this->users = (array) ($group['members'] ?? []);
 
         $this->setOriginal();
     }
@@ -86,7 +77,7 @@ class LinuxGroup extends LinuxCommand
         return [
             'gid' => $this->gid ?? null,
             'name' => $this->name ?: '',
-            'users' => $this->users ?? '',
+            'users' => $this->users,
         ];
     }
 }

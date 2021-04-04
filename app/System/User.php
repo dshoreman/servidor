@@ -55,7 +55,7 @@ class User
              ? posix_getpwuid((int) $nameOrUid)
              : posix_getpwnam($nameOrUid);
 
-        $this->user = new LinuxUser($arr, true);
+        $this->user = new LinuxUser((array) $arr, true);
 
         return $this;
     }
@@ -68,6 +68,8 @@ class User
         $users = collect();
 
         foreach ($lines as $line) {
+            assert(is_string($line));
+
             $user = new self(
                 array_combine($keys, explode(':', $line)),
             );
@@ -99,13 +101,13 @@ class User
 
     public function update(array $data): array
     {
-        $this->user->setName($data['name'])
-                   ->setUid($data['uid'] ?? null)
-                   ->setGid($data['gid'] ?? null)
-                   ->setShell($data['shell'] ?? null)
-                   ->setGroups($data['groups'] ?? null)
-                   ->setMoveHome($data['move_home'] ?? false)
-                   ->setHomeDirectory($data['dir'] ?? '');
+        $this->user->setName((string) $data['name'])
+                   ->setUid(isset($data['uid']) ? (int) $data['uid'] : null)
+                   ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
+                   ->setShell((string) ($data['shell'] ?? ''))
+                   ->setGroups(isset($data['groups']) ? (array) $data['groups'] : null)
+                   ->setMoveHome((bool) ($data['move_home'] ?? false))
+                   ->setHomeDirectory((string) ($data['dir'] ?? ''));
 
         if (!$this->user->isDirty()) {
             throw new UserNotModifiedException();
@@ -118,10 +120,9 @@ class User
 
     private function commit(string $cmd): self
     {
-        $name = $this->user->getOriginal('name');
+        $name = (string) $this->user->getOriginal('name');
 
-        exec("sudo {$cmd} {$this->user->toArgs()} {$name}", $output, $retval);
-        unset($output);
+        exec("sudo {$cmd} {$this->user->toArgs()} {$name}", $_, $retval);
 
         if (0 !== $retval) {
             throw new UserSaveException("Something went wrong (exit code: {$retval})");

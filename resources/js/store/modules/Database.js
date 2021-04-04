@@ -9,7 +9,7 @@ export default {
             state.databases = databases;
         },
         addDatabase: (state, database) => {
-            state.databases.push(database);
+            state.databases.push(database.database);
         },
         setFilter: (state, value) => {
             state.search = value;

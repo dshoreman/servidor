@@ -18,6 +18,11 @@ class RegisterTest extends TestCase
         'password_confirmation' => 'hunter42',
     ];
 
+    private $jillClean = [
+        'name' => 'Jill',
+        'email' => 'jill@example.com',
+    ];
+
     /** @test */
     public function cannot_create_account_when_registration_is_disabled(): void
     {
@@ -44,7 +49,7 @@ class RegisterTest extends TestCase
 
         $response = $this->postJson('/api/register', $this->jill);
 
-        $response->assertOk();
-        $response->assertJson($this->jill);
+        $response->assertCreated();
+        $response->assertJson($this->jillClean);
     }
 }

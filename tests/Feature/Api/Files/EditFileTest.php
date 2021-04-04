@@ -6,7 +6,7 @@ use Illuminate\Http\Response;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
-class UpdateFileTest extends TestCase
+class EditFileTest extends TestCase
 {
     use RequiresAuth;
 

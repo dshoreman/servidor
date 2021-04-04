@@ -3,13 +3,13 @@
 namespace Servidor\Traits;
 
 use Exception;
-use Servidor\Projects\Applications\Templates\Template;
-use Servidor\Projects\Redirect;
+use Servidor\Projects\Domainable;
 
 trait TogglesNginxConfigs
 {
-    /** @var string */
-    private $nginxRoot = '/etc/nginx/';
+    private string $domainName = '';
+
+    private string $nginxRoot = '/etc/nginx/';
 
     public function disable(): void
     {
@@ -51,14 +51,10 @@ trait TogglesNginxConfigs
 
     private function configFilename(): string
     {
-        if ($this instanceof Template && $domain = $this->getApp()->domain_name) {
-            return "${domain}.conf";
+        if (!$this instanceof Domainable || '' === $this->domainName()) {
+            throw new Exception('Project missing domain name');
         }
 
-        if ($this instanceof Redirect) {
-            return $this->domain_name . '.conf';
-        }
-
-        throw new Exception('Project missing domain name');
+        return $this->domainName() . '.conf';
     }
 }

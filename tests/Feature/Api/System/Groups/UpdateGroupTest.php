@@ -13,7 +13,7 @@ class UpdateGroupTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->pruneDeletable('groups');
+        $this->pruneDeletableGroups();
 
         parent::tearDown();
     }
@@ -22,12 +22,11 @@ class UpdateGroupTest extends TestCase
     public function guest_cannot_update_group(): void
     {
         exec('sudo groupadd -g 334 guestupdgrp');
-        $this->addDeletable('group', 334);
+        $this->addDeletableGroup('guestupdgrp');
 
         $response = $this->putJson($this->endpoint(334), [
             'name' => 'guestudpategroup',
         ]);
-
         $updated = $this->authed()->getJson($this->endpoint);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -42,16 +41,16 @@ class UpdateGroupTest extends TestCase
         $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'updatetestgroup',
         ])->json();
+        $this->addDeletableGroup('updatetestgroup');
 
         $response = $this->authed()->putJson($this->endpoint($group['gid']), [
             'name' => 'updatetestgroup-renamed',
         ]);
+        $this->addDeletableGroup('updatetestgroup-renamed');
 
         $response->assertOk();
         $response->assertJsonFragment(['name' => 'updatetestgroup-renamed']);
         $response->assertJsonStructure($this->expectedKeys);
-
-        $this->addDeletable('group', $response);
     }
 
     /** @test */
@@ -60,6 +59,7 @@ class UpdateGroupTest extends TestCase
         $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'gidtestgroup',
         ])->json();
+        $this->addDeletableGroup('gidtestgroup');
 
         $response = $this->authed()->putJson($this->endpoint($group['gid']), [
             'name' => 'gidtestgroup',
@@ -69,8 +69,6 @@ class UpdateGroupTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment(['gid' => (int) $group['gid'] + 1]);
         $response->assertJsonStructure($this->expectedKeys);
-
-        $this->addDeletable('group', $response);
     }
 
     /** @test */
@@ -79,8 +77,8 @@ class UpdateGroupTest extends TestCase
         $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'groupwithmembers',
         ]);
+        $this->addDeletableGroup('groupwithmembers');
 
-        $this->addDeletable('group', $group);
         $users = ['bin', 'daemon', 'games'];
         $gid = $group->json()['gid'];
 
@@ -119,8 +117,7 @@ class UpdateGroupTest extends TestCase
         $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'godfather',
         ]);
-
-        $this->addDeletable('group', $group);
+        $this->addDeletableGroup('godfather');
 
         $response = $this->authed()->putJson($this->endpoint($group->json()['gid']), [
             'name' => 'godfather',
@@ -133,14 +130,14 @@ class UpdateGroupTest extends TestCase
     }
 
     /** @test */
-    public function updating_a_group_should_fail_if_name_exists(): void
+    public function updating_a_group_should_fail_if_gid_exists(): void
     {
         $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'renamefail',
         ]);
-
-        $this->addDeletable('group', $group);
+        $this->addDeletableGroup('renamefail');
         $data = $group->json();
+
         $data['gid'] = 3;
 
         $response = $this->authed()->putJson($this->endpoint($group->json()['gid']), $data);
@@ -156,6 +153,7 @@ class UpdateGroupTest extends TestCase
         $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'changeless',
         ]);
+        $this->addDeletableGroup('changeless');
 
         $response = $this->authed()->putJson(
             $this->endpoint($group->json()['gid']),
@@ -165,7 +163,5 @@ class UpdateGroupTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['gid']);
         $response->assertJsonFragment(['gid' => ['Nothing to update!']]);
-
-        $this->addDeletable('group', $group);
     }
 }

@@ -28,7 +28,7 @@ class HtmlTest extends TestCase
     /** @test */
     public function enabling_project_creates_config_symlink(): Application
     {
-        $this->assertFileNotExists($link = '/etc/nginx/sites-enabled/symlinkery.dev.conf');
+        $this->assertFileDoesNotExist($link = '/etc/nginx/sites-enabled/symlinkery.dev.conf');
 
         $project = Project::create(['name' => 'symlinkery', 'is_enabled' => true]);
         $project->applications()->save($app = new Application([
@@ -105,7 +105,7 @@ class HtmlTest extends TestCase
         $app->project->is_enabled = false;
         $app->save();
 
-        $this->assertFileNotExists('/etc/nginx/sites-enabled/symlinkery.dev.conf');
+        $this->assertFileDoesNotExist('/etc/nginx/sites-enabled/symlinkery.dev.conf');
     }
 
     /** @test */
@@ -120,7 +120,7 @@ class HtmlTest extends TestCase
     public function pull_creates_project_root_if_it_does_not_exist(): void
     {
         $path = '/home/pull-sans-root/servidor-test-site';
-        $this->assertDirectoryNotExists($path);
+        $this->assertDirectoryDoesNotExist($path);
 
         $project = Project::create(['name' => 'pull sans root']);
         $project->applications()->save($app = new Application([
@@ -138,7 +138,7 @@ class HtmlTest extends TestCase
     public function pull_creates_root_with_correct_permissions(): void
     {
         $path = '/var/www/rootperms/servidor-test-site';
-        $this->assertDirectoryNotExists($path);
+        $this->assertDirectoryDoesNotExist($path);
 
         $project = Project::create(['name' => 'rootperms']);
         $project->applications()->save($app = new Application([

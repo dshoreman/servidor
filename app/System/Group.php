@@ -34,8 +34,7 @@ class Group
         $name = (string) $this->group->getOriginal('name');
         $args = $args ?: $this->group->toArgs();
 
-        exec("sudo {$cmd} {$args} {$name}", $output, $retval);
-        unset($output);
+        exec("sudo {$cmd} {$args} {$name}", $_, $retval);
 
         return $retval;
     }
@@ -47,6 +46,8 @@ class Group
         if (0 === $retval) {
             return $this;
         }
+
+        $error = 'Something unexpected happened! Exit code: ' . $retval;
 
         switch ($retval) {
             case self::GROUP_SYNTAX_INVALID:
@@ -63,7 +64,7 @@ class Group
                 break;
         }
 
-        throw new GroupSaveException($error ?? 'Something unexpected happened! Exit code: ' . $retval);
+        throw new GroupSaveException($error);
     }
 
     private function commitMod(): self
@@ -129,6 +130,8 @@ class Group
         $groups = collect();
 
         foreach ($lines as $line) {
+            assert(is_string($line));
+
             $group = array_combine($keys, explode(':', $line));
             $group['users'] = '' == $group['users'] ? [] : explode(',', $group['users']);
 
@@ -140,9 +143,9 @@ class Group
 
     public function update(array $data): array
     {
-        $this->group->setName($data['name'])
-                    ->setGid($data['gid'] ?? null)
-                    ->setUsers($data['users'] ?? null);
+        $this->group->setName((string) $data['name'])
+                    ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
+                    ->setUsers(isset($data['users']) ? (array) $data['users'] : null);
 
         if (!$this->group->isDirty()) {
             throw new GroupNotModifiedException();
@@ -162,7 +165,7 @@ class Group
              ? posix_getgrgid($nameOrGid)
              : posix_getgrnam($nameOrGid);
 
-        $this->group = new LinuxGroup($arr);
+        $this->group = new LinuxGroup((array) $arr);
 
         return $this;
     }

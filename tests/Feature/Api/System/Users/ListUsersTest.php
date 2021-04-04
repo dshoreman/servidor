@@ -15,7 +15,7 @@ class ListUsersTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->pruneDeletable('users');
+        $this->pruneDeletableUsers();
 
         parent::tearDown();
     }
@@ -70,18 +70,19 @@ class ListUsersTest extends TestCase
             'user_group' => true,
         ])->json();
 
+        $this->addDeletableUser('nocolon');
+
         $user = $this->authed()->putJson(
             $this->endpoint($user['uid']),
             array_merge($user, ['groups' => ['games']]),
         );
 
         $response = $this->authed()->getJson($this->endpoint);
-        $json = $response->json();
-
-        $updated = end($json);
-        $this->addDeletable('user', (int) $updated['uid']);
-
         $response->assertOk();
+
+        $json = $response->json();
+        $updated = end($json);
+
         $this->assertArraySubset(['groups' => ['games']], $updated);
         $this->assertNotContains(':', $updated['groups']);
     }

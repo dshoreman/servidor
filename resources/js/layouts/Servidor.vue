@@ -64,16 +64,10 @@ export default {
             user: state => state.Auth.user,
         }),
     },
-    created() {
-        this.$store.dispatch('fetchProfile');
-    },
     methods: {
-        logout() {
-            this.$store.dispatch('logout').then(() => {
-                this.$nextTick(() => {
-                    this.$router.push({ name: 'login' });
-                });
-            });
+        async logout() {
+            await this.$store.dispatch('logout');
+            await this.$router.push({ name: 'login' });
         },
     },
 };

@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Servidor\User;
 
@@ -10,7 +12,7 @@ class DefaultUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = new User;
+        $user = new User();
         $user->name = 'Servidor Admin';
         $user->email = 'admin@servidor.local';
         $user->password = bcrypt('servidor');

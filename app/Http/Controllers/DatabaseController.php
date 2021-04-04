@@ -22,21 +22,21 @@ class DatabaseController extends Controller
         return response($db->listDatabases());
     }
 
-    /**
-     * Create a new database.
-     */
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
             'database' => 'required|string',
         ]);
 
+        $db = new Database();
+        $dbname = (string) $data['database'];
+
         try {
-            (new Database())->create($data['database']);
-        } catch (Exception $e) {
+            $db->create($dbname);
+        } catch (Exception $_) {
             return response()->json(['error' => 'Could not create database'], 500);
         }
 
-        return response()->json($data['database']);
+        return response()->json(['database' => $dbname]);
     }
 }

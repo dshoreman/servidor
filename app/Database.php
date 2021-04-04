@@ -8,56 +8,43 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
 class Database
 {
-    /**
-     * @var ?Connection
-     */
-    private $connection;
+    private ?Connection $connection = null;
 
-    /**
-     * Access the underlying database schema manager.
-     */
-    public function dbal(): AbstractSchemaManager
+    private function connection(): Connection
     {
-        if (!isset($this->connection)) {
-            $this->connect();
+        if (isset($this->connection)) {
+            return $this->connection;
         }
 
-        return $this->connection->getSchemaManager();
-    }
-
-    private function connect(): Connection
-    {
-        if (!isset($this->connection)) {
-            $this->connection = DriverManager::getConnection([
-                'user' => config('database.dbal.user'),
-                'password' => config('database.dbal.password'),
-                'host' => config('database.connections.mysql.host'),
-                'driver' => 'pdo_mysql',
-            ]);
-        }
+        $this->connection = DriverManager::getConnection([
+            'user' => config('database.dbal.user'),
+            'password' => config('database.dbal.password'),
+            'host' => config('database.connections.mysql.host'),
+            'driver' => 'pdo_mysql',
+        ]);
 
         return $this->connection;
     }
 
-    /**
-     * Get a list of all existing databases.
-     */
+    public function dbal(): AbstractSchemaManager
+    {
+        return $this->connection()->getSchemaManager();
+    }
+
+    /** @return string[] */
     public function listDatabases(): array
     {
         return $this->dbal()->listDatabases();
     }
 
-    /**
-     * Create a database if it doesn't already exist.
-     */
     public function create(string $dbname): bool
     {
-        if (in_array($dbname, $this->listDatabases())) {
+        if (in_array($dbname, $this->listDatabases(), true)) {
             return true;
         }
 
         $this->dbal()->createDatabase($dbname);
 
-        return in_array($dbname, $this->listDatabases());
+        return in_array($dbname, $this->listDatabases(), true);
     }
 }

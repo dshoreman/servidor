@@ -1,10 +1,11 @@
 {
     "private": true,
     "scripts": {
-        "dev": "cross-env NODE_ENV=development webpack --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch": "npm run dev -- --watch",
-        "hot": "cross-env NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "prod": "cross-env NODE_ENV=production webpack --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "dev": "mix --mix-config build/webpack.mix.js",
+        "watch": "mix watch --mix-config build/webpack.mix.js",
+        "watch-poll": "mix watch --mix-config build/webpack.mix.js -- --watch-options-poll=1000",
+        "hot": "mix watch --hot --mix-config build/webpack.mix.js",
+        "prod": "mix --production --mix-config build/webpack.mix.js"
     },
     "husky": {
         "hooks": {
@@ -13,23 +14,23 @@
     },
     "devDependencies": {
         "axios": "^0.21.1",
-        "cross-env": "^7.0.3",
-        "eslint": "^7.11.0",
+        "eslint": "^7.22.0",
         "eslint-plugin-vue": "^7.0.0-beta.4",
         "husky": "^4.3.8",
-        "laravel-mix": "^5.0.9",
-        "lodash": "^4.17.20",
-        "resolve-url-loader": "^3.1.2",
-        "sass": "^1.32.5",
+        "laravel-mix": "^6.0.13",
+        "lodash": "^4.17.21",
+        "postcss": "^8.2.8",
+        "sass": "^1.32.8",
         "sass-loader": "^10.1.1",
         "semantic-ui-sass": "^2.4.2",
         "vue": "^2.6.12",
+        "vue-loader": "^15.9.6",
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
         "semantic-ui-vue": "^0.11.0",
         "vue-codemirror": "^4.0.6",
         "vue-router": "^3.5.1",
-        "vuex": "^3.5.1"
+        "vuex": "^3.6.2"
     }
 }

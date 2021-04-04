@@ -15,10 +15,11 @@ class CreateProject extends Controller
     {
         $data = $request->validated();
 
-        $project = Project::create([
+        $project = new Project([
             'name' => $data['name'],
             'is_enabled' => $data['is_enabled'] ?? false,
         ]);
+        $project->save();
 
         $project->applications()->saveMany(array_map(function (array $app): Application {
             return new Application([
@@ -28,7 +29,7 @@ class CreateProject extends Controller
                 'source_repository' => $app['repository'] ?? '',
                 'source_branch' => $app['branch'] ?? '',
             ]);
-        }, $data['applications'] ?? []));
+        }, (array) ($data['applications'] ?? [])));
 
         $project->redirects()->saveMany(array_map(function (array $redirect): Redirect {
             return new Redirect([
@@ -36,7 +37,7 @@ class CreateProject extends Controller
                 'target' => $redirect['target'],
                 'type' => $redirect['type'],
             ]);
-        }, $data['redirects'] ?? []));
+        }, (array) ($data['redirects'] ?? [])));
 
         return response()->json(
             $project->load(['applications', 'redirects']),

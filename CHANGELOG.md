@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.12.0] - 2021-04-04
+### Added
+* Support for PHP 8.0
+* Integration with Clockwork browser extension
+
+### Changed
+* [auth] Now utilises Sanctum instead of Passport
+* [chore] Laravel and core framework files updated from L6 to 8.x
+* [chore] Migrated CI from Travis to GitHub Actions
+
+### Removed
+* PHP 7.3 is no longer tested, Servidor now requires PHP >= 7.4
+
+### Fixed
+* [accounts] Fixed an issue where missing request data prevented registration
+* [accounts] The register page was completely unstyled. Now it looks not-terrible
+* [editor] Permission denied errors weren't being caught on PHP 8.x
+* [files] Prevented tests failing on Ubuntu 20.04 where /bin and /lib* are symlinks
+* [installer] Resolved an issue in Makefile that prevented running on GHA
+* [sys-users] Clicking delete on a user would also submit the update form
+
+
 ## [0.11.0] - 2021-01-28
 ### Added
 * [projects] New project creation page showing only relevant steps
@@ -183,7 +205,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.11.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.12.0...develop
+[0.12.0]: https://github.com/dshoreman/servidor/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/dshoreman/servidor/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/dshoreman/servidor/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/dshoreman/servidor/compare/v0.8.0...v0.9.0

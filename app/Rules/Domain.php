@@ -6,10 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Domain implements Rule
 {
-    /**
-     * @var string Regular expression to match against
-     */
-    private $match = '/^
+    private string $match = '/^
         (?=^.{1,253}$)                          # Limit to 253 characters
         ((
             (?!^.+:\/\/)                        # Reject protocol prefixes
@@ -21,16 +18,14 @@ class Domain implements Rule
         ))\.?$/ixu';
 
     /**
-     * Determine if the validation rule passes.
-     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
-     * @param string $attribute
+     * @param string $attribute @unused-param
      * @param mixed  $value
      */
     public function passes($attribute, $value): bool
     {
-        return (bool) preg_match($this->match, $value);
+        return (bool) preg_match($this->match, (string) $value);
     }
 
     public function message(): string

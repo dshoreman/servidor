@@ -9,35 +9,17 @@ class LinuxUser extends LinuxCommand
 {
     use ToggleCommandArgs;
 
-    /**
-     * @var string
-     */
-    protected $dir;
+    protected string $dir;
 
-    /**
-     * @var ?int
-     */
-    protected $gid;
+    protected ?int $gid;
 
-    /**
-     * @var ?int
-     */
-    public $uid;
+    public ?int $uid;
 
-    /**
-     * @var array
-     */
-    public $groups = [];
+    public array $groups = [];
 
-    /**
-     * @var string
-     */
-    public $name;
+    public string $name;
 
-    /**
-     * @var string
-     */
-    public $shell;
+    public string $shell;
 
     public function __construct(array $user = [], bool $loadGroups = false)
     {
@@ -58,7 +40,7 @@ class LinuxUser extends LinuxCommand
     {
         $this->name = $name;
 
-        if ($name != $this->getOriginal('name')) {
+        if ($name !== (string) $this->getOriginal('name')) {
             $this->args[] = '-l ' . $name;
         }
 
@@ -104,9 +86,9 @@ class LinuxUser extends LinuxCommand
         return $this;
     }
 
-    public function setShell(?string $shell): self
+    public function setShell(string $shell): self
     {
-        if (!is_null($shell)) {
+        if ('' !== $shell) {
             $this->shell = $shell;
         }
 
@@ -157,7 +139,7 @@ class LinuxUser extends LinuxCommand
         $primaryMembers = explode(',', end($primary));
 
         foreach ($effective as $group) {
-            if ($group == $primaryName && !in_array($group, $primaryMembers)) {
+            if ($group == $primaryName && !in_array($group, $primaryMembers, true)) {
                 continue;
             }
 
@@ -172,14 +154,13 @@ class LinuxUser extends LinuxCommand
 
     public function toArray(): array
     {
-        $arr = [];
-
-        foreach (['name', 'dir', 'groups', 'shell', 'gid', 'uid'] as $key) {
-            if (isset($this->$key)) {
-                $arr[$key] = $this->$key;
-            }
-        }
-
-        return $arr;
+        return [
+            'name' => $this->name,
+            'dir' => $this->dir,
+            'groups' => $this->groups,
+            'shell' => $this->shell,
+            'gid' => $this->gid,
+            'uid' => $this->uid,
+        ];
     }
 }

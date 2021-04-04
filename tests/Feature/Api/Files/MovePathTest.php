@@ -25,7 +25,7 @@ class MovePathTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $this->assertFileExists($file);
-        $this->assertFileNotExists($newFile);
+        $this->assertFileDoesNotExist($newFile);
     }
 
     /** @test */
@@ -41,11 +41,31 @@ class MovePathTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertFileNotExists($file);
+        $this->assertFileDoesNotExist($file);
         $this->assertFileExists($newFile);
         $this->assertStringEqualsFile($newFile, 'temp');
 
         unlink($newFile);
+    }
+
+    /** @test */
+    public function can_rename_a_directory(): void
+    {
+        $this->withoutExceptionHandling();
+        $dir = resource_path('test-skel/moveme');
+        $newDir = $dir . '.moved';
+        is_dir($dir) || mkdir($dir, 0777);
+
+        $response = $this->authed()->postJson($this->endpoint(), [
+            'oldPath' => $dir,
+            'newPath' => $newDir,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertDirectoryDoesNotExist($dir);
+        $this->assertDirectoryExists($newDir);
+
+        rmdir($newDir);
     }
 
     /** @test */
@@ -63,5 +83,21 @@ class MovePathTest extends TestCase
         $this->assertFileExists($file);
         $this->assertFileExists($newFile);
         $this->assertStringEqualsFile($newFile, "I'm a rename target that already exists!\n");
+    }
+
+    /** @test */
+    public function cannot_rename_non_existent_file(): void
+    {
+        $file = resource_path('test-skel/not-here');
+        $newFile = $file . '.moved';
+
+        $response = $this->authed()->postJson($this->endpoint(), [
+            'oldPath' => $file,
+            'newPath' => $newFile,
+        ]);
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $this->assertFileDoesNotExist($file);
+        $this->assertFileDoesNotExist($newFile);
     }
 }

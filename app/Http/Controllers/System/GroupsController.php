@@ -24,9 +24,9 @@ class GroupsController extends Controller
 
         try {
             $group = SystemGroup::create(
-                $data['name'],
-                $data['system'] ?? false,
-                $data['gid'] ?? null,
+                (string) $data['name'],
+                (bool) ($data['system'] ?? false),
+                isset($data['gid']) ? (int) $data['gid'] : null,
             );
         } catch (GroupSaveException $e) {
             $data['error'] = $e->getMessage();
@@ -46,9 +46,9 @@ class GroupsController extends Controller
                 $group->update($request->validated()),
                 Response::HTTP_OK
             );
-        } catch (GroupNotFoundException $e) {
+        } catch (GroupNotFoundException $_) {
             throw $this->fail('gid', 'No group found matching the given criteria.');
-        } catch (GroupNotModifiedException $e) {
+        } catch (GroupNotModifiedException $_) {
             throw $this->fail('gid', 'Nothing to update!');
         } catch (GroupSaveException $e) {
             throw $this->fail('gid', $e->getMessage());

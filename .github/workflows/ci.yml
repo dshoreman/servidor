@@ -1,0 +1,146 @@
+name: build
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [master, develop]
+
+jobs:
+  build-js:
+    name: Build and lint frontend (nodejs-${{ matrix.nodejs }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nodejs: [12, 14]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup NodeJS Environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.nodejs }}
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-node${{ matrix.nodejs }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: npm-node${{ matrix.nodejs }}-
+      - name: Install npm modules
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 45
+          max_attempts: 3
+          command: npm clean-install
+      - name: Build frontend assets
+        run: npm run prod
+      - name: Run ESLint
+        run: make eslint
+
+  test-php:
+    name: Test Backend (php-${{ matrix.php }} on ${{ matrix.os }})
+    continue-on-error: ${{ matrix.experimental }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+        php: ['7.4', '8.0']
+        experimental: [false]
+        include:
+          - php: '8.1'
+            os: ubuntu-latest
+            experimental: true
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ast
+          coverage: pcov
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Validate composer.json and lockfile
+        run: composer validate
+      - uses: actions/cache@v2
+        id: composer-test-cache
+        with:
+          path: ~/.cache/composer/files
+          key: composer-php${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-php${{ matrix.php }}-
+      - name: Install composer packages
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 45
+          max_attempts: 3
+          command: composer install --no-interaction --no-progress --prefer-dist
+      - name: Install application
+        run: bash .github/scripts/install.sh
+      - name: Check for code style issues
+        run: |
+          echo "::group::$ vendor/bin/php-cs-fixer fix"
+          make phpcsf CS_ARGS="--verbose"
+          echo -e "::endgroup::\n::group::$ vendor/bin/phpcs --standard=PSR12"
+          make phpcs
+          echo "::endgroup::"
+      - name: Run PHP mess detection tool
+        run: make phpmd
+      - name: Check for magic numbers
+        run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
+      - name: Run static analysis checks
+        run: |
+          echo "::group::$ vendor/bin/phpstan analyze"
+          make phpstan
+          echo -e "::endgroup::\n::group::$ vendor/bin/phan"
+          make phan
+          echo -e "::endgroup::\n::group::$ vendor/bin/psalm"
+          make psalm
+          echo "::endgroup::"
+      - name: Run tests with PHPUnit
+        run: make test-for-ci
+      - name: Upload coverage results
+        uses: codecov/codecov-action@v1
+      - name: Check Laravel log
+        if: failure()
+        run: test -f storage/logs/laravel.log && cat storage/logs/laravel.log
+
+  notify:
+    if: always()
+    name: Send IRC Notification
+    needs: [build-js, test-php]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dshoreman/workflow-conclusion-action@v2.2
+        with:
+          exclude_jobs: 'php-8.1 on ubuntu-.*$'
+      - id: get-ref
+        run: |
+          branch=$(echo ${{github.event.ref}} | cut -d'/' -f3)
+          echo "::set-output name=branch::$branch"
+          echo "::set-output name=commits::$(jq -r '.commits | length' $GITHUB_EVENT_PATH)"
+      - if: github.event_name == 'push'
+        name: Send notification for push event
+        uses: rectalogic/notify-irc@v1
+        with:
+          channel: '#servidor'
+          nickname: 'servidor-bot'
+          message: |-
+            ${{ github.actor }} pushed ${{ steps.get-ref.outputs.commits }} commit(s) to ${{ steps.get-ref.outputs.branch }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.compare }}
+      - if: github.event_name == 'pull_request'
+        name: Send failure notification (Pull Request)
+        uses: rectalogic/notify-irc@v1
+        with:
+          channel: '#servidor'
+          nickname: 'servidor-bot'
+          message: |-
+            ${{ github.actor }} pushed to PR #${{ github.event.number }} from ${{ github.event.pull_request.head.label }} (${{ github.event.pull_request.commits }} commits, +${{ github.event.pull_request.additions }} -${{ github.event.pull_request.deletions }}) (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.pull_request.html_url }}
+      - if: github.event_name == 'workflow_dispatch'
+        name: Send notification for manual trigger
+        uses: rectalogic/notify-irc@v1
+        with:
+          channel: '#servidor'
+          nickname: 'servidor-bot'
+          message: |-
+            Manual CI run completed on ${{ steps.get-ref.outputs.branch }} (status: ${{ env.WORKFLOW_CONCLUSION }}) - ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}

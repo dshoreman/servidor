@@ -5,6 +5,7 @@ namespace Tests\Unit\FileManager;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use PHPUnit\Framework\TestCase;
 use Servidor\FileManager\FileManager;
+use Servidor\FileManager\PathNotFound;
 
 class FileManagerTest extends TestCase
 {
@@ -84,24 +85,18 @@ class FileManagerTest extends TestCase
     /** @test */
     public function list_can_show_files_in_system_root(): void
     {
-        $list = $this->manager->list('/');
-
-        $this->assertIsArray($list);
-
-        $matches = array_filter($list, function ($a) {
-            return in_array($a['filename'], ['bin', 'etc', 'home', 'usr', 'var']);
-        });
-
+        $dirs = ['bin', 'etc', 'home', 'usr', 'var'];
         $expected = [
             'isDir' => true,
             'isFile' => false,
             'owner' => 'root',
             'group' => 'root',
-            'perms' => [
-                'text' => 'drwxr-xr-x',
-                'octal' => '0755',
-            ],
         ];
+        $list = $this->manager->list('/');
+
+        $this->assertIsArray($list);
+
+        $matches = array_filter($list, fn ($a) => in_array($a['filename'], $dirs));
 
         $this->assertCount(5, $matches);
         foreach ($matches as $match) {
@@ -140,15 +135,9 @@ class FileManagerTest extends TestCase
     /** @test */
     public function open_catches_stat_failed_error_when_file_does_not_exist(): void
     {
-        $file = $this->manager->open($this->dummy('invalid/file'));
+        $this->expectException(PathNotFound::class);
 
-        $this->assertIsArray($file);
-        $this->assertArrayHasKey('error', $file);
-        $this->assertIsArray($file['error']);
-        $this->assertSame([
-            'code' => 404,
-            'msg' => 'File not found',
-        ], $file['error']);
+        $this->manager->open($this->dummy('invalid/file'));
     }
 
     /** @test */

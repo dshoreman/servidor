@@ -6,7 +6,7 @@ use Illuminate\Http\Response;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
-class CreatePathTest extends TestCase
+class CreateNodeTest extends TestCase
 {
     use RequiresAuth;
 
@@ -22,7 +22,7 @@ class CreatePathTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $this->assertFileNotExists($file);
+        $this->assertFileDoesNotExist($file);
     }
 
     /** @test */
@@ -65,7 +65,7 @@ class CreatePathTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        $this->assertDirectoryNotExists($path);
+        $this->assertDirectoryDoesNotExist($path);
     }
 
     /** @test */

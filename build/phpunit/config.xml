@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
          backupGlobals="false"
          backupStaticAttributes="false"
          bootstrap="../../vendor/autoload.php"
@@ -14,26 +14,24 @@
         <testsuite name="Unit">
             <directory suffix="Test.php">../../tests/Unit</directory>
         </testsuite>
-
         <testsuite name="Feature">
             <directory suffix="Test.php">../../tests/Feature</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">../../app</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
     <php>
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
-
         <server name="CACHE_DRIVER" value="array"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="QUEUE_DRIVER" value="sync"/>
-        <server name="MAIL_DRIVER" value="array"/>
-
+        <server name="MAIL_MAILER" value="array"/>
         <server name="DB_DATABASE" value="servidor_testing"/>
+        <server name="TELESCOPE_ENABLED" value="false"/>
         <server name="APP_KEY" value="base64:9VjA5LhT1ef+c5kryXXBFfDbn9zfNpWV/L3O32qwy18="/>
     </php>
 </phpunit>

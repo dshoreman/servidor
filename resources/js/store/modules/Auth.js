@@ -4,8 +4,9 @@ export default {
             title: '',
             msg: '',
         },
-        token: localStorage.getItem('accessToken') || null,
-        user: {},
+        user: sessionStorage.user
+            ? JSON.parse(sessionStorage.getItem('user'))
+            : {},
     },
     mutations: {
         setAlert: (state, { msg, title }) => {
@@ -15,21 +16,17 @@ export default {
         clearAlert: state => {
             state.alert = {};
         },
-        setToken: (state, token) => {
-            window.axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-            localStorage.setItem('accessToken', token);
-            state.token = token;
-        },
-        clearToken: state => {
-            localStorage.removeItem('accessToken');
-            state.token = null;
-        },
         setUser: (state, user) => {
+            sessionStorage.setItem('user', JSON.stringify(user));
             state.user = user;
+        },
+        clearUser: state => {
+            sessionStorage.removeItem('user');
+            state.user = {};
         },
     },
     actions: {
-        register: data => new Promise((resolve, reject) => {
+        register: (_, data) => new Promise((resolve, reject) => {
             axios.post('/api/register', {
                 name: data.name,
                 email: data.email,
@@ -41,45 +38,49 @@ export default {
                 reject(error);
             });
         }),
-        login: ({ commit }, data) => new Promise((resolve, reject) => {
-            axios.post('/api/login', {
-                username: data.username,
-                password: data.password,
-            }).then(response => {
+        async login({ commit, dispatch }, credentials) {
+            try {
+                await axios.get('/csrf');
+                await axios.post('/api/session', {
+                    email: credentials.username,
+                    password: credentials.password,
+                });
                 commit('clearAlert');
-                commit('setToken', response.data.access_token);
-                resolve(response);
-            }).catch(error => {
-                commit('clearAlert');
+                await dispatch('fetchProfile');
+
+                return Promise.resolve();
+            } catch (error) {
                 commit('setAlert', {
                     title: "We couldn't get you logged in :(",
-                    msg: error.response.data.message,
+                    msg: 'response' in error
+                        ? error.response.data.message
+                        : error.message,
                 });
-                reject(error);
-            });
-        }),
+
+                return Promise.reject(error);
+            }
+        },
         logout: ({ commit }) => new Promise((resolve, reject) => {
-            axios.post('/api/logout').then(response => {
+            axios.delete('/api/session').then(response => {
                 resolve(response);
             }).catch(error => {
                 reject(error);
             }).then(() => {
-                commit('clearToken');
+                commit('clearUser');
             });
         }),
-        fetchProfile: ({ commit }) => {
-            axios.get('/api/user').then(response => {
-                commit('setUser', response.data);
-            });
+        async fetchProfile({ commit }) {
+            const response = await axios.get('/api/user');
+
+            commit('setUser', response.data);
         },
         forceLogin: ({ commit }, reason) => {
             commit('setAlert', { title: reason, msg: 'Please login again.' });
-            commit('clearToken');
+            commit('clearUser');
         },
     },
     getters: {
         authMsg: state => state.alert,
-        token: state => state.token,
-        loggedIn: state => null !== state.token,
+        loggedIn: state => 0 !== Object.keys(state.user).length,
     },
 };

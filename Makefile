@@ -1,7 +1,11 @@
 .PHONY: test
 
+SHELL = bash -eo pipefail
 GNU_SED := $(shell command -v gsed || command -v sed)
+
 now := `date '+%Y-%m-%d_%H%M'`
+PHP_CSF_ARGS := --diff --dry-run $(CS_ARGS)
+PHP_MND_ARGS := --progress $(MND_ARGS) --exclude tests
 
 installer: thinkdifferent
 	@echo -n "Building unified install script... "
@@ -46,6 +50,9 @@ endif
 test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
 
+test-for-ci:
+	vendor/bin/phpunit -c build/phpunit/config.xml --coverage-clover=coverage.xml --exclude-group "broken-travis"
+
 coverage:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
 	@echo
@@ -63,8 +70,15 @@ metrics-html:
 
 reports: coverage-html metrics-html
 
+clear-cscache:
+	vendor/bin/psalm -c build/psalm/psalm.xml --clear-cache
+
 eslint:
-	node_modules/.bin/eslint -c build/eslint/config.json "resources/js/**/*.{js,vue}"
+	node_modules/.bin/eslint -c build/eslint/config.json resources/js --ext .js,.vue
+	@echo -e "\n\e[1;32m✔ 0 problems (0 errors, 0 warnings)\e[0m"
+
+phan:
+	vendor/bin/phan --config-file build/phan/config.php --color
 
 phpstan:
 	php -d memory_limit=-1 vendor/bin/phpstan analyze -c build/phpstan/config.neon
@@ -73,20 +87,17 @@ psalm:
 	vendor/bin/psalm -c build/psalm/psalm.xml
 
 phpcsf:
-	vendor/bin/php-cs-fixer fix --diff --dry-run --config build/php-cs-fixer/config.php
-	@echo
+	vendor/bin/php-cs-fixer fix $(PHP_CSF_ARGS) --config build/php-cs-fixer/config.php
 
 phpcs:
 	vendor/bin/phpcs app -p --standard=PSR12
 
 phpmd:
 	vendor/bin/phpmd app ansi build/phpmd/rules.xml
-	@echo
 
 phpmnd:
-	vendor/bin/phpmnd . --progress --exclude tests
-	@echo
+	vendor/bin/phpmnd . $(PHP_MND_ARGS)
 
-syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm
+syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm phan
 
-kitchen-sink: syntax coverage metrics
+kitchen-sink: clear-cscache syntax coverage metrics

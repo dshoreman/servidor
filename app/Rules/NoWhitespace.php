@@ -7,11 +7,15 @@ use Illuminate\Support\Str;
 
 class NoWhitespace implements Rule
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
+     * @param string $attribute @unused-param
+     * @param mixed  $value
+     */
     public function passes($attribute, $value): bool
     {
-        unset($attribute);
-
-        return !Str::contains($value, ["\t", "\n", ' ']);
+        return !Str::contains((string) $value, ["\t", "\n", ' ']);
     }
 
     public function message(): string

@@ -1,8 +1,10 @@
 <?php
 
-$finder = (new PhpCsFixer\Finder)
+$finder = (new PhpCsFixer\Finder())
     ->notName('*.blade.php')
+    ->notName('_ide_helper.php')
     ->notPath('bootstrap/cache')
+    ->notPath('node_modules')
     ->notPath('storage')
     ->in(dirname(__DIR__, 2));
 
@@ -23,6 +25,7 @@ return PhpCsFixer\Config::create()
         ],
         'new_with_braces' => false,
         'no_short_bool_cast' => false,
+        'php_unit_method_casing' => false,
 
         // Other Rules
         'array_indentation' => true,
@@ -39,9 +42,8 @@ return PhpCsFixer\Config::create()
         'phpdoc_order' => true,
 
         // New PHP Functionality
-        '@PHP73Migration' => true,
-        '@PHP71Migration:risky' => true,
+        '@PHP80Migration' => true,
+        '@PHP80Migration:risky' => true,
+        '@PHPUnit84Migration:risky' => true,
         'declare_strict_types' => false,
     ]);
-
-// vim: ft=php
