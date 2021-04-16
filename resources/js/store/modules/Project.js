@@ -34,9 +34,26 @@ export default {
                 data.applications = [];
             }
 
-            axios.post('/api/projects', data).then(response => {
-                commit('addNewProject', response.data);
-                resolve(response);
+            axios.post('/api/projects', {
+                is_enabled: data.is_enabled,
+                name: data.name,
+            }).then(response => {
+                const newProject = response.data,
+                    projectUri = `/api/projects/${newProject.id}`;
+
+                if ('applications' in data) {
+                    axios.post(`${projectUri}/apps`, data.applications[0]).then(appRes => {
+                        newProject.applications = [ appRes ];
+                        commit('addNewProject', newProject);
+                        resolve(response);
+                    }).catch(error => reject(error));
+                } else if ('redirects' in data) {
+                    axios.post(`${projectUri}/redirects`, data.redirects[0]).then(redirectRes => {
+                        newProject.redirects = [ redirectRes ];
+                        commit('addNewProject', newProject);
+                        resolve(response);
+                    }).catch(error => reject(error));
+                }
             }).catch(error => reject(error));
         }),
         disable: ({ dispatch }, id) => dispatch('toggle', { id }),
