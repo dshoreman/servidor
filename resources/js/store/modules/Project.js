@@ -27,12 +27,23 @@ export default {
                 resolve(response);
             }).catch(error => reject(error));
         }),
-        create: ({ commit }, project) => new Promise((resolve, reject) => {
-            const data = { ...project };
+        create: ({ commit, dispatch }, project) => new Promise((resolve, reject) => {
+            const data = { ...project }, steps = [
+                { name: 'create', text: 'Creating project' },
+            ];
 
             if ('archive' === data.applications[0].template) {
                 data.applications = [];
+                steps.push({ name: 'redirect', text: 'Saving the redirect' });
             }
+            if (data.applications.length) {
+                steps.push({
+                    name: 'app',
+                    text: `Saving the ${data.applications[0].template} application`,
+                });
+            }
+
+            dispatch('progress/load', { title: 'Saving project...', steps }, { root: true });
 
             axios.post('/api/projects', {
                 is_enabled: data.is_enabled,
@@ -41,16 +52,20 @@ export default {
                 const newProject = response.data,
                     projectUri = `/api/projects/${newProject.id}`;
 
+                dispatch('progress/progress', 'create', { root: true });
+
                 if ('applications' in data) {
                     axios.post(`${projectUri}/apps`, data.applications[0]).then(appRes => {
                         newProject.applications = [ appRes ];
                         commit('addNewProject', newProject);
+                        dispatch('progress/progress', 'app', { root: true });
                         resolve(response);
                     }).catch(error => reject(error));
                 } else if ('redirects' in data) {
                     axios.post(`${projectUri}/redirects`, data.redirects[0]).then(redirectRes => {
                         newProject.redirects = [ redirectRes ];
                         commit('addNewProject', newProject);
+                        dispatch('progress/progress', 'redirect', { root: true });
                         resolve(response);
                     }).catch(error => reject(error));
                 }

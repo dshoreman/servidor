@@ -43,6 +43,8 @@
                                    @created="create" />
             </sui-segment>
 
+            <progress-modal />
+
         </sui-grid-column>
 
         <discard-prompt ref="discardProject" @leavebypass="bypassLeaveHandler = true" />
@@ -54,6 +56,7 @@ import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DiscardPrompt from '../../components/Projects/DiscardPrompt.vue';
 import DomainForm from '../../components/Projects/Apps/DomainForm';
+import ProgressModal from '../../components/ProgressModal';
 import RedirectForm from '../../components/Projects/Apps/RedirectForm';
 import SourceSelector from '../../components/Projects/Apps/SourceSelector';
 import StepList from '../../components/Projects/StepList';
@@ -68,6 +71,7 @@ export default {
         ConfirmationText,
         DiscardPrompt,
         DomainForm,
+        ProgressModal,
         RedirectForm,
         StepList,
         SourceSelector,
