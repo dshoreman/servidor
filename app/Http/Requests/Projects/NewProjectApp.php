@@ -29,6 +29,19 @@ class NewProjectApp extends FormRequest
         ];
     }
 
+    public function validated(): array
+    {
+        $data = parent::validated();
+
+        return [
+            'template' => $data['template'],
+            'domain_name' => $data['domain'],
+            'source_provider' => $data['provider'],
+            'source_repository' => $data['repository'],
+            'source_branch' => $data['branch'] ?? '',
+        ];
+    }
+
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {

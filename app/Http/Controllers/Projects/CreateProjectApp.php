@@ -12,15 +12,7 @@ class CreateProjectApp extends Controller
 {
     public function __invoke(NewProjectApp $request, Project $project): JsonResponse
     {
-        $data = $request->validated();
-
-        $app = new Application([
-            'template' => $data['template'] ?? '',
-            'domain_name' => $data['domain'] ?? '',
-            'source_provider' => $data['provider'] ?? '',
-            'source_repository' => $data['repository'] ?? '',
-            'source_branch' => $data['branch'] ?? '',
-        ]);
+        $app = new Application($request->validated());
 
         $project->applications()->save($app);
 

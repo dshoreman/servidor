@@ -12,11 +12,7 @@ class CreateProjectRedirect extends Controller
 {
     public function __invoke(NewProjectRedirect $request, Project $project): JsonResponse
     {
-        $redirect = new Redirect([
-            'domain_name' => $redirect['domain'],
-            'target' => $redirect['target'],
-            'type' => $redirect['type'],
-        ]);
+        $redirect = new Redirect($request->validated());
 
         $project->redirects()->save($redirect);
 

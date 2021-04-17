@@ -15,4 +15,14 @@ class NewProjectRedirect extends FormRequest
             'type' => 'required|integer',
         ];
     }
+
+    public function validated(): array
+    {
+        $data = parent::validated();
+
+        $data['domain_name'] = (string) $data['domain'];
+        unset($data['domain']);
+
+        return $data;
+    }
 }

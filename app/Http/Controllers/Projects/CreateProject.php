@@ -11,12 +11,8 @@ class CreateProject extends Controller
 {
     public function __invoke(CreateProjectRequest $request): JsonResponse
     {
-        $data = $request->validated();
+        $project = new Project($request->validated());
 
-        $project = new Project([
-            'name' => $data['name'],
-            'is_enabled' => $data['is_enabled'] ?? false,
-        ]);
         $project->save();
 
         return response()->json(
