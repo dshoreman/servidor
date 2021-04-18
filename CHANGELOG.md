@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* New progress modal to show steps and progress of project creation
+
 ### Fixed
 * Removed a rogue '>' from the New Project confirmation page
 * Projects no longer prompt to discard changes on successful creation
