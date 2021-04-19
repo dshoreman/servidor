@@ -5,6 +5,7 @@ namespace Servidor;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Illuminate\Contracts\Config\Repository;
 
 class Database
 {
@@ -16,12 +17,16 @@ class Database
             return $this->connection;
         }
 
-        $this->connection = DriverManager::getConnection([
-            'user' => config('database.dbal.user'),
-            'password' => config('database.dbal.password'),
-            'unix_socket' => config('database.connections.mysql.unix_socket'),
-            'driver' => 'pdo_mysql',
-        ]);
+        $config = config();
+        assert($config instanceof Repository);
+        $socket = (string) $config->get('database.connections.mysql.unix_socket');
+
+        $this->connection = DriverManager::getConnection(
+            array_merge((array) config('database.dbal'), [
+                'driver' => 'pdo_mysql',
+                'unix_socket' => $socket,
+            ]),
+        );
 
         return $this->connection;
     }
