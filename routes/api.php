@@ -14,6 +14,8 @@ use Servidor\Http\Controllers\Files\MovePath;
 use Servidor\Http\Controllers\Projects\Applications\PullCode;
 use Servidor\Http\Controllers\Projects\Applications\ViewLog;
 use Servidor\Http\Controllers\Projects\CreateProject;
+use Servidor\Http\Controllers\Projects\CreateProjectApp;
+use Servidor\Http\Controllers\Projects\CreateProjectRedirect;
 use Servidor\Http\Controllers\Projects\ListProjects;
 use Servidor\Http\Controllers\Projects\RemoveProject;
 use Servidor\Http\Controllers\Projects\UpdateProject;
@@ -32,9 +34,15 @@ Route::middleware('auth:api')->group(function (): void {
         Route::get('/', ListProjects::class);
         Route::post('/', CreateProject::class);
         Route::put('{project}', UpdateProject::class);
-        Route::prefix('{project}/apps/{app}')->group(function (): void {
-            Route::post('pull', PullCode::class);
+
+        Route::prefix('{project}/apps')->group(function (): void {
+            Route::post('/', CreateProjectApp::class);
+            Route::post('{app}/pull', PullCode::class);
         });
+        Route::prefix('{project}/redirects')->group(function (): void {
+            Route::post('/', CreateProjectRedirect::class);
+        });
+
         Route::get('{project}/logs/{log}.app-{app}.log', ViewLog::class);
         Route::delete('{project}', RemoveProject::class);
     });

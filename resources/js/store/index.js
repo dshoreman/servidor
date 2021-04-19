@@ -3,6 +3,7 @@ import Database from './modules/Database';
 import FileEditor from './modules/FileEditor';
 import FileManager from './modules/FileManager';
 import Group from './modules/System/Group';
+import Progress from './modules/Progress';
 import Project from './modules/Project';
 import User from './modules/System/User';
 import Vue from 'vue';
@@ -13,6 +14,7 @@ Vue.use(VueX);
 export default new VueX.Store({
     modules: {
         Auth,
+        progress: Progress,
         projects: Project,
         databases: Database,
         files: FileManager,

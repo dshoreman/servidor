@@ -27,16 +27,57 @@ export default {
                 resolve(response);
             }).catch(error => reject(error));
         }),
-        create: ({ commit }, project) => new Promise((resolve, reject) => {
-            const data = { ...project };
+        create: ({ commit, dispatch }, project) => new Promise((resolve, reject) => {
+            const data = { ...project }, steps = [
+                { name: 'create', text: 'Creating project' },
+            ];
 
             if ('archive' === data.applications[0].template) {
                 data.applications = [];
+                steps.push({ name: 'redirect', text: 'Saving the redirect' });
+            }
+            if (data.applications.length) {
+                steps.push({
+                    name: 'app',
+                    text: `Saving the ${data.applications[0].template} application`,
+                });
             }
 
-            axios.post('/api/projects', data).then(response => {
-                commit('addNewProject', response.data);
-                resolve(response);
+            dispatch('progress/load', { title: 'Saving project...', steps }, { root: true });
+
+            axios.post('/api/projects', {
+                is_enabled: data.is_enabled,
+                name: data.name,
+            }).then(response => {
+                const newProject = response.data,
+                    projectUri = `/api/projects/${newProject.id}`;
+
+                dispatch('progress/progress', {
+                    step: 'create',
+                    progress: 40,
+                }, { root: true });
+
+                if ('applications' in data) {
+                    axios.post(`${projectUri}/apps`, data.applications[0]).then(appRes => {
+                        newProject.applications = [ appRes ];
+                        commit('addNewProject', newProject);
+                        dispatch('progress/progress', {
+                            step: 'app',
+                            progress: 100,
+                        }, { root: true });
+                        resolve(response);
+                    }).catch(error => reject(error));
+                } else if ('redirects' in data) {
+                    axios.post(`${projectUri}/redirects`, data.redirects[0]).then(redirectRes => {
+                        newProject.redirects = [ redirectRes ];
+                        commit('addNewProject', newProject);
+                        dispatch('progress/progress', {
+                            step: 'redirect',
+                            progress: 100,
+                        }, { root: true });
+                        resolve(response);
+                    }).catch(error => reject(error));
+                }
             }).catch(error => reject(error));
         }),
         disable: ({ dispatch }, id) => dispatch('toggle', { id }),
