@@ -14,7 +14,8 @@
         "fruitcake/laravel-cors": "^2.0",
         "laravel/framework": "^8.34",
         "laravel/sanctum": "2.9.2",
-        "laravel/tinker": "^2.6"
+        "laravel/tinker": "^2.6",
+        "pusher/pusher-php-server": "^5.0"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.2.1",
