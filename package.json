@@ -19,7 +19,7 @@
         "husky": "^4.3.8",
         "laravel-mix": "^6.0.13",
         "lodash": "^4.17.21",
-        "postcss": "^8.2.8",
+        "postcss": "^8.2.10",
         "sass": "^1.32.8",
         "sass-loader": "^10.1.1",
         "semantic-ui-sass": "^2.4.2",
