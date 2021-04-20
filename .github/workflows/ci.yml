@@ -45,10 +45,14 @@ jobs:
         os: [ubuntu-18.04, ubuntu-20.04]
         php: ['7.4', '8.0']
         experimental: [false]
+        composer-flags: ['--prefer-dist']
+        phpstan-args: ['']
         include:
           - php: '8.1'
             os: ubuntu-latest
             experimental: true
+            composer-flags: '--prefer-dist --ignore-platform-req=php'
+            phpstan-args: '--debug'
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -75,13 +79,13 @@ jobs:
         with:
           timeout_seconds: 45
           max_attempts: 3
-          command: composer install --no-interaction --no-progress --prefer-dist
+          command: composer install --no-interaction --no-progress ${{ matrix.composer-flags }}
       - name: Install application
         run: bash .github/scripts/install.sh
       - name: Check for code style issues
         run: |
           echo "::group::$ vendor/bin/php-cs-fixer fix"
-          make phpcsf CS_ARGS="--verbose"
+          export PHP_CS_FIXER_IGNORE_ENV=1 && make phpcsf CS_ARGS="--verbose"
           echo -e "::endgroup::\n::group::$ vendor/bin/phpcs --standard=PSR12"
           make phpcs
           echo "::endgroup::"
@@ -92,7 +96,7 @@ jobs:
       - name: Run static analysis checks
         run: |
           echo "::group::$ vendor/bin/phpstan analyze"
-          make phpstan
+          make phpstan STAN_ARGS=${{ matrix.phpstan-args }}
           echo -e "::endgroup::\n::group::$ vendor/bin/phan"
           make phan
           echo -e "::endgroup::\n::group::$ vendor/bin/psalm"
