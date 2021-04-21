@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Servidor\Projects\Redirects\ProjectRedirectSaved;
 use Servidor\Traits\TogglesNginxConfigs;
 
 /**
@@ -35,6 +36,10 @@ use Servidor\Traits\TogglesNginxConfigs;
 class Redirect extends Model implements Domainable
 {
     use TogglesNginxConfigs;
+
+    protected $dispatchesEvents = [
+        'saved' => ProjectRedirectSaved::class,
+    ];
 
     protected $fillable = [
         'domain_name',
