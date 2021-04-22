@@ -22,6 +22,9 @@ export default {
     },
     actions: {
         load: ({ commit }) => new Promise((resolve, reject) => {
+            window.Echo.channel('projects').listen('.progress', e => {
+                console.log(e);
+            });
             axios.get('/api/projects').then(response => {
                 commit('setProjects', response.data);
                 resolve(response);
