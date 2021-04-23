@@ -22,9 +22,6 @@ export default {
     },
     actions: {
         load: ({ commit }) => new Promise((resolve, reject) => {
-            window.Echo.channel('projects').listen('.progress', e => {
-                console.log(e);
-            });
             axios.get('/api/projects').then(response => {
                 commit('setProjects', response.data);
                 resolve(response);
@@ -55,6 +52,11 @@ export default {
                 const newProject = response.data,
                     projectUri = `/api/projects/${newProject.id}`;
 
+                dispatch(
+                    'progress/monitor',
+                    { channel: 'projects', item: newProject.id },
+                    { root: true },
+                );
                 dispatch('progress/progress', {
                     step: 'create',
                     progress: 40,

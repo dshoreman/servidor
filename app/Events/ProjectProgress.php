@@ -20,7 +20,7 @@ class ProjectProgress implements ShouldBroadcast
     public function __construct(Project $project, string $text)
     {
         $this->project = $project;
-        $this->text = $text;
+        $this->text = $text . PHP_EOL;
     }
 
     public function broadcastAs(): string
@@ -30,6 +30,6 @@ class ProjectProgress implements ShouldBroadcast
 
     public function broadcastOn(): Channel
     {
-        return new Channel('projects'); // . $this->project->id);
+        return new Channel('projects.' . $this->project->id);
     }
 }

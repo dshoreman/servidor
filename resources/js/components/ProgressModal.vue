@@ -11,6 +11,9 @@
                     </sui-list-content>
                 </sui-list-item>
             </sui-list>
+
+            <sui-header size="tiny">Details</sui-header>
+            <pre>{{ progressText }}</pre>
         </sui-modal-content>
     </sui-modal>
 </template>
@@ -25,6 +28,7 @@ export default {
             title: 'progress/title',
             steps: 'progress/steps',
             visible: 'progress/visible',
+            progressText: 'progress/output',
         }),
     },
 };
