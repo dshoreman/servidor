@@ -228,8 +228,11 @@ export default {
             }
 
             this.$store.dispatch('projects/create', this.project).then(response => {
+                this.$store.dispatch('progress/activateButton', {
+                    name: 'projects.view',
+                    params: { id: response.data.id },
+                });
                 this.bypassLeaveHandler = true;
-                this.$router.push({ name: 'projects.view', params: { id: response.data.id }});
             }).catch(error => {
                 const res = error.response, validationError = 422;
 

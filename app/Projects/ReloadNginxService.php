@@ -16,5 +16,7 @@ class ReloadNginxService
         ProjectProgress::dispatch($event->project, 'Reloading nginx service...');
 
         exec('sudo systemctl reload-or-restart nginx.service');
+
+        ProjectProgress::dispatch($event->project, ' done.' . PHP_EOL);
     }
 }

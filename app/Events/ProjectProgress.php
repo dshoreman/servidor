@@ -20,7 +20,7 @@ class ProjectProgress implements ShouldBroadcast
     public function __construct(Project $project, string $text)
     {
         $this->project = $project;
-        $this->text = $text . PHP_EOL;
+        $this->text = $text;
     }
 
     public function broadcastAs(): string

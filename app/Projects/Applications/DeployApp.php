@@ -2,21 +2,31 @@
 
 namespace Servidor\Projects\Applications;
 
+use Servidor\Events\ProjectProgress;
+
 class DeployApp
 {
     public function handle(ProjectAppSaved $event): void
     {
-        /** @var \Servidor\Projects\Project */
-        $project = $event->app->project;
+        $app = $event->app;
+        $project = $event->project;
 
-        if ($event->app->source_repository && $event->app->domain_name) {
+        if ($app->source_repository && $app->domain_name) {
             if ($project->is_enabled) {
-                $event->app->template()->pullCode(true);
+                ProjectProgress::dispatch($project, 'Cloning project repo...');
+
+                $app->template()->pullCode(true);
+
+                ProjectProgress::dispatch($project, ' done.' . PHP_EOL);
 
                 return;
             }
 
-            $event->app->template()->disable();
+            ProjectProgress::dispatch($project, 'Not flagged for deploy, skipping clone and disabling project...');
+
+            $app->template()->disable();
+
+            ProjectProgress::dispatch($project, ' done.' . PHP_EOL);
         }
     }
 }

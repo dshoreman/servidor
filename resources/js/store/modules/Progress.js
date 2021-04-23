@@ -1,6 +1,7 @@
 export default {
     namespaced: true,
     state: {
+        button: null,
         isVisible: false,
         output: '',
         percentComplete: 5,
@@ -19,6 +20,9 @@ export default {
 
             Vue.set(state.steps, index, { ...state.steps[index], icon: 'check' });
         },
+        setButton: (state, button) => {
+            state.button = button;
+        },
         setProgress: (state, progress) => {
             state.percentComplete = progress;
         },
@@ -30,6 +34,9 @@ export default {
         },
     },
     actions: {
+        activateButton: ({ commit }, button) => {
+            commit('setButton', button);
+        },
         load: ({ commit }, { title, steps }) => {
             commit('setTitle', title);
 
@@ -50,6 +57,7 @@ export default {
         },
     },
     getters: {
+        button: state => state.button,
         done: state => state.percentComplete,
         output: state => state.output,
         title: state => state.title,

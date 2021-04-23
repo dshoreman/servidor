@@ -15,6 +15,9 @@
             <sui-header size="tiny">Details</sui-header>
             <pre>{{ progressText }}</pre>
         </sui-modal-content>
+        <sui-modal-actions v-if="button">
+            <router-link :to="button" is="sui-button" content="Continue" />
+        </sui-modal-actions>
     </sui-modal>
 </template>
 
@@ -27,6 +30,7 @@ export default {
             done: 'progress/done',
             title: 'progress/title',
             steps: 'progress/steps',
+            button: 'progress/button',
             visible: 'progress/visible',
             progressText: 'progress/output',
         }),
