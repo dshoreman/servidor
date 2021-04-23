@@ -3,6 +3,7 @@
 namespace Servidor\Projects\Redirects;
 
 use Servidor\Events\ProjectProgress;
+use Servidor\Projects\ProgressStep;
 
 class ApplyRedirectNginxConfig
 {
@@ -11,12 +12,12 @@ class ApplyRedirectNginxConfig
         /** @var \Servidor\Projects\Project */
         $project = $event->redirect->project;
 
-        ProjectProgress::dispatch($project, 'Saving nginx config...');
+        ProjectProgress::dispatch($project, $step = new ProgressStep('nginx.save', 'Saving nginx config'));
 
         $event->redirect->writeNginxConfig();
 
         $project->is_enabled ? $event->redirect->enable() : $event->redirect->disable();
 
-        ProjectProgress::dispatch($project, ' done.' . PHP_EOL);
+        ProjectProgress::dispatch($project, $step->complete());
     }
 }

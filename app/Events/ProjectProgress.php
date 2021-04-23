@@ -6,6 +6,7 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Servidor\Projects\ProgressStep;
 use Servidor\Projects\Project;
 
 class ProjectProgress implements ShouldBroadcast
@@ -15,12 +16,12 @@ class ProjectProgress implements ShouldBroadcast
 
     public Project $project;
 
-    public string $text;
+    public ProgressStep $step;
 
-    public function __construct(Project $project, string $text)
+    public function __construct(Project $project, ProgressStep $step)
     {
         $this->project = $project;
-        $this->text = $text;
+        $this->step = $step;
     }
 
     public function broadcastAs(): string

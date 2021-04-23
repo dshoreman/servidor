@@ -11,9 +11,6 @@
                     </sui-list-content>
                 </sui-list-item>
             </sui-list>
-
-            <sui-header size="tiny">Details</sui-header>
-            <pre>{{ progressText }}</pre>
         </sui-modal-content>
         <sui-modal-actions v-if="button">
             <router-link :to="button" is="sui-button" content="Continue" />
@@ -32,7 +29,6 @@ export default {
             steps: 'progress/steps',
             button: 'progress/button',
             visible: 'progress/visible',
-            progressText: 'progress/output',
         }),
     },
 };

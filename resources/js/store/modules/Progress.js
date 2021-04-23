@@ -3,7 +3,6 @@ export default {
     state: {
         button: null,
         isVisible: false,
-        output: '',
         percentComplete: 5,
         steps: [],
         title: 'Loading...',
@@ -12,13 +11,15 @@ export default {
         addStep: (state, { name, text }) => {
             state.steps.push({ name, text, icon: 'minus disabled' });
         },
-        appendOutput: (state, text) => {
-            state.output += text;
-        },
         completeStep: (state, step) => {
             const index = state.steps.findIndex(s => s.name === step);
 
             Vue.set(state.steps, index, { ...state.steps[index], icon: 'check' });
+        },
+        skipStep: (state, step) => {
+            const index = state.steps.findIndex(s => s.name === step);
+
+            Vue.set(state.steps, index, { ...state.steps[index], icon: 'times' });
         },
         setButton: (state, button) => {
             state.button = button;
@@ -48,7 +49,15 @@ export default {
             window.Echo
                 .channel(`${channel}.${item}`)
                 .listen('.progress', e => {
-                    commit('appendOutput', e.text);
+                    const { name, status } = e.step;
+
+                    if ('pending' === status) {
+                        commit('addStep', e.step);
+                    } else if ('skipped' === status) {
+                        commit('skipStep', name);
+                    } else if ('complete' === status) {
+                        commit('completeStep', name);
+                    }
                 });
         },
         progress: ({ commit }, { step, progress }) => {
@@ -59,7 +68,6 @@ export default {
     getters: {
         button: state => state.button,
         done: state => state.percentComplete,
-        output: state => state.output,
         title: state => state.title,
         steps: state => state.steps,
         visible: state => state.isVisible,

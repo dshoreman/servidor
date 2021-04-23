@@ -3,6 +3,7 @@
 namespace Servidor\Projects\Applications;
 
 use Servidor\Events\ProjectProgress;
+use Servidor\Projects\ProgressStep;
 
 class DeployApp
 {
@@ -11,22 +12,23 @@ class DeployApp
         $app = $event->app;
         $project = $event->project;
 
+        ProjectProgress::dispatch($project, $step = new ProgressStep('clone', 'Cloning project files'));
+
         if ($app->source_repository && $app->domain_name) {
             if ($project->is_enabled) {
-                ProjectProgress::dispatch($project, 'Cloning project repo...');
-
                 $app->template()->pullCode(true);
 
-                ProjectProgress::dispatch($project, ' done.' . PHP_EOL);
+                ProjectProgress::dispatch($project, $step->complete());
 
                 return;
             }
 
-            ProjectProgress::dispatch($project, 'Not flagged for deploy, skipping clone and disabling project...');
+            ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_NOT_ENABLED));
+            ProjectProgress::dispatch($project, $step = new ProgressStep('disable', 'Disabling project'));
 
             $app->template()->disable();
 
-            ProjectProgress::dispatch($project, ' done.' . PHP_EOL);
+            ProjectProgress::dispatch($project, $step->complete());
         }
     }
 }

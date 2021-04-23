@@ -4,6 +4,7 @@ namespace Servidor\Projects\Applications;
 
 use Illuminate\Support\Str;
 use Servidor\Events\ProjectProgress;
+use Servidor\Projects\ProgressStep;
 use Servidor\System\User as SystemUser;
 use Servidor\System\Users\LinuxUser;
 
@@ -14,19 +15,19 @@ class CreateSystemUser
         /** @var \Servidor\Projects\Project */
         $project = $event->app->project;
 
+        ProjectProgress::dispatch($project, $step = new ProgressStep('user.create', 'Creating system user'));
+
         if (!$event->app->template()->requiresUser()) {
-            ProjectProgress::dispatch($project, 'Skipping system user, not required.');
+            ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_REQUIRED));
 
             return;
         }
 
         if ($event->app->system_user) {
-            ProjectProgress::dispatch($project, 'Skipping system user, it already exists.');
+            ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_EXISTS));
 
             return;
         }
-
-        ProjectProgress::dispatch($project, 'Creating system user...');
 
         $user = new LinuxUser([
             'name' => Str::slug($project->name),
@@ -34,6 +35,6 @@ class CreateSystemUser
 
         SystemUser::createCustom($user->setCreateHome(true));
 
-        ProjectProgress::dispatch($project, ' done.' . PHP_EOL);
+        ProjectProgress::dispatch($project, $step->complete());
     }
 }
