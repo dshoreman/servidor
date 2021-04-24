@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => 'pusher',
+    'default' => env('BROADCAST_CONNECTION', 'pusher'),
 
     /*
     |--------------------------------------------------------------------------

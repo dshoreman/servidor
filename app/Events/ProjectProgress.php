@@ -9,6 +9,9 @@ use Illuminate\Queue\SerializesModels;
 use Servidor\Projects\ProgressStep;
 use Servidor\Projects\Project;
 
+/**
+ * @suppressWarnings(PHPMD.LongVariable)
+ */
 class ProjectProgress implements ShouldBroadcast
 {
     use Dispatchable;
@@ -17,6 +20,8 @@ class ProjectProgress implements ShouldBroadcast
     public Project $project;
 
     public ProgressStep $step;
+
+    public bool $deleteWhenMissingModels = true;
 
     public function __construct(Project $project, ProgressStep $step)
     {

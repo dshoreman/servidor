@@ -28,8 +28,9 @@
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
         <server name="SESSION_DRIVER" value="array"/>
-        <server name="QUEUE_DRIVER" value="sync"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="MAIL_MAILER" value="array"/>
+        <server name="BROADCAST_CONNECTION" value="null"/>
         <server name="DB_DATABASE" value="servidor_testing"/>
         <server name="TELESCOPE_ENABLED" value="false"/>
         <server name="APP_KEY" value="base64:9VjA5LhT1ef+c5kryXXBFfDbn9zfNpWV/L3O32qwy18="/>
