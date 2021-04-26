@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use Servidor\Http\Controllers\Auth\Login;
 use Servidor\Http\Controllers\Auth\Logout;
@@ -26,8 +27,9 @@ use Servidor\Http\Controllers\SystemInformationController;
 use Servidor\Http\Controllers\User\ShowProfile;
 
 Route::post('register', Register::class);
-Route::middleware('web')->post('session', Login::class);
+Route::middleware('web')->name('login')->post('session', Login::class);
 Route::middleware('web')->delete('session', Logout::class);
+Broadcast::routes(['middleware' => 'auth:api']);
 
 Route::middleware('auth:api')->group(function (): void {
     Route::name('projects.')->prefix('/projects')->group(function (): void {

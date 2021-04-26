@@ -19,5 +19,14 @@ window.Echo = new Echo({
     client: new Pusher(process.env.MIX_PUSHER_APP_KEY, {
         cluster: process.env.MIX_PUSHER_APP_CLUSTER ?? 'eu',
         forceTLS: true,
+        authorizer: channel => ({
+            authorize: (socketId, callback) => {
+                axios.post('/api/broadcasting/auth', {
+                    channel_name: channel.name,
+                    socket_id: socketId,
+                }).then(response => callback(false, response.data))
+                    .catch(error => callback(true, error));
+            },
+        }),
     }),
 });

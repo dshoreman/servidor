@@ -47,7 +47,7 @@ export default {
         },
         monitor: ({ commit }, { channel, item }) => {
             window.Echo
-                .channel(`${channel}.${item}`)
+                .private(`${channel}.${item}`)
                 .listen('.progress', e => {
                     const { name, status, progress } = e.step;
 
