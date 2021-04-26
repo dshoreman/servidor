@@ -12,7 +12,8 @@ class DeployApp
         $app = $event->app;
         $project = $event->project;
 
-        ProjectProgress::dispatch($project, $step = new ProgressStep('clone', 'Cloning project files'));
+        $step = new ProgressStep('clone', 'Cloning project files', 80);
+        ProjectProgress::dispatch($project, $step);
 
         if ($app->source_repository && $app->domain_name) {
             if ($project->is_enabled) {
@@ -24,7 +25,8 @@ class DeployApp
             }
 
             ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_NOT_ENABLED));
-            ProjectProgress::dispatch($project, $step = new ProgressStep('disable', 'Disabling project'));
+            $step = new ProgressStep('disable', 'Disabling project', 60);
+            ProjectProgress::dispatch($project, $step);
 
             $app->template()->disable();
 

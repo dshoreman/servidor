@@ -15,7 +15,8 @@ class CreateSystemUser
         /** @var \Servidor\Projects\Project */
         $project = $event->app->project;
 
-        ProjectProgress::dispatch($project, $step = new ProgressStep('user.create', 'Creating system user'));
+        $step = new ProgressStep('user.create', 'Creating system user', 15);
+        ProjectProgress::dispatch($project, $step);
 
         if (!$event->app->template()->requiresUser()) {
             ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_REQUIRED));

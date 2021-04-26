@@ -12,7 +12,8 @@ class ApplyRedirectNginxConfig
         /** @var \Servidor\Projects\Project */
         $project = $event->redirect->project;
 
-        ProjectProgress::dispatch($project, $step = new ProgressStep('nginx.save', 'Saving nginx config'));
+        $step = new ProgressStep('nginx.save', 'Saving nginx config', 60);
+        ProjectProgress::dispatch($project, $step);
 
         $event->redirect->writeNginxConfig();
 

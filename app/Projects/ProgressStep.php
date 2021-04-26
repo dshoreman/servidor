@@ -17,12 +17,15 @@ class ProgressStep
 
     public string $text;
 
+    public int $progress;
+
     public string $status;
 
     public string $reason = '';
 
-    public function __construct(string $name, string $text)
+    public function __construct(string $name, string $text, int $percentWhenComplete)
     {
+        $this->progress = $percentWhenComplete;
         $this->status = self::STATUS_PENDING;
         $this->name = $name;
         $this->text = $text;

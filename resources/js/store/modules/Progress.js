@@ -49,14 +49,13 @@ export default {
             window.Echo
                 .channel(`${channel}.${item}`)
                 .listen('.progress', e => {
-                    const { name, status } = e.step;
+                    const { name, status, progress } = e.step;
 
                     if ('pending' === status) {
                         commit('addStep', e.step);
-                    } else if ('skipped' === status) {
-                        commit('skipStep', name);
-                    } else if ('complete' === status) {
-                        commit('completeStep', name);
+                    } else {
+                        commit('setProgress', progress);
+                        commit('complete' === status ? 'completeStep' : 'skipStep', name);
                     }
                 });
         },
