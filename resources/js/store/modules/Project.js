@@ -8,6 +8,22 @@ export default {
         addNewProject: (state, project) => {
             state.projects.push(project);
         },
+        addProjectApp: (state, app) => {
+            const { project_id: pID } = app,
+                project = { ...state.projects.find(p => p.id === pID) };
+
+            project.applications.push(app);
+
+            Vue.set(state.projects, state.projects.findIndex(p => p.id === pID), project);
+        },
+        addProjectRedirect: (state, redirect) => {
+            const { project_id: pID } = redirect,
+                project = { ...state.projects.find(p => p.id === pID) };
+
+            project.redirects.push(redirect);
+
+            Vue.set(state.projects, state.projects.findIndex(p => p.id === pID), project);
+        },
         removeProject: (state, project) => {
             state.projects.splice(state.projects.findIndex(
                 p => p.id === project.id,
@@ -27,64 +43,34 @@ export default {
                 resolve(response);
             }).catch(error => reject(error));
         }),
-        create: ({ commit, dispatch }, project) => new Promise((resolve, reject) => {
-            const data = { ...project }, steps = [
-                { name: 'create', text: 'Creating project' },
-            ];
-
-            if ('archive' === data.applications[0].template) {
-                data.applications = [];
-                steps.push({ name: 'redirect', text: 'Saving the redirect' });
-            }
-            if (data.applications.length) {
-                steps.push({
-                    name: 'app',
-                    text: `Saving the ${data.applications[0].template} application`,
+        createProject: async ({ commit }, project) => {
+            try {
+                const { data } = await axios.post('/api/projects', {
+                    is_enabled: project.is_enabled,
+                    name: project.name,
                 });
+
+                commit('addNewProject', data);
+
+                return Promise.resolve(data);
+            } catch (error) {
+                return Promise.reject(error);
             }
+        },
+        createApp: async ({ commit }, { projectId, app }) => {
+            const { data } = await axios.post(`/api/projects/${projectId}/apps`, app);
 
-            dispatch('progress/load', { title: 'Saving project...', steps }, { root: true });
+            commit('addProjectApp', data);
 
-            axios.post('/api/projects', {
-                is_enabled: data.is_enabled,
-                name: data.name,
-            }).then(response => {
-                const newProject = response.data,
-                    projectUri = `/api/projects/${newProject.id}`;
+            return data;
+        },
+        createRedirect: async ({ commit }, { projectId, redirect }) => {
+            const { data } = await axios.post(`/api/projects/${projectId}/redirects`, redirect);
 
-                dispatch(
-                    'progress/monitor',
-                    { channel: 'projects', item: newProject.id },
-                    { root: true },
-                );
-                dispatch('progress/progress', {
-                    step: 'create',
-                    progress: 40,
-                }, { root: true });
+            commit('addProjectRedirect', data);
 
-                if ('applications' in data) {
-                    axios.post(`${projectUri}/apps`, data.applications[0]).then(appRes => {
-                        newProject.applications = [ appRes ];
-                        commit('addNewProject', newProject);
-                        dispatch('progress/progress', {
-                            step: 'app',
-                            progress: 100,
-                        }, { root: true });
-                        resolve(response);
-                    }).catch(error => reject(error));
-                } else if ('redirects' in data) {
-                    axios.post(`${projectUri}/redirects`, data.redirects[0]).then(redirectRes => {
-                        newProject.redirects = [ redirectRes ];
-                        commit('addNewProject', newProject);
-                        dispatch('progress/progress', {
-                            step: 'redirect',
-                            progress: 100,
-                        }, { root: true });
-                        resolve(response);
-                    }).catch(error => reject(error));
-                }
-            }).catch(error => reject(error));
-        }),
+            return data;
+        },
         disable: ({ dispatch }, id) => dispatch('toggle', { id }),
         enable: ({ dispatch }, id) => dispatch('toggle', { id, enabled: true }),
         pull: app => axios.post(`/api/projects/${app.project.id}/apps/${app.id}/pull`),

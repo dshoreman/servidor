@@ -45,9 +45,12 @@ export default {
 
             commit('setVisible', true);
         },
-        monitor: ({ commit }, { channel, item }) => {
+        monitor: ({ commit }, { channel, item }) => new Promise((resolve, reject) => {
             window.Echo
                 .private(`${channel}.${item}`)
+                .subscribed(() => {
+                    resolve();
+                })
                 .listen('.progress', e => {
                     const { name, status, progress } = e.step;
 
@@ -57,8 +60,8 @@ export default {
                         commit('setProgress', progress);
                         commit('complete' === status ? 'completeStep' : 'skipStep', name);
                     }
-                });
-        },
+                }).error(error => reject(error));
+        }),
         progress: ({ commit }, { step, progress }) => {
             commit('completeStep', step);
             commit('setProgress', progress);

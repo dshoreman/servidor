@@ -219,21 +219,35 @@ export default {
 
             this.nextStep('redirect');
         },
-        create(enabled = false) {
+        async create(enabled = false) {
             this.error = '';
             this.errors = {};
 
-            if (enabled) {
-                this.project.is_enabled = true;
-            }
+            this.progressInit();
 
-            this.$store.dispatch('projects/create', this.project).then(response => {
-                this.$store.dispatch('progress/activateButton', {
+            try {
+                const project = await this.$store.dispatch('projects/createProject', {
+                    name: this.project.name,
+                    is_enabled: enabled,
+                });
+
+                await this.$store.dispatch('progress/monitor', { channel: 'projects', item: project.id });
+                await this.$store.dispatch('progress/progress', { step: 'create', progress: 10 });
+
+                const [action, data] = 'archive' === this.project.applications[0].template
+                    ? ['createRedirect', { redirect: this.project.redirects[0] }]
+                    : ['createApp', { app: this.project.applications[0] }];
+
+                await this.$store.dispatch(`projects/${action}`, {
+                    projectId: project.id, ...data,
+                });
+
+                await this.$store.dispatch('progress/activateButton', {
                     name: 'projects.view',
-                    params: { id: response.data.id },
+                    params: { id: project.id },
                 });
                 this.bypassLeaveHandler = true;
-            }).catch(error => {
+            } catch (error) {
                 const res = error.response, validationError = 422;
 
                 if (res && validationError === res.status) {
@@ -246,7 +260,17 @@ export default {
                 }
 
                 this.error = res && 'statusText' in res ? res.statusText : error.message;
-            });
+            }
+        },
+        progressInit() {
+            const [ { template } ] = this.project.applications,
+                isApp = 'archive' !== template,
+                text = isApp ? `${template} application` : 'redirect';
+
+            this.$store.dispatch('progress/load', { steps: [
+                { name: 'create', text: 'Creating project' },
+                { name: isApp ? 'app' : 'redirect', text: `Saving the ${text}` },
+            ], title: 'Saving project...' });
         },
     },
 };
