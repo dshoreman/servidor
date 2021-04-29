@@ -2,6 +2,7 @@ export default {
     namespaced: true,
     state: {
         button: null,
+        finalStep: null,
         isVisible: false,
         percentComplete: 5,
         steps: [],
@@ -24,6 +25,9 @@ export default {
         setButton: (state, button) => {
             state.button = button;
         },
+        setFinalStep: (state, step) => {
+            state.finalStep = step;
+        },
         setProgress: (state, progress) => {
             state.percentComplete = progress;
         },
@@ -38,27 +42,37 @@ export default {
         activateButton: ({ commit }, button) => {
             commit('setButton', button);
         },
-        load: ({ commit }, { title, steps }) => {
+        load: ({ commit, state }, { title, steps, completeWhenDone = null }) => {
             commit('setTitle', title);
 
             steps.forEach(step => commit('addStep', step));
 
+            if (state.steps.some(s => s.name === completeWhenDone)) {
+                commit('setFinalStep', completeWhenDone);
+            }
+
             commit('setVisible', true);
         },
-        monitor: ({ commit }, { channel, item }) => new Promise((resolve, reject) => {
+        monitor: ({ commit, state }, { channel, item }) => new Promise((resolve, reject) => {
             window.Echo
                 .private(`${channel}.${item}`)
                 .subscribed(() => {
                     resolve();
                 })
                 .listen('.progress', e => {
-                    const { name, status, progress } = e.step;
+                    const { name, status, progress } = e.step,
+                        complete = 'complete' === status;
 
                     if ('pending' === status) {
                         commit('addStep', e.step);
                     } else {
+                        commit(complete ? 'completeStep' : 'skipStep', name);
+
+                        if (complete && 100 === progress && state.finalStep) {
+                            commit('completeStep', state.finalStep);
+                        }
+
                         commit('setProgress', progress);
-                        commit('complete' === status ? 'completeStep' : 'skipStep', name);
                     }
                 }).error(error => reject(error));
         }),

@@ -65,6 +65,10 @@ import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
+const STEP_APP = 'app.save',
+    STEP_CREATE = 'project.create',
+    STEP_REDIRECT = 'redirect.save';
+
 export default {
     components: {
         ConfirmationForm,
@@ -223,7 +227,7 @@ export default {
             this.error = '';
             this.errors = {};
 
-            this.progressInit();
+            const step = this.progressInit();
 
             try {
                 const project = await this.$store.dispatch('projects/createProject', {
@@ -234,9 +238,9 @@ export default {
                 await this.$store.dispatch('progress/monitor', { channel: 'projects', item: project.id });
                 await this.$store.dispatch('progress/progress', { step: 'create', progress: 10 });
 
-                const [action, data] = 'archive' === this.project.applications[0].template
-                    ? ['createRedirect', { redirect: this.project.redirects[0] }]
-                    : ['createApp', { app: this.project.applications[0] }];
+                const [action, data] = step === STEP_APP
+                    ? ['createApp', { app: this.project.applications[0] }]
+                    : ['createRedirect', { redirect: this.project.redirects[0] }];
 
                 await this.$store.dispatch(`projects/${action}`, {
                     projectId: project.id, ...data,
@@ -265,12 +269,19 @@ export default {
         progressInit() {
             const [ { template } ] = this.project.applications,
                 isApp = 'archive' !== template,
+                step = isApp ? STEP_APP : STEP_REDIRECT,
                 text = isApp ? `${template} application` : 'redirect';
 
-            this.$store.dispatch('progress/load', { steps: [
-                { name: 'create', text: 'Creating project' },
-                { name: isApp ? 'app' : 'redirect', text: `Saving the ${text}` },
-            ], title: 'Saving project...' });
+            this.$store.dispatch('progress/load', {
+                title: 'Saving project...',
+                completeWhenDone: step,
+                steps: [
+                    { name: STEP_CREATE, text: 'Creating project' },
+                    { name: step, text: `Saving the ${text}` },
+                ],
+            });
+
+            return step;
         },
     },
 };
