@@ -245,12 +245,6 @@ export default {
                 await this.$store.dispatch(`projects/${action}`, {
                     projectId: project.id, ...data,
                 });
-
-                await this.$store.dispatch('progress/activateButton', {
-                    name: 'projects.view',
-                    params: { id: project.id },
-                });
-                this.bypassLeaveHandler = true;
             } catch (error) {
                 const res = error.response, validationError = 422;
 
@@ -264,6 +258,12 @@ export default {
                 }
 
                 this.error = res && 'statusText' in res ? res.statusText : error.message;
+            } finally {
+                this.bypassLeaveHandler = true;
+
+                await this.$store.dispatch('progress/activateButton', project
+                    ? { name: 'projects.view', params: { id: project.id }}
+                    : { name: 'projects' });
             }
         },
         progressInit() {
