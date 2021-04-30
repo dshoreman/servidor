@@ -226,42 +226,32 @@ export default {
             this.nextStep('redirect');
         },
         async create(enabled = false) {
-            this.error = '';
-            this.errors = {};
+            this.setErrors({}, '');
 
-            const step = this.progressInit();
+            const [channel, step] = ['projects', this.progressInit()];
+            let project = null;
 
             try {
-                const project = await this.$store.dispatch('projects/createProject', {
-                    name: this.project.name,
-                    is_enabled: enabled,
-                });
-
-                await this.$store.dispatch('progress/monitor', { channel: 'projects', item: project.id });
-                await this.$store.dispatch('progress/progress', { step: 'create', progress: 10 });
+                [ project ] = await Promise.all([
+                    await this.$store.dispatch('projects/createProject', {
+                        name: this.project.name,
+                        is_enabled: enabled,
+                    }),
+                    this.$store.dispatch('progress/progress', { step: 'create', progress: 8 }),
+                    this.$store.dispatch('progress/monitor', { channel, item: project.id }),
+                    this.$store.dispatch('progress/progress', { step: 'create', progress: 10 }),
+                ]);
 
                 const [action, data, progress] = step === STEP_APP
                     ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
                     : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
 
-                await this.$store.dispatch('progress/progress', { step, progress });
-
-                await this.$store.dispatch(`projects/${action}`, {
-                    projectId: project.id, ...data,
-                });
+                await Promise.all([
+                    this.$store.dispatch('progress/progress', { step, progress }),
+                    this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data }),
+                ]);
             } catch (error) {
-                const res = error.response, validationError = 422;
-
-                if (res && validationError === res.status) {
-                    this.error = 'Please fix the highlighted issues and try again.';
-                    this.errors = res.data.errors;
-
-                    this.jumpToFirstError();
-
-                    return;
-                }
-
-                this.error = res && 'statusText' in res ? res.statusText : error.message;
+                this.handleCreationError(error);
             } finally {
                 this.bypassLeaveHandler = true;
 
@@ -269,6 +259,19 @@ export default {
                     ? { name: 'projects.view', params: { id: project.id }}
                     : { name: 'projects' });
             }
+        },
+        handleCreationError(error) {
+            const { response: res } = error, validationError = 422;
+
+            if (res && validationError === res.status) {
+                this.setErrors(res.data.errors, 'Please fix the highlighted issues and try again.');
+
+                this.jumpToFirstError();
+
+                return;
+            }
+
+            this.error = res && 'statusText' in res ? res.statusText : error.message;
         },
         progressInit() {
             const [ { template } ] = this.project.applications,
@@ -286,6 +289,10 @@ export default {
             });
 
             return step;
+        },
+        setErrors(errors, message) {
+            this.errors = errors;
+            this.error = message;
         },
     },
 };
