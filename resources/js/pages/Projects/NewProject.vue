@@ -65,7 +65,9 @@ import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
-const STEP_APP = 'app.save',
+const PERCENT_APP = 25,
+    PERCENT_REDIRECT = 40,
+    STEP_APP = 'app.save',
     STEP_CREATE = 'project.create',
     STEP_REDIRECT = 'redirect.save';
 
@@ -238,9 +240,11 @@ export default {
                 await this.$store.dispatch('progress/monitor', { channel: 'projects', item: project.id });
                 await this.$store.dispatch('progress/progress', { step: 'create', progress: 10 });
 
-                const [action, data] = step === STEP_APP
-                    ? ['createApp', { app: this.project.applications[0] }]
-                    : ['createRedirect', { redirect: this.project.redirects[0] }];
+                const [action, data, progress] = step === STEP_APP
+                    ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
+                    : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
+
+                await this.$store.dispatch('progress/progress', { step, progress });
 
                 await this.$store.dispatch(`projects/${action}`, {
                     projectId: project.id, ...data,

@@ -2,7 +2,6 @@
 
 namespace Servidor\Projects;
 
-use Servidor\Events\ProjectProgress;
 use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
 

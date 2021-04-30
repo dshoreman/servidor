@@ -2,8 +2,8 @@
 
 namespace Servidor\Projects\Applications;
 
-use Servidor\Events\ProjectProgress;
 use Servidor\Projects\ProgressStep;
+use Servidor\Projects\ProjectProgress;
 
 class DeployApp
 {
@@ -12,7 +12,7 @@ class DeployApp
         $app = $event->app;
         $project = $event->project;
 
-        $step = new ProgressStep('clone', 'Cloning project files', 80);
+        $step = new ProgressStep('clone', 'Cloning project files', 85);
         ProjectProgress::dispatch($project, $step);
 
         if ($app->source_repository && $app->domain_name) {

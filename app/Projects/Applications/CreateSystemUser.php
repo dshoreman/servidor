@@ -3,8 +3,8 @@
 namespace Servidor\Projects\Applications;
 
 use Illuminate\Support\Str;
-use Servidor\Events\ProjectProgress;
 use Servidor\Projects\ProgressStep;
+use Servidor\Projects\ProjectProgress;
 use Servidor\System\User as SystemUser;
 use Servidor\System\Users\LinuxUser;
 
@@ -15,7 +15,7 @@ class CreateSystemUser
         /** @var \Servidor\Projects\Project */
         $project = $event->app->project;
 
-        $step = new ProgressStep('user.create', 'Creating system user', 15);
+        $step = new ProgressStep('user.create', 'Creating system user', 35);
         ProjectProgress::dispatch($project, $step);
 
         if (!$event->app->template()->requiresUser()) {

@@ -1,10 +1,12 @@
+const PERCENT_COMPLETE = 100;
+
 export default {
     namespaced: true,
     state: {
         button: null,
         finalStep: null,
         isVisible: false,
-        percentComplete: 5,
+        percentComplete: 0,
         steps: [],
         title: 'Loading...',
     },
@@ -68,7 +70,7 @@ export default {
                     } else {
                         commit(complete ? 'completeStep' : 'skipStep', name);
 
-                        if (complete && 100 === progress && state.finalStep) {
+                        if (complete && PERCENT_COMPLETE === progress && state.finalStep) {
                             commit('completeStep', state.finalStep);
                         }
 
