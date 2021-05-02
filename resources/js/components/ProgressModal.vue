@@ -12,6 +12,9 @@
                 </sui-list-item>
             </sui-list>
         </sui-modal-content>
+        <sui-modal-actions v-if="button">
+            <router-link :to="button" is="sui-button" content="Continue" />
+        </sui-modal-actions>
     </sui-modal>
 </template>
 
@@ -24,6 +27,7 @@ export default {
             done: 'progress/done',
             title: 'progress/title',
             steps: 'progress/steps',
+            button: 'progress/button',
             visible: 'progress/visible',
         }),
     },

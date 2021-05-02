@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Projects\Applications\LogFile;
+use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Applications\Templates\Html;
 use Servidor\Projects\Applications\Templates\Laravel;
 use Servidor\Projects\Applications\Templates\Php;
@@ -62,6 +63,10 @@ class Application extends Model
         'source_root',
         'source_uri',
         'system_user',
+    ];
+
+    protected $dispatchesEvents = [
+        'saved' => ProjectAppSaved::class,
     ];
 
     protected $fillable = [

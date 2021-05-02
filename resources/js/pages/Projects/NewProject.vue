@@ -65,6 +65,12 @@ import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
+const PERCENT_APP = 25,
+    PERCENT_REDIRECT = 40,
+    STEP_APP = 'app.save',
+    STEP_CREATE = 'project.create',
+    STEP_REDIRECT = 'redirect.save';
+
 export default {
     components: {
         ConfirmationForm,
@@ -219,31 +225,74 @@ export default {
 
             this.nextStep('redirect');
         },
-        create(enabled = false) {
-            this.error = '';
-            this.errors = {};
+        async create(enabled = false) {
+            this.setErrors({}, '');
 
-            if (enabled) {
-                this.project.is_enabled = true;
+            const [channel, step] = ['projects', this.progressInit()];
+            let project = null;
+
+            try {
+                [ project ] = await Promise.all([
+                    await this.$store.dispatch('projects/createProject', {
+                        name: this.project.name,
+                        is_enabled: enabled,
+                    }),
+                    this.$store.dispatch('progress/progress', { step: 'create', progress: 8 }),
+                    this.$store.dispatch('progress/monitor', { channel, item: project.id }),
+                    this.$store.dispatch('progress/progress', { step: 'create', progress: 10 }),
+                ]);
+
+                const [action, data, progress] = step === STEP_APP
+                    ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
+                    : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
+
+                await Promise.all([
+                    this.$store.dispatch('progress/progress', { step, progress }),
+                    this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data }),
+                ]);
+            } catch (error) {
+                this.handleCreationError(error);
+            } finally {
+                this.bypassLeaveHandler = true;
+
+                await this.$store.dispatch('progress/activateButton', project
+                    ? { name: 'projects.view', params: { id: project.id }}
+                    : { name: 'projects' });
+            }
+        },
+        handleCreationError(error) {
+            const { response: res } = error, validationError = 422;
+
+            if (res && validationError === res.status) {
+                this.setErrors(res.data.errors, 'Please fix the highlighted issues and try again.');
+
+                this.jumpToFirstError();
+
+                return;
             }
 
-            this.$store.dispatch('projects/create', this.project).then(response => {
-                this.bypassLeaveHandler = true;
-                this.$router.push({ name: 'projects.view', params: { id: response.data.id }});
-            }).catch(error => {
-                const res = error.response, validationError = 422;
+            this.error = res && 'statusText' in res ? res.statusText : error.message;
+        },
+        progressInit() {
+            const [ { template } ] = this.project.applications,
+                isApp = 'archive' !== template,
+                step = isApp ? STEP_APP : STEP_REDIRECT,
+                text = isApp ? `${template} application` : 'redirect';
 
-                if (res && validationError === res.status) {
-                    this.error = 'Please fix the highlighted issues and try again.';
-                    this.errors = res.data.errors;
-
-                    this.jumpToFirstError();
-
-                    return;
-                }
-
-                this.error = res && 'statusText' in res ? res.statusText : error.message;
+            this.$store.dispatch('progress/load', {
+                title: 'Saving project...',
+                completeWhenDone: step,
+                steps: [
+                    { name: STEP_CREATE, text: 'Creating project' },
+                    { name: step, text: `Saving the ${text}` },
+                ],
             });
+
+            return step;
+        },
+        setErrors(errors, message) {
+            this.errors = errors;
+            this.error = message;
         },
     },
 };
