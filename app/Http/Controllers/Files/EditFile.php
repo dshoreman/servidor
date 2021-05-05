@@ -31,7 +31,7 @@ class EditFile extends Controller
             ], $status);
         }
 
-        if ($file['contents'] == $data['contents']) {
+        if ($file['contents'] === $data['contents']) {
             return response()->json('', Response::HTTP_NOT_MODIFIED);
         }
 

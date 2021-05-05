@@ -12,7 +12,7 @@ class CreateSystemUser
 {
     public function handle(ProjectAppSaved $event): void
     {
-        /** @var \Servidor\Projects\Project */
+        /** @var \Servidor\Projects\Project $project */
         $project = $event->app->project;
 
         $step = new ProgressStep('user.create', 'Creating system user', 35);

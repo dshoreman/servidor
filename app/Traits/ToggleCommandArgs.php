@@ -15,13 +15,13 @@ trait ToggleCommandArgs
             unset($this->args[$keyOn]);
         }
 
-        if ('' != $keyOff && is_int($keyOff)) {
+        if ('' !== $keyOff && is_int($keyOff)) {
             unset($this->args[$keyOff]);
         }
 
         $arg = $cond ? $on : $off;
 
-        if ('' != $arg) {
+        if ('' !== $arg) {
             $this->args[] = $arg;
         }
 

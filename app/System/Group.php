@@ -80,8 +80,8 @@ class Group
         if ($this->group->hasChangedUsers()) {
             $users = $this->group->users;
 
-            $this->refresh($this->group->gid ?? $this->group->name)
-                 ->group->setUsers($users);
+            $this->refresh($this->group->gid ?? $this->group->name);
+            $this->group->setUsers($users);
 
             $retval = $this->commit('gpasswd', '-M "' . implode(',', $this->group->users) . '"');
 
@@ -133,7 +133,7 @@ class Group
             assert(is_string($line));
 
             $group = array_combine($keys, explode(':', $line));
-            $group['users'] = '' == $group['users'] ? [] : explode(',', $group['users']);
+            $group['users'] = '' === $group['users'] ? [] : explode(',', $group['users']);
 
             $groups->push($group);
         }
@@ -143,9 +143,10 @@ class Group
 
     public function update(array $data): array
     {
-        $this->group->setName((string) $data['name'])
-                    ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
-                    ->setUsers(isset($data['users']) ? (array) $data['users'] : null);
+        $this->group
+            ->setName((string) $data['name'])
+            ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
+            ->setUsers(isset($data['users']) ? (array) $data['users'] : null);
 
         if (!$this->group->isDirty()) {
             throw new GroupNotModified();

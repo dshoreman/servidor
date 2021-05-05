@@ -9,7 +9,7 @@ class ApplyRedirectNginxConfig
 {
     public function handle(ProjectRedirectSaved $event): void
     {
-        /** @var \Servidor\Projects\Project */
+        /** @var \Servidor\Projects\Project $project */
         $project = $event->redirect->project;
 
         $step = new ProgressStep('nginx.save', 'Saving nginx config', 70);

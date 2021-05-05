@@ -123,7 +123,7 @@ class Application extends Model
             return ((string) $this->systemUser['dir']) . '/' . $this->sourceRepoName;
         }
 
-        /** @var \Servidor\Projects\Project */
+        /** @var \Servidor\Projects\Project $project */
         $project = $this->project;
 
         return '/var/www/' . Str::slug($project->name) . '/' . $this->sourceRepoName;
@@ -144,7 +144,7 @@ class Application extends Model
         }
 
         try {
-            /** @var \Servidor\Projects\Project */
+            /** @var \Servidor\Projects\Project $project */
             $project = $this->project;
             $username = Str::slug($project->name);
 

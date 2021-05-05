@@ -15,6 +15,6 @@ use Servidor\Projects\Project;
 */
 
 Broadcast::channel('App.User.{id}', fn ($user, $id) => (int) $user->id === (int) $id);
-Broadcast::channel('projects.{project}', fn ($user, Project $project) => (bool) $user->id, [
+Broadcast::channel('projects.{project}', fn ($user, Project $project) => $project->id && $user->id, [
     'guards' => ['api'],
 ]);

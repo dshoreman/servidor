@@ -36,7 +36,7 @@ class Database
         return $this->connection()->getSchemaManager();
     }
 
-    /** @return string[] */
+    /** @return array<string> */
     public function listDatabases(): array
     {
         return $this->dbal()->listDatabases();
