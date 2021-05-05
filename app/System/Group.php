@@ -3,9 +3,9 @@
 namespace Servidor\System;
 
 use Illuminate\Support\Collection;
-use Servidor\Exceptions\System\GroupNotFoundException;
-use Servidor\Exceptions\System\GroupNotModifiedException;
-use Servidor\Exceptions\System\GroupSaveException;
+use Servidor\System\Groups\GenericGroupSaveFailure;
+use Servidor\System\Groups\GroupNotFound;
+use Servidor\System\Groups\GroupNotModified;
 use Servidor\System\Groups\LinuxGroup;
 
 class Group
@@ -64,7 +64,7 @@ class Group
                 break;
         }
 
-        throw new GroupSaveException($error);
+        throw new GenericGroupSaveFailure($error);
     }
 
     private function commitMod(): self
@@ -73,7 +73,7 @@ class Group
             $retval = $this->commit('groupmod');
 
             if (0 !== $retval) {
-                throw new GroupSaveException("Couldn't update the group. Exit code: {$retval}.");
+                throw new GenericGroupSaveFailure("Couldn't update the group. Exit code: {$retval}.");
             }
         }
 
@@ -86,7 +86,7 @@ class Group
             $retval = $this->commit('gpasswd', '-M "' . implode(',', $this->group->users) . '"');
 
             if (0 !== $retval) {
-                throw new GroupSaveException("Couldn't update the group's users. Exit code: {$retval}.");
+                throw new GenericGroupSaveFailure("Couldn't update the group's users. Exit code: {$retval}.");
             }
         }
 
@@ -116,7 +116,7 @@ class Group
         $group = posix_getgrgid($gid);
 
         if (!$group) {
-            throw new GroupNotFoundException();
+            throw new GroupNotFound();
         }
 
         return new self($group);
@@ -148,7 +148,7 @@ class Group
                     ->setUsers(isset($data['users']) ? (array) $data['users'] : null);
 
         if (!$this->group->isDirty()) {
-            throw new GroupNotModifiedException();
+            throw new GroupNotModified();
         }
 
         $this->commitMod();

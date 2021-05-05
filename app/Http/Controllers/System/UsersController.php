@@ -5,13 +5,13 @@ namespace Servidor\Http\Controllers\System;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Servidor\Exceptions\System\UserNotFoundException;
-use Servidor\Exceptions\System\UserNotModifiedException;
-use Servidor\Exceptions\System\UserSaveException;
 use Servidor\Http\Requests\System\CreateUser;
 use Servidor\Http\Requests\System\UpdateUser;
+use Servidor\System\Groups\GenericUserSaveFailure;
 use Servidor\System\User as SystemUser;
 use Servidor\System\Users\LinuxUser;
+use Servidor\System\Users\UserNotFound;
+use Servidor\System\Users\UserNotModified;
 
 class UsersController extends Controller
 {
@@ -42,7 +42,7 @@ class UsersController extends Controller
             $user->setUserGroup($createGroup);
 
             $user = SystemUser::createCustom($user);
-        } catch (UserSaveException $e) {
+        } catch (GenericUserSaveFailure $e) {
             $data['error'] = $e->getMessage();
 
             return response()->json($data, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -60,9 +60,9 @@ class UsersController extends Controller
                 $user->update($request->validated()),
                 Response::HTTP_OK
             );
-        } catch (UserNotFoundException $_) {
+        } catch (UserNotFound $_) {
             throw $this->fail('uid', 'No user found matching the given criteria.');
-        } catch (UserNotModifiedException $_) {
+        } catch (UserNotModified $_) {
             throw $this->fail('uid', 'Nothing to update!');
         }
     }

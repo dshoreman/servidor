@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Projects\Applications\LogFile;
 use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Applications\Templates\Html;
@@ -17,6 +16,7 @@ use Servidor\Projects\Applications\Templates\Laravel;
 use Servidor\Projects\Applications\Templates\Php;
 use Servidor\Projects\Applications\Templates\Template;
 use Servidor\System\User as SystemUser;
+use Servidor\System\Users\UserNotFound;
 
 /**
  * An Application is a Project component for websites, apps or server processes.
@@ -149,7 +149,7 @@ class Application extends Model
             $username = Str::slug($project->name);
 
             return SystemUser::findByName($username)->toArray();
-        } catch (UserNotFoundException $_) {
+        } catch (UserNotFound $_) {
             return null;
         }
     }

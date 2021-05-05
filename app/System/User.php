@@ -3,10 +3,10 @@
 namespace Servidor\System;
 
 use Illuminate\Support\Collection;
-use Servidor\Exceptions\System\UserNotFoundException;
-use Servidor\Exceptions\System\UserNotModifiedException;
-use Servidor\Exceptions\System\UserSaveException;
+use Servidor\System\Groups\GenericUserSaveFailure;
 use Servidor\System\Users\LinuxUser;
+use Servidor\System\Users\UserNotFound;
+use Servidor\System\Users\UserNotModified;
 
 class User
 {
@@ -29,7 +29,7 @@ class User
         $user = posix_getpwuid($uid);
 
         if (!$user) {
-            throw new UserNotFoundException();
+            throw new UserNotFound();
         }
 
         return new self($user);
@@ -40,7 +40,7 @@ class User
         $user = posix_getpwnam($username);
 
         if (!$user) {
-            throw new UserNotFoundException();
+            throw new UserNotFound();
         }
 
         return new self($user);
@@ -110,7 +110,7 @@ class User
                    ->setHomeDirectory((string) ($data['dir'] ?? ''));
 
         if (!$this->user->isDirty()) {
-            throw new UserNotModifiedException();
+            throw new UserNotModified();
         }
 
         $this->commit('usermod');
@@ -125,7 +125,7 @@ class User
         exec("sudo {$cmd} {$this->user->toArgs()} {$name}", $_, $retval);
 
         if (0 !== $retval) {
-            throw new UserSaveException("Something went wrong (exit code: {$retval})");
+            throw new GenericUserSaveFailure("Something went wrong (exit code: {$retval})");
         }
 
         return $this;
