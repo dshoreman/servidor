@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Servidor\Exceptions\System\UserNotFoundException;
 use Servidor\Projects\Applications\LogFile;
 use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Applications\Templates\Html;
@@ -17,6 +16,7 @@ use Servidor\Projects\Applications\Templates\Laravel;
 use Servidor\Projects\Applications\Templates\Php;
 use Servidor\Projects\Applications\Templates\Template;
 use Servidor\System\User as SystemUser;
+use Servidor\System\Users\UserNotFound;
 
 /**
  * An Application is a Project component for websites, apps or server processes.
@@ -105,12 +105,10 @@ class Application extends Model
     public function getSourceRepoNameAttribute(): string
     {
         $repo = (string) $this->attributes['source_repository'];
+        $match = mb_strpos($repo, '/');
 
-        if (false === ($pos = mb_strpos($repo, '/'))) {
-            return $repo;
-        }
-
-        return (string) mb_substr($repo, $pos + 1);
+        return false === $match ? $repo
+            : (string) mb_substr($repo, $match + 1);
     }
 
     public function getSourceRootAttribute(): string
@@ -123,7 +121,7 @@ class Application extends Model
             return ((string) $this->systemUser['dir']) . '/' . $this->sourceRepoName;
         }
 
-        /** @var \Servidor\Projects\Project */
+        /** @var \Servidor\Projects\Project $project */
         $project = $this->project;
 
         return '/var/www/' . Str::slug($project->name) . '/' . $this->sourceRepoName;
@@ -144,12 +142,12 @@ class Application extends Model
         }
 
         try {
-            /** @var \Servidor\Projects\Project */
+            /** @var \Servidor\Projects\Project $project */
             $project = $this->project;
             $username = Str::slug($project->name);
 
             return SystemUser::findByName($username)->toArray();
-        } catch (UserNotFoundException $_) {
+        } catch (UserNotFound $_) {
             return null;
         }
     }

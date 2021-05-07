@@ -11,7 +11,7 @@ class Controller extends BaseController
 {
     protected function verifyProjectMatches(Application $app, Project $project): void
     {
-        /** @var Project */
+        /** @var Project $relatedProject */
         $relatedProject = $app->project;
 
         if ($project->id === $relatedProject->id) {

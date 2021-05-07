@@ -93,6 +93,8 @@ jobs:
         run: make phpmd
       - name: Check for magic numbers
         run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
+      - name: Gather PHP insights
+        run: make insights INSIGHT_ARGS="--ansi --format=github-action --disable-security-check"
       - name: Run static analysis checks
         run: |
           echo "::group::$ vendor/bin/phpstan analyze"

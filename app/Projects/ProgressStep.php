@@ -13,15 +13,15 @@ class ProgressStep
     public const STATUS_SKIPPED = 'skipped';
     public const STATUS_DONE = 'complete';
 
-    public string $name;
+    private string $name;
 
-    public string $text;
+    private string $text;
 
-    public int $progress;
+    private int $progress;
 
-    public string $status;
+    private string $status;
 
-    public string $reason = '';
+    private string $reason = '';
 
     public function __construct(string $name, string $text, int $percentWhenComplete)
     {
@@ -45,5 +45,16 @@ class ProgressStep
         $this->reason = $reason;
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'progress' => $this->progress,
+            'reason' => $this->reason,
+            'status' => $this->status,
+            'text' => $this->text,
+        ];
     }
 }

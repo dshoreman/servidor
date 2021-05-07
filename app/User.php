@@ -13,16 +13,16 @@ use Illuminate\Support\Carbon;
 /**
  * A User is a Servidor *backend* user; not to be confused with SystemUsers!
  *
- * @property int                          $id
- * @property string                       $name
- * @property string                       $email
- * @property ?string                      $email_verified_at
- * @property string                       $password
- * @property ?string                      $remember_token
- * @property ?Carbon                      $created_at
- * @property ?Carbon                      $updated_at
- * @property Notifications|Notification[] $notifications
- * @property ?int                         $notifications_count
+ * @property int                               $id
+ * @property string                            $name
+ * @property string                            $email
+ * @property ?string                           $email_verified_at
+ * @property string                            $password
+ * @property ?string                           $remember_token
+ * @property ?Carbon                           $created_at
+ * @property ?Carbon                           $updated_at
+ * @property Notifications|array<Notification> $notifications
+ * @property ?int                              $notifications_count
  *
  * @method static Builder|User query()
  * @method static Builder|User whereCreatedAt($value)
@@ -42,7 +42,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $fillable = [
         'name', 'email', 'password',

@@ -10,16 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to the "home" route for your application.
-     *
-     * @var string
-     */
     public const HOME = '/';
 
-    /**
-     * Define your route model bindings, pattern filters, etc.
-     */
     public function boot(): void
     {
         $this->configureRateLimiting();
@@ -34,13 +26,10 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Configure the rate limiters for the application.
-     */
     protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', function (Request $request) {
-            /** @var ?\Servidor\User */
+            /** @var ?\Servidor\User $user */
             $user = $request->user();
 
             $identifier = $user && $user->id ? $user->id : $request->ip();

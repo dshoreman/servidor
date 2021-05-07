@@ -12,10 +12,13 @@ class Php extends Html
 
     public function getLogs(): array
     {
-        return ['php' => new LogFile($this->app, 'PHP Error Log', ini_get('error_log') ?: sprintf(
-            '/var/log/php%d.%d-fpm.log',
-            PHP_MAJOR_VERSION,
-            PHP_MINOR_VERSION,
-        ))];
+        $default = ini_get('error_log');
+        $fallbackPath = '/var/log/php%d.%d-fpm.log';
+
+        $phpErrorLog = $default ?: sprintf($fallbackPath, PHP_MAJOR_VERSION, PHP_MINOR_VERSION);
+
+        return [
+            'php' => new LogFile($this->app, 'PHP Error Log', $phpErrorLog),
+        ];
     }
 }

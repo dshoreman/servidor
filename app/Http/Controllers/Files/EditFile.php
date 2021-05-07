@@ -12,7 +12,9 @@ class EditFile extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
-        if (!($filepath = $request->query('file')) || !is_string($filepath)) {
+        $filepath = $request->query('file');
+
+        if (!$filepath || !is_string($filepath)) {
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 
@@ -31,7 +33,7 @@ class EditFile extends Controller
             ], $status);
         }
 
-        if ($file['contents'] == $data['contents']) {
+        if ($file['contents'] === $data['contents']) {
             return response()->json('', Response::HTTP_NOT_MODIFIED);
         }
 

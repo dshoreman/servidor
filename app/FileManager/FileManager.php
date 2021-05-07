@@ -29,7 +29,7 @@ class FileManager
     {
         // Symfony's Finder trims all slashes from the end,
         // so we have to workaround it with this hack.
-        if ('/' == $path) {
+        if ('/' === $path) {
             $path = '/../';
         }
 
@@ -46,10 +46,10 @@ class FileManager
     {
         /** @psalm-suppress TooManyArguments - sortByName */
         $files = $this->finder->depth(0)->in($path)
-                      ->sortByName(true)
-                      ->ignoreDotFiles(false);
+            ->sortByName(true)
+            ->ignoreDotFiles(false);
 
-        /** @var array{SplFileInfo|string} */
+        /** @var array{SplFileInfo|string} $files */
         $files = iterator_to_array($files, false);
 
         return array_map([$this, 'fileToArray'], $files);
@@ -121,10 +121,10 @@ class FileManager
     {
         if (!file_exists($path)) {
             return true;
-        } elseif (!is_writable($path)) {
+        }
+        if (!is_writable($path)) {
             throw new PathNotWritable('No permission to write path');
         }
-
         if (is_dir($path)) {
             return rmdir($path);
         }
@@ -137,10 +137,11 @@ class FileManager
         $pathParts = explode('/', $path);
 
         $name = array_pop($pathParts);
-        if (false === ($pos = mb_strrpos($path, '/'))) {
+        $match = mb_strrpos($path, '/');
+        if (false === $match) {
             throw new InvalidArgumentException();
         }
-        $path = (string) mb_substr($path, 0, $pos);
+        $path = (string) mb_substr($path, 0, $match);
 
         return $this->loadPermissions($path, $name);
     }
@@ -167,6 +168,7 @@ class FileManager
      * to be suppressed once phpmd is working on PHP 8.x.
      *
      * @param SplFileInfo|string $file
+     *
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
      *
      * @return array{0: SplFileInfo, 1: array}
@@ -216,7 +218,7 @@ class FileManager
     {
         [$file, $data] = $this->loadFile($file);
 
-        if ($data['mimetype'] && 'text/' != mb_substr((string) $data['mimetype'], 0, 5)) {
+        if ($data['mimetype'] && 'text/' !== mb_substr((string) $data['mimetype'], 0, 5)) {
             throw new UnsupportedFileType('Unsupported filetype');
         }
 
@@ -226,8 +228,9 @@ class FileManager
             $msg = $e->getMessage();
             $data['contents'] = '';
             $data['error'] = ['code' => 418, 'msg' => $msg];
+            $deniedError = 'failed to open stream: permission denied';
 
-            if (Str::contains((string) mb_strtolower($msg), 'failed to open stream: permission denied')) {
+            if (Str::contains((string) mb_strtolower($msg), $deniedError)) {
                 $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
             }
         }
