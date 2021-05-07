@@ -105,12 +105,10 @@ class Application extends Model
     public function getSourceRepoNameAttribute(): string
     {
         $repo = (string) $this->attributes['source_repository'];
+        $match = mb_strpos($repo, '/');
 
-        if (false === ($pos = mb_strpos($repo, '/'))) {
-            return $repo;
-        }
-
-        return (string) mb_substr($repo, $pos + 1);
+        return false === $match ? $repo
+            : (string) mb_substr($repo, $match + 1);
     }
 
     public function getSourceRootAttribute(): string

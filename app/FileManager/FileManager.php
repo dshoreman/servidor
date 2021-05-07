@@ -137,10 +137,11 @@ class FileManager
         $pathParts = explode('/', $path);
 
         $name = array_pop($pathParts);
-        if (false === ($pos = mb_strrpos($path, '/'))) {
+        $match = mb_strrpos($path, '/');
+        if (false === $match) {
             throw new InvalidArgumentException();
         }
-        $path = (string) mb_substr($path, 0, $pos);
+        $path = (string) mb_substr($path, 0, $match);
 
         return $this->loadPermissions($path, $name);
     }
