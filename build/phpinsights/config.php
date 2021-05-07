@@ -87,11 +87,11 @@ return [
     ],
 
     'requirements' => [
-        // 'min-quality' => 0,
-        // 'min-complexity' => 0,
-        // 'min-architecture' => 0,
-        // 'min-style' => 0,
-        // 'disable-security-check' => false,
+        'min-quality' => 95,
+        'min-complexity' => 70,
+        'min-architecture' => 80,
+        'min-style' => 95,
+        'disable-security-check' => true,
     ],
 
     'threads' => null,
