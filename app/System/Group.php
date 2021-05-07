@@ -41,30 +41,27 @@ class Group
 
     protected function commitAdd(): self
     {
+        $error = 'Something unexpected happened!';
         $retval = $this->commit('groupadd');
+        $visibleExitStatus = $retval;
 
         if (0 === $retval) {
             return $this;
         }
 
-        $error = 'Something unexpected happened! Exit code: ' . $retval;
+        $errors = [
+            self::GROUP_GID_TAKEN => "The group's GID must be unique",
+            self::GROUP_NAME_TAKEN => 'The group name must be unique',
+            self::GROUP_OPTION_INVALID => 'Invalid argument to option',
+            self::GROUP_SYNTAX_INVALID => 'Invalid command syntax.',
+        ];
 
-        switch ($retval) {
-            case self::GROUP_SYNTAX_INVALID:
-                $error = 'Invalid command syntax.';
-                break;
-            case self::GROUP_OPTION_INVALID:
-                $error = 'Invalid argument to option';
-                break;
-            case self::GROUP_GID_TAKEN:
-                $error = "The group's GID must be unique";
-                break;
-            case self::GROUP_NAME_TAKEN:
-                $error = 'The group name must be unique';
-                break;
+        if (isset($errors[$retval])) {
+            $error = $errors[$retval];
+            $visibleExitStatus = 0;
         }
 
-        throw new GenericGroupSaveFailure($error);
+        throw new GenericGroupSaveFailure($error, $visibleExitStatus);
     }
 
     private function commitMod(): self
@@ -73,7 +70,7 @@ class Group
             $retval = $this->commit('groupmod');
 
             if (0 !== $retval) {
-                throw new GenericGroupSaveFailure("Couldn't update the group. Exit code: {$retval}.");
+                throw new GenericGroupSaveFailure("Couldn't update the group.", $retval);
             }
         }
 
@@ -86,7 +83,7 @@ class Group
             $retval = $this->commit('gpasswd', '-M "' . implode(',', $this->group->users) . '"');
 
             if (0 !== $retval) {
-                throw new GenericGroupSaveFailure("Couldn't update the group's users. Exit code: {$retval}.");
+                throw new GenericGroupSaveFailure("Couldn't update the group's users.", $retval);
             }
         }
 

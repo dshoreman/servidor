@@ -228,8 +228,9 @@ class FileManager
             $msg = $e->getMessage();
             $data['contents'] = '';
             $data['error'] = ['code' => 418, 'msg' => $msg];
+            $deniedError = 'failed to open stream: permission denied';
 
-            if (Str::contains((string) mb_strtolower($msg), 'failed to open stream: permission denied')) {
+            if (Str::contains((string) mb_strtolower($msg), $deniedError)) {
                 $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
             }
         }

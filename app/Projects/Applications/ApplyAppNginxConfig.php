@@ -13,7 +13,10 @@ class ApplyAppNginxConfig
         ProjectProgress::dispatch($event->project, $step);
 
         if (!$event->app->source_repository || '' === $event->app->domain_name) {
-            ProjectProgress::dispatch($event->project, $step->skip(ProgressStep::REASON_MISSING_DATA));
+            ProjectProgress::dispatch(
+                $event->project,
+                $step->skip(ProgressStep::REASON_MISSING_DATA),
+            );
 
             return;
         }
