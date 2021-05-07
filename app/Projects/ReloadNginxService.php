@@ -13,10 +13,10 @@ class ReloadNginxService
     public function handle($event): void
     {
         $step = new ProgressStep('nginx.reload', 'Reloading nginx service', 100);
-        ProjectProgress::dispatch($event->project, $step);
+        ProjectProgress::dispatch($event->getProject(), $step);
 
         exec('sudo systemctl reload-or-restart nginx.service');
 
-        ProjectProgress::dispatch($event->project, $step->complete());
+        ProjectProgress::dispatch($event->getProject(), $step->complete());
     }
 }

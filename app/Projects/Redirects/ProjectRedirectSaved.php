@@ -10,9 +10,9 @@ class ProjectRedirectSaved
 {
     use SerializesModels;
 
-    public Redirect $redirect;
+    private Redirect $redirect;
 
-    public Project $project;
+    private Project $project;
 
     public function __construct(Redirect $redirect)
     {
@@ -20,5 +20,15 @@ class ProjectRedirectSaved
 
         $this->redirect = $redirect;
         $this->project = $redirect->project;
+    }
+
+    public function getProject(): Project
+    {
+        return $this->project;
+    }
+
+    public function getRedirect(): Redirect
+    {
+        return $this->redirect;
     }
 }

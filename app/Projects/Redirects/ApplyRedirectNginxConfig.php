@@ -9,15 +9,15 @@ class ApplyRedirectNginxConfig
 {
     public function handle(ProjectRedirectSaved $event): void
     {
-        /** @var \Servidor\Projects\Project $project */
-        $project = $event->redirect->project;
+        $project = $event->getProject();
+        $redirect = $event->getRedirect();
 
         $step = new ProgressStep('nginx.save', 'Saving nginx config', 70);
         ProjectProgress::dispatch($project, $step);
 
-        $event->redirect->writeNginxConfig();
+        $redirect->writeNginxConfig();
 
-        $project->is_enabled ? $event->redirect->enable() : $event->redirect->disable();
+        $project->is_enabled ? $redirect->enable() : $redirect->disable();
 
         ProjectProgress::dispatch($project, $step->complete());
     }

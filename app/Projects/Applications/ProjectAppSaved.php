@@ -10,9 +10,9 @@ class ProjectAppSaved
 {
     use SerializesModels;
 
-    public Application $app;
+    private Application $app;
 
-    public Project $project;
+    private Project $project;
 
     public function __construct(Application $app)
     {
@@ -20,5 +20,15 @@ class ProjectAppSaved
 
         $this->app = $app;
         $this->project = $app->project;
+    }
+
+    public function getApp(): Application
+    {
+        return $this->app;
+    }
+
+    public function getProject(): Project
+    {
+        return $this->project;
     }
 }

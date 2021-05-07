@@ -12,19 +12,19 @@ class CreateSystemUser
 {
     public function handle(ProjectAppSaved $event): void
     {
-        /** @var \Servidor\Projects\Project $project */
-        $project = $event->app->project;
+        $app = $event->getApp();
+        $project = $event->getProject();
 
         $step = new ProgressStep('user.create', 'Creating system user', 35);
         ProjectProgress::dispatch($project, $step);
 
-        if (!$event->app->template()->requiresUser()) {
+        if (!$app->template()->requiresUser()) {
             ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_REQUIRED));
 
             return;
         }
 
-        if ($event->app->system_user) {
+        if ($app->system_user) {
             ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_EXISTS));
 
             return;

@@ -9,8 +9,8 @@ class DeployApp
 {
     public function handle(ProjectAppSaved $event): void
     {
-        $app = $event->app;
-        $project = $event->project;
+        $app = $event->getApp();
+        $project = $event->getProject();
 
         $step = new ProgressStep('clone', 'Cloning project files', 85);
         ProjectProgress::dispatch($project, $step);

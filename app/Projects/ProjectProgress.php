@@ -15,11 +15,11 @@ class ProjectProgress implements ShouldBroadcast
     use Dispatchable;
     use SerializesModels;
 
-    public Project $project;
+    protected bool $deleteWhenMissingModels = true;
 
-    public ProgressStep $step;
+    private Project $project;
 
-    public bool $deleteWhenMissingModels = true;
+    private ProgressStep $step;
 
     public function __construct(Project $project, ProgressStep $step)
     {
@@ -35,5 +35,13 @@ class ProjectProgress implements ShouldBroadcast
     public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel('projects.' . $this->project->id);
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'project' => $this->project,
+            'step' => $this->step->toArray(),
+        ];
     }
 }
