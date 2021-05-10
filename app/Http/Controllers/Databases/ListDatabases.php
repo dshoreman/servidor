@@ -5,17 +5,15 @@ namespace Servidor\Http\Controllers\Databases;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
-use Servidor\Database;
+use Servidor\Databases\DatabaseManager;
 
 class ListDatabases
 {
     use AuthorizesRequests;
     use ValidatesRequests;
 
-    public function __invoke(): JsonResponse
+    public function __invoke(DatabaseManager $manager): JsonResponse
     {
-        $db = new Database();
-
-        return new JsonResponse($db->listDatabases());
+        return new JsonResponse($manager->listDatabases());
     }
 }

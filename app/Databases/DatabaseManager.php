@@ -1,13 +1,13 @@
 <?php
 
-namespace Servidor;
+namespace Servidor\Databases;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Contracts\Config\Repository;
 
-class Database
+class DatabaseManager
 {
     private ?Connection $connection = null;
 

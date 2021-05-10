@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
-use Servidor\Database;
+use Servidor\Databases\DatabaseManager;
 use Tests\TestCase;
 
 class DatabaseTest extends TestCase
@@ -11,7 +11,7 @@ class DatabaseTest extends TestCase
     /** @test */
     public function it_can_connect(): void
     {
-        $db = new Database();
+        $db = new DatabaseManager();
 
         $this->assertInstanceOf(MySqlSchemaManager::class, $db->dbal());
     }
@@ -20,7 +20,7 @@ class DatabaseTest extends TestCase
     public function it_can_list_databases(): void
     {
         $db = config('database.connections.mysql.database');
-        $list = (new Database())->listDatabases();
+        $list = (new DatabaseManager())->listDatabases();
 
         $this->assertIsArray($list);
         $this->assertContains(['name' => $db], $list);
@@ -30,9 +30,9 @@ class DatabaseTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_a_database(): Database
+    public function it_can_create_a_database(): DatabaseManager
     {
-        $db = new Database();
+        $db = new DatabaseManager();
 
         if (in_array('testdb', $db->dbal()->listDatabases())) {
             $db->dbal()->dropDatabase('testdb');
@@ -54,7 +54,7 @@ class DatabaseTest extends TestCase
      * @depends it_can_create_a_database
      */
     public function it_returns_true_when_created_database_exists(
-        Database $db
+        DatabaseManager $db
     ): void {
         $before = $db->listDatabases();
 

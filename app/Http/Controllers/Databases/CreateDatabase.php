@@ -4,18 +4,18 @@ namespace Servidor\Http\Controllers\Databases;
 
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Servidor\Database;
+use Servidor\Databases\DatabaseManager;
 use Servidor\Http\Controllers\Controller;
 use Servidor\Http\Requests\Databases\NewDatabase;
 
 class CreateDatabase extends Controller
 {
-    public function __invoke(NewDatabase $request): JsonResponse
+    public function __invoke(DatabaseManager $manager, NewDatabase $request): JsonResponse
     {
         $database = $request->validated();
 
         try {
-            $created = (new Database())->create($database['name']);
+            $created = $manager->create($database['name']);
         } catch (Exception $_) {
             $created = false;
         }
