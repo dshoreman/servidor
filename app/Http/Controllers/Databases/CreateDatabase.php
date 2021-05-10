@@ -19,11 +19,13 @@ class CreateDatabase extends Controller
         $dbname = (string) $data['database'];
 
         try {
-            $db->create($dbname);
+            $created = $db->create($dbname);
         } catch (Exception $_) {
-            return new JsonResponse(['error' => 'Could not create database'], 500);
+            $created = false;
         }
 
-        return new JsonResponse(['database' => $dbname]);
+        return $created
+            ? new JsonResponse(['name' => $dbname])
+            : new JsonResponse(['error' => 'Could not create database'], 500);
     }
 }

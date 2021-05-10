@@ -17,9 +17,9 @@ class ListDatabasesTest extends TestCase
         $response = $this->authed()->getJson($this->endpoint);
 
         $response->assertOk();
-        $response->assertJsonFragment(['information_schema']);
-        $response->assertJsonFragment(['performance_schema']);
-        $response->assertJsonFragment(['mysql']);
+        $response->assertJsonFragment(['name' => 'information_schema']);
+        $response->assertJsonFragment(['name' => 'performance_schema']);
+        $response->assertJsonFragment(['name' => 'mysql']);
     }
 
     /** @test */

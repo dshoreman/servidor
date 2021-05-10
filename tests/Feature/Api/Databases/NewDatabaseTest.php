@@ -19,7 +19,7 @@ class NewDatabaseTest extends TestCase
         $response = $this->authed()->postJson($this->endpoint, $data);
 
         $response->assertOk();
-        $this->assertSame($data, $response->json());
+        $this->assertSame(['name' => 'caniplz'], $response->json());
     }
 
     /** @test */

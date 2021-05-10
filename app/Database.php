@@ -36,20 +36,35 @@ class Database
         return $this->connection()->getSchemaManager();
     }
 
-    /** @return array<string> */
-    public function listDatabases(): array
+    public function hasDatabase(string $name): bool
     {
-        return $this->dbal()->listDatabases();
+        $matches = array_filter(
+            $this->listDatabases(),
+            static fn (array $database): bool => $name === $database['name'],
+        );
+
+        return 0 < count($matches);
     }
 
-    public function create(string $dbname): bool
+    /** @return array<array{name: string}> */
+    public function listDatabases(): array
     {
-        if (in_array($dbname, $this->listDatabases(), true)) {
+        $databases = array_map(
+            static fn (string $name): array => ['name' => $name],
+            $this->dbal()->listDatabases(),
+        );
+
+        return $databases;
+    }
+
+    public function create(string $name): bool
+    {
+        if ($this->hasDatabase($name)) {
             return true;
         }
 
-        $this->dbal()->createDatabase($dbname);
+        $this->dbal()->createDatabase($name);
 
-        return in_array($dbname, $this->listDatabases(), true);
+        return $this->hasDatabase($name);
     }
 }
