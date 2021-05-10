@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
+use Servidor\Databases\Database;
 use Servidor\Databases\DatabaseManager;
 use Tests\TestCase;
 
@@ -20,7 +21,10 @@ class DatabaseTest extends TestCase
     public function it_can_list_databases(): void
     {
         $db = config('database.connections.mysql.database');
-        $list = (new DatabaseManager())->listDatabases();
+        $list = array_map(
+            static fn (Database $database): array => $database->toArray(),
+            (new DatabaseManager())->listDatabases(),
+        );
 
         $this->assertIsArray($list);
         $this->assertContains(['name' => $db], $list);
@@ -39,7 +43,7 @@ class DatabaseTest extends TestCase
         }
 
         $before = $db->dbal()->listDatabases();
-        $created = $db->create('testdb');
+        $created = $db->create(new Database('testdb'));
         $after = array_merge($before, ['testdb']);
 
         sort($after);
@@ -56,10 +60,12 @@ class DatabaseTest extends TestCase
     public function it_returns_true_when_created_database_exists(
         DatabaseManager $db
     ): void {
-        $before = $db->listDatabases();
+        $before = array_map(static fn (Database $database): array => $database->toArray(), $db->listDatabases());
 
-        $this->assertTrue($db->create('testdb'));
-        $this->assertSame($before, $db->listDatabases());
+        $this->assertTrue($db->create(new Database('testdb')));
+
+        $after = array_map(static fn (Database $database): array => $database->toArray(), $db->listDatabases());
+        $this->assertSame($before, $after);
 
         $db->dbal()->dropDatabase('testdb');
     }

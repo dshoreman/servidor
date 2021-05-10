@@ -14,12 +14,12 @@ class NewDatabase extends FormRequest
     }
 
     /**
-     * @return array{name: string}
+     * @return array{database: string}
      */
     public function validated(): array
     {
-        return [
-            'name' => (string) parent::validated()['database'],
-        ];
+        $data = parent::validated();
+
+        return array_merge($data, ['database' => (string) $data['database']]);
     }
 }

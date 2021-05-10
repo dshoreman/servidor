@@ -36,35 +36,35 @@ class DatabaseManager
         return $this->connection()->getSchemaManager();
     }
 
-    public function hasDatabase(string $name): bool
+    public function hasDatabase(Database $database): bool
     {
         $matches = array_filter(
             $this->listDatabases(),
-            static fn (array $database): bool => $name === $database['name'],
+            static fn (Database $result): bool => $database->name === $result->name,
         );
 
         return 0 < count($matches);
     }
 
-    /** @return array<array{name: string}> */
+    /** @return array<Database> */
     public function listDatabases(): array
     {
         $databases = array_map(
-            static fn (string $name): array => ['name' => $name],
+            static fn (string $name): Database => new Database($name),
             $this->dbal()->listDatabases(),
         );
 
         return $databases;
     }
 
-    public function create(string $name): bool
+    public function create(Database $database): bool
     {
-        if ($this->hasDatabase($name)) {
+        if ($this->hasDatabase($database)) {
             return true;
         }
 
-        $this->dbal()->createDatabase($name);
+        $this->dbal()->createDatabase($database->name);
 
-        return $this->hasDatabase($name);
+        return $this->hasDatabase($database);
     }
 }
