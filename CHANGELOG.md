@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 * [chore] Added phpinsights to the CI workflow. Run with `make insights`
+* [database] Validation is now handled by its own FormRequest class
 * [projects] New progress modal showing realtime creation progress
 
 ### Changed
