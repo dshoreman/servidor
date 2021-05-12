@@ -3,10 +3,11 @@
 namespace Servidor\Databases;
 
 use Exception;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Foundation\Http\FormRequest;
 use Servidor\Http\Requests\Databases\NewDatabase;
 
-class Database
+class Database implements Arrayable
 {
     public string $name;
 

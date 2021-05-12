@@ -5,7 +5,6 @@ namespace Servidor\Http\Controllers\Databases;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
-use Servidor\Databases\Database;
 use Servidor\Databases\DatabaseManager;
 
 class ListDatabases
@@ -15,9 +14,6 @@ class ListDatabases
 
     public function __invoke(DatabaseManager $manager): JsonResponse
     {
-        return new JsonResponse(array_map(
-            static fn (Database $database): array => $database->toArray(),
-            $manager->listDatabases(),
-        ));
+        return new JsonResponse($manager->listDatabases());
     }
 }

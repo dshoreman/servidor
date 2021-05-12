@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
 use Servidor\Databases\Database;
+use Servidor\Databases\DatabaseCollection;
 use Servidor\Databases\DatabaseManager;
 use Tests\TestCase;
 
@@ -21,16 +22,16 @@ class DatabaseTest extends TestCase
     public function it_can_list_databases(): void
     {
         $db = config('database.connections.mysql.database');
-        $list = array_map(
-            static fn (Database $database): array => $database->toArray(),
-            (new DatabaseManager())->listDatabases(),
-        );
+        $collection = (new DatabaseManager())->listDatabases();
 
-        $this->assertIsArray($list);
-        $this->assertContains(['name' => $db], $list);
-        $this->assertContains(['name' => 'information_schema'], $list);
-        $this->assertContains(['name' => 'performance_schema'], $list);
-        $this->assertContains(['name' => 'mysql'], $list);
+        $this->assertInstanceOf(DatabaseCollection::class, $collection);
+        $this->assertContainsOnlyInstancesOf(Database::class, $collection);
+
+        $this->assertIsArray($array = $collection->toArray());
+        $this->assertContains(['name' => $db], $array);
+        $this->assertContains(['name' => 'information_schema'], $array);
+        $this->assertContains(['name' => 'performance_schema'], $array);
+        $this->assertContains(['name' => 'mysql'], $array);
     }
 
     /** @test */
@@ -60,11 +61,11 @@ class DatabaseTest extends TestCase
     public function it_returns_true_when_created_database_exists(
         DatabaseManager $db
     ): void {
-        $before = array_map(static fn (Database $database): array => $database->toArray(), $db->listDatabases());
+        $before = $db->listDatabases()->toArray();
 
         $this->assertTrue($db->create(new Database('testdb')));
 
-        $after = array_map(static fn (Database $database): array => $database->toArray(), $db->listDatabases());
+        $after = $db->listDatabases()->toArray();
         $this->assertSame($before, $after);
 
         $db->dbal()->dropDatabase('testdb');

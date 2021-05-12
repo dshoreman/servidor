@@ -38,23 +38,14 @@ class DatabaseManager
 
     public function hasDatabase(Database $database): bool
     {
-        $matches = array_filter(
-            $this->listDatabases(),
-            static fn (Database $result): bool => $database->name === $result->name,
-        );
-
-        return 0 < count($matches);
+        return $this->listDatabases()->has($database);
     }
 
-    /** @return array<Database> */
-    public function listDatabases(): array
+    public function listDatabases(): DatabaseCollection
     {
-        $databases = array_map(
-            static fn (string $name): Database => new Database($name),
-            $this->dbal()->listDatabases(),
-        );
+        $databases = $this->dbal()->listDatabases();
 
-        return $databases;
+        return DatabaseCollection::fromNames($databases);
     }
 
     public function create(Database $database): bool
