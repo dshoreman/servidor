@@ -14,11 +14,7 @@ class CreateDatabase extends Controller
     public function __invoke(DatabaseManager $manager, NewDatabase $request): JsonResponse
     {
         try {
-            $database = Database::fromRequest($request);
-
-            $manager->create($database);
-
-            return new JsonResponse($database);
+            return new JsonResponse($manager->create(Database::fromRequest($request)));
         } catch (Exception $_) {
             return new JsonResponse([
                 'error' => 'Could not create database',

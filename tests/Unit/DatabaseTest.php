@@ -44,11 +44,13 @@ class DatabaseTest extends TestCase
         }
 
         $before = $db->dbal()->listDatabases();
-        $created = $db->create(new Database('testdb'));
-        $after = array_merge($before, ['testdb']);
+        $database = $db->create(new Database('testdb'));
 
+        $after = array_merge($before, ['testdb']);
         sort($after);
-        $this->assertTrue($created);
+
+        $this->assertInstanceOf(Database::class, $database);
+        $this->assertEquals('testdb', $database->name);
         $this->assertSame($after, $db->dbal()->listDatabases());
 
         return $db;
@@ -58,12 +60,14 @@ class DatabaseTest extends TestCase
      * @test
      * @depends it_can_create_a_database
      */
-    public function it_returns_true_when_created_database_exists(
+    public function create_returns_database_when_it_already_exists(
         DatabaseManager $db
     ): void {
         $before = $db->listDatabases()->toArray();
+        $database = $db->create(new Database('testdb'));
 
-        $this->assertTrue($db->create(new Database('testdb')));
+        $this->assertInstanceOf(Database::class, $database);
+        $this->assertEquals('testdb', $database->name);
 
         $after = $db->listDatabases()->toArray();
         $this->assertSame($before, $after);

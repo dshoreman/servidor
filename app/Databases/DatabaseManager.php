@@ -4,11 +4,14 @@ namespace Servidor\Databases;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Contracts\Config\Repository;
 
 class DatabaseManager
 {
+    public const DB_CREATE_EXISTS = 1007;
+
     private ?Connection $connection = null;
 
     private function connection(): Connection
@@ -36,11 +39,6 @@ class DatabaseManager
         return $this->connection()->getSchemaManager();
     }
 
-    public function hasDatabase(Database $database): bool
-    {
-        return $this->listDatabases()->has($database);
-    }
-
     public function listDatabases(): DatabaseCollection
     {
         $databases = $this->dbal()->listDatabases();
@@ -48,14 +46,16 @@ class DatabaseManager
         return DatabaseCollection::fromNames($databases);
     }
 
-    public function create(Database $database): bool
+    public function create(Database $database): Database
     {
-        if ($this->hasDatabase($database)) {
-            return true;
+        try {
+            $this->dbal()->createDatabase($database->name);
+        } catch (DriverException $e) {
+            if (self::DB_CREATE_EXISTS !== $e->getErrorCode()) {
+                throw $e;
+            }
         }
 
-        $this->dbal()->createDatabase($database->name);
-
-        return $this->hasDatabase($database);
+        return $this->listDatabases()->firstWhere('name', $database->name);
     }
 }

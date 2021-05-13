@@ -20,16 +20,6 @@ class DatabaseCollection extends Collection
     }
 
     /**
-     * @param Database|string $database
-     */
-    public function has($database): bool
-    {
-        return $this->containsStrict('name', $database instanceof Database
-            ? $database->name
-            : $database);
-    }
-
-    /**
      * @param array<string> $databaseNames
      */
     public static function fromNames(array $databaseNames): self
