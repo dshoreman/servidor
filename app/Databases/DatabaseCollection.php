@@ -2,6 +2,7 @@
 
 namespace Servidor\Databases;
 
+use Exception;
 use Illuminate\Support\Collection;
 
 class DatabaseCollection extends Collection
@@ -20,6 +21,22 @@ class DatabaseCollection extends Collection
     }
 
     /**
+     * @param string        $name
+     * @param Database|null $default
+     */
+    public function get($name, $default = null): Database
+    {
+        if (parent::get($name)) {
+            return $this->items[$name];
+        }
+        if ($default) {
+            return $default;
+        }
+
+        throw new Exception("Database ${name} does not exist.");
+    }
+
+    /**
      * @param array<string> $databaseNames
      */
     public static function fromNames(array $databaseNames): self
@@ -29,6 +46,12 @@ class DatabaseCollection extends Collection
             $databaseNames,
         );
 
-        return new self($databases);
+        return (new self($databases))
+            ->keyBy(static fn (Database $database): string => $database->name);
+    }
+
+    public function toArray(): array
+    {
+        return array_values(parent::toArray());
     }
 }

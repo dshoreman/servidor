@@ -56,6 +56,6 @@ class DatabaseManager
             }
         }
 
-        return $this->listDatabases()->firstWhere('name', $database->name);
+        return $this->listDatabases()->get($database->name);
     }
 }
