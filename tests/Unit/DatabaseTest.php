@@ -22,7 +22,7 @@ class DatabaseTest extends TestCase
     public function it_can_list_databases(): void
     {
         $db = config('database.connections.mysql.database');
-        $collection = (new DatabaseManager())->listDatabases();
+        $collection = (new DatabaseManager())->databases();
 
         $this->assertInstanceOf(DatabaseCollection::class, $collection);
         $this->assertContainsOnlyInstancesOf(Database::class, $collection);
@@ -63,13 +63,13 @@ class DatabaseTest extends TestCase
     public function create_returns_database_when_it_already_exists(
         DatabaseManager $db
     ): void {
-        $before = $db->listDatabases()->toArray();
+        $before = $db->databases()->toArray();
         $database = $db->create(new Database('testdb'));
 
         $this->assertInstanceOf(Database::class, $database);
         $this->assertEquals('testdb', $database->name);
 
-        $after = $db->listDatabases()->toArray();
+        $after = $db->databases()->toArray();
         $this->assertSame($before, $after);
 
         $db->dbal()->dropDatabase('testdb');

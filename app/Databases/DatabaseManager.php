@@ -34,18 +34,6 @@ class DatabaseManager
         return $this->connection;
     }
 
-    public function dbal(): AbstractSchemaManager
-    {
-        return $this->connection()->getSchemaManager();
-    }
-
-    public function listDatabases(): DatabaseCollection
-    {
-        $databases = $this->dbal()->listDatabases();
-
-        return DatabaseCollection::fromNames($databases);
-    }
-
     public function create(Database $database): Database
     {
         try {
@@ -56,6 +44,18 @@ class DatabaseManager
             }
         }
 
-        return $this->listDatabases()->get($database->name);
+        return $this->databases()->get($database->name);
+    }
+
+    public function databases(): DatabaseCollection
+    {
+        $databases = $this->dbal()->listDatabases();
+
+        return DatabaseCollection::fromNames($databases);
+    }
+
+    public function dbal(): AbstractSchemaManager
+    {
+        return $this->connection()->getSchemaManager();
     }
 }
