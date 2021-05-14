@@ -2,9 +2,7 @@
 
 namespace Servidor\Databases;
 
-use Exception;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Foundation\Http\FormRequest;
 use Servidor\Http\Requests\Databases\NewDatabase;
 
 class Database implements Arrayable
@@ -16,13 +14,9 @@ class Database implements Arrayable
         $this->name = $name;
     }
 
-    public static function fromRequest(FormRequest $request): self
+    public static function fromRequest(NewDatabase $request): self
     {
-        if ($request instanceof NewDatabase) {
-            return new self($request->validated()['database']);
-        }
-
-        throw new Exception('Unhandled request type');
+        return new self($request->validated()['database']);
     }
 
     public function toArray(): array

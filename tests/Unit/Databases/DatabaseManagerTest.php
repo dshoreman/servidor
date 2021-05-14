@@ -7,28 +7,23 @@ use Servidor\Databases\Database;
 use Servidor\Databases\DatabaseCollection;
 use Servidor\Databases\DatabaseManager;
 use Tests\TestCase;
+use Tests\Unit\Databases\DummyConnection;
 
-class DatabaseTest extends TestCase
+class DatabaseManagerTest extends TestCase
 {
-    /** @test */
-    public function it_can_connect(): void
-    {
-        $db = new DatabaseManager();
-
-        $this->assertInstanceOf(MySqlSchemaManager::class, $db->dbal());
-    }
+    private DatabaseManager $manager;
 
     /** @test */
     public function it_can_list_databases(): void
     {
-        $db = config('database.connections.mysql.database');
-        $collection = (new DatabaseManager())->databases();
+        $appDb = config('database.connections.mysql.database');
+        $collection = (new DatabaseManager(config()))->databases();
 
         $this->assertInstanceOf(DatabaseCollection::class, $collection);
         $this->assertContainsOnlyInstancesOf(Database::class, $collection);
 
         $this->assertIsArray($array = $collection->toArray());
-        $this->assertContains(['name' => $db], $array);
+        $this->assertContains(['name' => $appDb], $array);
         $this->assertContains(['name' => 'information_schema'], $array);
         $this->assertContains(['name' => 'performance_schema'], $array);
         $this->assertContains(['name' => 'mysql'], $array);
@@ -37,23 +32,22 @@ class DatabaseTest extends TestCase
     /** @test */
     public function it_can_create_a_database(): DatabaseManager
     {
-        $db = new DatabaseManager();
+        $manager = new DatabaseManager(config(), new DummyConnection());
 
-        if (in_array('testdb', $db->dbal()->listDatabases())) {
-            $db->dbal()->dropDatabase('testdb');
-        }
+        $data = new Database('testdb');
+        $before = $manager->databases()->toArray();
+        $expected = array_merge($before, [$data->toArray()]);
 
-        $before = $db->dbal()->listDatabases();
-        $database = $db->create(new Database('testdb'));
-
-        $after = array_merge($before, ['testdb']);
-        sort($after);
+        $database = $manager->create($data);
+        $actual = $manager->databases()->toArray();
+        sort($expected);
 
         $this->assertInstanceOf(Database::class, $database);
         $this->assertEquals('testdb', $database->name);
-        $this->assertSame($after, $db->dbal()->listDatabases());
+        $this->assertCount(1 + count($before), $actual);
+        $this->assertSame($expected, $actual);
 
-        return $db;
+        return $manager;
     }
 
     /**
@@ -61,17 +55,14 @@ class DatabaseTest extends TestCase
      * @depends it_can_create_a_database
      */
     public function create_returns_database_when_it_already_exists(
-        DatabaseManager $db
+        DatabaseManager $manager
     ): void {
-        $before = $db->databases()->toArray();
-        $database = $db->create(new Database('testdb'));
+        $before = $manager->databases()->toArray();
+        $database = $manager->create(new Database('testdb'));
 
         $this->assertInstanceOf(Database::class, $database);
         $this->assertEquals('testdb', $database->name);
-
-        $after = $db->databases()->toArray();
-        $this->assertSame($before, $after);
-
-        $db->dbal()->dropDatabase('testdb');
+        $this->assertCount(count($before), $manager->databases());
+        $this->assertSame($before, $manager->databases()->toArray());
     }
 }

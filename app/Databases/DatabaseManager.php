@@ -12,32 +12,27 @@ class DatabaseManager
 {
     public const DB_CREATE_EXISTS = 1007;
 
-    private ?Connection $connection = null;
+    private Connection $connection;
 
-    private function connection(): Connection
+    private ?AbstractSchemaManager $manager;
+
+    public function __construct(Repository $config, ?Connection $connection = null)
     {
-        if (isset($this->connection)) {
-            return $this->connection;
-        }
-
-        $config = config();
-        assert($config instanceof Repository);
         $socket = (string) $config->get('database.connections.mysql.unix_socket');
 
-        $this->connection = DriverManager::getConnection(
-            array_merge((array) config('database.dbal'), [
+        $this->connection = $connection ?? DriverManager::getConnection(
+            array_merge((array) $config->get('database.dbal'), [
                 'driver' => 'pdo_mysql',
                 'unix_socket' => $socket,
             ]),
         );
-
-        return $this->connection;
+        $this->manager = $this->connection->getSchemaManager();
     }
 
     public function create(Database $database): Database
     {
         try {
-            $this->dbal()->createDatabase($database->name);
+            $this->manager->createDatabase($database->name);
         } catch (DriverException $e) {
             if (self::DB_CREATE_EXISTS !== $e->getErrorCode()) {
                 throw $e;
@@ -49,13 +44,8 @@ class DatabaseManager
 
     public function databases(): DatabaseCollection
     {
-        $databases = $this->dbal()->listDatabases();
+        $databases = $this->manager->listDatabases();
 
         return DatabaseCollection::fromNames($databases);
-    }
-
-    public function dbal(): AbstractSchemaManager
-    {
-        return $this->connection()->getSchemaManager();
     }
 }
