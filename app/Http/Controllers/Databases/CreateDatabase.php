@@ -2,7 +2,7 @@
 
 namespace Servidor\Http\Controllers\Databases;
 
-use Exception;
+use Doctrine\DBAL\Exception;
 use Illuminate\Http\JsonResponse;
 use Servidor\Databases\Database;
 use Servidor\Databases\DatabaseManager;

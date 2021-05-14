@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Api;
 
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Http\JsonResponse;
+use Mockery\MockInterface;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
@@ -15,8 +17,12 @@ class NewDatabaseTest extends TestCase
     /** @test */
     public function can_create_a_database(): void
     {
-        $data = ['database' => 'caniplz'];
-        $response = $this->authed()->postJson($this->endpoint, $data);
+        $this->mock(AbstractSchemaManager::class, function (MockInterface $manager): void {
+            $manager->shouldReceive('createDatabase')->once()->with('caniplz');
+            $manager->shouldReceive('listDatabases')->once()->andReturn(['caniplz']);
+        });
+
+        $response = $this->authed()->postJson($this->endpoint, ['database' => 'caniplz']);
 
         $response->assertOk();
         $this->assertSame(['name' => 'caniplz'], $response->json());
