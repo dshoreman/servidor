@@ -1,0 +1,23 @@
+  version: 2
+  updates:
+    - package-ecosystem: composer
+      rebase-strategy: disabled
+      versioning-strategy: increase
+      directory: /
+      assignees:
+        - dshoreman
+      reviewers:
+        - dshoreman
+      schedule:
+        interval: daily
+        time: 23:40
+
+    - package-ecosystem: github-actions
+      rebase-strategy: disabled
+      directory: /
+      assignees:
+        - dshoreman
+      reviewers:
+        - dshoreman
+      schedule:
+        interval: weekly
