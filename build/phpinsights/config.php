@@ -29,6 +29,10 @@ return [
     'ide' => null,
 
     'exclude' => [
+        // This should really be in config for the ForbiddenPublicProperty
+        // sniff so that other rules are applied to it, but in the insight
+        // configs, only full paths work, not wildcards / suffixes.
+        '*Data.php',
     ],
 
     'add' => [

@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use Servidor\Http\Controllers\Auth\Login;
 use Servidor\Http\Controllers\Auth\Logout;
 use Servidor\Http\Controllers\Auth\Register;
-use Servidor\Http\Controllers\DatabaseController;
+use Servidor\Http\Controllers\Databases\CreateDatabase;
+use Servidor\Http\Controllers\Databases\ListDatabases;
 use Servidor\Http\Controllers\FallbackController;
 use Servidor\Http\Controllers\Files\CreateNode;
 use Servidor\Http\Controllers\Files\DeletePath;
@@ -49,9 +50,10 @@ Route::middleware('auth:api')->group(function (): void {
         Route::delete('{project}', RemoveProject::class);
     });
 
-    Route::resource('databases', DatabaseController::class, [
-        'only' => ['index', 'store'],
-    ]);
+    Route::name('databases.')->prefix('/databases')->group(function (): void {
+        Route::get('/', ListDatabases::class);
+        Route::post('/', CreateDatabase::class);
+    });
 
     Route::get('files', ListOrShowPath::class);
     Route::put('files', EditFile::class);

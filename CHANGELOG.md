@@ -8,11 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-* New progress modal showing realtime progress of project creation/deployment
+* [chore] Added phpinsights to the CI workflow. Run with `make insights`
+* [database] Validation is now handled by its own FormRequest class
+* [projects] New progress modal showing realtime creation progress
+
+### Changed
+* [database] Create and list endpoints return DatabaseData objects, not just names
 
 ### Fixed
-* Removed a rogue '>' from the New Project confirmation page
-* Projects no longer prompt to discard changes on successful creation
+* [database] Tests no longer create databases using the real connection
+* [projects] Removed a rogue '>' from the New Project confirmation page
+* [projects] Successful project creation no longer prompts to discard changes
 
 
 ## [0.12.0] - 2021-04-04
