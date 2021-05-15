@@ -10,7 +10,7 @@
         - dshoreman
       schedule:
         interval: daily
-        time: 23:40
+        time: "23:45"
 
     - package-ecosystem: github-actions
       rebase-strategy: disabled
