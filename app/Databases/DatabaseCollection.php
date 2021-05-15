@@ -8,12 +8,12 @@ use Illuminate\Support\Collection;
 class DatabaseCollection extends Collection
 {
     /**
-     * @var array<Database>
+     * @var array<DatabaseData>
      */
     protected $items = [];
 
     /**
-     * @return array<Database>
+     * @return array<DatabaseData>
      */
     public function all(): array
     {
@@ -21,10 +21,10 @@ class DatabaseCollection extends Collection
     }
 
     /**
-     * @param string        $name
-     * @param Database|null $default
+     * @param string            $name
+     * @param DatabaseData|null $default
      */
-    public function get($name, $default = null): Database
+    public function get($name, $default = null): DatabaseData
     {
         if (parent::get($name)) {
             return $this->items[$name];
@@ -42,12 +42,12 @@ class DatabaseCollection extends Collection
     public static function fromNames(array $databaseNames): self
     {
         $databases = array_map(
-            static fn (string $name): Database => new Database($name),
+            static fn (string $name): DatabaseData => new DatabaseData($name),
             $databaseNames,
         );
 
         return (new self($databases))
-            ->keyBy(static fn (Database $database): string => $database->name);
+            ->keyBy(static fn (DatabaseData $database): string => $database->name);
     }
 
     public function toArray(): array

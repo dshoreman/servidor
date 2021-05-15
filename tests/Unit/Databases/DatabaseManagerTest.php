@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Databases;
 
-use Servidor\Databases\Database;
 use Servidor\Databases\DatabaseCollection;
+use Servidor\Databases\DatabaseData;
 use Servidor\Databases\DatabaseManager;
 use Tests\TestCase;
 
@@ -19,7 +19,7 @@ class DatabaseManagerTest extends TestCase
         $collection = $manager->databases();
 
         $this->assertInstanceOf(DatabaseCollection::class, $collection);
-        $this->assertContainsOnlyInstancesOf(Database::class, $collection);
+        $this->assertContainsOnlyInstancesOf(DatabaseData::class, $collection);
 
         return $manager;
     }
@@ -45,7 +45,7 @@ class DatabaseManagerTest extends TestCase
      */
     public function it_can_create_a_database(DatabaseManager $manager): DatabaseManager
     {
-        $data = new Database('testdb');
+        $data = new DatabaseData('testdb');
         $before = $manager->databases()->toArray();
         $expected = array_merge($before, [$data->toArray()]);
 
@@ -53,7 +53,7 @@ class DatabaseManagerTest extends TestCase
         $actual = $manager->databases()->toArray();
         sort($expected);
 
-        $this->assertInstanceOf(Database::class, $database);
+        $this->assertInstanceOf(DatabaseData::class, $database);
         $this->assertEquals('testdb', $database->name);
         $this->assertCount(1 + count($before), $actual);
         $this->assertSame($expected, $actual);
@@ -69,9 +69,9 @@ class DatabaseManagerTest extends TestCase
         DatabaseManager $manager
     ): void {
         $before = $manager->databases()->toArray();
-        $database = $manager->create(new Database('testdb'));
+        $database = $manager->create(new DatabaseData('testdb'));
 
-        $this->assertInstanceOf(Database::class, $database);
+        $this->assertInstanceOf(DatabaseData::class, $database);
         $this->assertEquals('testdb', $database->name);
         $this->assertCount(count($before), $manager->databases());
         $this->assertSame($before, $manager->databases()->toArray());

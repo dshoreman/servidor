@@ -30,7 +30,7 @@ class DatabaseManager
         $this->manager = $manager ?: new MySqlSchemaManager($this->connection);
     }
 
-    public function create(Database $database): Database
+    public function create(DatabaseData $database): DatabaseData
     {
         try {
             $this->manager->createDatabase($database->name);

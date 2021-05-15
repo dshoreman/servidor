@@ -3,8 +3,8 @@
 namespace Tests\Unit\Databases;
 
 use PHPUnit\Framework\TestCase;
-use Servidor\Databases\Database;
 use Servidor\Databases\DatabaseCollection;
+use Servidor\Databases\DatabaseData;
 
 class DatabaseCollectionTest extends TestCase
 {
@@ -12,7 +12,7 @@ class DatabaseCollectionTest extends TestCase
     public function get_returns_default_if_not_found(): void
     {
         $collection = new DatabaseCollection();
-        $default = new Database('NOMATCH');
+        $default = new DatabaseData('NOMATCH');
 
         $this->assertInstanceOf(DatabaseCollection::class, $collection);
         $this->assertEquals('NOMATCH', $collection->get('c', $default)->name);
