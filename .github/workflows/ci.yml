@@ -90,7 +90,7 @@ jobs:
           make phpcs
           echo "::endgroup::"
       - name: Run PHP mess detection tool
-        run: make phpmd
+        run: make phpmd PHPMD_FORMAT="github"
       - name: Check for magic numbers
         run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
       - name: Gather PHP insights

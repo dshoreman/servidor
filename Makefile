@@ -8,6 +8,7 @@ INSIGHT_ARGS := --no-interaction $(INSIGHT_ARGS) --verbose
 PHP_CSF_ARGS := --diff --dry-run $(CS_ARGS)
 PHP_MND_ARGS := --progress $(MND_ARGS) --exclude tests
 PHP_STAN_CMD := analyze $(STAN_ARGS)
+PHPMD_FORMAT ?= ansi
 
 installer: thinkdifferent
 	@echo -n "Building unified install script... "
@@ -98,7 +99,7 @@ insights:
 	vendor/bin/phpinsights $(INSIGHT_ARGS) --config-path=build/phpinsights/config.php
 
 phpmd:
-	vendor/bin/phpmd app ansi build/phpmd/rules.xml
+	vendor/bin/phpmd app ${PHPMD_FORMAT} build/phpmd/rules.xml
 
 phpmnd:
 	vendor/bin/phpmnd . $(PHP_MND_ARGS)
