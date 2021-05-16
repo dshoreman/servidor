@@ -90,7 +90,7 @@ jobs:
           make phpcs
           echo "::endgroup::"
       - name: Run PHP mess detection tool
-        run: make phpmd
+        run: make phpmd PHPMD_FORMAT="github"
       - name: Check for magic numbers
         run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
       - name: Gather PHP insights
@@ -105,7 +105,12 @@ jobs:
           make psalm
           echo "::endgroup::"
       - name: Run tests with PHPUnit
-        run: make test-for-ci
+        uses: nick-invision/retry@v2
+        with:
+          command: make test-for-ci
+          timeout_minutes: 2
+          max_attempts: 3
+          retry_on: error
       - name: Upload coverage results
         uses: codecov/codecov-action@v1
       - name: Check Laravel log
