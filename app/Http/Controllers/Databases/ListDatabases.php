@@ -14,6 +14,6 @@ class ListDatabases
 
     public function __invoke(DatabaseManager $manager): JsonResponse
     {
-        return new JsonResponse($manager->databases()->toArray());
+        return new JsonResponse($manager->detailedDatabases()->toArray());
     }
 }

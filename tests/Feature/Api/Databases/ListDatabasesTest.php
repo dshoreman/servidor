@@ -30,4 +30,14 @@ class ListDatabasesTest extends TestCase
         $response->assertUnauthorized();
         $response->assertExactJson(['message' => 'Unauthenticated.']);
     }
+
+    /** @test */
+    public function list_includes_table_counts(): void
+    {
+        $response = $this->authed()->getJson($this->endpoint);
+
+        $response->assertOk();
+        $response->assertJsonStructure([['name', 'tableCount']]);
+        $this->assertIsNumeric($response->json()[0]['tableCount']);
+    }
 }

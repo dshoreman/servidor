@@ -43,6 +43,21 @@ class DatabaseManagerTest extends TestCase
      * @test
      * @depends it_can_list_databases
      */
+    public function it_can_list_databases_with_table_counts(DatabaseManager $manager): void
+    {
+        $databases = $manager->detailedDatabases();
+
+        $this->assertInstanceOf(DatabaseCollection::class, $databases);
+
+        $database = $databases->get('servidor_testing');
+        $this->assertObjectHasAttribute('tableCount', $database);
+        $this->assertEquals(8, $database->tableCount);
+    }
+
+    /**
+     * @test
+     * @depends it_can_list_databases
+     */
     public function it_can_create_a_database(DatabaseManager $manager): DatabaseManager
     {
         $data = new DatabaseData('testdb');
