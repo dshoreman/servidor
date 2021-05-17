@@ -21,7 +21,7 @@
         "dms/phpunit-arraysubset-asserts": "^0.2.1",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.13",
-        "friendsofphp/php-cs-fixer": "~2.18",
+        "friendsofphp/php-cs-fixer": "~2.19",
         "itsgoingd/clockwork": "^5.0",
         "mockery/mockery": "^1.4",
         "nunomaduro/collision": "^5.3",
