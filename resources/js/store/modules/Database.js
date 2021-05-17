@@ -37,7 +37,7 @@ export default {
     getters: {
         all: state => state.databases,
         filtered: state => state.databases.filter(
-            db => db.toLowerCase().includes(state.search.toLowerCase()),
+            db => db.name.toLowerCase().includes(state.search.toLowerCase()),
         ),
     },
 };
