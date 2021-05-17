@@ -25,7 +25,7 @@ class NewDatabaseTest extends TestCase
         $response = $this->authed()->postJson($this->endpoint, ['database' => 'caniplz']);
 
         $response->assertOk();
-        $this->assertSame(['name' => 'caniplz'], $response->json());
+        $response->assertJsonFragment(['name' => 'caniplz']);
     }
 
     /** @test */

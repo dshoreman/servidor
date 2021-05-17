@@ -21,6 +21,9 @@ class DatabaseDataTest extends TestCase
         $this->assertObjectHasAttribute('name', $database);
         $this->assertObjectNotHasAttribute('database', $database);
         $this->assertEquals('validated_db_name', $database->name);
+
+        $this->assertObjectHasAttribute('tableCount', $database);
+        $this->assertNull($database->tableCount);
     }
 
     public function testToArray(): void
@@ -32,5 +35,20 @@ class DatabaseDataTest extends TestCase
         $this->assertIsArray($array);
         $this->assertArrayHasKey('name', $array);
         $this->assertEquals('name_only', $array['name']);
+
+        $this->assertArrayHasKey('tableCount', $array);
+        $this->assertNull($array['tableCount']);
+    }
+
+    public function testWithTableCount(): void
+    {
+        $database = new DatabaseData('counted_tables', 13);
+
+        $this->assertInstanceOf(DatabaseData::class, $database);
+        $this->assertObjectHasAttribute('tableCount', $database);
+        $this->assertArrayHasKey('tableCount', $database->toArray());
+
+        $this->assertIsInt($database->tableCount);
+        $this->assertEquals(13, $database->tableCount);
     }
 }
