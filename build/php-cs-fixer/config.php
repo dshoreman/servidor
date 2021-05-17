@@ -1,5 +1,9 @@
 <?php
 
+use PhpCsFixer\Config;
+
+$config = new Config();
+
 $finder = (new PhpCsFixer\Finder())
     ->notName('*.blade.php')
     ->notName('_ide_helper.php')
@@ -8,8 +12,7 @@ $finder = (new PhpCsFixer\Finder())
     ->notPath('storage')
     ->in(dirname(__DIR__, 2));
 
-return PhpCsFixer\Config::create()
-    ->setFinder($finder)
+$config->setFinder($finder)
     ->setUsingCache(false)
     ->setLineEnding("\n")
     ->setRiskyAllowed(true)
@@ -47,3 +50,5 @@ return PhpCsFixer\Config::create()
         '@PHPUnit84Migration:risky' => true,
         'declare_strict_types' => false,
     ]);
+
+return $config;
