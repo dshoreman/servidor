@@ -32,10 +32,10 @@ class ListBranches extends Controller
         $repo = $data['repository'] ?? '';
         $provider = $data['provider'] ?? 'custom';
 
-        if (!is_string($repo) || '' === $repo) {
+        if (!\is_string($repo) || '' === $repo) {
             throw $this->fail('repository', 'Missing repository.');
         }
-        if (!is_string($provider)) {
+        if (!\is_string($provider)) {
             throw $this->fail('provider', 'Invalid provider.');
         }
         if (!isset($this->patterns[$provider])) {

@@ -95,7 +95,7 @@ class ListUsersTest extends TestCase
     {
         $responseJson = json_decode($response->getContent());
 
-        $this->assertEquals('array', gettype($responseJson));
+        $this->assertEquals('array', \gettype($responseJson));
 
         $response->assertJsonStructure([$this->expectedKeys]);
     }

@@ -70,7 +70,7 @@ class DatabaseManagerTest extends TestCase
 
         $this->assertInstanceOf(DatabaseData::class, $database);
         $this->assertEquals('testdb', $database->name);
-        $this->assertCount(1 + count($before), $actual);
+        $this->assertCount(1 + \count($before), $actual);
         $this->assertSame($expected, $actual);
 
         return $manager;
@@ -88,7 +88,7 @@ class DatabaseManagerTest extends TestCase
 
         $this->assertInstanceOf(DatabaseData::class, $database);
         $this->assertEquals('testdb', $database->name);
-        $this->assertCount(count($before), $manager->databases());
+        $this->assertCount(\count($before), $manager->databases());
         $this->assertSame($before, $manager->databases()->toArray());
     }
 }

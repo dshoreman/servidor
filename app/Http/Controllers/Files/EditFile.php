@@ -14,7 +14,7 @@ class EditFile extends Controller
     {
         $filepath = $request->query('file');
 
-        if (!$filepath || !is_string($filepath)) {
+        if (!$filepath || !\is_string($filepath)) {
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 

@@ -68,7 +68,7 @@ class User
         $users = collect();
 
         foreach ($lines as $line) {
-            assert(is_string($line));
+            \assert(\is_string($line));
 
             $user = new self(
                 array_combine($keys, explode(':', $line)),

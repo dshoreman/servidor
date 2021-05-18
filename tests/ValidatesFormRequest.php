@@ -80,7 +80,7 @@ trait ValidatesFormRequest
     private function validationMessage(string $field, $value, string $expected, string $actual): string
     {
         return "Expected field '{$field}' to {$expected} validation with value '"
-            . (is_array($value) || is_object($value)
+            . (\is_array($value) || \is_object($value)
             ? json_encode($value) : $value) . "', but it {$actual}.";
     }
 

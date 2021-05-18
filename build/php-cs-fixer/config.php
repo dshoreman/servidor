@@ -19,6 +19,7 @@ $config->setFinder($finder)
     ->setRiskyAllowed(true)
     ->setRules([
         '@PhpCsFixer' => true,
+        '@PhpCsFixer:risky' => true,
         '@PHP80Migration' => true,
         '@PHP80Migration:risky' => true,
         '@PHPUnit84Migration:risky' => true,
@@ -35,7 +36,12 @@ $config->setFinder($finder)
         // PhpCsFixer Overrides
         'ordered_class_elements' => ['order' => ['use_trait']],
         'php_unit_internal_class' => false,
+        'php_unit_test_annotation' => false,
         'php_unit_test_class_requires_covers' => false,
+        'php_unit_test_case_static_method_calls' => false,
+        'php_unit_set_up_tear_down_visibility' => false,
+        'php_unit_construct' => false,
+        'php_unit_strict' => false,
         'phpdoc_add_missing_param_annotation' => false,
         'phpdoc_types_order' => [
             'sort_algorithm' => 'alpha',
@@ -44,7 +50,6 @@ $config->setFinder($finder)
 
         // Other Rules
         'backtick_to_shell_exec' => true,
-        'comment_to_phpdoc' => true,
         'global_namespace_import' => [
             'import_classes' => true,
         ],

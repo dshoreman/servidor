@@ -62,7 +62,7 @@ class Redirect extends Model implements Domainable
     public function writeNginxConfig(): void
     {
         $view = view('projects.app-templates.redirect');
-        assert($view instanceof View);
+        \assert($view instanceof View);
 
         $src = "vhosts/{$this->domain_name}.conf";
         $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";

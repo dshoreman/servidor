@@ -13,7 +13,7 @@ class Logout extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $guard = Auth::guard('web');
-        assert($guard instanceof StatefulGuard);
+        \assert($guard instanceof StatefulGuard);
 
         $guard->logout();
         $request->session()->invalidate();

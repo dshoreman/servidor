@@ -24,7 +24,7 @@ abstract class TestCase extends BaseTestCase
             $endpoint = str_replace('{id}', $id, $endpoint);
         } elseif (is_numeric($id)) {
             $endpoint .= '/' . $id;
-        } elseif (is_array($id) && count($id) > 0) {
+        } elseif (\is_array($id) && \count($id) > 0) {
             $parts = [];
 
             foreach ($id as $param => $value) {

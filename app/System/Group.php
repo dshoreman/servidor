@@ -127,7 +127,7 @@ class Group
         $groups = collect();
 
         foreach ($lines as $line) {
-            assert(is_string($line));
+            \assert(\is_string($line));
 
             $group = array_combine($keys, explode(':', $line));
             $group['users'] = '' === $group['users'] ? [] : explode(',', $group['users']);
@@ -160,7 +160,7 @@ class Group
      */
     private function refresh($nameOrGid): self
     {
-        $arr = is_int($nameOrGid)
+        $arr = \is_int($nameOrGid)
              ? posix_getgrgid($nameOrGid)
              : posix_getgrnam($nameOrGid);
 
