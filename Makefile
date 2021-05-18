@@ -4,6 +4,7 @@ SHELL = bash -eo pipefail
 GNU_SED := $(shell command -v gsed || command -v sed)
 
 now := `date '+%Y-%m-%d_%H%M'`
+CS_ARGS ?= --show-progress=dots --verbose
 INSIGHT_ARGS := --no-interaction $(INSIGHT_ARGS) --verbose
 PHP_CSF_ARGS := --diff --dry-run $(CS_ARGS)
 PHP_MND_ARGS := --progress $(MND_ARGS) --exclude tests
