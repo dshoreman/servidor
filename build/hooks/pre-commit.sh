@@ -31,17 +31,28 @@ if [[ ! -f "$csFixerBin" ]] || [[ ! -x "$csFixerBin" ]]; then
     fi
 fi
 
-if [[ -n "${stagedProjectFiles}" ]]; then for file in $stagedProjectFiles; do
-    if echo "$file" | egrep -q "\.(php)$"; then
+if [[ -n "${stagedProjectFiles}" ]]; then
+    let stashed=false
+    if [[ "$(git diff --name-only)" != "" ]]; then
+        echo "${cOrange} Found unstaged changes, stashing first!"
+        git stash push --keep-index -m PRECOMMIT
+        stashed=true
+    fi
+
+    for file in $stagedProjectFiles; do if echo "$file" | egrep -q "\.(php)$"; then
         if ! php -l -d display_errors=0 "$file"; then
             echo "${cRed} File ${file} contains syntax errors.${cEnd}"
             echo && exit 2;
         fi
 
         echo "${cGreen} Fixing file ${file}...${cEnd}"
-
-        result=$( $csFixerBin fix --config=build/cs-fixer/config.php $file )
+        result=$( $csFixerBin fix --config=build/php-cs-fixer/config.php $file )
         echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
-        git add --patch "$file"
+        git add "$file"
+    fi; done
+
+    if [ "$stashed" = true ]; then
+        echo "Restoring stashed changes..."
+        git stash pop
     fi
-done; fi
+fi
