@@ -30,9 +30,9 @@ return [
     'connections' => [
         'pusher' => [
             'driver' => 'pusher',
-            'key' => env('MIX_PUSHER_APP_KEY'),
-            'secret' => env('MIX_PUSHER_APP_SECRET'),
-            'app_id' => env('MIX_PUSHER_APP_ID'),
+            'key' => env('MIX_PUSHER_APP_KEY', ''),
+            'secret' => env('MIX_PUSHER_APP_SECRET', ''),
+            'app_id' => env('MIX_PUSHER_APP_ID', ''),
             'options' => [
                 'cluster' => env('MIX_PUSHER_APP_CLUSTER', 'eu'),
                 'useTLS' => true,
