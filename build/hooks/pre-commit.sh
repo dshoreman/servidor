@@ -39,20 +39,24 @@ if [[ -n "${stagedProjectFiles}" ]]; then
         stashed=true
     fi
 
+    let phpFiles=0
     for file in $stagedProjectFiles; do if echo "$file" | egrep -q "\.(php)$"; then
         if ! php -l -d display_errors=0 "$file"; then
             echo "${cRed} File ${file} contains syntax errors.${cEnd}"
             echo && exit 2;
         fi
-
-        echo "${cGreen} Fixing file ${file}...${cEnd}"
-        result=$( $csFixerBin fix --config=build/php-cs-fixer/config.php $file )
-        echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
-        git add "$file"
+        phpFiles+=1
     fi; done
+
+    if [[ phpFiles -gt 0 ]]; then
+        echo "${cGreen} Fixing files...${cEnd}"
+        result=$( $csFixerBin fix --config=build/php-cs-fixer/config.php )
+        echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
+        git add --update
+    fi
 
     if [ "$stashed" = true ]; then
         echo "Restoring stashed changes..."
-        git stash pop
+        git stash pop --quiet
     fi
 fi
