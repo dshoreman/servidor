@@ -30,7 +30,7 @@
         "phan/phan": "4.x",
         "phpmd/phpmd": "^2.10",
         "phpmetrics/phpmetrics": "^2.5",
-        "phpstan/phpstan": "^0.12.87",
+        "phpstan/phpstan": "^0.12.88",
         "phpstan/phpstan-mockery": "^0.12.13",
         "phpunit/phpunit": "^9.5",
         "povils/phpmnd": "dev-php8",
