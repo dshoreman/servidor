@@ -26,7 +26,7 @@ class UserFactory extends Factory
      */
     public function unverified(): Factory
     {
-        return $this->state(function () {
+        return $this->state(static function () {
             return [
                 'email_verified_at' => null,
             ];

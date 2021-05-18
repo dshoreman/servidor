@@ -16,7 +16,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
-        $this->routes(function (): void {
+        $this->routes(static function (): void {
             Route::prefix('api')
                 ->middleware('api')
                 ->group(base_path('routes/api.php'));
@@ -28,7 +28,7 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function configureRateLimiting(): void
     {
-        RateLimiter::for('api', function (Request $request) {
+        RateLimiter::for('api', static function (Request $request) {
             /** @var ?\Servidor\User $user */
             $user = $request->user();
 

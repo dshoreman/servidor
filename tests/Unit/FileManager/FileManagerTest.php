@@ -96,7 +96,7 @@ class FileManagerTest extends TestCase
 
         $this->assertIsArray($list);
 
-        $matches = array_filter($list, fn ($a) => in_array($a['filename'], $dirs));
+        $matches = array_filter($list, static fn ($a) => in_array($a['filename'], $dirs));
 
         $this->assertCount(5, $matches);
         foreach ($matches as $match) {

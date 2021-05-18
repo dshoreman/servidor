@@ -18,6 +18,9 @@ $config->setFinder($finder)
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
+        '@PHP80Migration' => true,
+        '@PHP80Migration:risky' => true,
+        '@PHPUnit84Migration:risky' => true,
 
         // Symfony Overrides
         'braces' => [
@@ -43,14 +46,10 @@ $config->setFinder($finder)
         'no_useless_else' => true,
         'nullable_type_declaration_for_default_null_value' => true,
         'phpdoc_order' => true,
+        'static_lambda' => true,
 
         // New PHP Functionality
-        '@PHP80Migration' => true,
-        '@PHP80Migration:risky' => true,
-        '@PHPUnit84Migration:risky' => true,
         'declare_strict_types' => false,
-
-        // Stricter migration overrides
         'trailing_comma_in_multiline' => [
             'after_heredoc' => true,
             'elements' => ['arrays', 'arguments'], // TODO: Add 'parameters' once we drop PHP 7.4
