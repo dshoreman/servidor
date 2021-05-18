@@ -143,7 +143,8 @@ class Group
         $this->group
             ->setName((string) $data['name'])
             ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
-            ->setUsers(isset($data['users']) ? (array) $data['users'] : null);
+            ->setUsers(isset($data['users']) ? (array) $data['users'] : null)
+        ;
 
         if (!$this->group->isDirty()) {
             throw new GroupNotModified();

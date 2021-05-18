@@ -82,7 +82,7 @@ class HtmlTest extends TestCase
     public function outdated_symlinks_get_replaced(Application $app): void
     {
         $link = '/etc/nginx/sites-enabled/symlinkery.dev.conf';
-        exec("sudo rm ${link} && sudo ln -s /dev/null ${link}");
+        exec("sudo rm {$link} && sudo ln -s /dev/null {$link}");
         $this->assertNotEquals($link, readlink($link));
 
         $app->source_branch = 'develop';
@@ -150,7 +150,7 @@ class HtmlTest extends TestCase
         ]));
         $app->template()->pullCode();
 
-        $stat = system("stat -c '%a' \"${path}\"");
+        $stat = system("stat -c '%a' \"{$path}\"");
 
         $this->assertDirectoryExists($path);
         $this->assertEquals(755, $stat);

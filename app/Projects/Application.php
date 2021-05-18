@@ -159,12 +159,15 @@ class Application extends Model
         switch ($this->templatesNamespace . Str::studly(Str::lower($template))) {
             case Html::class:
                 return new Html($this);
+
             case Php::class:
                 return new Php($this);
+
             case Laravel::class:
                 return new Laravel($this);
+
             default:
-                throw new Exception("Invalid template '${template}'.");
+                throw new Exception("Invalid template '{$template}'.");
         }
     }
 

@@ -10,14 +10,15 @@ $finder = (new PhpCsFixer\Finder())
     ->notPath('bootstrap/cache')
     ->notPath('node_modules')
     ->notPath('storage')
-    ->in(dirname(__DIR__, 2));
+    ->in(dirname(__DIR__, 2))
+;
 
 $config->setFinder($finder)
     ->setUsingCache(false)
     ->setLineEnding("\n")
     ->setRiskyAllowed(true)
     ->setRules([
-        '@Symfony' => true,
+        '@PhpCsFixer' => true,
         '@PHP80Migration' => true,
         '@PHP80Migration:risky' => true,
         '@PHPUnit84Migration:risky' => true,
@@ -31,17 +32,23 @@ $config->setFinder($finder)
         ],
         'php_unit_method_casing' => false,
 
+        // PhpCsFixer Overrides
+        'ordered_class_elements' => ['order' => ['use_trait']],
+        'php_unit_internal_class' => false,
+        'php_unit_test_class_requires_covers' => false,
+        'phpdoc_add_missing_param_annotation' => false,
+        'phpdoc_types_order' => [
+            'sort_algorithm' => 'alpha',
+            'null_adjustment' => 'always_last',
+        ],
+
         // Other Rules
-        'array_indentation' => true,
         'backtick_to_shell_exec' => true,
-        'combine_consecutive_issets' => true,
-        'combine_consecutive_unsets' => true,
+        'comment_to_phpdoc' => true,
         'global_namespace_import' => [
             'import_classes' => true,
         ],
         'mb_str_functions' => true,
-        'multiline_comment_opening_closing' => true,
-        'no_useless_else' => true,
         'nullable_type_declaration_for_default_null_value' => true,
         'phpdoc_order' => true,
         'static_lambda' => true,
@@ -52,6 +59,7 @@ $config->setFinder($finder)
             'after_heredoc' => true,
             'elements' => ['arrays', 'arguments'], // TODO: Add 'parameters' once we drop PHP 7.4
         ],
-    ]);
+    ])
+;
 
 return $config;

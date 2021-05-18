@@ -47,7 +47,8 @@ class FileManager
         /** @psalm-suppress TooManyArguments - sortByName */
         $files = $this->finder->depth(0)->in($path)
             ->sortByName(true)
-            ->ignoreDotFiles(false);
+            ->ignoreDotFiles(false)
+        ;
 
         /** @var array{SplFileInfo|string} $files */
         $files = iterator_to_array($files, false);

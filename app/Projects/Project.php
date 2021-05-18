@@ -16,9 +16,9 @@ use Illuminate\Support\Carbon;
  * @property bool                          $is_enabled
  * @property ?Carbon                       $created_at
  * @property ?Carbon                       $updated_at
- * @property Collection|array<Application> $applications
+ * @property array<Application>|Collection $applications
  * @property ?int                          $applications_count
- * @property Collection|array<Redirect>    $redirects
+ * @property array<Redirect>|Collection    $redirects
  * @property ?int                          $redirects_count
  *
  * @method static Builder|Project query()

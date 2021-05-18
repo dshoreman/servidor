@@ -108,7 +108,8 @@ class User
             ->setShell((string) ($data['shell'] ?? ''))
             ->setGroups(isset($data['groups']) ? (array) $data['groups'] : null)
             ->setMoveHome((bool) ($data['move_home'] ?? false))
-            ->setHomeDirectory((string) ($data['dir'] ?? ''));
+            ->setHomeDirectory((string) ($data['dir'] ?? ''))
+        ;
 
         if (!$this->user->isDirty()) {
             throw new UserNotModified();

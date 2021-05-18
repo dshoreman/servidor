@@ -29,7 +29,7 @@ class ListBranchesTest extends TestCase
     public function user_can_list_branches(string $repo, ?string $provider = ''): void
     {
         $response = $this->authed()->getJson($this->endpoint . '?' . (
-            $provider ? "provider=${provider}&repository=${repo}" : "repository=${repo}"
+            $provider ? "provider={$provider}&repository={$repo}" : "repository={$repo}"
         ));
 
         $response->assertJsonMissingValidationErrors(['repository', 'provider']);
