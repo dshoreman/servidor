@@ -18,7 +18,7 @@ class FileManagerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->manager = new FileManager;
+        $this->manager = new FileManager();
     }
 
     /** @test */

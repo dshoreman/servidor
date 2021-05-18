@@ -21,7 +21,7 @@ class DomainTest extends TestCase
     {
         parent::setUp();
 
-        $this->rules = ['domain' => [new Domain]];
+        $this->rules = ['domain' => [new Domain()]];
         $this->validator = $this->app['validator'];
     }
 

@@ -29,8 +29,6 @@ $config->setFinder($finder)
         'concat_space' => [
             'spacing' => 'one',
         ],
-        'new_with_braces' => false,
-        'no_short_bool_cast' => false,
         'php_unit_method_casing' => false,
 
         // Other Rules
