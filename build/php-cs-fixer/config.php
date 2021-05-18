@@ -49,6 +49,12 @@ $config->setFinder($finder)
         '@PHP80Migration:risky' => true,
         '@PHPUnit84Migration:risky' => true,
         'declare_strict_types' => false,
+
+        // Stricter migration overrides
+        'trailing_comma_in_multiline' => [
+            'after_heredoc' => true,
+            'elements' => ['arrays', 'arguments'], // TODO: Add 'parameters' once we drop PHP 7.4
+        ],
     ]);
 
 return $config;

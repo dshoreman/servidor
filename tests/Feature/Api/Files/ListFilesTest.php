@@ -67,7 +67,7 @@ class ListFilesTest extends TestCase
         );
 
         $response = $this->authed()->getJson(
-            $this->endpoint(['path' => '/home/testghost'])
+            $this->endpoint(['path' => '/home/testghost']),
         );
         $data = Arr::first($response->json(), fn ($value, $key) => 'file.txt' == $value['filename']);
 

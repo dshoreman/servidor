@@ -58,7 +58,7 @@ class UsersController extends Controller
 
             return response()->json(
                 $user->update($request->validated()),
-                Response::HTTP_OK
+                Response::HTTP_OK,
             );
         } catch (UserNotFound $_) {
             throw $this->fail('uid', 'No user found matching the given criteria.');

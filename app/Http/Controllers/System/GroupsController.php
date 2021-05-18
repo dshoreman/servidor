@@ -44,7 +44,7 @@ class GroupsController extends Controller
 
             return response()->json(
                 $group->update($request->validated()),
-                Response::HTTP_OK
+                Response::HTTP_OK,
             );
         } catch (GroupNotFound $_) {
             throw $this->fail('gid', 'No group found matching the given criteria.');
