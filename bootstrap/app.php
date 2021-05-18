@@ -16,7 +16,7 @@ if (!defined('SERVIDOR_VERSION')) {
 */
 
 $app = new Illuminate\Foundation\Application(
-    (string) dirname(__DIR__)
+    (string) dirname(__DIR__),
 );
 
 /*
@@ -32,17 +32,17 @@ $app = new Illuminate\Foundation\Application(
 
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
-    Servidor\Http\Kernel::class
+    Servidor\Http\Kernel::class,
 );
 
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
-    Servidor\Console\Kernel::class
+    Servidor\Console\Kernel::class,
 );
 
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
-    Servidor\Exceptions\Handler::class
+    Servidor\Exceptions\Handler::class,
 );
 
 /*

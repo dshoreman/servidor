@@ -17,7 +17,7 @@ class NewDatabaseTest extends TestCase
     /** @test */
     public function can_create_a_database(): void
     {
-        $this->mock(AbstractSchemaManager::class, function (MockInterface $manager): void {
+        $this->mock(AbstractSchemaManager::class, static function (MockInterface $manager): void {
             $manager->shouldReceive('createDatabase')->once()->with('caniplz');
             $manager->shouldReceive('listDatabases')->once()->andReturn(['caniplz']);
         });

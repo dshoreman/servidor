@@ -29,7 +29,7 @@ class ListBranchesTest extends TestCase
     public function user_can_list_branches(string $repo, ?string $provider = ''): void
     {
         $response = $this->authed()->getJson($this->endpoint . '?' . (
-            $provider ? "provider=${provider}&repository=${repo}" : "repository=${repo}"
+            $provider ? "provider={$provider}&repository={$repo}" : "repository={$repo}"
         ));
 
         $response->assertJsonMissingValidationErrors(['repository', 'provider']);
@@ -50,7 +50,7 @@ class ListBranchesTest extends TestCase
     public function provider_must_be_a_string(): void
     {
         $response = $this->authed()->getJson(
-            $this->endpoint . '?repository=foo/bar&provider[]=42&provider[]=69'
+            $this->endpoint . '?repository=foo/bar&provider[]=42&provider[]=69',
         );
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['provider']);
@@ -60,7 +60,7 @@ class ListBranchesTest extends TestCase
     public function provider_must_be_supported(): void
     {
         $response = $this->authed()->getJson(
-            $this->endpoint . '?repository=foo/bar&provider=gitlab'
+            $this->endpoint . '?repository=foo/bar&provider=gitlab',
         );
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['provider']);

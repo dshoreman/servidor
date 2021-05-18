@@ -16,7 +16,7 @@ class ProjectAppSaved
 
     public function __construct(Application $app)
     {
-        assert($app->project instanceof Project);
+        \assert($app->project instanceof Project);
 
         $this->app = $app;
         $this->project = $app->project;

@@ -85,7 +85,7 @@ jobs:
       - name: Check for code style issues
         run: |
           echo "::group::$ vendor/bin/php-cs-fixer fix"
-          export PHP_CS_FIXER_IGNORE_ENV=1 && make phpcsf CS_ARGS="--verbose"
+          export PHP_CS_FIXER_IGNORE_ENV=1 && make phpcsf CS_ARGS="--verbose --show-progress=none"
           echo -e "::endgroup::\n::group::$ vendor/bin/phpcs --standard=PSR12"
           make phpcs
           echo "::endgroup::"

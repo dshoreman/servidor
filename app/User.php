@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property ?string                           $remember_token
  * @property ?Carbon                           $created_at
  * @property ?Carbon                           $updated_at
- * @property Notifications|array<Notification> $notifications
+ * @property array<Notification>|Notifications $notifications
  * @property ?int                              $notifications_count
  *
  * @method static Builder|User query()

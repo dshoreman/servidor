@@ -55,7 +55,7 @@ class LinuxGroup extends LinuxCommand
 
     public function setUsers(?array $users): self
     {
-        if (is_array($users)) {
+        if (\is_array($users)) {
             $this->users = $users;
         }
 

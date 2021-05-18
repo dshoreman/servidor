@@ -53,7 +53,7 @@ trait ValidatesFormRequest
 
     private function validateChildField(string $field, string $parent, $value): bool
     {
-        $rule = "${parent}.*.${field}";
+        $rule = "{$parent}.*.{$field}";
 
         return $this->getValidator(
             [$parent => [[$field => $value]]],
@@ -65,7 +65,7 @@ trait ValidatesFormRequest
     {
         $this->assertFalse(
             $this->validateChildField($field, $parent, $value),
-            $this->validationMessage("${parent}.*.${field}", $value, 'fail', 'passed'),
+            $this->validationMessage("{$parent}.*.{$field}", $value, 'fail', 'passed'),
         );
     }
 
@@ -73,14 +73,14 @@ trait ValidatesFormRequest
     {
         $this->assertTrue(
             $this->validateChildField($field, $parent, $value),
-            $this->validationMessage("${parent}.*.${field}", $value, 'pass', 'failed'),
+            $this->validationMessage("{$parent}.*.{$field}", $value, 'pass', 'failed'),
         );
     }
 
     private function validationMessage(string $field, $value, string $expected, string $actual): string
     {
         return "Expected field '{$field}' to {$expected} validation with value '"
-            . (is_array($value) || is_object($value)
+            . (\is_array($value) || \is_object($value)
             ? json_encode($value) : $value) . "', but it {$actual}.";
     }
 

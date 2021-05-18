@@ -68,7 +68,7 @@ class User
         $users = collect();
 
         foreach ($lines as $line) {
-            assert(is_string($line));
+            \assert(\is_string($line));
 
             $user = new self(
                 array_combine($keys, explode(':', $line)),
@@ -108,7 +108,8 @@ class User
             ->setShell((string) ($data['shell'] ?? ''))
             ->setGroups(isset($data['groups']) ? (array) $data['groups'] : null)
             ->setMoveHome((bool) ($data['move_home'] ?? false))
-            ->setHomeDirectory((string) ($data['dir'] ?? ''));
+            ->setHomeDirectory((string) ($data['dir'] ?? ''))
+        ;
 
         if (!$this->user->isDirty()) {
             throw new UserNotModified();

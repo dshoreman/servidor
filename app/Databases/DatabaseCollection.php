@@ -33,7 +33,7 @@ class DatabaseCollection extends Collection
             return $default;
         }
 
-        throw new Exception("Database ${name} does not exist.");
+        throw new Exception("Database {$name} does not exist.");
     }
 
     /**
@@ -47,7 +47,8 @@ class DatabaseCollection extends Collection
         );
 
         return (new self($databases))
-            ->keyBy(static fn (DatabaseData $database): string => $database->name);
+            ->keyBy(static fn (DatabaseData $database): string => $database->name)
+        ;
     }
 
     public function toArray(): array

@@ -8,14 +8,14 @@ class CreateProjectTables extends Migration
 {
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table): void {
+        Schema::create('projects', static function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->boolean('is_enabled')->default(false);
             $table->timestamps();
         });
 
-        Schema::create('project_applications', function (Blueprint $table): void {
+        Schema::create('project_applications', static function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('project_id');
             $table->string('template')->default('');
@@ -28,7 +28,7 @@ class CreateProjectTables extends Migration
             $table->foreign('project_id')->references('id')->on('projects');
         });
 
-        Schema::create('project_redirects', function (Blueprint $table): void {
+        Schema::create('project_redirects', static function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('project_id');
             $table->string('domain_name');

@@ -47,7 +47,8 @@ class FileManager
         /** @psalm-suppress TooManyArguments - sortByName */
         $files = $this->finder->depth(0)->in($path)
             ->sortByName(true)
-            ->ignoreDotFiles(false);
+            ->ignoreDotFiles(false)
+        ;
 
         /** @var array{SplFileInfo|string} $files */
         $files = iterator_to_array($files, false);
@@ -153,7 +154,7 @@ class FileManager
         exec('cd "' . $path . '" && stat -c "%n %A %a" ' . $name . ' 2>/dev/null', $files);
 
         foreach ($files as $file) {
-            assert(is_string($file));
+            \assert(\is_string($file));
 
             [$filename, $text, $octal] = explode(' ', $file);
 
@@ -175,7 +176,7 @@ class FileManager
      */
     private function loadFile($file): array
     {
-        if (is_string($file)) {
+        if (\is_string($file)) {
             $path = explode('/', $file);
             $name = array_pop($path);
 

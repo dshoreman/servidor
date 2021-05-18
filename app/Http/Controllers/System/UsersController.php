@@ -32,7 +32,8 @@ class UsersController extends Controller
                 ->setHomeDirectory((string) ($data['dir'] ?? ''))
                 ->setShell((string) ($data['shell'] ?? ''))
                 ->setSystem((bool) ($data['system'] ?? false))
-                ->setUid(isset($data['uid']) ? (int) $data['uid'] : null);
+                ->setUid(isset($data['uid']) ? (int) $data['uid'] : null)
+            ;
 
             $gid = isset($data['gid']) ? (int) $data['gid'] : null;
             if (!$createGroup && $gid) {
@@ -58,7 +59,7 @@ class UsersController extends Controller
 
             return response()->json(
                 $user->update($request->validated()),
-                Response::HTTP_OK
+                Response::HTTP_OK,
             );
         } catch (UserNotFound $_) {
             throw $this->fail('uid', 'No user found matching the given criteria.');

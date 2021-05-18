@@ -13,7 +13,7 @@ class ShowProfile extends Controller
     {
         $user = $request->user();
 
-        assert($user instanceof User);
+        \assert($user instanceof User);
 
         return response()->json($user->toArray());
     }

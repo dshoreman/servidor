@@ -16,7 +16,7 @@ class ProjectRedirectSaved
 
     public function __construct(Redirect $redirect)
     {
-        assert($redirect->project instanceof Project);
+        \assert($redirect->project instanceof Project);
 
         $this->redirect = $redirect;
         $this->project = $redirect->project;

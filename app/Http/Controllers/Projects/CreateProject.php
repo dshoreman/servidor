@@ -17,7 +17,7 @@ class CreateProject extends Controller
 
         return response()->json(
             $project->load(['applications', 'redirects']),
-            Response::HTTP_CREATED
+            Response::HTTP_CREATED,
         );
     }
 }

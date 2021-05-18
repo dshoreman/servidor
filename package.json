@@ -9,7 +9,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "./build/hooks/make-installer.sh"
+            "pre-commit": "./build/hooks/pre-commit.sh"
         }
     },
     "devDependencies": {

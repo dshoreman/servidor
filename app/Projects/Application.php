@@ -89,7 +89,7 @@ class Application extends Model
 
     public function getLogsAttribute(): array
     {
-        return array_map(fn (LogFile $log): string => $log->getTitle(), $this->logs());
+        return array_map(static fn (LogFile $log): string => $log->getTitle(), $this->logs());
     }
 
     public function logs(): array
@@ -159,12 +159,15 @@ class Application extends Model
         switch ($this->templatesNamespace . Str::studly(Str::lower($template))) {
             case Html::class:
                 return new Html($this);
+
             case Php::class:
                 return new Php($this);
+
             case Laravel::class:
                 return new Laravel($this);
+
             default:
-                throw new Exception("Invalid template '${template}'.");
+                throw new Exception("Invalid template '{$template}'.");
         }
     }
 

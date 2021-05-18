@@ -32,17 +32,17 @@ Route::middleware('web')->name('login')->post('session', Login::class);
 Route::middleware('web')->delete('session', Logout::class);
 Broadcast::routes(['middleware' => 'auth:api']);
 
-Route::middleware('auth:api')->group(function (): void {
-    Route::name('projects.')->prefix('/projects')->group(function (): void {
+Route::middleware('auth:api')->group(static function (): void {
+    Route::name('projects.')->prefix('/projects')->group(static function (): void {
         Route::get('/', ListProjects::class);
         Route::post('/', CreateProject::class);
         Route::put('{project}', UpdateProject::class);
 
-        Route::prefix('{project}/apps')->group(function (): void {
+        Route::prefix('{project}/apps')->group(static function (): void {
             Route::post('/', CreateProjectApp::class);
             Route::post('{app}/pull', PullCode::class);
         });
-        Route::prefix('{project}/redirects')->group(function (): void {
+        Route::prefix('{project}/redirects')->group(static function (): void {
             Route::post('/', CreateProjectRedirect::class);
         });
 
@@ -50,7 +50,7 @@ Route::middleware('auth:api')->group(function (): void {
         Route::delete('{project}', RemoveProject::class);
     });
 
-    Route::name('databases.')->prefix('/databases')->group(function (): void {
+    Route::name('databases.')->prefix('/databases')->group(static function (): void {
         Route::get('/', ListDatabases::class);
         Route::post('/', CreateDatabase::class);
     });
@@ -61,7 +61,7 @@ Route::middleware('auth:api')->group(function (): void {
     Route::post('files/rename', MovePath::class);
     Route::delete('files', DeletePath::class);
 
-    Route::name('system')->prefix('/system')->group(function (): void {
+    Route::name('system')->prefix('/system')->group(static function (): void {
         Route::get('git/branches', ListBranches::class);
 
         Route::resource('groups', GroupsController::class, [
