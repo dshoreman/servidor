@@ -40,7 +40,7 @@ if [[ -n "${stagedProjectFiles}" ]]; then for file in $stagedProjectFiles; do
 
         echo "${cGreen} Fixing file ${file}...${cEnd}"
 
-        result=$( $csFixerBin fix --config-file=build/cs-fixer/config.php $file )
+        result=$( $csFixerBin fix --config=build/cs-fixer/config.php $file )
         echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
         git add --patch "$file"
     fi
