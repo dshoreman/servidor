@@ -53,6 +53,11 @@ Route::middleware('auth:api')->group(static function (): void {
     Route::name('databases.')->prefix('/databases')->group(static function (): void {
         Route::get('/', ListDatabases::class);
         Route::post('/', CreateDatabase::class);
+        Route::get('{database}', static function (Servidor\Databases\DatabaseManager $manager, $database) {
+            $database = new \Servidor\Databases\DatabaseData($database);
+
+            return response()->json($manager->tables($database));
+        });
     });
 
     Route::get('files', ListOrShowPath::class);
