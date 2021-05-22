@@ -1,4 +1,5 @@
 import DatabaseList from './pages/Databases/DatabaseList';
+import DatabaseViewer from './pages/Databases/DatabaseViewer';
 import Databases from './pages/Databases';
 import FileBrowser from './pages/Files/Browser.vue';
 import FileEditor from './pages/Files/Editor.vue';
@@ -57,6 +58,12 @@ const routes = [{
             name: 'databases',
             path: '',
             meta: { auth: true },
+        }, {
+            component: DatabaseViewer,
+            name: 'database',
+            path: ':database',
+            meta: { auth: true },
+            props: route => ({ name: route.params.database }),
         }],
     }, {
         component: FileEditor,
