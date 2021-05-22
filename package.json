@@ -22,7 +22,7 @@
         "lodash": "^4.17.21",
         "postcss": "^8.2.15",
         "pusher-js": "^7.0.3",
-        "sass": "^1.32.13",
+        "sass": "^1.33.0",
         "sass-loader": "^10.1.1",
         "semantic-ui-sass": "^2.4.2",
         "vue": "^2.6.12",
