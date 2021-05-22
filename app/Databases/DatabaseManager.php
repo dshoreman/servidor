@@ -5,6 +5,7 @@ namespace Servidor\Databases;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\ForwardCompatibility\DriverStatement;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
 use Illuminate\Contracts\Config\Repository;
@@ -62,6 +63,25 @@ class DatabaseManager
 
             return [$database->name => $database->withTableCount($tableCount)];
         });
+    }
+
+    public function tables(DatabaseData $database): TableCollection
+    {
+        $builder = $this->connection->createQueryBuilder();
+
+        $builder
+            ->select(['TABLE_NAME', 'ENGINE', 'TABLE_ROWS', 'DATA_LENGTH', 'TABLE_COLLATION'])
+            ->from('information_schema.TABLES')
+            ->where('TABLE_SCHEMA = :db')
+            ->setParameter('db', $database->name)
+        ;
+        $query = $builder->execute();
+        \assert($query instanceof DriverStatement);
+
+        return new TableCollection(array_map(
+            static fn (array $result): TableData => new TableData($result['TABLE_NAME']),
+            $query->fetchAllAssociative(),
+        ));
     }
 
     private function countTables(): void

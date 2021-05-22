@@ -5,6 +5,8 @@ namespace Tests\Unit\Databases;
 use Servidor\Databases\DatabaseCollection;
 use Servidor\Databases\DatabaseData;
 use Servidor\Databases\DatabaseManager;
+use Servidor\Databases\TableCollection;
+use Servidor\Databases\TableData;
 use Tests\TestCase;
 
 class DatabaseManagerTest extends TestCase
@@ -74,6 +76,21 @@ class DatabaseManagerTest extends TestCase
         $this->assertSame($expected, $actual);
 
         return $manager;
+    }
+
+    /**
+     * @test
+     * @depends it_can_create_a_database
+     */
+    public function it_can_list_tables_of_a_database(DatabaseManager $manager): void
+    {
+        $tables = $manager->tables(new DatabaseData('servidor'));
+
+        $this->assertInstanceOf(TableCollection::class, $tables);
+
+        $first = $tables->first();
+        $this->assertInstanceOf(TableData::class, $first);
+        $this->assertEquals('failed_jobs', $first->name);
     }
 
     /**
