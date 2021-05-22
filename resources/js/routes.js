@@ -1,4 +1,5 @@
-import Databases from './pages/Databases.vue';
+import DatabaseList from './pages/Databases/DatabaseList';
+import Databases from './pages/Databases';
 import FileBrowser from './pages/Files/Browser.vue';
 import FileEditor from './pages/Files/Editor.vue';
 import Layout from './layouts/Servidor.vue';
@@ -49,10 +50,14 @@ const routes = [{
             },
         }],
     }, {
-        component: Databases,
-        name: 'databases',
         path: '/databases',
-        meta: { auth: true },
+        component: Databases,
+        children: [{
+            component: DatabaseList,
+            name: 'databases',
+            path: '',
+            meta: { auth: true },
+        }],
     }, {
         component: FileEditor,
         name: 'files.edit',
