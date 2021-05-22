@@ -32,7 +32,9 @@ export default {
         }),
         loadTables: ({ commit }, database) => new Promise((resolve, reject) => {
             axios.get(`/api/databases/${database}`).then(response => {
-                commit('setTables', { database, tables: response.data });
+                const { name, tables } = response.data;
+
+                commit('setTables', { name, tables });
                 resolve(response);
             }).catch(error => reject(error));
         }),
