@@ -10,14 +10,21 @@
         </sui-breadcrumb>
         <sui-table v-if="database && database.tables.length"
             :inverted="darkMode"
-            :columns="2"
             selectable>
             <sui-table-header>
                 <sui-table-header-cell>Table</sui-table-header-cell>
+                <sui-table-header-cell collapsing>Rows</sui-table-header-cell>
+                <sui-table-header-cell>Engine</sui-table-header-cell>
+                <sui-table-header-cell>Collation</sui-table-header-cell>
+                <sui-table-header-cell>Size</sui-table-header-cell>
             </sui-table-header>
             <sui-table-body>
                 <sui-table-row v-for="table in database.tables" :key="table.name">
-                    <td>{{ table.name }}</td>
+                    <sui-table-cell>{{ table.name }}</sui-table-cell>
+                    <sui-table-cell collapsing>{{ table.rowCount }}</sui-table-cell>
+                    <sui-table-cell>{{ table.engine }}</sui-table-cell>
+                    <sui-table-cell>{{ table.collation }}</sui-table-cell>
+                    <sui-table-cell>{{ table.size }}</sui-table-cell>
                 </sui-table-row>
             </sui-table-body>
         </sui-table>

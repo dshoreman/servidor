@@ -78,10 +78,18 @@ class DatabaseManager
         $query = $builder->execute();
         \assert($query instanceof DriverStatement);
 
-        return new TableCollection(array_map(
-            static fn (array $result): TableData => new TableData($result['TABLE_NAME']),
-            $query->fetchAllAssociative(),
-        ));
+        return new TableCollection(array_map(static function (array $result): TableData {
+            /**
+             * @var array{ TABLE_NAME: string,
+             *             TABLE_COLLATION: string,
+             *             TABLE_ROWS: int,
+             *             DATA_LENGTH: int,
+             *             ENGINE: string,
+             *             } $result
+             */
+
+            return TableData::fromInfoSchema($result);
+        }, $query->fetchAllAssociative()));
     }
 
     private function countTables(): void

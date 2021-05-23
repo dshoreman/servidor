@@ -16,7 +16,14 @@ class ShowDatabaseTest extends TestCase
         $response = $this->authed()->getJson($this->endpoint('servidor'));
 
         $response->assertOk();
-        $response->assertJsonStructure(['name', 'tableCount', 'tables' => [['name']]]);
+        $response->assertJsonStructure(['name', 'tableCount', 'tables' => [
+            ['name', 'engine', 'collation', 'rowCount', 'size'],
+        ]]);
         $response->assertJsonFragment(['name' => 'servidor']);
+        $response->assertJsonFragment([
+            'collation' => 'utf8mb4_unicode_ci',
+            'engine' => 'InnoDB',
+            'name' => 'failed_jobs',
+        ]);
     }
 }
