@@ -35,7 +35,7 @@ start_mysql() {
 }
 create_database() {
     echo "${1}..."
-    ( sudo mysql -proot -e 'CREATE DATABASE servidor_testing;' && msg_ok ) || msg_err
+    ( sudo mysql -proot -e 'CREATE DATABASE servidor_testing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;' && msg_ok ) || msg_err
 }
 
 copy_dotenv() {
