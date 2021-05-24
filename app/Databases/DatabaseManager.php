@@ -5,7 +5,6 @@ namespace Servidor\Databases;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\DriverException;
-use Doctrine\DBAL\ForwardCompatibility\DriverStatement;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
 use Illuminate\Contracts\Config\Repository;
@@ -18,11 +17,14 @@ class DatabaseManager
 
     private AbstractSchemaManager $manager;
 
-    public function __construct(Repository $config, ?AbstractSchemaManager $manager = null)
-    {
+    public function __construct(
+        Repository $config,
+        ?Connection $connection = null,
+        ?AbstractSchemaManager $manager = null
+    ) {
         $socket = (string) $config->get('database.connections.mysql.unix_socket');
 
-        $this->connection = DriverManager::getConnection(
+        $this->connection = $connection ?? DriverManager::getConnection(
             array_merge((array) $config->get('database.dbal'), [
                 'driver' => 'pdo_mysql',
                 'unix_socket' => $socket,
@@ -54,7 +56,7 @@ class DatabaseManager
     public function detailedDatabases(): DatabaseCollection
     {
         $databases = [];
-        $sql = $this->detailedDatabasesSql();
+        $sql = self::databasesSql();
 
         foreach ($this->connection->fetchAllAssociativeIndexed($sql) as $name => $result) {
             $databases[$name] = new DatabaseData(
@@ -71,16 +73,10 @@ class DatabaseManager
 
     public function tables(DatabaseData $database): TableCollection
     {
-        $builder = $this->connection->createQueryBuilder();
-
-        $builder
-            ->select(['TABLE_NAME', 'ENGINE', 'TABLE_ROWS', 'DATA_LENGTH', 'TABLE_COLLATION'])
-            ->from('information_schema.TABLES')
-            ->where('TABLE_SCHEMA = :db')
-            ->setParameter('db', $database->name)
-        ;
-        $query = $builder->execute();
-        \assert($query instanceof DriverStatement);
+        $results = $this->connection->fetchAllAssociative(
+            self::tablesSql(),
+            ['db' => $database->name],
+        );
 
         return new TableCollection(array_map(static function (array $result): TableData {
             /**
@@ -93,10 +89,10 @@ class DatabaseManager
              */
 
             return TableData::fromInfoSchema($result);
-        }, $query->fetchAllAssociative()));
+        }, $results));
     }
 
-    private function detailedDatabasesSql(): string
+    public static function databasesSql(): string
     {
         return <<<'endQuery'
                 SELECT
@@ -108,6 +104,15 @@ class DatabaseManager
                 LEFT JOIN information_schema.TABLES tbl
                     ON db.SCHEMA_NAME = tbl.TABLE_SCHEMA
                 GROUP BY name, charset, collation
+            endQuery;
+    }
+
+    public static function tablesSql(): string
+    {
+        return <<<'endQuery'
+                SELECT TABLE_NAME, ENGINE, TABLE_ROWS, DATA_LENGTH, TABLE_COLLATION
+                FROM information_schema.TABLES
+                WHERE TABLE_SCHEMA = :db
             endQuery;
     }
 }

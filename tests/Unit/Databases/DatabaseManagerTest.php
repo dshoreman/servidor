@@ -16,7 +16,7 @@ class DatabaseManagerTest extends TestCase
     /** @test */
     public function it_can_list_databases(): DatabaseManager
     {
-        $manager = new DatabaseManager(config(), new FakeSchemaManager());
+        $manager = new DatabaseManager(config(), null, new FakeSchemaManager());
 
         $collection = $manager->databases();
 
@@ -57,7 +57,7 @@ class DatabaseManagerTest extends TestCase
         $this->assertObjectHasAttribute('collation', $database);
         $this->assertEquals(8, $database->tableCount);
         $this->assertEquals('utf8mb4', $database->charset);
-        $this->assertEquals('utf8mb4_general_ci', $database->collation);
+        $this->assertContains($database->collation, ['utf8mb4_general_ci', 'utf8mb4_0900_ai_ci']);
     }
 
     /**
@@ -88,7 +88,7 @@ class DatabaseManagerTest extends TestCase
      */
     public function it_can_list_tables_of_a_database(DatabaseManager $manager): void
     {
-        $tables = $manager->tables(new DatabaseData('servidor'));
+        $tables = $manager->tables(new DatabaseData('servidor_testing'));
 
         $this->assertInstanceOf(TableCollection::class, $tables);
 

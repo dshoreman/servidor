@@ -35,4 +35,9 @@ class TableCollection extends Collection
 
         throw new Exception("Table {$name} does not exist.");
     }
+
+    public function toArray(): array
+    {
+        return array_values(parent::toArray());
+    }
 }

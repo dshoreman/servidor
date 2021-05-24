@@ -39,9 +39,11 @@ class ListDatabasesTest extends TestCase
         $response->assertOk();
         $response->assertJsonStructure([['name', 'charset', 'collation', 'tableCount']]);
 
-        $first = $response->json()[0];
-        $this->assertIsInt($first['tableCount']);
-        $this->assertEquals('utf8mb4', $first['charset']);
-        $this->assertStringContainsString('general_ci', $first['collation']);
+        $json = $response->json();
+        $result = $json[array_search('information_schema', array_column($json, 'name'), true)];
+
+        $this->assertIsInt($result['tableCount']);
+        $this->assertContains($result['charset'], ['utf8', 'utf8mb4']);
+        $this->assertContains($result['collation'], ['utf8_general_ci', 'utf8mb4_0900_ai_ci']);
     }
 }
