@@ -6,10 +6,12 @@
                    :inverted="darkMode" :transparent="darkMode"
                    v-model="search" @keydown.enter="create"></sui-input>
 
-        <sui-table compact selectable :inverted="darkMode" :columns="2">
+        <sui-table compact selectable :inverted="darkMode">
             <sui-table-header>
                 <sui-table-header-cell>Database Name</sui-table-header-cell>
                 <sui-table-header-cell>Tables</sui-table-header-cell>
+                <sui-table-header-cell>Character Set</sui-table-header-cell>
+                <sui-table-header-cell>Default Collation</sui-table-header-cell>
             </sui-table-header>
             <sui-table-body>
                 <sui-table-row v-for="(db, key) in databases" :key="key" @click="$router.push({
@@ -24,6 +26,8 @@
                         <span v-if="Number.isInteger(db.tableCount)">{{ db.tableCount }}</span>
                         <span v-else>unknown</span>
                     </sui-table-cell>
+                    <sui-table-cell>{{ db.charset }}</sui-table-cell>
+                    <sui-table-cell>{{ db.collation }}</sui-table-cell>
                 </sui-table-row>
             </sui-table-body>
         </sui-table>

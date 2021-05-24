@@ -18,9 +18,6 @@ class DatabaseManager
 
     private AbstractSchemaManager $manager;
 
-    /** @var array<string, int> */
-    private array $tableCounts = [];
-
     public function __construct(Repository $config, ?AbstractSchemaManager $manager = null)
     {
         $socket = (string) $config->get('database.connections.mysql.unix_socket');
@@ -56,13 +53,20 @@ class DatabaseManager
 
     public function detailedDatabases(): DatabaseCollection
     {
-        $this->countTables();
+        $databases = [];
+        $sql = $this->detailedDatabasesSql();
 
-        return $this->databases()->mapWithKeys(function (DatabaseData $database): array {
-            $tableCount = $this->tableCounts[$database->name] ?? 0;
+        foreach ($this->connection->fetchAllAssociativeIndexed($sql) as $name => $result) {
+            $databases[$name] = new DatabaseData(
+                (string) $name,
+                null,
+                (int) $result['tableCount'],
+                (string) $result['charset'],
+                (string) $result['collation'],
+            );
+        }
 
-            return [$database->name => $database->withTableCount($tableCount)];
-        });
+        return new DatabaseCollection($databases);
     }
 
     public function tables(DatabaseData $database): TableCollection
@@ -92,15 +96,18 @@ class DatabaseManager
         }, $query->fetchAllAssociative()));
     }
 
-    private function countTables(): void
+    private function detailedDatabasesSql(): string
     {
-        $fields = 'dbName, COUNT(*) AS tableCount';
-        $sql = 'SELECT TABLE_SCHEMA AS %s FROM information_schema.tables GROUP BY dbName';
-
-        $countData = $this->connection->fetchAllKeyValue(sprintf($sql, $fields));
-
-        array_walk($countData, function (int $tableCount, string $database): void {
-            $this->tableCounts[$database] = $tableCount;
-        });
+        return <<<'endQuery'
+                SELECT
+                    db.SCHEMA_NAME AS name,
+                    db.DEFAULT_COLLATION_NAME AS collation,
+                    db.DEFAULT_CHARACTER_SET_NAME AS charset,
+                    COUNT(tbl.TABLE_SCHEMA) AS tableCount
+                FROM information_schema.SCHEMATA AS db
+                LEFT JOIN information_schema.TABLES tbl
+                    ON db.SCHEMA_NAME = tbl.TABLE_SCHEMA
+                GROUP BY db.SCHEMA_NAME
+            endQuery;
     }
 }

@@ -37,25 +37,17 @@ class DatabaseDataTest extends TestCase
         $this->assertArrayHasKey('name', $array);
         $this->assertEquals('name_only', $array['name']);
 
+        $this->assertArrayHasKey('charset', $array);
+        $this->assertEquals('', $array['charset']);
+
+        $this->assertArrayHasKey('collation', $array);
+        $this->assertEquals('', $array['collation']);
+
         $this->assertArrayHasKey('tableCount', $array);
         $this->assertNull($array['tableCount']);
 
         $this->assertIsArray($array['tables']);
         $this->assertSame([], $array['tables']);
-    }
-
-    public function testWithTableCount(): void
-    {
-        $database = (new DatabaseData('counted_tables'))
-            ->withTableCount(13)
-        ;
-
-        $this->assertInstanceOf(DatabaseData::class, $database);
-        $this->assertObjectHasAttribute('tableCount', $database);
-        $this->assertArrayHasKey('tableCount', $database->toArray());
-
-        $this->assertIsInt($database->tableCount);
-        $this->assertEquals(13, $database->tableCount);
     }
 
     public function testWithTables(): void

@@ -32,12 +32,16 @@ class ListDatabasesTest extends TestCase
     }
 
     /** @test */
-    public function list_includes_table_counts(): void
+    public function list_includes_details(): void
     {
         $response = $this->authed()->getJson($this->endpoint);
 
         $response->assertOk();
-        $response->assertJsonStructure([['name', 'tableCount']]);
-        $this->assertIsNumeric($response->json()[0]['tableCount']);
+        $response->assertJsonStructure([['name', 'charset', 'collation', 'tableCount']]);
+
+        $first = $response->json()[0];
+        $this->assertIsInt($first['tableCount']);
+        $this->assertEquals('utf8mb4', $first['charset']);
+        $this->assertStringContainsString('general_ci', $first['collation']);
     }
 }

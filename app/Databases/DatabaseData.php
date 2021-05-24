@@ -9,6 +9,10 @@ class DatabaseData implements Arrayable
 {
     public string $name;
 
+    public string $charset;
+
+    public string $collation;
+
     public ?int $tableCount;
 
     public TableCollection $tables;
@@ -16,11 +20,15 @@ class DatabaseData implements Arrayable
     public function __construct(
         string $name,
         ?TableCollection $tables = null,
-        ?int $tableCount = null
+        ?int $tableCount = null,
+        string $charset = '',
+        string $collation = ''
     ) {
         $this->name = $name;
         $this->tables = $tables ?? new TableCollection();
         $this->tableCount = $tableCount;
+        $this->charset = $charset;
+        $this->collation = $collation;
     }
 
     public static function fromRequest(NewDatabase $request): self
@@ -32,18 +40,15 @@ class DatabaseData implements Arrayable
     {
         return [
             'name' => $this->name,
+            'charset' => $this->charset,
+            'collation' => $this->collation,
             'tables' => $this->tables->toArray(),
             'tableCount' => $this->tableCount,
         ];
     }
 
-    public function withTableCount(int $count): self
-    {
-        return new self($this->name, $this->tables, $count);
-    }
-
     public function withTables(TableCollection $tables): self
     {
-        return new self($this->name, $tables, $this->tableCount);
+        return new self($this->name, $tables, $this->tableCount, $this->charset, $this->collation);
     }
 }

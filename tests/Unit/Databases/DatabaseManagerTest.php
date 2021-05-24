@@ -45,7 +45,7 @@ class DatabaseManagerTest extends TestCase
      * @test
      * @depends it_can_list_databases
      */
-    public function it_can_list_databases_with_table_counts(DatabaseManager $manager): void
+    public function it_can_list_databases_with_table_details(DatabaseManager $manager): void
     {
         $databases = $manager->detailedDatabases();
 
@@ -53,7 +53,11 @@ class DatabaseManagerTest extends TestCase
 
         $database = $databases->get('servidor_testing');
         $this->assertObjectHasAttribute('tableCount', $database);
+        $this->assertObjectHasAttribute('charset', $database);
+        $this->assertObjectHasAttribute('collation', $database);
         $this->assertEquals(8, $database->tableCount);
+        $this->assertEquals('utf8mb4', $database->charset);
+        $this->assertEquals('utf8mb4_general_ci', $database->collation);
     }
 
     /**
