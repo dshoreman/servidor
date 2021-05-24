@@ -5,6 +5,8 @@ namespace Tests\Unit\Databases;
 use Servidor\Databases\DatabaseCollection;
 use Servidor\Databases\DatabaseData;
 use Servidor\Databases\DatabaseManager;
+use Servidor\Databases\TableCollection;
+use Servidor\Databases\TableData;
 use Tests\TestCase;
 
 class DatabaseManagerTest extends TestCase
@@ -14,7 +16,7 @@ class DatabaseManagerTest extends TestCase
     /** @test */
     public function it_can_list_databases(): DatabaseManager
     {
-        $manager = new DatabaseManager(config(), new FakeSchemaManager());
+        $manager = new DatabaseManager(config(), null, new FakeSchemaManager());
 
         $collection = $manager->databases();
 
@@ -43,7 +45,7 @@ class DatabaseManagerTest extends TestCase
      * @test
      * @depends it_can_list_databases
      */
-    public function it_can_list_databases_with_table_counts(DatabaseManager $manager): void
+    public function it_can_list_databases_with_table_details(DatabaseManager $manager): void
     {
         $databases = $manager->detailedDatabases();
 
@@ -51,7 +53,11 @@ class DatabaseManagerTest extends TestCase
 
         $database = $databases->get('servidor_testing');
         $this->assertObjectHasAttribute('tableCount', $database);
+        $this->assertObjectHasAttribute('charset', $database);
+        $this->assertObjectHasAttribute('collation', $database);
         $this->assertEquals(8, $database->tableCount);
+        $this->assertEquals('utf8mb4', $database->charset);
+        $this->assertContains($database->collation, ['utf8mb4_general_ci', 'utf8mb4_0900_ai_ci']);
     }
 
     /**
@@ -74,6 +80,21 @@ class DatabaseManagerTest extends TestCase
         $this->assertSame($expected, $actual);
 
         return $manager;
+    }
+
+    /**
+     * @test
+     * @depends it_can_create_a_database
+     */
+    public function it_can_list_tables_of_a_database(DatabaseManager $manager): void
+    {
+        $tables = $manager->tables(new DatabaseData('servidor_testing'));
+
+        $this->assertInstanceOf(TableCollection::class, $tables);
+
+        $first = $tables->first();
+        $this->assertInstanceOf(TableData::class, $first);
+        $this->assertEquals('failed_jobs', $first->name);
     }
 
     /**

@@ -2,7 +2,7 @@
     <h2>
         <sui-button id="levelup" :icon="upIcon" @click="goUp()" />
 
-        <sui-breadcrumb class="massive">
+        <sui-breadcrumb size="massive">
             <template v-for="(segment, index) in pathParts">
 
                 <sui-breadcrumb-section v-if="segment.path != path"

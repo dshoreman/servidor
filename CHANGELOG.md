@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 * [chore] Added phpinsights to the CI workflow. Run with `make insights`
-* [database] Table count is now shown for each database in the list
+* [database] Added new page to list tables with some basic details
+* [database] Default collation, charset and table count added to databases page
 * [database] Validation is now handled by its own FormRequest class
 * [projects] New progress modal showing realtime creation progress
 

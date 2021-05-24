@@ -4,6 +4,7 @@ namespace Tests\Unit\Databases;
 
 use Mockery;
 use Servidor\Databases\DatabaseData;
+use Servidor\Databases\TableCollection;
 use Servidor\Http\Requests\Databases\NewDatabase;
 use Tests\TestCase;
 
@@ -36,19 +37,30 @@ class DatabaseDataTest extends TestCase
         $this->assertArrayHasKey('name', $array);
         $this->assertEquals('name_only', $array['name']);
 
+        $this->assertArrayHasKey('charset', $array);
+        $this->assertEquals('', $array['charset']);
+
+        $this->assertArrayHasKey('collation', $array);
+        $this->assertEquals('', $array['collation']);
+
         $this->assertArrayHasKey('tableCount', $array);
         $this->assertNull($array['tableCount']);
+
+        $this->assertIsArray($array['tables']);
+        $this->assertSame([], $array['tables']);
     }
 
-    public function testWithTableCount(): void
+    public function testWithTables(): void
     {
-        $database = new DatabaseData('counted_tables', 13);
+        $database = (new DatabaseData('collected_tables'))
+            ->withTables(new TableCollection([[], []]))
+        ;
 
         $this->assertInstanceOf(DatabaseData::class, $database);
-        $this->assertObjectHasAttribute('tableCount', $database);
-        $this->assertArrayHasKey('tableCount', $database->toArray());
+        $this->assertObjectHasAttribute('tables', $database);
+        $this->assertArrayHasKey('tables', $database->toArray());
 
-        $this->assertIsInt($database->tableCount);
-        $this->assertEquals(13, $database->tableCount);
+        $this->assertInstanceOf(TableCollection::class, $database->tables);
+        $this->assertSame([[], []], $database->tables->toArray());
     }
 }

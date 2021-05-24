@@ -32,6 +32,7 @@ $config->setFinder($finder)
             'spacing' => 'one',
         ],
         'php_unit_method_casing' => false,
+        'phpdoc_to_comment' => false, // messes with inline typehints
 
         // PhpCsFixer Overrides
         'ordered_class_elements' => ['order' => ['use_trait']],

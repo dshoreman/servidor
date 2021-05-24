@@ -7,6 +7,7 @@ use Servidor\Http\Controllers\Auth\Logout;
 use Servidor\Http\Controllers\Auth\Register;
 use Servidor\Http\Controllers\Databases\CreateDatabase;
 use Servidor\Http\Controllers\Databases\ListDatabases;
+use Servidor\Http\Controllers\Databases\ShowDatabase;
 use Servidor\Http\Controllers\FallbackController;
 use Servidor\Http\Controllers\Files\CreateNode;
 use Servidor\Http\Controllers\Files\DeletePath;
@@ -53,6 +54,7 @@ Route::middleware('auth:api')->group(static function (): void {
     Route::name('databases.')->prefix('/databases')->group(static function (): void {
         Route::get('/', ListDatabases::class);
         Route::post('/', CreateDatabase::class);
+        Route::get('{database}', ShowDatabase::class);
     });
 
     Route::get('files', ListOrShowPath::class);

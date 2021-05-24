@@ -67,16 +67,16 @@ configure_application() {
 }
 
 create_database() {
-    local password
+    local collation="CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci" password
 
     password="$(</dev/urandom tr -dc 'a-zA-Z0-9!@#$%^&*()_+=,-.<>/?;:|[]{}~' | head -c28)"
 
     echo "DROP USER IF EXISTS 'servidor'@'localhost'; DROP DATABASE IF EXISTS servidor" | mysql && \
         echo "CREATE USER 'servidor'@'localhost' IDENTIFIED BY '${password}'" | mysql && \
         echo "GRANT ALL PRIVILEGES ON *.* TO 'servidor'@'localhost'; FLUSH PRIVILEGES;" | mysql && \
-        echo "CREATE DATABASE servidor;" | mysql
+        echo "CREATE DATABASE servidor ${collation};" | mysql
 
-    is_vagrant && echo "DROP DATABASE IF EXISTS servidor_testing; CREATE DATABASE servidor_testing;" | mysql
+    is_vagrant && echo "DROP DATABASE IF EXISTS servidor_testing; CREATE DATABASE servidor_testing ${collation};" | mysql
 
     edit_line .env "DB_PASSWORD" "\"${password}\""
 }
