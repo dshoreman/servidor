@@ -107,7 +107,7 @@ class DatabaseManager
                 FROM information_schema.SCHEMATA AS db
                 LEFT JOIN information_schema.TABLES tbl
                     ON db.SCHEMA_NAME = tbl.TABLE_SCHEMA
-                GROUP BY db.SCHEMA_NAME
+                GROUP BY name, charset, collation
             endQuery;
     }
 }
