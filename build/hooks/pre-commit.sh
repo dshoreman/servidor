@@ -32,13 +32,6 @@ if [[ ! -f "$csFixerBin" ]] || [[ ! -x "$csFixerBin" ]]; then
 fi
 
 if [[ -n "${stagedProjectFiles}" ]]; then
-    let stashed=false
-    if [[ "$(git diff --name-only)" != "" ]]; then
-        echo "${cOrange} Found unstaged changes, stashing first!"
-        git stash push --keep-index -m PRECOMMIT
-        stashed=true
-    fi
-
     let phpFiles=0
     for file in $stagedProjectFiles; do if echo "$file" | egrep -q "\.(php)$"; then
         if ! php -l -d display_errors=0 "$file"; then
@@ -52,11 +45,5 @@ if [[ -n "${stagedProjectFiles}" ]]; then
         echo "${cGreen} Fixing files...${cEnd}"
         result=$( $csFixerBin fix --config=build/php-cs-fixer/config.php )
         echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
-        git add --update
-    fi
-
-    if [ "$stashed" = true ]; then
-        echo "Restoring stashed changes..."
-        git stash pop --quiet
     fi
 fi
