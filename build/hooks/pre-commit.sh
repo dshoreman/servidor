@@ -74,20 +74,36 @@ if [[ ${#stagedPhpFiles[@]} -gt 0 ]]; then
 
     # All fixes added? If there's no stash, we're good to go!
     mapfile -t postFixDirty < <(git diff-index --name-only --diff-filter=ACMR HEAD)
-    if [[ ${#postFixDirty[@]} -eq 0 ]] && [ $stashed = false ]; then
-        echo "${cGreen} All files fixed! Proceeding with commit${cEnd}"
+    if [[ ${#postFixDirty[@]} -eq 0 ]]; then
+        echo "${cGreen} All files fixed!${cEnd}"
+        if [ $stashed = true ]; then
+            echo "${cBlue} Restoring stashed changes...${cEnd}"
+            git stash pop --quiet
+        fi
+        echo
+        echo "${cGreen} Checks complete. Proceeding with commit!${cEnd}"
         exit 0
     fi
 
+    echo
+    echo "${cOrange} Could not apply all fixes!${cEnd}"
+    echo "${cOrange} Fixes will be re-applied after reverting unstaged changes.${cEnd}"
+
     # Otherwise, reset any changes and apply the stash...
-    [[ ${#postFixDirty[@]} -gt 0 ]] && git checkout -- .
-    [ $stashed = true ] && git stash pop --quiet
+    echo "${cBlue} Resetting fixes made to non-safe files...${cEnd}"
+    git checkout -- .
+    if [ $stashed = true ]; then
+        echo "${cBlue} Applying previously unstaged changes from stash...${cEnd}"
+        git stash pop --quiet
+    fi
 
     # ...before fixing one more time, but on all files, for a manual git add -p
+    echo "${cBlue} Applying fixes on all files...${cEnd}"
     result=$( $csFixerBin fix --config=build/php-cs-fixer/config.php )
     echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
 
     echo "${cRed} Some files were fixed but could not be added automatically.${cEnd}"
+    echo
     echo "${cOrange}  Review the changes manually then re-commit with${cEnd}"
     echo "${cOrange}   git commit -e --file .git/COMMIT_EDITMSG${cEnd}"
     exit 3
