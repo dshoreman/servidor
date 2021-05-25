@@ -72,8 +72,15 @@ if [[ ${#stagedPhpFiles[@]} -gt 0 ]]; then
         git add "${file}"
     done
 
-    # Finally reset the rest and pop the stash
-    git checkout -- .
+    # All fixes added? If there's no stash, we're good to go!
+    mapfile -t postFixDirty < <(git diff-index --name-only --diff-filter=ACMR HEAD)
+    if [[ ${#postFixDirty[@]} -eq 0 ]] && [ $stashed = false ]; then
+        echo "${cGreen} All files fixed! Proceeding with commit${cEnd}"
+        exit 0
+    fi
+
+    # Otherwise, reset any changes and apply the stash...
+    [[ ${#postFixDirty[@]} -gt 0 ]] && git checkout -- .
     [ $stashed = true ] && git stash pop --quiet
 
     # ...before fixing one more time, but on all files, for a manual git add -p
