@@ -68,12 +68,11 @@ if [[ ${#stagedPhpFiles[@]} -gt 0 ]]; then
     result=$( $csFixerBin fix --config=build/php-cs-fixer/config.php )
     echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
     for file in "${safeFiles[@]}"; do
-        echo "${cOrange} Adding fixes from ${file}${cEnd}"
-        git add "${file}"
+        git add "${file}" && echo "${cOrange} Added fixes from ${file}${cEnd}"
     done
 
     # All fixes added? If there's no stash, we're good to go!
-    mapfile -t postFixDirty < <(git diff-index --name-only --diff-filter=ACMR HEAD)
+    mapfile -t postFixDirty < <(git diff --name-only | grep -E '\.(php)$')
     if [[ ${#postFixDirty[@]} -eq 0 ]]; then
         echo "${cGreen} All files fixed!${cEnd}"
         if [ $stashed = true ]; then
@@ -91,7 +90,9 @@ if [[ ${#stagedPhpFiles[@]} -gt 0 ]]; then
 
     # Otherwise, reset any changes and apply the stash...
     echo "${cBlue} Resetting fixes made to non-safe files...${cEnd}"
-    git checkout -- .
+    for file in "${postFixDirty[@]}"; do
+        echo " -- ${file}" && git checkout -- "${file}"
+    done
     if [ $stashed = true ]; then
         echo "${cBlue} Applying previously unstaged changes from stash...${cEnd}"
         git stash pop --quiet
