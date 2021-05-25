@@ -45,10 +45,14 @@ jobs:
         os: [ubuntu-18.04, ubuntu-20.04]
         php: ['7.4', '8.0']
         experimental: [false]
+        composer-flags: ['--prefer-dist']
+        phpstan-args: ['']
         include:
           - php: '8.1'
             os: ubuntu-latest
             experimental: true
+            composer-flags: '--prefer-dist --ignore-platform-req=php'
+            phpstan-args: '--debug'
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -75,31 +79,38 @@ jobs:
         with:
           timeout_seconds: 45
           max_attempts: 3
-          command: composer install --no-interaction --no-progress --prefer-dist
+          command: composer install --no-interaction --no-progress ${{ matrix.composer-flags }}
       - name: Install application
         run: bash .github/scripts/install.sh
       - name: Check for code style issues
         run: |
           echo "::group::$ vendor/bin/php-cs-fixer fix"
-          make phpcsf CS_ARGS="--verbose"
+          export PHP_CS_FIXER_IGNORE_ENV=1 && make phpcsf CS_ARGS="--verbose --show-progress=none"
           echo -e "::endgroup::\n::group::$ vendor/bin/phpcs --standard=PSR12"
           make phpcs
           echo "::endgroup::"
       - name: Run PHP mess detection tool
-        run: make phpmd
+        run: make phpmd PHPMD_FORMAT="github"
       - name: Check for magic numbers
         run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
+      - name: Gather PHP insights
+        run: make insights INSIGHT_ARGS="--ansi --format=github-action --disable-security-check"
       - name: Run static analysis checks
         run: |
           echo "::group::$ vendor/bin/phpstan analyze"
-          make phpstan
+          make phpstan STAN_ARGS=${{ matrix.phpstan-args }}
           echo -e "::endgroup::\n::group::$ vendor/bin/phan"
           make phan
           echo -e "::endgroup::\n::group::$ vendor/bin/psalm"
           make psalm
           echo "::endgroup::"
       - name: Run tests with PHPUnit
-        run: make test-for-ci
+        uses: nick-invision/retry@v2
+        with:
+          command: make test-for-ci
+          timeout_minutes: 2
+          max_attempts: 3
+          retry_on: error
       - name: Upload coverage results
         uses: codecov/codecov-action@v1
       - name: Check Laravel log

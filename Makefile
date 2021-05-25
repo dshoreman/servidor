@@ -4,8 +4,12 @@ SHELL = bash -eo pipefail
 GNU_SED := $(shell command -v gsed || command -v sed)
 
 now := `date '+%Y-%m-%d_%H%M'`
+CS_ARGS ?= --show-progress=dots --verbose
+INSIGHT_ARGS := --no-interaction $(INSIGHT_ARGS) --verbose
 PHP_CSF_ARGS := --diff --dry-run $(CS_ARGS)
 PHP_MND_ARGS := --progress $(MND_ARGS) --exclude tests
+PHP_STAN_CMD := analyze $(STAN_ARGS)
+PHPMD_FORMAT ?= ansi
 
 installer: thinkdifferent
 	@echo -n "Building unified install script... "
@@ -81,7 +85,7 @@ phan:
 	vendor/bin/phan --config-file build/phan/config.php --color
 
 phpstan:
-	php -d memory_limit=-1 vendor/bin/phpstan analyze -c build/phpstan/config.neon
+	php -d memory_limit=-1 vendor/bin/phpstan $(PHP_STAN_CMD) -c build/phpstan/config.neon
 
 psalm:
 	vendor/bin/psalm -c build/psalm/psalm.xml
@@ -92,12 +96,15 @@ phpcsf:
 phpcs:
 	vendor/bin/phpcs app -p --standard=PSR12
 
+insights:
+	vendor/bin/phpinsights $(INSIGHT_ARGS) --config-path=build/phpinsights/config.php
+
 phpmd:
-	vendor/bin/phpmd app ansi build/phpmd/rules.xml
+	vendor/bin/phpmd app ${PHPMD_FORMAT} build/phpmd/rules.xml
 
 phpmnd:
 	vendor/bin/phpmnd . $(PHP_MND_ARGS)
 
-syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm phan
+syntax: eslint phpcsf phpcs phpmd phpmnd phpstan psalm phan insights
 
 kitchen-sink: clear-cscache syntax coverage metrics

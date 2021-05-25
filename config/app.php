@@ -14,7 +14,7 @@ return [
     'fallback_locale' => 'en',
     'faker_locale' => 'en_GB',
 
-    'key' => env('APP_KEY'),
+    'key' => env('APP_KEY', ''),
     'cipher' => 'AES-256-CBC',
 
     'providers' => [
@@ -48,6 +48,7 @@ return [
         // Application Service Providers...
         Servidor\Providers\AppServiceProvider::class,
         Servidor\Providers\AuthServiceProvider::class,
+        Servidor\Providers\BroadcastServiceProvider::class,
         Servidor\Providers\EventServiceProvider::class,
         Servidor\Providers\RouteServiceProvider::class,
     ],

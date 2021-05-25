@@ -3,9 +3,9 @@
 namespace Servidor\System;
 
 use Illuminate\Support\Collection;
-use Servidor\Exceptions\System\GroupNotFoundException;
-use Servidor\Exceptions\System\GroupNotModifiedException;
-use Servidor\Exceptions\System\GroupSaveException;
+use Servidor\System\Groups\GenericGroupSaveFailure;
+use Servidor\System\Groups\GroupNotFound;
+use Servidor\System\Groups\GroupNotModified;
 use Servidor\System\Groups\LinuxGroup;
 
 class Group
@@ -41,30 +41,27 @@ class Group
 
     protected function commitAdd(): self
     {
+        $error = 'Something unexpected happened!';
         $retval = $this->commit('groupadd');
+        $visibleExitStatus = $retval;
 
         if (0 === $retval) {
             return $this;
         }
 
-        $error = 'Something unexpected happened! Exit code: ' . $retval;
+        $errors = [
+            self::GROUP_GID_TAKEN => "The group's GID must be unique",
+            self::GROUP_NAME_TAKEN => 'The group name must be unique',
+            self::GROUP_OPTION_INVALID => 'Invalid argument to option',
+            self::GROUP_SYNTAX_INVALID => 'Invalid command syntax.',
+        ];
 
-        switch ($retval) {
-            case self::GROUP_SYNTAX_INVALID:
-                $error = 'Invalid command syntax.';
-                break;
-            case self::GROUP_OPTION_INVALID:
-                $error = 'Invalid argument to option';
-                break;
-            case self::GROUP_GID_TAKEN:
-                $error = "The group's GID must be unique";
-                break;
-            case self::GROUP_NAME_TAKEN:
-                $error = 'The group name must be unique';
-                break;
+        if (isset($errors[$retval])) {
+            $error = $errors[$retval];
+            $visibleExitStatus = 0;
         }
 
-        throw new GroupSaveException($error);
+        throw new GenericGroupSaveFailure($error, $visibleExitStatus);
     }
 
     private function commitMod(): self
@@ -73,20 +70,20 @@ class Group
             $retval = $this->commit('groupmod');
 
             if (0 !== $retval) {
-                throw new GroupSaveException("Couldn't update the group. Exit code: {$retval}.");
+                throw new GenericGroupSaveFailure("Couldn't update the group.", $retval);
             }
         }
 
         if ($this->group->hasChangedUsers()) {
             $users = $this->group->users;
 
-            $this->refresh($this->group->gid ?? $this->group->name)
-                 ->group->setUsers($users);
+            $this->refresh($this->group->gid ?? $this->group->name);
+            $this->group->setUsers($users);
 
             $retval = $this->commit('gpasswd', '-M "' . implode(',', $this->group->users) . '"');
 
             if (0 !== $retval) {
-                throw new GroupSaveException("Couldn't update the group's users. Exit code: {$retval}.");
+                throw new GenericGroupSaveFailure("Couldn't update the group's users.", $retval);
             }
         }
 
@@ -116,7 +113,7 @@ class Group
         $group = posix_getgrgid($gid);
 
         if (!$group) {
-            throw new GroupNotFoundException();
+            throw new GroupNotFound();
         }
 
         return new self($group);
@@ -130,10 +127,10 @@ class Group
         $groups = collect();
 
         foreach ($lines as $line) {
-            assert(is_string($line));
+            \assert(\is_string($line));
 
             $group = array_combine($keys, explode(':', $line));
-            $group['users'] = '' == $group['users'] ? [] : explode(',', $group['users']);
+            $group['users'] = '' === $group['users'] ? [] : explode(',', $group['users']);
 
             $groups->push($group);
         }
@@ -143,12 +140,14 @@ class Group
 
     public function update(array $data): array
     {
-        $this->group->setName((string) $data['name'])
-                    ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
-                    ->setUsers(isset($data['users']) ? (array) $data['users'] : null);
+        $this->group
+            ->setName((string) $data['name'])
+            ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
+            ->setUsers(isset($data['users']) ? (array) $data['users'] : null)
+        ;
 
         if (!$this->group->isDirty()) {
-            throw new GroupNotModifiedException();
+            throw new GroupNotModified();
         }
 
         $this->commitMod();
@@ -161,7 +160,7 @@ class Group
      */
     private function refresh($nameOrGid): self
     {
-        $arr = is_int($nameOrGid)
+        $arr = \is_int($nameOrGid)
              ? posix_getgrgid($nameOrGid)
              : posix_getgrnam($nameOrGid);
 

@@ -8,6 +8,22 @@ export default {
         addNewProject: (state, project) => {
             state.projects.push(project);
         },
+        addProjectApp: (state, app) => {
+            const { project_id: pID } = app,
+                project = { ...state.projects.find(p => p.id === pID) };
+
+            project.applications.push(app);
+
+            Vue.set(state.projects, state.projects.findIndex(p => p.id === pID), project);
+        },
+        addProjectRedirect: (state, redirect) => {
+            const { project_id: pID } = redirect,
+                project = { ...state.projects.find(p => p.id === pID) };
+
+            project.redirects.push(redirect);
+
+            Vue.set(state.projects, state.projects.findIndex(p => p.id === pID), project);
+        },
         removeProject: (state, project) => {
             state.projects.splice(state.projects.findIndex(
                 p => p.id === project.id,
@@ -27,18 +43,34 @@ export default {
                 resolve(response);
             }).catch(error => reject(error));
         }),
-        create: ({ commit }, project) => new Promise((resolve, reject) => {
-            const data = { ...project };
+        createProject: async ({ commit }, project) => {
+            try {
+                const { data } = await axios.post('/api/projects', {
+                    is_enabled: project.is_enabled,
+                    name: project.name,
+                });
 
-            if ('archive' === data.applications[0].template) {
-                data.applications = [];
+                commit('addNewProject', data);
+
+                return Promise.resolve(data);
+            } catch (error) {
+                return Promise.reject(error);
             }
+        },
+        createApp: async ({ commit }, { projectId, app }) => {
+            const { data } = await axios.post(`/api/projects/${projectId}/apps`, app);
 
-            axios.post('/api/projects', data).then(response => {
-                commit('addNewProject', response.data);
-                resolve(response);
-            }).catch(error => reject(error));
-        }),
+            commit('addProjectApp', data);
+
+            return data;
+        },
+        createRedirect: async ({ commit }, { projectId, redirect }) => {
+            const { data } = await axios.post(`/api/projects/${projectId}/redirects`, redirect);
+
+            commit('addProjectRedirect', data);
+
+            return data;
+        },
         disable: ({ dispatch }, id) => dispatch('toggle', { id }),
         enable: ({ dispatch }, id) => dispatch('toggle', { id, enabled: true }),
         pull: app => axios.post(`/api/projects/${app.project.id}/apps/${app.id}/pull`),

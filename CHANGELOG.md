@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.13.0] - 2021-05-25
+### Added
+* [chore] Added phpinsights to the CI workflow. Run with `make insights`
+* [database] Added new page to list tables with some basic details
+* [database] Default collation, charset and table count added to databases page
+* [database] Validation is now handled by its own FormRequest class
+* [projects] New progress modal showing realtime creation progress
+
+### Changed
+* [database] Create and list endpoints return DatabaseData objects, not just names
+
+### Fixed
+* [database] Tests no longer create databases using the real connection
+* [projects] Removed a rogue '>' from the New Project confirmation page
+* [projects] Successful project creation no longer prompts to discard changes
+
+
 ## [0.12.0] - 2021-04-04
 ### Added
 * Support for PHP 8.0
@@ -205,7 +222,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.12.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.13.0...develop
+[0.13.0]: https://github.com/dshoreman/servidor/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/dshoreman/servidor/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/dshoreman/servidor/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/dshoreman/servidor/compare/v0.9.0...v0.10.0

@@ -4,12 +4,12 @@ namespace Servidor\Http\Controllers\System;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Servidor\Exceptions\System\GroupNotFoundException;
-use Servidor\Exceptions\System\GroupNotModifiedException;
-use Servidor\Exceptions\System\GroupSaveException;
 use Servidor\Http\Requests\System\CreateGroup;
 use Servidor\Http\Requests\System\UpdateGroup;
 use Servidor\System\Group as SystemGroup;
+use Servidor\System\Groups\GenericGroupSaveFailure;
+use Servidor\System\Groups\GroupNotFound;
+use Servidor\System\Groups\GroupNotModified;
 
 class GroupsController extends Controller
 {
@@ -28,7 +28,7 @@ class GroupsController extends Controller
                 (bool) ($data['system'] ?? false),
                 isset($data['gid']) ? (int) $data['gid'] : null,
             );
-        } catch (GroupSaveException $e) {
+        } catch (GenericGroupSaveFailure $e) {
             $data['error'] = $e->getMessage();
 
             return response()->json($data, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -44,13 +44,13 @@ class GroupsController extends Controller
 
             return response()->json(
                 $group->update($request->validated()),
-                Response::HTTP_OK
+                Response::HTTP_OK,
             );
-        } catch (GroupNotFoundException $_) {
+        } catch (GroupNotFound $_) {
             throw $this->fail('gid', 'No group found matching the given criteria.');
-        } catch (GroupNotModifiedException $_) {
+        } catch (GroupNotModified $_) {
             throw $this->fail('gid', 'Nothing to update!');
-        } catch (GroupSaveException $e) {
+        } catch (GenericGroupSaveFailure $e) {
             throw $this->fail('gid', $e->getMessage());
         }
     }

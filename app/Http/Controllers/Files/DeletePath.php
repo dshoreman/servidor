@@ -10,10 +10,12 @@ use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 class DeletePath extends Controller
 {
-    /** @return Response|\Illuminate\Http\JsonResponse */
+    /** @return \Illuminate\Http\JsonResponse|Response */
     public function __invoke(Request $request): BaseResponse
     {
-        if (!($filepath = $request->query('file')) || !is_string($filepath)) {
+        $filepath = $request->query('file');
+
+        if (!$filepath || !\is_string($filepath)) {
             throw ValidationException::withMessages(['file' => 'File path must be specified.']);
         }
 

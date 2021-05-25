@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Servidor\Projects\Project;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,4 +14,10 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.User.{id}', fn ($user, $id) => (int) $user->id === (int) $id);
+Broadcast::channel('App.User.{id}', static fn ($user, $id) => (int) $user->id === (int) $id);
+
+Broadcast::channel(
+    'projects.{project}',
+    static fn ($user, Project $project) => $project->id && $user->id,
+    ['guards' => ['api']],
+);

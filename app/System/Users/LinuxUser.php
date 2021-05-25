@@ -75,11 +75,11 @@ class LinuxUser extends LinuxCommand
 
     public function setGroups(?array $groups = null): self
     {
-        if (is_array($groups)) {
+        if (\is_array($groups)) {
             $this->groups = $groups;
         }
 
-        if (is_array($groups) && $this->getOriginal('groups') !== $groups) {
+        if (\is_array($groups) && $this->getOriginal('groups') !== $groups) {
             $this->args[] = '-G "' . implode(',', $this->groups) . '"';
         }
 
@@ -92,7 +92,7 @@ class LinuxUser extends LinuxCommand
             $this->shell = $shell;
         }
 
-        if ($this->shell != $this->getOriginal('shell')) {
+        if ($this->shell !== $this->getOriginal('shell')) {
             $this->args[] = '-s "' . $this->shell . '"';
         }
 
@@ -111,7 +111,7 @@ class LinuxUser extends LinuxCommand
 
     public function setHomeDirectory(string $dir): self
     {
-        if ('' != $dir && $dir != $this->getOriginal('dir')) {
+        if ('' !== $dir && $dir !== $this->getOriginal('dir')) {
             $this->dir = $dir;
             $this->args[] = '-d "' . $this->dir . '"';
         }
@@ -139,7 +139,7 @@ class LinuxUser extends LinuxCommand
         $primaryMembers = explode(',', end($primary));
 
         foreach ($effective as $group) {
-            if ($group == $primaryName && !in_array($group, $primaryMembers, true)) {
+            if ($group === $primaryName && !\in_array($group, $primaryMembers, true)) {
                 continue;
             }
 
@@ -149,7 +149,7 @@ class LinuxUser extends LinuxCommand
 
     public function isDirty(): bool
     {
-        return count($this->args) > 0;
+        return \count($this->args) > 0;
     }
 
     public function toArray(): array

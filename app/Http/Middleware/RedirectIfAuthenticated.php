@@ -16,14 +16,26 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, ?string ...$guards)
     {
-        $guards = empty($guards) ? [null] : $guards;
-
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
-            }
+        if ($this->isAuthed($guards ?: [null])) {
+            return redirect(RouteServiceProvider::HOME);
         }
 
         return $next($request);
+    }
+
+    /**
+     * Check if any of the given guards are authed.
+     *
+     * @param array<?string> $guards
+     */
+    private function isAuthed(array $guards): bool
+    {
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

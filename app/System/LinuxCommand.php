@@ -15,7 +15,7 @@ abstract class LinuxCommand
 
     public function hasArgs(): bool
     {
-        return count($this->args) > 0;
+        return \count($this->args) > 0;
     }
 
     public function toArgs(): string

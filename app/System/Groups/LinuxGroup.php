@@ -17,7 +17,7 @@ class LinuxGroup extends LinuxCommand
 
     public function __construct(array $group = [])
     {
-        $this->gid = ($group['gid'] ?? null) ? (int) $group['gid'] : null;
+        $this->gid = $group['gid'] ?? null ? (int) $group['gid'] : null;
         $this->name = (string) $group['name'];
         $this->users = (array) ($group['members'] ?? []);
 
@@ -41,7 +41,7 @@ class LinuxGroup extends LinuxCommand
     {
         $this->name = $name;
 
-        if ($name != $this->getOriginal('name')) {
+        if ($name !== $this->getOriginal('name')) {
             $this->args[] = '-n ' . $name;
         }
 
@@ -55,7 +55,7 @@ class LinuxGroup extends LinuxCommand
 
     public function setUsers(?array $users): self
     {
-        if (is_array($users)) {
+        if (\is_array($users)) {
             $this->users = $users;
         }
 
@@ -64,7 +64,7 @@ class LinuxGroup extends LinuxCommand
 
     public function hasChangedUsers(): bool
     {
-        return $this->users != $this->getOriginal('users');
+        return $this->users !== $this->getOriginal('users');
     }
 
     public function isDirty(): bool

@@ -82,6 +82,6 @@ class DeleteUserTest extends TestCase
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
         $after = (new FileManager())->list('/home');
-        $this->assertEquals(count($before) - 1, count($after));
+        $this->assertEquals(\count($before) - 1, \count($after));
     }
 }
