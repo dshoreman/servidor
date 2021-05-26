@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "061c818dd3fbc5551d5d66a8ec6b76c3",
+    "content-hash": "f6eb6d7f49652039b517429974ae47f2",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -9588,21 +9588,21 @@
         },
         {
             "name": "povils/phpmnd",
-            "version": "dev-php8",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dshoreman/phpmnd.git",
-                "reference": "d67d970487fefa736c266041442aa55be969ac3a"
+                "reference": "6499d80cce8bb5a908e7de83b739cd0db70e793b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dshoreman/phpmnd/zipball/d67d970487fefa736c266041442aa55be969ac3a",
-                "reference": "d67d970487fefa736c266041442aa55be969ac3a",
+                "url": "https://api.github.com/repos/dshoreman/phpmnd/zipball/6499d80cce8bb5a908e7de83b739cd0db70e793b",
+                "reference": "6499d80cce8bb5a908e7de83b739cd0db70e793b",
                 "shasum": ""
             },
             "require": {
                 "nikic/php-parser": "^4.0",
-                "php": ">=7.1",
+                "php": "^7.1|^8.0",
                 "php-parallel-lint/php-console-highlighter": "^0.5",
                 "phpunit/php-timer": "^2.0||^3.0||^4.0||^5.0",
                 "symfony/console": "^4.0||^5.0",
@@ -9612,13 +9612,14 @@
                 "phpunit/phpunit": "^7.0||^8.0||^9.0",
                 "squizlabs/php_codesniffer": "^2.8.1||^3.5"
             },
+            "default-branch": true,
             "bin": [
                 "bin/phpmnd"
             ],
             "type": "application",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -9654,9 +9655,9 @@
             "description": "A tool to detect Magic numbers in codebase",
             "support": {
                 "issues": "https://github.com/povils/phpmnd/issues",
-                "source": "https://github.com/dshoreman/phpmnd/tree/php8"
+                "source": "https://github.com/dshoreman/phpmnd/tree/master"
             },
-            "time": "2021-01-31T00:51:56+00:00"
+            "time": "2021-05-26T04:39:25+00:00"
         },
         {
             "name": "psalm/plugin-laravel",

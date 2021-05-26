@@ -33,7 +33,7 @@
         "phpstan/phpstan": "^0.12.88",
         "phpstan/phpstan-mockery": "^0.12.13",
         "phpunit/phpunit": "^9.5.4",
-        "povils/phpmnd": "dev-php8",
+        "povils/phpmnd": "^2.4-dev",
         "psalm/plugin-laravel": "^1.4.5",
         "psr/cache": "^2.0.0",
         "spatie/macroable": "^2.0.0",
