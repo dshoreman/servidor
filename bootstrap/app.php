@@ -16,7 +16,7 @@ if (!defined('SERVIDOR_VERSION')) {
 */
 
 $app = new Illuminate\Foundation\Application(
-    (string) dirname(__DIR__),
+    dirname(__DIR__),
 );
 
 /*
