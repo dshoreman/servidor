@@ -32,7 +32,7 @@ dev-env:
 ifeq (, $(shell command -v composer))
 	@echo "Composer not available, package installation will run in Vagrant instead."
 else
-	@composer install --no-interaction --no-progress --no-suggest || true
+	@composer install --no-interaction --no-progress || true
 endif
 	@npm ci && npm run dev
 	@echo

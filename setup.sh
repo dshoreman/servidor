@@ -98,7 +98,7 @@ clone_and_install() {
     fi
     log "Installing required Composer packages..."
     is_vagrant && c_dev="--prefer-source" || c_dev="--no-dev"
-    sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress --no-suggest
+    sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress
     log "Compiling static assets..."
     if is_vagrant; then
         info " Running in Vagrant, skipping asset build!"
