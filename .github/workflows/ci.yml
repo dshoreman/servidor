@@ -43,7 +43,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-18.04, ubuntu-20.04]
-        php: ['7.4', '8.0']
+        php: ['8.0']
         experimental: [false]
         composer-flags: ['--prefer-dist']
         phpstan-args: ['']
