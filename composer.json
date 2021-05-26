@@ -25,7 +25,7 @@
         "itsgoingd/clockwork": "^5.0",
         "mockery/mockery": "^1.4",
         "nunomaduro/collision": "^5.3",
-        "nunomaduro/larastan": "^0.7.0",
+        "nunomaduro/larastan": "^0.7.6",
         "nunomaduro/phpinsights": "dev-master",
         "phan/phan": "4.x",
         "phpmd/phpmd": "^2.10",
