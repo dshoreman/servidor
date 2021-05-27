@@ -19,7 +19,7 @@ class TableData
         string $collation = '',
         string $engine = '',
         int $rowCount = -1,
-        int $size = -1
+        int $size = -1,
     ) {
         $this->name = $name;
 

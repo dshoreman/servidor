@@ -20,7 +20,7 @@ class DatabaseManager
     public function __construct(
         Repository $config,
         ?Connection $connection = null,
-        ?AbstractSchemaManager $manager = null
+        ?AbstractSchemaManager $manager = null,
     ) {
         $socket = (string) $config->get('database.connections.mysql.unix_socket');
 

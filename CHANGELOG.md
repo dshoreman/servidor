@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Changed
+* [chore] Dropped support for PHP 7.4
+* [installer] Updated to install (and use) `php8.0-` packages and fpm socket
+
 ### Fixed
 * [installer] Fixed issue where password generation could trigger pipefail
 
