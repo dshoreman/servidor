@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f6eb6d7f49652039b517429974ae47f2",
+    "content-hash": "6258638cfe9cb2534f9f203ba545cb50",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -8109,16 +8109,16 @@
         },
         {
             "name": "pdepend/pdepend",
-            "version": "2.9.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pdepend/pdepend.git",
-                "reference": "1632f0cee84512ffd6dde71e58536b3b06528c41"
+                "reference": "d35a0002040debcb9b54fe4e6c83b3ea730c1019"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/1632f0cee84512ffd6dde71e58536b3b06528c41",
-                "reference": "1632f0cee84512ffd6dde71e58536b3b06528c41",
+                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/d35a0002040debcb9b54fe4e6c83b3ea730c1019",
+                "reference": "d35a0002040debcb9b54fe4e6c83b3ea730c1019",
                 "shasum": ""
             },
             "require": {
@@ -8133,6 +8133,7 @@
                 "phpunit/phpunit": "^4.8.36|^5.7.27",
                 "squizlabs/php_codesniffer": "^2.0.0"
             },
+            "default-branch": true,
             "bin": [
                 "src/bin/pdepend"
             ],
@@ -8154,7 +8155,7 @@
             "description": "Official version of pdepend to be handled with Composer",
             "support": {
                 "issues": "https://github.com/pdepend/pdepend/issues",
-                "source": "https://github.com/pdepend/pdepend/tree/2.9.1"
+                "source": "https://github.com/pdepend/pdepend/tree/master"
             },
             "funding": [
                 {
@@ -8162,7 +8163,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-04-15T21:36:28+00:00"
+            "time": "2021-05-22T21:03:43+00:00"
         },
         {
             "name": "phan/phan",
@@ -12595,6 +12596,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "nunomaduro/phpinsights": 20,
+        "pdepend/pdepend": 20,
         "povils/phpmnd": 20
     },
     "prefer-stable": true,
