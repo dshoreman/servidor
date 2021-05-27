@@ -5,7 +5,7 @@ start_install() {
     add_repos && install_packages
 
     info "Enabling services..."
-    enable_services mariadb nginx php7.4-fpm
+    enable_services mariadb nginx php8.0-fpm
 
     if is_vagrant; then
         info "Adding vagrant user to www-data group..."
@@ -31,19 +31,19 @@ add_repos() {
 }
 
 install_packages() {
-    local phpexts=(php7.4-bcmath php7.4-json php7.4-mbstring php7.4-xml php7.4-zip)
+    local phpexts=(php8.0-bcmath php8.0-curl php8.0-mbstring php8.0-xml php8.0-zip)
 
     info "Installing core packages..."
     install_pkg build-essential nodejs sysstat unzip zsh
 
     info "Installing database and web server..."
-    install_pkg nginx php7.4-fpm
+    install_pkg nginx php8.0-fpm
 
     info "Installing required PHP extensions..."
 
     is_vagrant && \
         log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
-        phpexts+=(php-pcov php7.4-phpdbg)
+        phpexts+=(php-pcov php8.0-phpdbg)
 
     install_pkg "${phpexts[@]}"
 
@@ -51,7 +51,7 @@ install_packages() {
     install_composer
 
     info "Installing database..."
-    install_pkg mariadb-server php7.4-mysql
+    install_pkg mariadb-server php8.0-mysql
 }
 
 install_composer() {

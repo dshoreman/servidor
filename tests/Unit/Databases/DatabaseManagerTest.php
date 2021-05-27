@@ -102,7 +102,7 @@ class DatabaseManagerTest extends TestCase
      * @depends it_can_create_a_database
      */
     public function create_returns_database_when_it_already_exists(
-        DatabaseManager $manager
+        DatabaseManager $manager,
     ): void {
         $before = $manager->databases()->toArray();
         $database = $manager->create(new DatabaseData('testdb'));

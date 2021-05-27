@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api;
+namespace Tests\Feature\Api\Databases;
 
 use Tests\RequiresAuth;
 use Tests\TestCase;

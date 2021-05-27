@@ -63,7 +63,7 @@ $config->setFinder($finder)
         'declare_strict_types' => false,
         'trailing_comma_in_multiline' => [
             'after_heredoc' => true,
-            'elements' => ['arrays', 'arguments'], // TODO: Add 'parameters' once we drop PHP 7.4
+            'elements' => ['arrays', 'arguments', 'parameters'],
         ],
     ])
 ;

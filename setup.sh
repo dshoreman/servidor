@@ -98,7 +98,7 @@ clone_and_install() {
     fi
     log "Installing required Composer packages..."
     is_vagrant && c_dev="--prefer-source" || c_dev="--no-dev"
-    sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress --no-suggest
+    sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress
     log "Compiling static assets..."
     if is_vagrant; then
         info " Running in Vagrant, skipping asset build!"
@@ -124,7 +124,7 @@ configure_application() {
 }
 create_database() {
     local collation="CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci" password
-    password="$(</dev/urandom tr -dc 'a-zA-Z0-9!@#$%^&*()_+=,-.<>/?;:|[]{}~' | head -c28)"
+    password="$(</dev/urandom tr -dc 'a-zA-Z0-9!@#$%^&*()_+=,-.<>/?;:|[]{}~' | head -c28 || test $? -eq 141)"
     echo "DROP USER IF EXISTS 'servidor'@'localhost'; DROP DATABASE IF EXISTS servidor" | mysql && \
         echo "CREATE USER 'servidor'@'localhost' IDENTIFIED BY '${password}'" | mysql && \
         echo "GRANT ALL PRIVILEGES ON *.* TO 'servidor'@'localhost'; FLUSH PRIVILEGES;" | mysql && \
@@ -281,7 +281,7 @@ start_install() {
     info "Adding required repositories..."
     add_repos && install_packages
     info "Enabling services..."
-    enable_services mariadb nginx php7.4-fpm
+    enable_services mariadb nginx php8.0-fpm
     if is_vagrant; then
         info "Adding vagrant user to www-data group..."
         usermod -aG www-data vagrant
@@ -302,20 +302,20 @@ add_repos() {
     fi
 }
 install_packages() {
-    local phpexts=(php7.4-bcmath php7.4-json php7.4-mbstring php7.4-xml php7.4-zip)
+    local phpexts=(php8.0-bcmath php8.0-curl php8.0-mbstring php8.0-xml php8.0-zip)
     info "Installing core packages..."
     install_pkg build-essential nodejs sysstat unzip zsh
     info "Installing database and web server..."
-    install_pkg nginx php7.4-fpm
+    install_pkg nginx php8.0-fpm
     info "Installing required PHP extensions..."
     is_vagrant && \
         log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
-        phpexts+=(php-pcov php7.4-phpdbg)
+        phpexts+=(php-pcov php8.0-phpdbg)
     install_pkg "${phpexts[@]}"
     info "Installing latest stable Composer..."
     install_composer
     info "Installing database..."
-    install_pkg mariadb-server php7.4-mysql
+    install_pkg mariadb-server php8.0-mysql
 }
 install_composer() {
     local expected actual target=/tmp/composer-setup.php
@@ -355,7 +355,7 @@ server {
         try_files \$uri \$uri/ /index.php?\$query_string;
     }
     location ~ \.php\$ {
-        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.0-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         include fastcgi_params;

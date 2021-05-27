@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api;
+namespace Tests\Feature\Api\Databases;
 
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Http\JsonResponse;
