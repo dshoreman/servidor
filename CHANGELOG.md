@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [installer] Updated to install (and use) `php8.0-` packages and fpm socket
 
 ### Fixed
+* [auth] Opening Servidor in a new tab no longer requires you to login again
 * [installer] Fixed issue where password generation could trigger pipefail
 
 
