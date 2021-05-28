@@ -225,21 +225,21 @@ export default {
 
             this.nextStep('redirect');
         },
-        async create(enabled = false) {
+        async create(enabled = false) { // eslint-disable-line max-statements
             this.setErrors({}, '');
 
             const [channel, step] = ['projects', this.progressInit()];
             let project = null;
 
             try {
-                [ project ] = await Promise.all([
-                    await this.$store.dispatch('projects/createProject', {
-                        name: this.project.name,
-                        is_enabled: enabled,
-                    }),
-                    this.$store.dispatch('progress/progress', { step: 'create', progress: 8 }),
+                project = await this.$store.dispatch('projects/createProject', {
+                    name: this.project.name,
+                    is_enabled: enabled,
+                });
+                await Promise.all([
+                    this.$store.dispatch('progress/progress', { step: STEP_CREATE, progress: 8 }),
                     this.$store.dispatch('progress/monitor', { channel, item: project.id }),
-                    this.$store.dispatch('progress/progress', { step: 'create', progress: 10 }),
+                    this.$store.dispatch('progress/progress', { step: STEP_CREATE, progress: 10 }),
                 ]);
 
                 const [action, data, progress] = step === STEP_APP

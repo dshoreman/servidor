@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * [auth] Opening Servidor in a new tab no longer requires you to login again
 * [installer] Fixed issue where password generation could trigger pipefail
+* [projects] Fixed app/redirect not getting saved with new projects
 
 
 ## [0.13.0] - 2021-05-25
