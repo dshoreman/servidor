@@ -12,6 +12,7 @@ use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Redirects\ApplyRedirectNginxConfig;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
 use Servidor\Projects\ReloadNginxService;
+use Servidor\Projects\ToggleProjectVisibility;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,7 @@ class EventServiceProvider extends ServiceProvider
             CreateSystemUser::class,
             ApplyAppNginxConfig::class,
             DeployApp::class,
+            ToggleProjectVisibility::class,
             ReloadNginxService::class,
         ],
         ProjectRedirectSaved::class => [
