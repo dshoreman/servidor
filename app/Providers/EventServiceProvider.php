@@ -26,6 +26,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         ProjectRedirectSaved::class => [
             ApplyRedirectNginxConfig::class,
+            ToggleProjectVisibility::class,
             ReloadNginxService::class,
         ],
         Registered::class => [

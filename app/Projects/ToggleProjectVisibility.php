@@ -3,11 +3,19 @@
 namespace Servidor\Projects;
 
 use Servidor\Projects\Applications\ProjectAppSaved;
+use Servidor\Projects\Redirects\ProjectRedirectSaved;
 
 class ToggleProjectVisibility
 {
-    public function handle(ProjectAppSaved $event): void
+    public function handle(ProjectAppSaved|ProjectRedirectSaved $event): void
     {
+        if ($event instanceof ProjectRedirectSaved) {
+            $redirect = $event->getRedirect();
+            $event->getProject()->is_enabled ? $redirect->enable() : $redirect->disable();
+
+            return;
+        }
+
         $app = $event->getApp();
         $project = $event->getProject();
 
