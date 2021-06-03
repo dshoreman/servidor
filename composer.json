@@ -12,7 +12,7 @@
         "doctrine/dbal": "^2.13.1",
         "fideloper/proxy": "^4.4.1",
         "fruitcake/laravel-cors": "^2.0.4",
-        "laravel/framework": "^8.43.0",
+        "laravel/framework": "^8.45.1",
         "laravel/sanctum": "^2.11.1",
         "laravel/tinker": "^2.6.1",
         "pusher/pusher-php-server": "^7.0.0"
