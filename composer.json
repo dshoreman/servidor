@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.3.0",
-        "facade/ignition": "^2.9.0",
+        "facade/ignition": "^2.10.1",
         "fakerphp/faker": "^1.14.1",
         "friendsofphp/php-cs-fixer": "^2.19.0",
         "itsgoingd/clockwork": "^5.0.7",
