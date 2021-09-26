@@ -9,57 +9,44 @@ class ToggleProjectVisibility
 {
     public function handle(ProjectAppSaved|ProjectRedirectSaved $event): void
     {
-        if ($event instanceof ProjectRedirectSaved) {
-            $redirect = $event->getRedirect();
+        $project = $event->getProject();
+        $step = $this->step($event, $project);
 
-            if ($event->getProject()->is_enabled) {
-                $step = new ProgressStep('enable', 'Enabling redirect', 60);
-                ProjectProgress::dispatch($redirect, $step);
-
-                $redirect->enable();
-
-                ProjectProgress::dispatch($project, $step->complete());
-
-                return;
-            }
-
-            $step = new ProgressStep('disable', 'Disabling redirect', 60);
-            ProjectProgress::dispatch($redirect, $step);
-
-            $redirect->disable();
-
-            ProjectProgress::dispatch($project, $step->complete());
-
-            return;
+        if ($event instanceof ProjectAppSaved) {
+            $this->toggleApplication($step, $project, $event->getApp());
         }
 
-        $app = $event->getApp();
-        $project = $event->getProject();
+        if ($event instanceof ProjectRedirectSaved) {
+            $redirect = $event->getRedirect();
+            $project->is_enabled ? $redirect->enable() : $redirect->disable();
+        }
 
+        ProjectProgress::dispatch($project, $step->complete());
+    }
+
+    private function toggleApplication(ProgressStep $step, Project $project, Application $app): void
+    {
         // This is required because TogglesNginxConfigs::configFilename()
         // relies on the app's domain being set as configs are per-domain.
         //
         // TODO: If we switch to per-project configs, this can be removed.
         if (!$app->domain_name) {
-            return;
-        }
-
-        if ($project->is_enabled) {
-            $step = new ProgressStep('enable', 'Enabling project', 60);
-            ProjectProgress::dispatch($project, $step);
-
-            $app->template()->enable();
-
-            ProjectProgress::dispatch($project, $step->complete());
+            ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_MISSING_DATA));
 
             return;
         }
 
-        $step = new ProgressStep('disable', 'Disabling project', 60);
+        $project->is_enabled ? $app->template()->enable() : $app->template()->disable();
+    }
+
+    private function step(ProjectAppSaved|ProjectRedirectSaved $event, Project $project): ProgressStep
+    {
+        $type = $event instanceof ProjectAppSaved ? 'project' : 'redirect';
+        $text = ($project->is_enabled ? 'Enabling ' : 'Disabling ') . $type;
+
+        $step = new ProgressStep($project->is_enabled ? 'enable' : 'disable', $text, 60);
         ProjectProgress::dispatch($project, $step);
 
-        $app->template()->disable();
-
-        ProjectProgress::dispatch($project, $step->complete());
+        return $step;
     }
 }
