@@ -11,7 +11,24 @@ class ToggleProjectVisibility
     {
         if ($event instanceof ProjectRedirectSaved) {
             $redirect = $event->getRedirect();
-            $event->getProject()->is_enabled ? $redirect->enable() : $redirect->disable();
+
+            if ($event->getProject()->is_enabled) {
+                $step = new ProgressStep('enable', 'Enabling redirect', 60);
+                ProjectProgress::dispatch($redirect, $step);
+
+                $redirect->enable();
+
+                ProjectProgress::dispatch($project, $step->complete());
+
+                return;
+            }
+
+            $step = new ProgressStep('disable', 'Disabling redirect', 60);
+            ProjectProgress::dispatch($redirect, $step);
+
+            $redirect->disable();
+
+            ProjectProgress::dispatch($project, $step->complete());
 
             return;
         }
@@ -28,7 +45,12 @@ class ToggleProjectVisibility
         }
 
         if ($project->is_enabled) {
+            $step = new ProgressStep('enable', 'Enabling project', 60);
+            ProjectProgress::dispatch($project, $step);
+
             $app->template()->enable();
+
+            ProjectProgress::dispatch($project, $step->complete());
 
             return;
         }
