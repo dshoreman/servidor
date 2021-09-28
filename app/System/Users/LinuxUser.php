@@ -15,6 +15,9 @@ class LinuxUser extends LinuxCommand
 
     public ?int $uid;
 
+    /**
+     * @var array<string>
+     */
     public array $groups = [];
 
     public string $name;
@@ -73,6 +76,9 @@ class LinuxUser extends LinuxCommand
         return $this;
     }
 
+    /**
+     * @param array<string>|null $groups
+     */
     public function setGroups(?array $groups = null): self
     {
         if (\is_array($groups)) {

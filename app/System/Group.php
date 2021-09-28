@@ -140,10 +140,13 @@ class Group
 
     public function update(array $data): array
     {
+        /** @var array<string>|null $users */
+        $users = isset($data['users']) ? (array) $data['users'] : null;
+
         $this->group
             ->setName((string) $data['name'])
             ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
-            ->setUsers(isset($data['users']) ? (array) $data['users'] : null)
+            ->setUsers($users)
         ;
 
         if (!$this->group->isDirty()) {

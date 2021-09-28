@@ -24,7 +24,7 @@ class CreateProjectTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $this->assertEquals(0, Project::count());
-        $this->assertEquals(null, Project::first());
+        $this->assertNull(Project::first());
     }
 
     /** @test */

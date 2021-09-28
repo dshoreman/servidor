@@ -69,12 +69,13 @@ class StatsBar
     {
         $output = exec('free | tail -n+2 | head -n1');
 
+        /** @var array{string, int, int, int, int, int} $data */
         $data = sscanf($output, '%s %d %d %d %d %d');
 
         return [
-            'total' => round((float) $data[1] / 1024),
-            'used' => round((float) $data[2] / 1024),
-            'free' => round((round((float) $data[3]) + round((float) $data[5])) / 1024),
+            'total' => round($data[1] / 1024),
+            'used' => round($data[2] / 1024),
+            'free' => round((round($data[3]) + round($data[5])) / 1024),
         ];
     }
 
@@ -85,14 +86,15 @@ class StatsBar
     {
         $output = exec('df | grep " /$"');
 
+        /** @var array{string, int, int, int, string, string} $data */
         $data = sscanf($output, '%s %d %d %d %s %s');
 
         return [
             'partition' => $data[0],
-            'total' => number_format((float) $data[1] / 1024 / 1024, 1),
-            'used' => number_format((float) $data[2] / 1024 / 1024, 1),
+            'total' => number_format($data[1] / 1024 / 1024, 1),
+            'used' => number_format($data[2] / 1024 / 1024, 1),
             'used_pct' => $data[4],
-            'free' => number_format((float) $data[3] / 1024 / 1024, 1),
+            'free' => number_format($data[3] / 1024 / 1024, 1),
         ];
     }
 }

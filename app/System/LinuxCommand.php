@@ -4,6 +4,9 @@ namespace Servidor\System;
 
 abstract class LinuxCommand
 {
+    /**
+     * @var array<string>
+     */
     protected array $args = [];
 
     protected array $original = [];

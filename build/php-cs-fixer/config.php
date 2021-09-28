@@ -41,7 +41,6 @@ $config->setFinder($finder)
         'php_unit_test_class_requires_covers' => false,
         'php_unit_test_case_static_method_calls' => false,
         'php_unit_set_up_tear_down_visibility' => false,
-        'php_unit_construct' => false,
         'php_unit_strict' => false,
         'phpdoc_add_missing_param_annotation' => false,
         'phpdoc_types_order' => [

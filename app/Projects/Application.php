@@ -108,7 +108,7 @@ class Application extends Model
         $match = mb_strpos($repo, '/');
 
         return false === $match ? $repo
-            : (string) mb_substr($repo, $match + 1);
+            : mb_substr($repo, $match + 1);
     }
 
     public function getSourceRootAttribute(): string
