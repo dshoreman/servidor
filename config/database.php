@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
 $default = (object) [
     'username' => env('DB_USERNAME', 'servidor'),
     'password' => env('DB_PASSWORD', 'vagrant'),
@@ -41,7 +39,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'servidor'), '_') . '_database_'),
+            'prefix' => env('REDIS_PREFIX', 'servidor_database_'),
         ],
 
         'default' => [
