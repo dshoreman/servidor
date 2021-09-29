@@ -344,7 +344,7 @@ return [
         'app',
         'database/factories',
         'database/seeders',
-        'vendor/doctrine/dbal/lib/Doctrine/DBAL',
+        'vendor/doctrine/dbal/src',
         'vendor/fakerphp/faker/src/Faker',
         'vendor/fruitcake/laravel-cors/src',
         'vendor/laravel/framework/src/Illuminate',
