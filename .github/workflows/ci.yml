@@ -94,6 +94,7 @@ jobs:
       - name: Check for magic numbers
         run: make phpmnd MND_ARGS="--non-zero-exit-on-violation"
       - name: Gather PHP insights
+        if: ${{ '8.0-ubuntu-20.04' == format('{0}-{1}', matrix.php, matrix.os) }}
         run: make insights INSIGHT_ARGS="--ansi --format=github-action --disable-security-check"
       - name: Run static analysis checks
         run: |
