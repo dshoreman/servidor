@@ -6,7 +6,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Doctrine\DBAL\Schema\MySqlSchemaManager;
+use Doctrine\DBAL\Schema\MySQLSchemaManager;
 use Illuminate\Contracts\Config\Repository;
 
 class DatabaseManager
@@ -30,7 +30,10 @@ class DatabaseManager
                 'unix_socket' => $socket,
             ]),
         );
-        $this->manager = $manager ?: new MySqlSchemaManager($this->connection);
+        $this->manager = $manager ?: new MySQLSchemaManager(
+            $this->connection,
+            $this->connection->getDatabasePlatform(),
+        );
     }
 
     public function create(DatabaseData $database): DatabaseData
@@ -38,7 +41,7 @@ class DatabaseManager
         try {
             $this->manager->createDatabase($database->name);
         } catch (DriverException $e) {
-            if (self::DB_CREATE_EXISTS !== $e->getErrorCode()) {
+            if (self::DB_CREATE_EXISTS !== $e->getCode()) {
                 throw $e;
             }
         }

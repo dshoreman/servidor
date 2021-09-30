@@ -13,13 +13,17 @@ class LinuxGroup extends LinuxCommand
 
     public string $name;
 
+    /**
+     * @var array<string>
+     */
     public array $users;
 
     public function __construct(array $group = [])
     {
         $this->gid = $group['gid'] ?? null ? (int) $group['gid'] : null;
         $this->name = (string) $group['name'];
-        $this->users = (array) ($group['members'] ?? []);
+        /** @var array<string>|null $group['members'] */
+        $this->users = $group['members'] ?? [];
 
         $this->setOriginal();
     }
@@ -53,6 +57,9 @@ class LinuxGroup extends LinuxCommand
         return $this->toggleArg($enabled, '-r');
     }
 
+    /**
+     * @param array<string>|null $users
+     */
     public function setUsers(?array $users): self
     {
         if (\is_array($users)) {

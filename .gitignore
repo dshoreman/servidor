@@ -13,6 +13,7 @@
 /public/storage
 /storage/clockwork
 /storage/test-clone
+/storage/*.key
 /tests/reports/*
 /vendor
 /*.log

@@ -344,9 +344,8 @@ return [
         'app',
         'database/factories',
         'database/seeders',
-        'vendor/doctrine/dbal/lib/Doctrine/DBAL',
+        'vendor/doctrine/dbal/src',
         'vendor/fakerphp/faker/src/Faker',
-        'vendor/fideloper/proxy/src',
         'vendor/fruitcake/laravel-cors/src',
         'vendor/laravel/framework/src/Illuminate',
         'vendor/laravel/sanctum/src',
@@ -361,15 +360,5 @@ return [
     // project.
     'file_list' => [
         'bootstrap/app.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/AbstractFixerTestCase.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/AbstractIntegrationCaseFactory.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/AbstractIntegrationTestCase.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/Assert/AssertTokensTrait.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/IntegrationCase.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/IntegrationCaseFactory.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/IntegrationCaseFactoryInterface.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/InternalIntegrationCaseFactory.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/IsIdenticalConstraint.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/TestCase.php',
     ],
 ];

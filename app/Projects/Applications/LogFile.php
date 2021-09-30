@@ -35,6 +35,7 @@ class LogFile
     {
         exec('sudo cat ' . escapeshellarg($this->path), $file);
 
+        /** @var array<string> $file */
         return implode("\n", $file);
     }
 }

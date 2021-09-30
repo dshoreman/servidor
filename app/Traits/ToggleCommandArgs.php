@@ -4,6 +4,9 @@ namespace Servidor\Traits;
 
 trait ToggleCommandArgs
 {
+    /**
+     * @var array<string>
+     */
     protected array $args = [];
 
     public function toggleArg(bool $cond, string $on, string $off = ''): self
