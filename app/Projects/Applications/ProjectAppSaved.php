@@ -27,6 +27,11 @@ class ProjectAppSaved
         return $this->app;
     }
 
+    public function getAppOrRedirect(): Application
+    {
+        return $this->getApp();
+    }
+
     public function getProject(): Project
     {
         return $this->project;

@@ -17,8 +17,6 @@ class ApplyRedirectNginxConfig
 
         $redirect->writeNginxConfig();
 
-        $project->is_enabled ? $redirect->enable() : $redirect->disable();
-
         ProjectProgress::dispatch($project, $step->complete());
     }
 }

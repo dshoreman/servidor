@@ -22,6 +22,11 @@ class ProjectRedirectSaved
         $this->project = $redirect->project;
     }
 
+    public function getAppOrRedirect(): Redirect
+    {
+        return $this->getRedirect();
+    }
+
     public function getProject(): Project
     {
         return $this->project;

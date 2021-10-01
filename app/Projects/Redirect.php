@@ -59,6 +59,11 @@ class Redirect extends Model implements Domainable
         return $this->belongsTo(Project::class);
     }
 
+    public function getType(): string
+    {
+        return 'redirect';
+    }
+
     public function writeNginxConfig(): void
     {
         $view = view('projects.app-templates.redirect');
