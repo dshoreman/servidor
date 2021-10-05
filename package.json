@@ -20,7 +20,7 @@
         "laravel-echo": "^1.11.2",
         "laravel-mix": "^6.0.31",
         "lodash": "^4.17.21",
-        "postcss": "^8.3.8",
+        "postcss": "^8.3.9",
         "pusher-js": "^7.0.3",
         "sass": "^1.39.2",
         "sass-loader": "^12.1.0",
