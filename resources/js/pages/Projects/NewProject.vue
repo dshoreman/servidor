@@ -241,7 +241,15 @@ export default {
                     this.$store.dispatch('progress/monitor', { channel, item: project.id }),
                     this.$store.dispatch('progress/progress', { progress: 10 }),
                 ]);
+            } catch (error) {
+                this.handleCreationError(error);
 
+                await this.$store.dispatch('progress/activateButton', { name: 'projects' });
+
+                return;
+            }
+
+            try {
                 const [action, data, progress] = step === STEP_APP
                     ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
                     : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
@@ -255,9 +263,10 @@ export default {
             } finally {
                 this.bypassLeaveHandler = true;
 
-                await this.$store.dispatch('progress/activateButton', project
-                    ? { name: 'projects.view', params: { id: project.id }}
-                    : { name: 'projects' });
+                await this.$store.dispatch('progress/activateButton', {
+                    name: 'projects.view',
+                    params: { id: project.id },
+                });
             }
         },
         handleCreationError(error) {
