@@ -239,7 +239,7 @@ export default {
                 await Promise.all([
                     this.$store.dispatch('progress/progress', { step: STEP_CREATE, progress: 8 }),
                     this.$store.dispatch('progress/monitor', { channel, item: project.id }),
-                    this.$store.dispatch('progress/progress', { step: STEP_CREATE, progress: 10 }),
+                    this.$store.dispatch('progress/progress', { progress: 10 }),
                 ]);
 
                 const [action, data, progress] = step === STEP_APP

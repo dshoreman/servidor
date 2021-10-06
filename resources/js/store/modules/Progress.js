@@ -78,8 +78,11 @@ export default {
                     }
                 }).error(error => reject(error));
         }),
-        progress: ({ commit }, { step, progress }) => {
-            commit('completeStep', step);
+        progress: ({ commit }, { step = '', progress }) => {
+            if ('' !== step) {
+                commit('completeStep', step);
+            }
+
             commit('setProgress', progress);
         },
     },
