@@ -5,7 +5,7 @@
         <sui-modal-content>
             <sui-list>
                 <sui-list-item v-for="step in steps" :key="step.name">
-                    <sui-icon :name="step.icon" color="green" size="large" />
+                    <sui-icon :name="step.icon" :color="step.colour" size="large" />
                     <sui-list-content>
                         {{ step.text }}
                     </sui-list-content>

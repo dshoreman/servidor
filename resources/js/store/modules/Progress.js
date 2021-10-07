@@ -12,17 +12,17 @@ export default {
     },
     mutations: {
         addStep: (state, { name, text }) => {
-            state.steps.push({ name, text, icon: 'minus disabled' });
+            state.steps.push({ name, text, icon: 'minus disabled', colour: 'grey' });
         },
         completeStep: (state, step) => {
             const index = state.steps.findIndex(s => s.name === step);
 
-            Vue.set(state.steps, index, { ...state.steps[index], icon: 'check' });
+            Vue.set(state.steps, index, { ...state.steps[index], icon: 'check', colour: 'green' });
         },
         skipStep: (state, step) => {
             const index = state.steps.findIndex(s => s.name === step);
 
-            Vue.set(state.steps, index, { ...state.steps[index], icon: 'times' });
+            Vue.set(state.steps, index, { ...state.steps[index], icon: 'times', colour: 'grey' });
         },
         setButton: (state, button) => {
             state.button = button;
