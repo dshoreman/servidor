@@ -247,7 +247,7 @@ export default {
             try {
                 await this.createAppOrRedirect(project, step);
             } catch (error) {
-                this.handleCreationError(error);
+                this.handleCreationError(step, error);
             } finally {
                 this.bypassLeaveHandler = true;
 
@@ -268,7 +268,7 @@ export default {
 
                 return project;
             } catch (error) {
-                this.handleCreationError(error);
+                this.handleCreationError(STEP_CREATE, error);
 
                 await this.$store.dispatch('progress/activateButton', { name: 'projects' });
 
@@ -285,8 +285,10 @@ export default {
                 this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data }),
             ]);
         },
-        handleCreationError(error) {
+        handleCreationError(step, error) {
             const { response: res } = error, validationError = 422;
+
+            this.$store.dispatch('progress/stepFailed', step);
 
             if (res && validationError === res.status) {
                 this.setErrors(res.data.errors, 'Please fix the highlighted issues and try again.');

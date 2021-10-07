@@ -89,6 +89,9 @@ export default {
         stepSkipped({ commit }, step) {
             commit('setIcon', { step, icon: 'times', colour: 'grey' });
         },
+        stepFailed: ({ commit }, step) => {
+            commit('setIcon', { step, icon: 'times', colour: 'red' });
+        },
     },
     getters: {
         button: state => state.button,
