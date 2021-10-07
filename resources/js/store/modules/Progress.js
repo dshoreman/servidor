@@ -14,21 +14,16 @@ export default {
         addStep: (state, { name, text }) => {
             state.steps.push({ name, text, icon: 'minus disabled', colour: 'grey' });
         },
-        completeStep: (state, step) => {
-            const index = state.steps.findIndex(s => s.name === step);
-
-            Vue.set(state.steps, index, { ...state.steps[index], icon: 'check', colour: 'green' });
-        },
-        skipStep: (state, step) => {
-            const index = state.steps.findIndex(s => s.name === step);
-
-            Vue.set(state.steps, index, { ...state.steps[index], icon: 'times', colour: 'grey' });
-        },
         setButton: (state, button) => {
             state.button = button;
         },
         setFinalStep: (state, step) => {
             state.finalStep = step;
+        },
+        setIcon: (state, { step, icon, colour }) => {
+            const index = state.steps.findIndex(s => s.name === step);
+
+            Vue.set(state.steps, index, { ...state.steps[index], icon, colour });
         },
         setProgress: (state, progress) => {
             state.percentComplete = progress;
@@ -55,7 +50,10 @@ export default {
 
             commit('setVisible', true);
         },
-        monitor: ({ commit, state }, { channel, item }) => new Promise((resolve, reject) => {
+        monitor: (
+            { commit, dispatch, state },
+            { channel, item },
+        ) => new Promise((resolve, reject) => {
             window.Echo
                 .private(`${channel}.${item}`)
                 .subscribed(() => {
@@ -68,22 +66,28 @@ export default {
                     if ('pending' === status) {
                         commit('addStep', e.step);
                     } else {
-                        commit(complete ? 'completeStep' : 'skipStep', name);
+                        dispatch(complete ? 'stepCompleted' : 'stepSkipped', name);
 
                         if (complete && PERCENT_COMPLETE === progress && state.finalStep) {
-                            commit('completeStep', state.finalStep);
+                            dispatch('stepCompleted', state.finalStep);
                         }
 
                         commit('setProgress', progress);
                     }
                 }).error(error => reject(error));
         }),
-        progress: ({ commit }, { step = '', progress }) => {
+        progress: ({ commit, dispatch }, { step = '', progress }) => {
             if ('' !== step) {
-                commit('completeStep', step);
+                dispatch('stepCompleted', step);
             }
 
             commit('setProgress', progress);
+        },
+        stepCompleted({ commit }, step) {
+            commit('setIcon', { step, icon: 'check', colour: 'green' });
+        },
+        stepSkipped({ commit }, step) {
+            commit('setIcon', { step, icon: 'times', colour: 'grey' });
         },
     },
     getters: {
