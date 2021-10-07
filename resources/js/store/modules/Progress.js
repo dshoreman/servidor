@@ -36,8 +36,11 @@ export default {
         },
     },
     actions: {
-        activateButton: ({ commit }, button) => {
-            commit('setButton', button);
+        activateContinueButton: ({ commit }, route) => {
+            commit('setButton', { route, text: 'Continue' });
+        },
+        hide: ({ commit }) => {
+            commit('setVisible', false);
         },
         load: ({ commit, state }, { title, steps, completeWhenDone = null }) => {
             commit('setTitle', title);
@@ -89,8 +92,14 @@ export default {
         stepSkipped({ commit }, step) {
             commit('setIcon', { step, icon: 'times', colour: 'grey' });
         },
-        stepFailed: ({ commit }, step) => {
+        stepFailed: ({ commit }, { step, canBeFixed = false, fallback = {}}) => {
             commit('setIcon', { step, icon: 'times', colour: 'red' });
+            commit(
+                'setButton',
+                canBeFixed
+                    ? { action: 'progress/hide', colour: 'red', text: 'Fix errors' }
+                    : { route: fallback.route, colour: '', text: fallback.text },
+            );
         },
     },
     getters: {

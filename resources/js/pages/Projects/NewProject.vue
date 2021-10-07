@@ -70,7 +70,8 @@ const PERCENT_APP = 25,
     PERCENT_REDIRECT = 40,
     STEP_APP = 'app.save',
     STEP_CREATE = 'project.create',
-    STEP_REDIRECT = 'redirect.save';
+    STEP_REDIRECT = 'redirect.save',
+    VALIDATION_ERROR = 422;
 
 export default {
     components: {
@@ -246,15 +247,15 @@ export default {
 
             try {
                 await this.createAppOrRedirect(project, step);
+
+                await this.$store.dispatch('progress/activateContinueButton', {
+                    name: 'projects.view',
+                    params: { id: project.id },
+                });
             } catch (error) {
                 this.handleCreationError(step, error);
             } finally {
                 this.bypassLeaveHandler = true;
-
-                await this.$store.dispatch('progress/activateButton', {
-                    name: 'projects.view',
-                    params: { id: project.id },
-                });
             }
         },
         async createProject(name, isEnabled) {
@@ -270,8 +271,6 @@ export default {
             } catch (error) {
                 this.handleCreationError(STEP_CREATE, error);
 
-                await this.$store.dispatch('progress/activateButton', { name: 'projects' });
-
                 return null;
             }
         },
@@ -286,11 +285,13 @@ export default {
             ]);
         },
         handleCreationError(step, error) {
-            const { response: res } = error, validationError = 422;
+            const { response: res } = error,
+                canBeFixed = res && VALIDATION_ERROR === res.status,
+                fallback = { route: { name: 'projects' }, text: 'Back to Projects' };
 
-            this.$store.dispatch('progress/stepFailed', step);
+            this.$store.dispatch('progress/stepFailed', { step, canBeFixed, fallback });
 
-            if (res && validationError === res.status) {
+            if (canBeFixed) {
                 this.setErrors(res.data.errors, 'Please fix the highlighted issues and try again.');
 
                 this.jumpToFirstError();

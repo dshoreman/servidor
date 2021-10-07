@@ -13,7 +13,14 @@
             </sui-list>
         </sui-modal-content>
         <sui-modal-actions v-if="button">
-            <router-link :to="button" is="sui-button" content="Continue" />
+
+            <sui-button v-if="'action' in button"
+                :color="button.colour" :content="button.text"
+                @click="$store.dispatch(button.action)" />
+
+            <router-link is="sui-button" :to="button.route" v-else
+                :color="button.colour" :content="button.text" />
+
         </sui-modal-actions>
     </sui-modal>
 </template>
