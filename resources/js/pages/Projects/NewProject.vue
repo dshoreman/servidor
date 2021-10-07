@@ -52,6 +52,7 @@
 </template>
 
 <script>
+/* eslint-disable max-lines */
 import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DiscardPrompt from '../../components/Projects/DiscardPrompt.vue';
@@ -225,39 +226,26 @@ export default {
 
             this.nextStep('redirect');
         },
-        async create(enabled = false) { // eslint-disable-line max-statements
+        async create(enabled = false) {
             this.setErrors({}, '');
 
-            const [channel, step] = ['projects', this.progressInit()];
-            let project = null;
+            const [channel, step, project] = [
+                'projects',
+                this.progressInit(),
+                await this.createProject(this.project.name, enabled),
+            ];
 
-            try {
-                project = await this.$store.dispatch('projects/createProject', {
-                    name: this.project.name,
-                    is_enabled: enabled,
-                });
-                await Promise.all([
-                    this.$store.dispatch('progress/progress', { step: STEP_CREATE, progress: 8 }),
-                    this.$store.dispatch('progress/monitor', { channel, item: project.id }),
-                    this.$store.dispatch('progress/progress', { progress: 10 }),
-                ]);
-            } catch (error) {
-                this.handleCreationError(error);
-
-                await this.$store.dispatch('progress/activateButton', { name: 'projects' });
-
+            if (null === project) {
                 return;
             }
 
-            try {
-                const [action, data, progress] = step === STEP_APP
-                    ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
-                    : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
+            await Promise.all([
+                this.$store.dispatch('progress/monitor', { channel, item: project.id }),
+                this.$store.dispatch('progress/progress', { progress: 10 }),
+            ]);
 
-                await Promise.all([
-                    this.$store.dispatch('progress/progress', { step, progress }),
-                    this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data }),
-                ]);
+            try {
+                await this.createAppOrRedirect(project, step);
             } catch (error) {
                 this.handleCreationError(error);
             } finally {
@@ -268,6 +256,34 @@ export default {
                     params: { id: project.id },
                 });
             }
+        },
+        async createProject(name, isEnabled) {
+            try {
+                const project = await this.$store.dispatch(
+                    'projects/createProject',
+                    { name, is_enabled: isEnabled },
+                );
+
+                this.$store.dispatch('progress/progress', { step: STEP_CREATE, progress: 8 });
+
+                return project;
+            } catch (error) {
+                this.handleCreationError(error);
+
+                await this.$store.dispatch('progress/activateButton', { name: 'projects' });
+
+                return null;
+            }
+        },
+        async createAppOrRedirect(project, step) {
+            const [action, data, progress] = step === STEP_APP
+                ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
+                : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
+
+            await Promise.all([
+                this.$store.dispatch('progress/progress', { step, progress }),
+                this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data }),
+            ]);
         },
         handleCreationError(error) {
             const { response: res } = error, validationError = 422;
