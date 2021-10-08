@@ -230,8 +230,7 @@ export default {
         async create(enabled = false) {
             this.setErrors({}, '');
 
-            const [channel, step, project] = [
-                'projects',
+            const [step, project] = [
                 this.progressInit(),
                 await this.createProject(this.project.name, enabled),
             ];
@@ -239,11 +238,6 @@ export default {
             if (null === project) {
                 return;
             }
-
-            await Promise.all([
-                this.$store.dispatch('progress/monitor', { channel, item: project.id }),
-                this.$store.dispatch('progress/progress', { progress: 10 }),
-            ]);
 
             try {
                 await this.createAppOrRedirect(project, step);
@@ -260,12 +254,13 @@ export default {
         },
         async createProject(name, isEnabled) {
             try {
-                const project = await this.$store.dispatch(
+                const channel = 'projects', project = await this.$store.dispatch(
                     'projects/createProject',
                     { name, is_enabled: isEnabled },
                 );
 
-                this.$store.dispatch('progress/stepCompleted', { step: STEP_CREATE, progress: 8 });
+                await this.$store.dispatch('progress/monitor', { channel, item: project.id });
+                this.$store.dispatch('progress/stepCompleted', { step: STEP_CREATE, progress: 15 });
 
                 return project;
             } catch (error) {
@@ -279,10 +274,8 @@ export default {
                 ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
                 : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
 
-            await Promise.all([
-                this.$store.dispatch('progress/progress', { progress }),
-                this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data }),
-            ]);
+            await this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data });
+            await this.$store.dispatch('progress/stepCompleted', { step, progress });
         },
         handleCreationError(step, error) {
             const { response: res } = error,
@@ -309,7 +302,6 @@ export default {
 
             this.$store.dispatch('progress/load', {
                 title: 'Saving project...',
-                completeWhenDone: step,
                 steps: [
                     { name: STEP_CREATE, text: 'Creating project' },
                     { name: step, text: `Saving the ${text}` },

@@ -1,10 +1,7 @@
-const PERCENT_COMPLETE = 100;
-
 export default {
     namespaced: true,
     state: {
         button: null,
-        finalStep: null,
         isVisible: false,
         percentComplete: 0,
         steps: [],
@@ -42,21 +39,14 @@ export default {
         hide: ({ commit }) => {
             commit('setVisible', false);
         },
-        load: ({ commit, state }, { title, steps, completeWhenDone = null }) => {
+        load: ({ commit }, { title, steps }) => {
             commit('setTitle', title);
 
             steps.forEach(step => commit('addStep', step));
 
-            if (state.steps.some(s => s.name === completeWhenDone)) {
-                commit('setFinalStep', completeWhenDone);
-            }
-
             commit('setVisible', true);
         },
-        monitor: (
-            { commit, dispatch, state },
-            { channel, item },
-        ) => new Promise((resolve, reject) => {
+        monitor: ({ commit, dispatch }, { channel, item }) => new Promise((resolve, reject) => {
             window.Echo
                 .private(`${channel}.${item}`)
                 .subscribed(() => {
@@ -64,19 +54,12 @@ export default {
                 })
                 .listen('.progress', e => {
                     const { name, status, progress } = e.step,
-                        complete = 'complete' === status;
+                        complete = 'complete' === status,
+                        progressAction = complete ? 'stepCompleted' : 'stepSkipped';
 
-                    if ('pending' === status) {
-                        commit('addStep', e.step);
-                    } else {
-                        dispatch(complete ? 'stepCompleted' : 'stepSkipped', { step: name });
-
-                        if (complete && PERCENT_COMPLETE === progress && state.finalStep) {
-                            dispatch('stepCompleted', { step: state.finalStep });
-                        }
-
-                        commit('setProgress', progress);
-                    }
+                    'pending' === status
+                        ? commit('addStep', e.step)
+                        : dispatch(progressAction, { progress, step: name });
                 }).error(error => reject(error));
         }),
         progress: ({ commit }, { progress }) => {
@@ -88,7 +71,10 @@ export default {
             }
             commit('setIcon', { step, icon: 'check', colour: 'green' });
         },
-        stepSkipped({ commit }, { step }) {
+        stepSkipped({ commit }, { step, progress = 0 }) {
+            if (0 < progress) {
+                commit('setProgress', progress);
+            }
             commit('setIcon', { step, icon: 'times', colour: 'grey' });
         },
         stepFailed: ({ commit }, { step, canBeFixed = false, fallback = {}}) => {
