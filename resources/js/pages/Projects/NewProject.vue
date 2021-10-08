@@ -265,7 +265,7 @@ export default {
                     { name, is_enabled: isEnabled },
                 );
 
-                this.$store.dispatch('progress/progress', { step: STEP_CREATE, progress: 8 });
+                this.$store.dispatch('progress/stepCompleted', { step: STEP_CREATE, progress: 8 });
 
                 return project;
             } catch (error) {
@@ -280,7 +280,7 @@ export default {
                 : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
 
             await Promise.all([
-                this.$store.dispatch('progress/progress', { step, progress }),
+                this.$store.dispatch('progress/progress', { progress }),
                 this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data }),
             ]);
         },

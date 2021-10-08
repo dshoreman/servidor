@@ -69,27 +69,26 @@ export default {
                     if ('pending' === status) {
                         commit('addStep', e.step);
                     } else {
-                        dispatch(complete ? 'stepCompleted' : 'stepSkipped', name);
+                        dispatch(complete ? 'stepCompleted' : 'stepSkipped', { step: name });
 
                         if (complete && PERCENT_COMPLETE === progress && state.finalStep) {
-                            dispatch('stepCompleted', state.finalStep);
+                            dispatch('stepCompleted', { step: state.finalStep });
                         }
 
                         commit('setProgress', progress);
                     }
                 }).error(error => reject(error));
         }),
-        progress: ({ commit, dispatch }, { step = '', progress }) => {
-            if ('' !== step) {
-                dispatch('stepCompleted', step);
-            }
-
+        progress: ({ commit }, { progress }) => {
             commit('setProgress', progress);
         },
-        stepCompleted({ commit }, step) {
+        stepCompleted({ commit }, { step, progress = 0 }) {
+            if (0 < progress) {
+                commit('setProgress', progress);
+            }
             commit('setIcon', { step, icon: 'check', colour: 'green' });
         },
-        stepSkipped({ commit }, step) {
+        stepSkipped({ commit }, { step }) {
             commit('setIcon', { step, icon: 'times', colour: 'grey' });
         },
         stepFailed: ({ commit }, { step, canBeFixed = false, fallback = {}}) => {
