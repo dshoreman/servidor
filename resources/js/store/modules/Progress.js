@@ -11,6 +11,11 @@ export default {
         addStep: (state, { name, text }) => {
             state.steps.push({ name, text, icon: 'minus disabled', colour: 'grey' });
         },
+        setup: (state, title) => {
+            state.title = title;
+            state.button = null;
+            state.steps = [];
+        },
         setButton: (state, button) => {
             state.button = button;
         },
@@ -25,9 +30,6 @@ export default {
         setProgress: (state, progress) => {
             state.percentComplete = progress;
         },
-        setTitle: (state, title) => {
-            state.title = title;
-        },
         setVisible: (state, visibility) => {
             state.isVisible = visibility;
         },
@@ -40,7 +42,7 @@ export default {
             commit('setVisible', false);
         },
         load: ({ commit }, { title, steps }) => {
-            commit('setTitle', title);
+            commit('setup', title);
 
             steps.forEach(step => commit('addStep', step));
 
