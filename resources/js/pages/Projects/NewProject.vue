@@ -66,7 +66,11 @@ import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
-const PERCENT_APP = 25,
+const DEFAULTS = {
+        extraData: { repository: '', provider: '' },
+        project: { name: '', applications: [], redirects: []},
+        sourceData: { repository: '', provider: 'github', branch: null, url: '' },
+    }, PERCENT_APP = 25,
     PERCENT_REDIRECT = 40,
     STEP_APP = 'app.save',
     STEP_CREATE = 'project.create',
@@ -90,21 +94,9 @@ export default {
             bypassLeaveHandler: false,
             error: '',
             errors: {},
-            extraData: {
-                repository: '',
-                provider: '',
-            },
-            project: {
-                name: '',
-                applications: [],
-                redirects: [],
-            },
-            sourceData: {
-                repository: '',
-                provider: 'github',
-                branch: null,
-                url: '',
-            },
+            extraData: DEFAULTS.extraData,
+            project: DEFAULTS.project,
+            sourceData: DEFAULTS.sourceData,
             projectCreatedId: 0,
             providers,
             step: 'template',
@@ -115,6 +107,7 @@ export default {
     beforeRouteLeave(to, from, next) {
         if (this.bypassLeaveHandler) {
             this.bypassLeaveHandler = false;
+            this.discard();
             next();
         } else {
             this.$refs.discardProject.prompt(() => {
@@ -151,14 +144,9 @@ export default {
             }, 'projects');
         },
         discard() {
-            this.extraData = {
-                repository: '',
-            };
-
-            this.project = {
-                name: '',
-                applications: [],
-            };
+            this.extraData = DEFAULTS.extraData;
+            this.sourceData = DEFAULTS.sourceData;
+            this.project = DEFAULTS.project;
 
             this.steps.forEach(s => {
                 if ('template' !== s.name) {
@@ -166,8 +154,8 @@ export default {
                     s.disabled = true;
                 }
             });
-
             this.step = 'template';
+            this.$store.dispatch('progress/hide');
         },
         goto(step) {
             const currentStep = this.steps.find(s => this.step === s.name),
