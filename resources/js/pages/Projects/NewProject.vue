@@ -12,7 +12,7 @@
             <sui-segment v-if="step == 'template'">
                 <h3 is="sui-header">First pick a template to get started</h3>
                 <sui-message negative v-if="'template' in errors"
-                    :content="errors['applications.0.template'][0]" />
+                    :content="errors['template'][0]" />
                 <template-selector :templates="templates"
                     @selected="setAppTemplate" />
             </sui-segment>
