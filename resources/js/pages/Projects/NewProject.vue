@@ -19,7 +19,7 @@
 
             <sui-segment v-else-if="step == 'source'">
                 <h3 is="sui-header">Where are the project files stored?</h3>
-                <source-selector :errors="errors" :providers="providers"
+                <source-selector :errors="errors" :providers="providers" v-model="sourceData"
                     @selected="setAppSource" @cancel="cancel" />
             </sui-segment>
 
@@ -98,6 +98,12 @@ export default {
                 name: '',
                 applications: [],
                 redirects: [],
+            },
+            sourceData: {
+                repository: '',
+                provider: 'github',
+                branch: null,
+                url: '',
             },
             projectCreatedId: 0,
             providers,
