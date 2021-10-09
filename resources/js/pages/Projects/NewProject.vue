@@ -40,7 +40,7 @@
                 <confirmation-text :app="defaultApp" :source="extraData" />
                 <confirmation-form :errors="errors" v-model="project.name"
                                    :template="defaultApp.template"
-                                   @created="create" />
+                                   @created="create" :created-id="projectCreatedId" />
             </sui-segment>
 
             <progress-modal />
@@ -99,6 +99,7 @@ export default {
                 applications: [],
                 redirects: [],
             },
+            projectCreatedId: 0,
             providers,
             step: 'template',
             steps,
@@ -253,6 +254,10 @@ export default {
             }
         },
         async createProject(name, isEnabled) {
+            if (this.projectCreatedId) {
+                return this.createdProject();
+            }
+
             try {
                 const channel = 'projects', project = await this.$store.dispatch(
                     'projects/createProject',
@@ -261,6 +266,7 @@ export default {
 
                 await this.$store.dispatch('progress/monitor', { channel, item: project.id });
                 this.$store.dispatch('progress/stepCompleted', { step: STEP_CREATE, progress: 15 });
+                this.projectCreatedId = project.id;
 
                 return project;
             } catch (error) {
@@ -268,6 +274,11 @@ export default {
 
                 return null;
             }
+        },
+        createdProject() {
+            this.$store.dispatch('progress/stepCompleted', { step: STEP_CREATE, progress: 15 });
+
+            return this.$store.getters['projects/find'](this.projectCreatedId);
         },
         async createAppOrRedirect(project, step) {
             const [action, data, progress] = step === STEP_APP

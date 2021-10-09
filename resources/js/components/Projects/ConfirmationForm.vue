@@ -7,7 +7,7 @@
             <sui-grid-column centered :width="11">
                 <sui-form-field :error="'name' in errors">
                     <label>Give your project a name:</label>
-                    <sui-input :value="value"
+                    <sui-input :value="value" :disabled="0 < createdId"
                         placeholder="My new Blog"
                         @input="$emit('input', $event)" />
                     <sui-label basic color="red" pointing v-if="'name' in errors">
@@ -40,6 +40,7 @@
 <script>
 export default {
     props: {
+        createdId: { type: Number, default: 0 },
         errors: { type: Object, default: () => ({}) },
         template: { type: String, default: '' },
         value: { type: String, default: '' },
