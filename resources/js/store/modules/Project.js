@@ -73,7 +73,7 @@ export default {
         },
         disable: ({ dispatch }, id) => dispatch('toggle', { id }),
         enable: ({ dispatch }, id) => dispatch('toggle', { id, enabled: true }),
-        pull: app => axios.post(`/api/projects/${app.project.id}/apps/${app.id}/pull`),
+        pull: ({ _ }, app) => axios.post(`/api/projects/${app.project.id}/apps/${app.id}/pull`),
         remove: ({ commit }, id) => new Promise((resolve, reject) => {
             axios.delete(`/api/projects/${id}`).then(response => {
                 commit('removeProject', id);
