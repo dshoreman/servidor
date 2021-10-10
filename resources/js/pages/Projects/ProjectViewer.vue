@@ -198,12 +198,12 @@ export default {
     components: {
         ProjectTabs,
     },
-    mounted() {
+    async mounted() {
         if (!this.$store.getters['projects/all'].length) {
-            this.$store.dispatch('projects/load').then(() => {
-                this.initLog();
-            });
+            await this.$store.dispatch('projects/load');
         }
+
+        this.initLog();
     },
     props: {
         id: { type: Number, default: 0 },
