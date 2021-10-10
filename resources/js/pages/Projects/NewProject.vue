@@ -279,6 +279,7 @@ export default {
                 ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
                 : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
 
+            await this.$store.dispatch('progress/start', { step });
             await this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data });
             await this.$store.dispatch('progress/stepCompleted', { step, progress });
         },
@@ -308,7 +309,7 @@ export default {
             this.$store.dispatch('progress/load', {
                 title: 'Saving project...',
                 steps: [
-                    { name: STEP_CREATE, text: 'Creating project' },
+                    { name: STEP_CREATE, text: 'Creating project', status: 'working' },
                     { name: step, text: `Saving the ${text}` },
                 ],
             });

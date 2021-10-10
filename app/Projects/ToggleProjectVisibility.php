@@ -39,7 +39,7 @@ class ToggleProjectVisibility
             : ['disable', 'Disabling ' . $type, 70];
 
         $step = new ProgressStep($step, $text, $progress);
-        ProjectProgress::dispatch($project, $step);
+        ProjectProgress::dispatch($project, $step->start());
 
         return $step;
     }

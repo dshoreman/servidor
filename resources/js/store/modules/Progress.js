@@ -8,8 +8,11 @@ export default {
         title: 'Loading...',
     },
     mutations: {
-        addStep: (state, { name, text }) => {
-            state.steps.push({ name, text, icon: 'minus disabled', colour: 'grey' });
+        addStep: (state, { name, text, status }) => {
+            state.steps.push({ name,
+                text,
+                icon: 'working' === status ? 'loading spinner' : 'minus disabled',
+                colour: 'grey' });
         },
         setup: (state, title) => {
             state.title = title;
@@ -59,13 +62,16 @@ export default {
                         complete = 'complete' === status,
                         progressAction = complete ? 'stepCompleted' : 'stepSkipped';
 
-                    'pending' === status
+                    'working' === status
                         ? commit('addStep', e.step)
                         : dispatch(progressAction, { progress, step: name });
                 }).error(error => reject(error));
         }),
         progress: ({ commit }, { progress }) => {
             commit('setProgress', progress);
+        },
+        start: ({ commit }, { step }) => {
+            commit('setIcon', { step, icon: 'loading spinner' });
         },
         stepCompleted({ commit }, { step, progress = 0 }) {
             if (0 < progress) {
