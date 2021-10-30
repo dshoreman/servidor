@@ -18,7 +18,7 @@
         "eslint-plugin-vue": "^7.18.0",
         "husky": "^4.3.8",
         "laravel-echo": "^1.11.2",
-        "laravel-mix": "^6.0.31",
+        "laravel-mix": "^6.0.37",
         "lodash": "^4.17.21",
         "postcss": "^8.3.8",
         "pusher-js": "^7.0.3",
