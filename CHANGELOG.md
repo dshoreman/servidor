@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+* [projects] Renaming can now be cancelled by pressing escape in the input
 * [projects] Retry is now supported with new Back/Fix buttons when creation fails
 * [projects] Progress step icons are now coloured (green, grey or red) based on step status
 * [projects] New 'working' `ProgressStep` state enables showing a progress spinner on start
@@ -22,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [auth] Opening Servidor in a new tab no longer requires you to login again
 * [installer] Fixed issue where password generation could trigger pipefail
 * [projects] Fixed app/redirect not getting saved with new projects
+* [projects] Resolved an issue where cancelling a rename didn't reset the name
+* [projects] Logs should now always be loaded when ProjectViewer mounts
 * [projects] Fixed some bad syntax that broke the 'Pull Latest Code' button
 * [projects] Updated progress/completed actions to prevent premature step completion
 * [projects] Tweaked progress values reported by steps to avoid reverse progress
