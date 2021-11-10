@@ -11,6 +11,7 @@ class ProgressStep
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_SKIPPED = 'skipped';
+    public const STATUS_WORKING = 'working';
     public const STATUS_DONE = 'complete';
 
     private string $name;
@@ -43,6 +44,13 @@ class ProgressStep
     {
         $this->status = self::STATUS_SKIPPED;
         $this->reason = $reason;
+
+        return $this;
+    }
+
+    public function start(): self
+    {
+        $this->status = self::STATUS_WORKING;
 
         return $this;
     }

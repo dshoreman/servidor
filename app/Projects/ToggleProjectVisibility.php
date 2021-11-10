@@ -32,10 +32,14 @@ class ToggleProjectVisibility
         Project $project,
         Application|Redirect $appOrRedirect,
     ): ProgressStep {
-        $text = ($project->is_enabled ? 'Enabling ' : 'Disabling ') . $appOrRedirect->getType();
+        $type = $appOrRedirect->getType();
 
-        $step = new ProgressStep($project->is_enabled ? 'enable' : 'disable', $text, 60);
-        ProjectProgress::dispatch($project, $step);
+        [$step, $text, $progress] = $project->is_enabled
+            ? ['enable', 'Enabling ' . $type, 90]
+            : ['disable', 'Disabling ' . $type, 70];
+
+        $step = new ProgressStep($step, $text, $progress);
+        ProjectProgress::dispatch($project, $step->start());
 
         return $step;
     }

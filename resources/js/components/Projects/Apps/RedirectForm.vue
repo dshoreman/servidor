@@ -1,14 +1,14 @@
 <template>
     <sui-form @submit.prevent="save()">
 
-        <sui-form-field :error="'redirects.0.target' in errors">
+        <sui-form-field :error="'target' in errors">
 
             <label>Archived Domain</label>
 
             <sui-input v-model="target" placeholder="example.com" required />
 
-            <sui-label basic color="red" pointing v-if="'redirects.0.target' in errors">
-                {{ errors['redirects.0.target'][0] }}
+            <sui-label basic color="red" pointing v-if="'target' in errors">
+                {{ errors['target'][0] }}
             </sui-label>
 
         </sui-form-field>
@@ -25,13 +25,13 @@
                     </sui-form-field>
                 </sui-form-fields>
             </sui-form-field>
-            <sui-form-field :width="6" :error="'redirects.0.type' in errors">
+            <sui-form-field :width="6" :error="'type' in errors">
                 <label>Redirect Type</label>
                 <sui-dropdown :options="[{ text: 'Temporary', value: 302 },
                                          { text: 'Permanent', value: 301 }]"
                                          selection v-model="type" />
-                <sui-label basic color="red" pointing="left" v-if="'redirects.0.type' in errors">
-                    {{ errors['redirects.0.type'][0] }}
+                <sui-label basic color="red" pointing="left" v-if="'type' in errors">
+                    {{ errors['type'][0] }}
                 </sui-label>
             </sui-form-field>
         </sui-form-fields>
