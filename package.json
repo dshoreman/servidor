@@ -15,7 +15,7 @@
     "devDependencies": {
         "axios": "^0.24.0",
         "eslint": "^7.32.0",
-        "eslint-plugin-vue": "^7.18.0",
+        "eslint-plugin-vue": "^7.20.0",
         "husky": "^4.3.8",
         "laravel-echo": "^1.11.3",
         "laravel-mix": "^6.0.39",
@@ -32,7 +32,7 @@
     "dependencies": {
         "semantic-ui-vue": "^0.11.0",
         "vue-codemirror": "^4.0.6",
-        "vue-router": "^3.5.2",
+        "vue-router": "^3.5.3",
         "vuex": "^3.6.2"
     }
 }
