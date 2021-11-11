@@ -51,6 +51,51 @@ ifeq (Darwin,$(shell uname)$(shell command -v gsed))
 	@exit 1
 endif
 
+laradiff: laravel-diff
+
+laravel-diff:
+	@echo "Removing any old diffs..."
+	@rm -rf /tmp/{lara,servi}diff
+	@echo "Cloning latest laravel/laravel repo..."
+	@git clone -q git@github.com:laravel/laravel.git /tmp/laradiff
+	@echo "Copying configs..."
+	@cp -R ./build /tmp/laradiff/
+	@echo "Applying CS fixes..."
+	@vendor/bin/php-cs-fixer fix -q --config /tmp/laradiff/build/php-cs-fixer/config.php
+	@echo "Updating App namespace..."
+	@find /tmp/laradiff -type f -name '*.php' -exec sed -i 's/App\\/Servidor\\/g' {} +
+	@echo "Removing comments from (some) config files..."
+	@sed -e '/^$$/N;/^\n$$/D' -e '/^\s\+\(\/\*\|\*\/\|\(|\|\*\).*\)/d' -i /tmp/laradiff/{server,config/{app,database,filesystems,mail}}.php
+	@echo "Updating paths in PHPUnit config..."
+	@sed -i 's^\./^../../^g' /tmp/laradiff/phpunit.xml
+	@echo "Moving files into place..."
+	@mv /tmp/laradiff/app/{Models/,}User.php
+	@mv /tmp/laradiff/phpunit.xml /tmp/laradiff/build/phpunit/config.xml
+	@echo "Patching files with Servidor changes..."
+	@rm -rf /tmp/laradiff/{.git,.styleci.yml,app/Models,resources/{css,views/welcome.blade.php}}
+	@cp -R ./{.composer,.git,.github,.idea,node_modules,notes,.vagrant,vendor} /tmp/laradiff/
+	@cp ./bootstrap/cache/* /tmp/laradiff/bootstrap/cache/
+	@cp -R {.,/tmp/laradiff}/app/Console/Commands
+	@cp -R {.,/tmp/laradiff}/app/Http/Requests
+	@cp -R ./app/{Databases,FileManager,Projects,Rules,System,Traits,{StatsBar,helpers}.php} /tmp/laradiff/app/
+	@cp -R ./app/Http/Controllers/{Auth,Databases,Files,Projects,System,User,{Fallback,SystemInformation}Controller.php} /tmp/laradiff/app/Http/Controllers/
+	@cp {.,/tmp/laradiff}/app/Http/Middleware/CheckRegistration.php
+	@cp ./config/{clockwork,ide-helper}.php /tmp/laradiff/config/
+	@cp ./database/migrations/* /tmp/laradiff/database/migrations/
+	@cp {.,/tmp/laradiff}/database/seeders/DefaultUserSeeder.php
+	@cp -R ./resources/{sass,test-skel,views} /tmp/laradiff/resources/
+	@cp -R ./public/{css,fonts,js,hot,mix-manifest.json} /tmp/laradiff/public/
+	@cp -R ./resources/js/{components,layouts,pages,plugins,store,routes.js} /tmp/laradiff/resources/js/
+	@cp -R ./storage/framework/{cache,sessions,testing,views} /tmp/laradiff/storage/framework/
+	@cp -R ./storage/{app,clockwork,logs} /tmp/laradiff/storage/
+	@cp -R ./tests/{Feature,Unit,reports,{Prunes,Requires,Validates}*.php} /tmp/laradiff/tests/
+	@cp ./{composer.lock,package-lock.json,_ide_helper.php,*.log,.*.{cache,meta.php}} /tmp/laradiff/
+	@cp ./{.env,*.md,LICENSE,Makefile,setup.sh,Vagrantfile} /tmp/laradiff
+	@rm /tmp/laradiff/{database/migrations/*_create_personal_access_tokens_table.php,webpack.mix.js}
+	@echo
+	@echo "Done! Opening diff tool..."
+	@meld /tmp/laradiff .
+
 test:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
 
