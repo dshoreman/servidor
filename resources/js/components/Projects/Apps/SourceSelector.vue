@@ -4,34 +4,34 @@
         <sui-form-fields inline>
             <label>Source Provider</label>
             <sui-form-field v-for="p in providers" :key="p.name">
-                <sui-checkbox radio v-model="provider" required
-                    :value="p.name" :label="p.text" />
+                <sui-checkbox radio v-model="values.provider" required
+                    :value="p.name" :label="p.text" name="provider" />
             </sui-form-field>
         </sui-form-fields>
 
-        <sui-form-field :error="'applications.0.repository' in errors" v-if="provider == 'custom'">
+        <sui-form-field :error="'repository' in errors" v-if="values.provider === 'custom'">
             <label>Repository URL:</label>
-            <sui-input v-model="url" required />
-            <sui-label basic color="red" pointing v-if="'applications.0.repository' in errors">
-                {{ errors['applications.0.repository'][0] }}
+            <sui-input v-model="values.url" required />
+            <sui-label basic color="red" pointing v-if="'repository' in errors">
+                {{ errors['repository'][0] }}
             </sui-label>
         </sui-form-field>
 
-        <sui-form-field :error="'applications.0.repository' in errors" v-else>
+        <sui-form-field :error="'repository' in errors" v-else>
             <label>Repository:</label>
             <sui-input placeholder="dshoreman/servidor-test-site" required
-                v-model="repository" @change="loadBranches(repository)" />
-            <sui-label basic color="red" pointing v-if="'applications.0.repository' in errors">
-                {{ errors['applications.0.repository'][0] }}
+                v-model="values.repository" @change="loadBranches()" />
+            <sui-label basic color="red" pointing v-if="'repository' in errors">
+                {{ errors['repository'][0] }}
             </sui-label>
         </sui-form-field>
 
-        <sui-form-field :error="'applications.0.branch' in errors">
+        <sui-form-field :error="'branch' in errors">
             <label>Deployment Branch:</label>
             <sui-dropdown search selection :loading="branchesLoading" required
-                :options="branchOptions" v-model="branch" placeholder="Select branch..." />
-            <sui-label basic color="red" pointing v-if="'applications.0.branch' in errors">
-                {{ errors['applications.0.branch'][0] }}
+                :options="branchOptions" v-model="values.branch" text="Select branch..." />
+            <sui-label basic color="red" pointing v-if="'branch' in errors">
+                {{ errors['branch'][0] }}
             </sui-label>
         </sui-form-field>
 
@@ -50,24 +50,31 @@ export default {
     props: {
         errors: { type: Object, default: () => ({}) },
         providers: { type: Array, default: () => []},
+        value: { type: Object, required: true },
     },
     data() {
         return {
-            branch: '',
             branches: [],
             branchesLoading: false,
-            provider: 'github',
-            repository: '',
-            url: '',
         };
     },
     computed: {
         branchOptions() {
             return this.branches.map(b => ({ text: b, value: b }));
         },
+        values: {
+            get() {
+                return this.value;
+            },
+            set(values) {
+                this.$emit('input', values);
+            },
+        },
     },
     methods: {
-        loadBranches(repo) {
+        loadBranches() {
+            const { provider, repository: repo } = this.value;
+
             if ('' === repo) {
                 this.branches = [];
 
@@ -76,7 +83,7 @@ export default {
 
             this.branchesLoading = true;
 
-            axios.get(`/api/system/git/branches?provider=${this.provider}&repository=${repo}`).then(
+            axios.get(`/api/system/git/branches?provider=${provider}&repository=${repo}`).then(
                 response => {
                     this.branches = response.data;
                     this.branchesLoading = false;
@@ -84,10 +91,10 @@ export default {
             );
         },
         submit() {
-            let repoUri = this.repository;
+            let repoUri = this.values.repository;
 
-            const providerOpts = this.providers.find(p => p.name === this.provider),
-                { repository, branch, provider } = this;
+            const providerOpts = this.providers.find(p => p.name === this.values.provider),
+                { repository, branch, provider } = this.values;
 
             if ('urlFormat' in providerOpts) {
                 repoUri = providerOpts.urlFormat.replace('%REPO%', repository);

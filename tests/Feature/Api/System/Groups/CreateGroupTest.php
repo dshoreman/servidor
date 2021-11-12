@@ -225,6 +225,6 @@ class CreateGroupTest extends TestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonFragment(['The name may not be greater than 32 characters.']);
+        $response->assertJsonFragment(['The name must not be greater than 32 characters.']);
     }
 }

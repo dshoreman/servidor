@@ -12,14 +12,14 @@
             <sui-segment v-if="step == 'template'">
                 <h3 is="sui-header">First pick a template to get started</h3>
                 <sui-message negative v-if="'template' in errors"
-                    :content="errors['applications.0.template'][0]" />
+                    :content="errors['template'][0]" />
                 <template-selector :templates="templates"
                     @selected="setAppTemplate" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'source'">
                 <h3 is="sui-header">Where are the project files stored?</h3>
-                <source-selector :errors="errors" :providers="providers"
+                <source-selector :errors="errors" :providers="providers" v-model="sourceData"
                     @selected="setAppSource" @cancel="cancel" />
             </sui-segment>
 
@@ -40,7 +40,7 @@
                 <confirmation-text :app="defaultApp" :source="extraData" />
                 <confirmation-form :errors="errors" v-model="project.name"
                                    :template="defaultApp.template"
-                                   @created="create" />
+                                   @created="create" :created-id="projectCreatedId" />
             </sui-segment>
 
             <progress-modal />
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+/* eslint-disable max-lines */
 import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DiscardPrompt from '../../components/Projects/DiscardPrompt.vue';
@@ -65,11 +66,16 @@ import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
-const PERCENT_APP = 25,
+const DEFAULTS = {
+        extraData: { repository: '', provider: '' },
+        project: { name: '', applications: [], redirects: []},
+        sourceData: { repository: '', provider: 'github', branch: null, url: '' },
+    }, PERCENT_APP = 25,
     PERCENT_REDIRECT = 40,
     STEP_APP = 'app.save',
     STEP_CREATE = 'project.create',
-    STEP_REDIRECT = 'redirect.save';
+    STEP_REDIRECT = 'redirect.save',
+    VALIDATION_ERROR = 422;
 
 export default {
     components: {
@@ -88,15 +94,10 @@ export default {
             bypassLeaveHandler: false,
             error: '',
             errors: {},
-            extraData: {
-                repository: '',
-                provider: '',
-            },
-            project: {
-                name: '',
-                applications: [],
-                redirects: [],
-            },
+            extraData: DEFAULTS.extraData,
+            project: DEFAULTS.project,
+            sourceData: DEFAULTS.sourceData,
+            projectCreatedId: 0,
             providers,
             step: 'template',
             steps,
@@ -106,6 +107,7 @@ export default {
     beforeRouteLeave(to, from, next) {
         if (this.bypassLeaveHandler) {
             this.bypassLeaveHandler = false;
+            this.discard();
             next();
         } else {
             this.$refs.discardProject.prompt(() => {
@@ -142,14 +144,9 @@ export default {
             }, 'projects');
         },
         discard() {
-            this.extraData = {
-                repository: '',
-            };
-
-            this.project = {
-                name: '',
-                applications: [],
-            };
+            this.extraData = DEFAULTS.extraData;
+            this.sourceData = DEFAULTS.sourceData;
+            this.project = DEFAULTS.project;
 
             this.steps.forEach(s => {
                 if ('template' !== s.name) {
@@ -157,8 +154,8 @@ export default {
                     s.disabled = true;
                 }
             });
-
             this.step = 'template';
+            this.$store.dispatch('progress/hide');
         },
         goto(step) {
             const currentStep = this.steps.find(s => this.step === s.name),
@@ -228,42 +225,72 @@ export default {
         async create(enabled = false) {
             this.setErrors({}, '');
 
-            const [channel, step] = ['projects', this.progressInit()];
-            let project = null;
+            const [step, project] = [
+                this.progressInit(),
+                await this.createProject(this.project.name, enabled),
+            ];
+
+            if (null === project) {
+                return;
+            }
 
             try {
-                [ project ] = await Promise.all([
-                    await this.$store.dispatch('projects/createProject', {
-                        name: this.project.name,
-                        is_enabled: enabled,
-                    }),
-                    this.$store.dispatch('progress/progress', { step: 'create', progress: 8 }),
-                    this.$store.dispatch('progress/monitor', { channel, item: project.id }),
-                    this.$store.dispatch('progress/progress', { step: 'create', progress: 10 }),
-                ]);
+                await this.createAppOrRedirect(project, step);
 
-                const [action, data, progress] = step === STEP_APP
-                    ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
-                    : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
-
-                await Promise.all([
-                    this.$store.dispatch('progress/progress', { step, progress }),
-                    this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data }),
-                ]);
+                await this.$store.dispatch('progress/activateContinueButton', {
+                    name: 'projects.view',
+                    params: { id: project.id },
+                });
             } catch (error) {
-                this.handleCreationError(error);
+                this.handleCreationError(step, error);
             } finally {
                 this.bypassLeaveHandler = true;
-
-                await this.$store.dispatch('progress/activateButton', project
-                    ? { name: 'projects.view', params: { id: project.id }}
-                    : { name: 'projects' });
             }
         },
-        handleCreationError(error) {
-            const { response: res } = error, validationError = 422;
+        async createProject(name, isEnabled) {
+            if (this.projectCreatedId) {
+                return this.createdProject();
+            }
 
-            if (res && validationError === res.status) {
+            try {
+                const channel = 'projects', project = await this.$store.dispatch(
+                    'projects/createProject',
+                    { name, is_enabled: isEnabled },
+                );
+
+                await this.$store.dispatch('progress/monitor', { channel, item: project.id });
+                this.$store.dispatch('progress/stepCompleted', { step: STEP_CREATE, progress: 15 });
+                this.projectCreatedId = project.id;
+
+                return project;
+            } catch (error) {
+                this.handleCreationError(STEP_CREATE, error);
+
+                return null;
+            }
+        },
+        createdProject() {
+            this.$store.dispatch('progress/stepCompleted', { step: STEP_CREATE, progress: 15 });
+
+            return this.$store.getters['projects/find'](this.projectCreatedId);
+        },
+        async createAppOrRedirect(project, step) {
+            const [action, data, progress] = step === STEP_APP
+                ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
+                : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
+
+            await this.$store.dispatch('progress/start', { step });
+            await this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data });
+            await this.$store.dispatch('progress/stepCompleted', { step, progress });
+        },
+        handleCreationError(step, error) {
+            const { response: res } = error,
+                canBeFixed = res && VALIDATION_ERROR === res.status,
+                fallback = { route: { name: 'projects' }, text: 'Back to Projects' };
+
+            this.$store.dispatch('progress/stepFailed', { step, canBeFixed, fallback });
+
+            if (canBeFixed) {
                 this.setErrors(res.data.errors, 'Please fix the highlighted issues and try again.');
 
                 this.jumpToFirstError();
@@ -281,9 +308,8 @@ export default {
 
             this.$store.dispatch('progress/load', {
                 title: 'Saving project...',
-                completeWhenDone: step,
                 steps: [
-                    { name: STEP_CREATE, text: 'Creating project' },
+                    { name: STEP_CREATE, text: 'Creating project', status: 'working' },
                     { name: step, text: `Saving the ${text}` },
                 ],
             });

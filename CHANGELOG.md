@@ -9,6 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.14.0] - 2021-11-12
+
+This is the first version with a "true" GitHub Release. For older releases, check the
+[tags prior to v0.14.0](https://github.com/dshoreman/servidor/tags?after=v0.4.0).
+
+### Added
+* [projects] Renaming can now be cancelled by pressing escape in the input
+* [projects] Retry is now supported with new Back/Fix buttons when creation fails
+* [projects] Progress step icons are now coloured (green, grey or red) based on step status
+* [projects] New 'working' `ProgressStep` state enables showing a progress spinner on start
+* [projects] Source Selector now supports v-model to prevent old form values being lost
+* [workflow] There's now a release action since GitHub decided to stop showing tags
+
+### Changed
+* [chore] Dropped support for PHP 7.4
+* [installer] Updated to install (and use) `php8.0-` packages and fpm socket
+* [projects] Project and app/redirect errors are now handled separately for better reporting
+
+### Fixed
+* [auth] Opening Servidor in a new tab no longer requires you to login again
+* [installer] Fixed issue where password generation could trigger pipefail
+* [projects] Fixed app/redirect not getting saved with new projects
+* [projects] Resolved an issue where cancelling a rename didn't reset the name
+* [projects] Logs should now always be loaded when ProjectViewer mounts
+* [projects] Fixed some bad syntax that broke the 'Pull Latest Code' button
+* [projects] Updated progress/completed actions to prevent premature step completion
+* [projects] Tweaked progress values reported by steps to avoid reverse progress
+* [projects] Updated form keys to fix 'jump to error' and field errors not showing
+* [projects] Reset modal state on subsequent loads to prevent duplicate progress steps
+* [projects] Prevented rename/recreate when only app/redirect has errors to avoid failure
+* [projects] Fixed branch dropdrown not showing placeholder text when unset
+* [projects] Prevented progress showing when clicking 'New Project' after creating a project
+* [projects] Fixed an issue where projects weren't discarded if the leave handler is bypassed
+
+
 ## [0.13.0] - 2021-05-25
 ### Added
 * [chore] Added phpinsights to the CI workflow. Run with `make insights`
@@ -222,7 +257,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.13.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.14.0...develop
+[0.14.0]: https://github.com/dshoreman/servidor/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/dshoreman/servidor/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/dshoreman/servidor/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/dshoreman/servidor/compare/v0.10.0...v0.11.0

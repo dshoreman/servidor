@@ -29,11 +29,15 @@ const router = new VueRouter({
     routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const authed = store.getters.loggedIn, nextpage = {};
 
     if (!authed && to.matched.some(route => route.meta.auth)) {
-        nextpage.name = 'login';
+        await store.dispatch('fetchProfile');
+
+        if (!store.getters.loggedIn) {
+            nextpage.name = 'login';
+        }
     } else if (authed && to.matched.some(route => route.meta.guest)) {
         nextpage.name = 'dashboard';
     }

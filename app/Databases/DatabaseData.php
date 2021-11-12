@@ -22,7 +22,7 @@ class DatabaseData implements Arrayable
         ?TableCollection $tables = null,
         ?int $tableCount = null,
         string $charset = '',
-        string $collation = ''
+        string $collation = '',
     ) {
         $this->name = $name;
         $this->tables = $tables ?? new TableCollection();

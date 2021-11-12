@@ -82,6 +82,16 @@ class Application extends Model
     /** @var string */
     private $templatesNamespace = 'Servidor\Projects\Applications\Templates\\';
 
+    public function disable(): void
+    {
+        $this->template()->disable();
+    }
+
+    public function enable(): void
+    {
+        $this->template()->enable();
+    }
+
     public function getDocumentRootAttribute(): string
     {
         return $this->sourceRoot . $this->template()->publicDir();
@@ -108,7 +118,7 @@ class Application extends Model
         $match = mb_strpos($repo, '/');
 
         return false === $match ? $repo
-            : (string) mb_substr($repo, $match + 1);
+            : mb_substr($repo, $match + 1);
     }
 
     public function getSourceRootAttribute(): string
@@ -150,6 +160,11 @@ class Application extends Model
         } catch (UserNotFound $_) {
             return null;
         }
+    }
+
+    public function getType(): string
+    {
+        return 'application';
     }
 
     public function template(): Template

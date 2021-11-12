@@ -43,8 +43,7 @@ return [
     //
     // Note that the **only** effect of choosing `'5.6'` is to infer that functions removed in php 7.0 exist.
     // (See `backward_compatibility_checks` for additional options)
-    // Automatically inferred from composer.json requirement for "php" of "^7.4 || ^8.0"
-    'target_php_version' => '7.4',
+    'target_php_version' => '8.0',
 
     // If enabled, missing properties will be created when
     // they are first seen. If false, we'll report an
@@ -345,9 +344,8 @@ return [
         'app',
         'database/factories',
         'database/seeders',
-        'vendor/doctrine/dbal/lib/Doctrine/DBAL',
+        'vendor/doctrine/dbal/src',
         'vendor/fakerphp/faker/src/Faker',
-        'vendor/fideloper/proxy/src',
         'vendor/fruitcake/laravel-cors/src',
         'vendor/laravel/framework/src/Illuminate',
         'vendor/laravel/sanctum/src',
@@ -362,15 +360,5 @@ return [
     // project.
     'file_list' => [
         'bootstrap/app.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/AbstractFixerTestCase.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/AbstractIntegrationCaseFactory.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/AbstractIntegrationTestCase.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/Assert/AssertTokensTrait.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/IntegrationCase.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/IntegrationCaseFactory.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/IntegrationCaseFactoryInterface.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/InternalIntegrationCaseFactory.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/Test/IsIdenticalConstraint.php',
-        'vendor/friendsofphp/php-cs-fixer/tests/TestCase.php',
     ],
 ];

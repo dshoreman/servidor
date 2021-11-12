@@ -35,7 +35,7 @@ clone_and_install() {
 
     log "Installing required Composer packages..."
     is_vagrant && c_dev="--prefer-source" || c_dev="--no-dev"
-    sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress --no-suggest
+    sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress
 
     log "Compiling static assets..."
     if is_vagrant; then
@@ -69,7 +69,7 @@ configure_application() {
 create_database() {
     local collation="CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci" password
 
-    password="$(</dev/urandom tr -dc 'a-zA-Z0-9!@#$%^&*()_+=,-.<>/?;:|[]{}~' | head -c28)"
+    password="$(</dev/urandom tr -dc 'a-zA-Z0-9!@#$%^&*()_+=,-.<>/?;:|[]{}~' | head -c28 || test $? -eq 141)"
 
     echo "DROP USER IF EXISTS 'servidor'@'localhost'; DROP DATABASE IF EXISTS servidor" | mysql && \
         echo "CREATE USER 'servidor'@'localhost' IDENTIFIED BY '${password}'" | mysql && \

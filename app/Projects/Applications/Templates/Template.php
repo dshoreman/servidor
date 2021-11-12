@@ -19,7 +19,7 @@ interface Template
 
     public function publicDir(): string;
 
-    public function pullCode(bool $autoEnable = false): bool;
+    public function pullCode(): bool;
 
     public function requiresUser(): bool;
 }

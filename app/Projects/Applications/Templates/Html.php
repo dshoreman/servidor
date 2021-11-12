@@ -52,7 +52,7 @@ class Html implements Template, Domainable
         return $this->publicDir;
     }
 
-    public function pullCode(bool $autoEnable = false): bool
+    public function pullCode(): bool
     {
         $status = 0;
         $output = [];
@@ -66,9 +66,6 @@ class Html implements Template, Domainable
         }
         if (0 === $status) {
             exec($cmd, $output, $status);
-        }
-        if ($autoEnable && 0 === $status) {
-            $this->enable();
         }
 
         return 0 === $status;

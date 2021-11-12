@@ -7,17 +7,19 @@
                 <sui-checkbox toggle v-model="project.is_enabled" @change="toggleProject" />
             </sui-form-field>
             <div v-if="renaming">
-                <sui-input transparent v-model="project.name" @keyup.enter="renameProject()" />
+                <sui-input transparent v-model="newProjectName"
+                           @keyup.enter="renameProject()"
+                           @keyup.esc="stopRenaming()"/>
                 <sui-button-group size="tiny">
                     <sui-button positive icon="check" style="top: -0.3em;"
                         compact attached="left" @click="renameProject()" />
                     <sui-button negative icon="cancel" basic style="top: -0.3em;"
-                        compact attached="right" @click="renaming = false" />
+                        compact attached="right" @click="stopRenaming()" />
                 </sui-button-group>
             </div>
             <div v-else>
                 {{ project.name }}
-                <sui-icon name="pencil" link size="tiny" @click="renaming = true"
+                <sui-icon name="pencil" link size="tiny" @click="startRenaming()"
                     style="position: relative; bottom: 0.3em; left: 0.3em;" />
             </div>
         </h2>
@@ -198,12 +200,12 @@ export default {
     components: {
         ProjectTabs,
     },
-    mounted() {
+    async mounted() {
         if (!this.$store.getters['projects/all'].length) {
-            this.$store.dispatch('projects/load').then(() => {
-                this.initLog();
-            });
+            await this.$store.dispatch('projects/load');
         }
+
+        this.initLog();
     },
     props: {
         id: { type: Number, default: 0 },
@@ -213,6 +215,7 @@ export default {
             activeLog: '',
             logContent: '',
             renaming: false,
+            newProjectName: '',
         };
     },
     computed: {
@@ -252,11 +255,20 @@ export default {
                 );
         },
         renameProject() {
-            const { id, name } = this.project;
-
-            this.$store.dispatch('projects/rename', { id, name }).finally(() => {
-                this.renaming = false;
+            this.$store.dispatch(
+                'projects/rename',
+                { id: this.project.id, name: this.newProjectName },
+            ).finally(() => {
+                this.stopRenaming();
             });
+        },
+        startRenaming() {
+            this.renaming = true;
+            this.newProjectName = this.project.name;
+        },
+        stopRenaming() {
+            this.renaming = false;
+            this.newProjectName = '';
         },
         toggleProject() {
             const enabled = this.project.is_enabled,

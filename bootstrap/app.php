@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('SERVIDOR_VERSION')) {
-    define('SERVIDOR_VERSION', '0.13.0');
+    define('SERVIDOR_VERSION', '0.14.0');
 }
 
 /*
@@ -16,7 +16,7 @@ if (!defined('SERVIDOR_VERSION')) {
 */
 
 $app = new Illuminate\Foundation\Application(
-    (string) dirname(__DIR__),
+    dirname(__DIR__),
 );
 
 /*

@@ -19,6 +19,7 @@ class LoginTest extends TestCase
     public function user_can_login_with_email(): void
     {
         $user = User::factory()->create();
+        \assert($user instanceof User);
 
         $response = $this->postJson('/api/session', [
             'email' => $user->email,
@@ -33,6 +34,7 @@ class LoginTest extends TestCase
     public function user_cannot_login_with_invalid_password(): void
     {
         $user = User::factory()->create();
+        \assert($user instanceof User);
 
         $response = $this->postJson('/api/session', [
             'email' => $user->email,

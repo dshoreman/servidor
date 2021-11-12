@@ -37,6 +37,14 @@ return [
             'timeout' => null,
             'auth_mode' => null,
         ],
+
+        'failover' => [
+            'transport' => 'failover',
+            'mailers' => [
+                'smtp',
+                'log',
+            ],
+        ],
     ],
     'markdown' => [
         'theme' => 'default',

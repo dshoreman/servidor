@@ -142,7 +142,7 @@ class FileManager
         if (false === $match) {
             throw new InvalidArgumentException();
         }
-        $path = (string) mb_substr($path, 0, $match);
+        $path = mb_substr($path, 0, $match);
 
         return $this->loadPermissions($path, $name);
     }
@@ -231,7 +231,7 @@ class FileManager
             $data['error'] = ['code' => 418, 'msg' => $msg];
             $deniedError = 'failed to open stream: permission denied';
 
-            if (Str::contains((string) mb_strtolower($msg), $deniedError)) {
+            if (Str::contains(mb_strtolower($msg), $deniedError)) {
                 $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
             }
         }

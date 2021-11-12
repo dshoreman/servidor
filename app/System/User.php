@@ -101,12 +101,15 @@ class User
 
     public function update(array $data): array
     {
+        /** @var array<string>|null $groups */
+        $groups = $data['groups'] ?? null;
+
         $this->user
             ->setName((string) $data['name'])
             ->setUid(isset($data['uid']) ? (int) $data['uid'] : null)
             ->setGid(isset($data['gid']) ? (int) $data['gid'] : null)
             ->setShell((string) ($data['shell'] ?? ''))
-            ->setGroups(isset($data['groups']) ? (array) $data['groups'] : null)
+            ->setGroups($groups)
             ->setMoveHome((bool) ($data['move_home'] ?? false))
             ->setHomeDirectory((string) ($data['dir'] ?? ''))
         ;

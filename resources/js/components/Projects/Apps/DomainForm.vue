@@ -1,7 +1,7 @@
 <template>
     <sui-form @submit.prevent="$emit('next')" v>
 
-        <sui-form-field :error="'applications.0.domain' in errors">
+        <sui-form-field :error="'domain' in errors">
 
             <label>Domain name</label>
 
@@ -10,8 +10,8 @@
                 @input="$emit('input', $event)" />
 
             <sui-label basic color="red" pointing
-                v-if="'applications.0.domain' in errors">
-                {{ errors['applications.0.domain'][0] }}
+                v-if="'domain' in errors">
+                {{ errors['domain'][0] }}
             </sui-label>
 
         </sui-form-field>
