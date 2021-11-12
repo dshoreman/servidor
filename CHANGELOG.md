@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+
+## [0.14.0] - 2021-11-12
+
+This is the first version with a "true" GitHub Release. For older releases, check the
+[tags prior to v0.14.0](https://github.com/dshoreman/servidor/tags?after=v0.4.0).
+
 ### Added
 * [projects] Renaming can now be cancelled by pressing escape in the input
 * [projects] Retry is now supported with new Back/Fix buttons when creation fails
@@ -250,7 +257,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.13.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.14.0...develop
+[0.14.0]: https://github.com/dshoreman/servidor/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/dshoreman/servidor/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/dshoreman/servidor/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/dshoreman/servidor/compare/v0.10.0...v0.11.0
