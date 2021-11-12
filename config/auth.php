@@ -110,5 +110,6 @@ return [
     | confirmation screen. By default, the timeout lasts for three hours.
     |
     */
+
     'password_timeout' => 10800,
 ];
