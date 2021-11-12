@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] Progress step icons are now coloured (green, grey or red) based on step status
 * [projects] New 'working' `ProgressStep` state enables showing a progress spinner on start
 * [projects] Source Selector now supports v-model to prevent old form values being lost
+* [workflow] There's now a release action since GitHub decided to stop showing tags
 
 ### Changed
 * [chore] Dropped support for PHP 7.4
