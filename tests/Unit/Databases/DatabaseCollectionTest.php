@@ -12,7 +12,7 @@ class DatabaseCollectionTest extends TestCase
     public function get_returns_default_if_not_found(): void
     {
         $collection = new DatabaseCollection();
-        $default = new DatabaseDTO('NOMATCH');
+        $default = new DatabaseDTO(name: 'NOMATCH');
 
         $this->assertInstanceOf(DatabaseCollection::class, $collection);
         $this->assertEquals('NOMATCH', $collection->get('c', $default)->name);

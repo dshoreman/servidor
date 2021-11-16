@@ -14,7 +14,8 @@
         "laravel/framework": "^8.70.1",
         "laravel/sanctum": "^2.12.1",
         "laravel/tinker": "^2.6.2",
-        "pusher/pusher-php-server": "^7.0.1"
+        "pusher/pusher-php-server": "^7.0.1",
+        "spatie/data-transfer-object": "^3.7.2"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.3.1",

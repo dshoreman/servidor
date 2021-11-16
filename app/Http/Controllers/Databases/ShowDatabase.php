@@ -15,9 +15,6 @@ class ShowDatabase
 
     public function __invoke(DatabaseManager $manager, string $name): JsonResponse
     {
-        $database = new DatabaseDTO($name);
-        $tables = $manager->tables($database);
-
-        return new JsonResponse($database->withTables($tables));
+        return new JsonResponse($manager->databaseWithTables(new DatabaseDTO(name: $name)));
     }
 }

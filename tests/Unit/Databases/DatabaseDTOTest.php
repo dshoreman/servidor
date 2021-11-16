@@ -4,7 +4,7 @@ namespace Tests\Unit\Databases;
 
 use Mockery;
 use Servidor\Databases\DatabaseDTO;
-use Servidor\Databases\TableCollection;
+use Servidor\Databases\TableDTO;
 use Servidor\Http\Requests\Databases\NewDatabase;
 use Tests\TestCase;
 
@@ -29,7 +29,7 @@ class DatabaseDTOTest extends TestCase
 
     public function testToArray(): void
     {
-        $database = new DatabaseDTO('name_only');
+        $database = new DatabaseDTO(name: 'name_only');
 
         $array = $database->toArray();
 
@@ -52,8 +52,8 @@ class DatabaseDTOTest extends TestCase
 
     public function testWithTables(): void
     {
-        $database = (new DatabaseDTO('collected_tables'))
-            ->withTables(new TableCollection([[], []]))
+        $database = (new DatabaseDTO(name: 'collected_tables'))
+            ->withTables([['foo'], ['bar']])
         ;
 
         $this->assertInstanceOf(DatabaseDTO::class, $database);
@@ -61,6 +61,9 @@ class DatabaseDTOTest extends TestCase
         $this->assertArrayHasKey('tables', $database->toArray());
 
         $this->assertInstanceOf(TableCollection::class, $database->tables);
-        $this->assertSame([[], []], $database->tables->toArray());
+        $this->assertSame(array_map(
+            static fn (string $table): array => (new TableDTO(name: $table))->toArray(),
+            ['foo', 'bar'],
+        ), $database->toArray()['tables']);
     }
 }

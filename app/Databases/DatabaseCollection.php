@@ -42,7 +42,7 @@ class DatabaseCollection extends Collection
     public static function fromNames(array $databaseNames): self
     {
         $databases = array_map(
-            static fn (string $name): DatabaseDTO => new DatabaseDTO($name),
+            static fn (string $name): DatabaseDTO => new DatabaseDTO(name: $name),
             $databaseNames,
         );
 

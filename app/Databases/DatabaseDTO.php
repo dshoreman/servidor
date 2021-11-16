@@ -4,51 +4,31 @@ namespace Servidor\Databases;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Servidor\Http\Requests\Databases\NewDatabase;
+use Spatie\DataTransferObject\Attributes\CastWith;
+use Spatie\DataTransferObject\Casters\ArrayCaster;
+use Spatie\DataTransferObject\DataTransferObject;
 
-class DatabaseDTO implements Arrayable
+class DatabaseDTO extends DataTransferObject implements Arrayable
 {
-    public string $name;
+    public string $name = '';
 
-    public string $charset;
+    public string $charset = '';
 
-    public string $collation;
+    public string $collation = '';
 
-    public ?int $tableCount;
+    public ?int $tableCount = null;
 
-    public TableCollection $tables;
-
-    public function __construct(
-        string $name,
-        ?TableCollection $tables = null,
-        ?int $tableCount = null,
-        string $charset = '',
-        string $collation = '',
-    ) {
-        $this->name = $name;
-        $this->tables = $tables ?? new TableCollection();
-        $this->tableCount = $tableCount;
-        $this->charset = $charset;
-        $this->collation = $collation;
-    }
+    /** @var TableDTO[] */
+    #[CastWith(ArrayCaster::class, itemType: TableDTO::class)]
+    public array $tables = [];
 
     public static function fromRequest(NewDatabase $request): self
     {
-        return new self($request->validated()['database']);
+        return new self(name: $request->validated()['database']);
     }
 
-    public function toArray(): array
+    public function withTables(array $tables): self
     {
-        return [
-            'name' => $this->name,
-            'charset' => $this->charset,
-            'collation' => $this->collation,
-            'tables' => $this->tables->toArray(),
-            'tableCount' => $this->tableCount,
-        ];
-    }
-
-    public function withTables(TableCollection $tables): self
-    {
-        return new self($this->name, $tables, $this->tableCount, $this->charset, $this->collation);
+        return $this->clone(tables: $tables);
     }
 }

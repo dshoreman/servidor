@@ -2,32 +2,18 @@
 
 namespace Servidor\Databases;
 
-class TableDTO
+use Spatie\DataTransferObject\DataTransferObject;
+
+class TableDTO extends DataTransferObject
 {
-    public string $collation;
-
-    public string $engine;
-
-    public string $name;
-
-    public int $rowCount;
-
-    public int $size;
-
     public function __construct(
-        string $name,
-        string $collation = '',
-        string $engine = '',
-        int $rowCount = -1,
-        int $size = -1,
+        public string $name,
+        public string $collation = '',
+        public string $engine = '',
+        public int $rowCount = -1,
+        public int $size = -1,
     ) {
-        $this->name = $name;
-
-        $this->engine = $engine;
-        $this->collation = $collation;
-
-        $this->size = $size;
-        $this->rowCount = $rowCount;
+        parent::__construct(compact('name', 'collation', 'engine', 'rowCount', 'size'));
     }
 
     /**
@@ -36,18 +22,11 @@ class TableDTO
     public static function fromInfoSchema(array $result): self
     {
         return new self(
-            $result['TABLE_NAME'],
-            $result['TABLE_COLLATION'],
-            $result['ENGINE'],
-            $result['TABLE_ROWS'],
-            $result['DATA_LENGTH'],
+            name: $result['TABLE_NAME'],
+            engine: $result['ENGINE'],
+            collation: $result['TABLE_COLLATION'],
+            rowCount: $result['TABLE_ROWS'],
+            size: $result['DATA_LENGTH'],
         );
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'name' => $this->name,
-        ];
     }
 }
