@@ -5,7 +5,7 @@ namespace Servidor\Databases;
 use Illuminate\Contracts\Support\Arrayable;
 use Servidor\Http\Requests\Databases\NewDatabase;
 
-class DatabaseData implements Arrayable
+class DatabaseDTO implements Arrayable
 {
     public string $name;
 

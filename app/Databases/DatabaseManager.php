@@ -36,7 +36,7 @@ class DatabaseManager
         );
     }
 
-    public function create(DatabaseData $database): DatabaseData
+    public function create(DatabaseDTO $database): DatabaseDTO
     {
         try {
             $this->manager->createDatabase($database->name);
@@ -62,7 +62,7 @@ class DatabaseManager
         $sql = self::databasesSql();
 
         foreach ($this->connection->fetchAllAssociativeIndexed($sql) as $name => $result) {
-            $databases[$name] = new DatabaseData(
+            $databases[$name] = new DatabaseDTO(
                 (string) $name,
                 null,
                 (int) $result['tableCount'],
@@ -74,7 +74,7 @@ class DatabaseManager
         return new DatabaseCollection($databases);
     }
 
-    public function tables(DatabaseData $database): TableCollection
+    public function tables(DatabaseDTO $database): TableCollection
     {
         $results = $this->connection->fetchAllAssociative(
             self::tablesSql(),

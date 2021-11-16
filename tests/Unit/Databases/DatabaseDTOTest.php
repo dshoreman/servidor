@@ -3,21 +3,21 @@
 namespace Tests\Unit\Databases;
 
 use Mockery;
-use Servidor\Databases\DatabaseData;
+use Servidor\Databases\DatabaseDTO;
 use Servidor\Databases\TableCollection;
 use Servidor\Http\Requests\Databases\NewDatabase;
 use Tests\TestCase;
 
-class DatabaseDataTest extends TestCase
+class DatabaseDTOTest extends TestCase
 {
     public function testFromRequest(): void
     {
         $request = Mockery::mock(NewDatabase::class);
         $request->shouldReceive('validated')->andReturn(['database' => 'validated_db_name']);
 
-        $database = DatabaseData::fromRequest($request);
+        $database = DatabaseDTO::fromRequest($request);
 
-        $this->assertInstanceOf(DatabaseData::class, $database);
+        $this->assertInstanceOf(DatabaseDTO::class, $database);
 
         $this->assertObjectHasAttribute('name', $database);
         $this->assertObjectNotHasAttribute('database', $database);
@@ -29,7 +29,7 @@ class DatabaseDataTest extends TestCase
 
     public function testToArray(): void
     {
-        $database = new DatabaseData('name_only');
+        $database = new DatabaseDTO('name_only');
 
         $array = $database->toArray();
 
@@ -52,11 +52,11 @@ class DatabaseDataTest extends TestCase
 
     public function testWithTables(): void
     {
-        $database = (new DatabaseData('collected_tables'))
+        $database = (new DatabaseDTO('collected_tables'))
             ->withTables(new TableCollection([[], []]))
         ;
 
-        $this->assertInstanceOf(DatabaseData::class, $database);
+        $this->assertInstanceOf(DatabaseDTO::class, $database);
         $this->assertObjectHasAttribute('tables', $database);
         $this->assertArrayHasKey('tables', $database->toArray());
 
