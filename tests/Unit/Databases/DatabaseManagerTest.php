@@ -6,7 +6,7 @@ use Servidor\Databases\DatabaseCollection;
 use Servidor\Databases\DatabaseDTO;
 use Servidor\Databases\DatabaseManager;
 use Servidor\Databases\TableCollection;
-use Servidor\Databases\TableData;
+use Servidor\Databases\TableDTO;
 use Tests\TestCase;
 
 class DatabaseManagerTest extends TestCase
@@ -93,7 +93,7 @@ class DatabaseManagerTest extends TestCase
         $this->assertInstanceOf(TableCollection::class, $tables);
 
         $first = $tables->first();
-        $this->assertInstanceOf(TableData::class, $first);
+        $this->assertInstanceOf(TableDTO::class, $first);
         $this->assertEquals('failed_jobs', $first->name);
     }
 

@@ -2,7 +2,7 @@
 
 namespace Servidor\Databases;
 
-class TableData
+class TableDTO
 {
     public string $collation;
 

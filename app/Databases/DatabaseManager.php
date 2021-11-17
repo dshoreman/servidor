@@ -81,7 +81,7 @@ class DatabaseManager
             ['db' => $database->name],
         );
 
-        return new TableCollection(array_map(static function (array $result): TableData {
+        return new TableCollection(array_map(static function (array $result): TableDTO {
             /**
              * @var array{ TABLE_NAME: string,
              *             TABLE_COLLATION: string,
@@ -91,7 +91,7 @@ class DatabaseManager
              *             } $result
              */
 
-            return TableData::fromInfoSchema($result);
+            return TableDTO::fromInfoSchema($result);
         }, $results));
     }
 

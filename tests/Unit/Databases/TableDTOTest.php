@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Databases;
 
-use Servidor\Databases\TableData;
+use Servidor\Databases\TableDTO;
 use Tests\TestCase;
 
-class TableDataTest extends TestCase
+class TableDTOTest extends TestCase
 {
     public function testFromInfoSchema(): void
     {
@@ -16,9 +16,9 @@ class TableDataTest extends TestCase
             'TABLE_ROWS' => 0,
             'DATA_LENGTH' => 16 * 1024,
         ];
-        $table = TableData::fromInfoSchema($result);
+        $table = TableDTO::fromInfoSchema($result);
 
-        $this->assertInstanceOf(TableData::class, $table);
+        $this->assertInstanceOf(TableDTO::class, $table);
 
         $this->assertObjectHasAttribute('name', $table);
         $this->assertEquals($result['TABLE_NAME'], $table->name);
@@ -26,7 +26,7 @@ class TableDataTest extends TestCase
 
     public function testToArray(): void
     {
-        $table = new TableData('name_only');
+        $table = new TableDTO('name_only');
 
         $array = $table->toArray();
 
