@@ -2,9 +2,10 @@
 
 namespace Servidor\Databases;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Spatie\DataTransferObject\DataTransferObject;
 
-class TableDTO extends DataTransferObject
+class TableDTO extends DataTransferObject implements Arrayable
 {
     public function __construct(
         public string $name,

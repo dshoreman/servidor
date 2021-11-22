@@ -49,6 +49,7 @@ class DatabaseDTOTest extends TestCase
 
         $this->assertIsArray($array['tables']);
         $this->assertSame([], $array['tables']);
+        $this->assertSame($database->toArray()['tables'], $database->tables->toArray());
     }
 
     public function testWithTables(): void
@@ -60,6 +61,7 @@ class DatabaseDTOTest extends TestCase
         $this->assertInstanceOf(DatabaseDTO::class, $database);
         $this->assertObjectHasAttribute('tables', $database);
         $this->assertArrayHasKey('tables', $database->toArray());
+        $this->assertSame($database->toArray()['tables'], $database->tables->toArray());
 
         $this->assertInstanceOf(TableCollection::class, $database->tables);
         $this->assertSame(array_map(
