@@ -4,6 +4,7 @@ namespace Tests\Unit\Databases;
 
 use Mockery;
 use Servidor\Databases\DatabaseDTO;
+use Servidor\Databases\TableCollection;
 use Servidor\Databases\TableDTO;
 use Servidor\Http\Requests\Databases\NewDatabase;
 use Tests\TestCase;
@@ -64,6 +65,6 @@ class DatabaseDTOTest extends TestCase
         $this->assertSame(array_map(
             static fn (string $table): array => (new TableDTO(name: $table))->toArray(),
             ['foo', 'bar'],
-        ), $database->toArray()['tables']);
+        ), $database->tables->toArray());
     }
 }

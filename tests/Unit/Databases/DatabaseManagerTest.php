@@ -5,6 +5,7 @@ namespace Tests\Unit\Databases;
 use Servidor\Databases\DatabaseCollection;
 use Servidor\Databases\DatabaseDTO;
 use Servidor\Databases\DatabaseManager;
+use Servidor\Databases\TableCollection;
 use Servidor\Databases\TableDTO;
 use Tests\TestCase;
 
