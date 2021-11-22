@@ -310,7 +310,7 @@ install_packages() {
     info "Installing required PHP extensions..."
     is_vagrant && \
         log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
-        phpexts+=(php-pcov php8.0-phpdbg)
+        phpexts+=(php8.0-pcov php8.0-phpdbg)
     install_pkg "${phpexts[@]}"
     info "Installing latest stable Composer..."
     install_composer
