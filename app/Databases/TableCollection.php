@@ -8,12 +8,12 @@ use Illuminate\Support\Collection;
 class TableCollection extends Collection
 {
     /**
-     * @var array<TableData>
+     * @var array<TableDTO>
      */
     protected $items = [];
 
     /**
-     * @return array<TableData>
+     * @return array<TableDTO>
      */
     public function all(): array
     {
@@ -21,10 +21,10 @@ class TableCollection extends Collection
     }
 
     /**
-     * @param string         $name
-     * @param TableData|null $default
+     * @param string        $name
+     * @param TableDTO|null $default
      */
-    public function get($name, $default = null): TableData
+    public function get($name, $default = null): TableDTO
     {
         if (parent::get($name)) {
             return $this->items[$name];

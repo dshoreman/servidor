@@ -3,10 +3,10 @@
 namespace Tests\Unit\Databases;
 
 use Servidor\Databases\DatabaseCollection;
-use Servidor\Databases\DatabaseData;
+use Servidor\Databases\DatabaseDTO;
 use Servidor\Databases\DatabaseManager;
 use Servidor\Databases\TableCollection;
-use Servidor\Databases\TableData;
+use Servidor\Databases\TableDTO;
 use Tests\TestCase;
 
 class DatabaseManagerTest extends TestCase
@@ -21,7 +21,7 @@ class DatabaseManagerTest extends TestCase
         $collection = $manager->databases();
 
         $this->assertInstanceOf(DatabaseCollection::class, $collection);
-        $this->assertContainsOnlyInstancesOf(DatabaseData::class, $collection);
+        $this->assertContainsOnlyInstancesOf(DatabaseDTO::class, $collection);
 
         return $manager;
     }
@@ -66,7 +66,7 @@ class DatabaseManagerTest extends TestCase
      */
     public function it_can_create_a_database(DatabaseManager $manager): DatabaseManager
     {
-        $data = new DatabaseData('testdb');
+        $data = new DatabaseDTO(name: 'testdb');
         $before = $manager->databases()->toArray();
         $expected = array_merge($before, [$data->toArray()]);
 
@@ -74,7 +74,7 @@ class DatabaseManagerTest extends TestCase
         $actual = $manager->databases()->toArray();
         sort($expected);
 
-        $this->assertInstanceOf(DatabaseData::class, $database);
+        $this->assertInstanceOf(DatabaseDTO::class, $database);
         $this->assertEquals('testdb', $database->name);
         $this->assertCount(1 + \count($before), $actual);
         $this->assertSame($expected, $actual);
@@ -88,12 +88,12 @@ class DatabaseManagerTest extends TestCase
      */
     public function it_can_list_tables_of_a_database(DatabaseManager $manager): void
     {
-        $tables = $manager->tables(new DatabaseData('servidor_testing'));
+        $database = $manager->databaseWithTables(new DatabaseDTO(name: 'servidor_testing'));
 
-        $this->assertInstanceOf(TableCollection::class, $tables);
+        $this->assertInstanceOf(TableCollection::class, $database->tables);
 
-        $first = $tables->first();
-        $this->assertInstanceOf(TableData::class, $first);
+        $first = $database->tables->first();
+        $this->assertInstanceOf(TableDTO::class, $first);
         $this->assertEquals('failed_jobs', $first->name);
     }
 
@@ -105,9 +105,9 @@ class DatabaseManagerTest extends TestCase
         DatabaseManager $manager,
     ): void {
         $before = $manager->databases()->toArray();
-        $database = $manager->create(new DatabaseData('testdb'));
+        $database = $manager->create(new DatabaseDTO(name: 'testdb'));
 
-        $this->assertInstanceOf(DatabaseData::class, $database);
+        $this->assertInstanceOf(DatabaseDTO::class, $database);
         $this->assertEquals('testdb', $database->name);
         $this->assertCount(\count($before), $manager->databases());
         $this->assertSame($before, $manager->databases()->toArray());
