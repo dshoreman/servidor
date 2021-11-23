@@ -5,7 +5,7 @@ start_install() {
     add_repos && install_packages
 
     info "Enabling services..."
-    enable_services mariadb nginx php8.0-fpm
+    enable_services mariadb nginx php8.1-fpm
 
     if is_vagrant; then
         info "Adding vagrant user to www-data group..."
@@ -31,27 +31,24 @@ add_repos() {
 }
 
 install_packages() {
-    local phpexts=(php8.0-bcmath php8.0-curl php8.0-mbstring php8.0-xml php8.0-zip)
+    local phpexts=(bcmath curl fpm mbstring mysql xml zip)
 
     info "Installing core packages..."
     install_pkg build-essential nodejs sysstat unzip zsh
 
     info "Installing database and web server..."
-    install_pkg nginx php8.0-fpm
+    install_pkg nginx mariadb-server
 
-    info "Installing required PHP extensions..."
+    info "Installing PHP and required extensions..."
 
     is_vagrant && \
         log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
-        phpexts+=(php-pcov php8.0-phpdbg)
+        phpexts+=(pcov phpdbg)
 
-    install_pkg "${phpexts[@]}"
+    install_php_extensions "${phpexts[@]}"
 
     info "Installing latest stable Composer..."
     install_composer
-
-    info "Installing database..."
-    install_pkg mariadb-server php8.0-mysql
 }
 
 install_composer() {
@@ -68,6 +65,16 @@ install_composer() {
         log " Checksums match! Starting install..."
         php $target --quiet --install-dir="/usr/local/bin" --filename="composer"
     fi
+}
+
+install_php_extensions() {
+    extensions=()
+
+    for ext in "$@"; do
+        extensions+=("php8.0-${ext}" "php8.1-${ext}")
+    done
+
+    install_pkg "${extensions[@]}"
 }
 
 install_pkg() {
