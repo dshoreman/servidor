@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * [installer] Fixed code coverage being unavailable in Vagrant
 * [projects] The `sites-enabled/` symlink is now set correctly when saving projects
+* [projects] Fixed 502 on PHP/Laravel projects caused by running with old PHP version 
 
 
 ## [0.14.0] - 2021-11-12
