@@ -7,10 +7,14 @@ use Servidor\Projects\Redirects\ProjectRedirectSaved;
 
 class ToggleProjectVisibility
 {
-    public function handle(ProjectAppSaved|ProjectRedirectSaved $event): void
+    public function handle(ProjectSaved|ProjectAppSaved|ProjectRedirectSaved $event): void
     {
         $project = $event->getProject();
         $appOrRedirect = $event->getAppOrRedirect();
+
+        if (null === $appOrRedirect) {
+            return;
+        }
         $step = $this->addStep($project, $appOrRedirect);
 
         // This is required because TogglesNginxConfigs::configFilename()

@@ -39,6 +39,10 @@ class Project extends Model
         'is_enabled' => 'boolean',
     ];
 
+    protected $dispatchesEvents = [
+        'saved' => ProjectSaved::class,
+    ];
+
     protected $table = 'projects';
 
     public function applications(): HasMany
