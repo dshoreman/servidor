@@ -84,6 +84,37 @@ class UpdateProjectTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function updating_project_also_toggles_symlink(): void
+    {
+        $project = new Project(['name' => 'Symlink Test', 'is_enabled' => true]);
+        $project->save();
+
+        $this->authed()->postJson("/api/projects/{$project->id}/apps", [
+            'domain' => 'symlink.test',
+            'template' => 'html',
+            'provider' => 'github',
+            'repository' => 'dshoreman/servidor-test-site',
+            'branch' => 'develop',
+        ]);
+        $this->assertFileExists('/etc/nginx/sites-available/symlink.test.conf');
+        $this->assertFileExists('/etc/nginx/sites-enabled/symlink.test.conf');
+
+        $response = $this->authed()->putJson('/api/projects/' . $project->id, [
+            'is_enabled' => false,
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'name' => 'Symlink Test',
+            'is_enabled' => false,
+        ]);
+        $this->assertFileExists('/etc/nginx/sites-available/symlink.test.conf');
+        $this->assertFileDoesNotExist('/etc/nginx/sites-enabled/symlink.test.conf');
+    }
+
     /** @test */
     public function can_update_project_while_retaining_the_same_name(): void
     {
