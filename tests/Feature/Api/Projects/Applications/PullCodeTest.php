@@ -33,7 +33,11 @@ class PullCodeTest extends TestCase
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $response->assertJson(['message' => 'Unauthenticated.']);
-        $this->assertArraySubset($project->toArray(), Project::with('applications')->firstOrFail()->toArray());
+
+        self::assertArraySubset(
+            $project->toArray(),
+            Project::with(['applications', 'redirects'])->firstOrFail()->toArray(),
+        );
     }
 
     /** @test */
