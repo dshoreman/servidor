@@ -2,6 +2,7 @@
 
 namespace Servidor\Projects\Applications;
 
+use Servidor\Projects\Actions\SyncNginxConfig;
 use Servidor\Projects\ProgressStep;
 use Servidor\Projects\ProjectProgress;
 
@@ -21,7 +22,7 @@ class ApplyAppNginxConfig
             return;
         }
 
-        $app->writeNginxConfig();
+        (new SyncNginxConfig($app))->execute();
 
         ProjectProgress::dispatch($project, $step->complete());
     }

@@ -2,8 +2,6 @@
 
 namespace Servidor\Projects\Applications\Templates;
 
-use Illuminate\Contracts\View\Factory as ViewFactory;
-use Illuminate\Contracts\View\View;
 use Servidor\Projects\Application;
 use Servidor\Projects\Domainable;
 use Servidor\Traits\TogglesNginxConfigs;
@@ -40,11 +38,9 @@ class Html implements Template, Domainable
         return [];
     }
 
-    public function nginxTemplate(): View
+    public function nginxTemplate(): string
     {
-        $template = 'projects.app-templates.' . $this->nginxTemplate;
-
-        return app(ViewFactory::class)->make($template);
+        return $this->nginxTemplate;
     }
 
     public function publicDir(): string

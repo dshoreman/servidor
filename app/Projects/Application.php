@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Servidor\Projects\Applications\LogFile;
 use Servidor\Projects\Applications\ProjectAppSaved;
@@ -184,16 +183,5 @@ class Application extends Model
             default:
                 throw new Exception("Invalid template '{$template}'.");
         }
-    }
-
-    public function writeNginxConfig(): void
-    {
-        $view = $this->template()->nginxTemplate();
-
-        $src = "vhosts/{$this->domain_name}.conf";
-        $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
-
-        Storage::put($src, $view->with('app', $this)->render());
-        exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
     }
 }

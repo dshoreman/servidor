@@ -2,12 +2,10 @@
 
 namespace Servidor\Projects;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
 use Servidor\Traits\TogglesNginxConfigs;
 
@@ -62,17 +60,5 @@ class Redirect extends Model implements Domainable
     public function getType(): string
     {
         return 'redirect';
-    }
-
-    public function writeNginxConfig(): void
-    {
-        $view = view('projects.app-templates.redirect');
-        \assert($view instanceof View);
-
-        $src = "vhosts/{$this->domain_name}.conf";
-        $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
-
-        Storage::put($src, (string) $view->with('redirect', $this));
-        exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
     }
 }

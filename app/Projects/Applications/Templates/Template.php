@@ -2,7 +2,6 @@
 
 namespace Servidor\Projects\Applications\Templates;
 
-use Illuminate\Contracts\View\View;
 use Servidor\Projects\Application;
 
 interface Template
@@ -15,7 +14,7 @@ interface Template
 
     public function getLogs(): array;
 
-    public function nginxTemplate(): View;
+    public function nginxTemplate(): string;
 
     public function publicDir(): string;
 
