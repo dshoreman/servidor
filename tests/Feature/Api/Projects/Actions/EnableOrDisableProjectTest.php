@@ -4,6 +4,7 @@ namespace Tests\Feature\Api\Projects\Actions;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Servidor\Projects\Actions\EnableOrDisableProject;
+use Servidor\Projects\Actions\MissingProjectData;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
 use Tests\TestCase;
@@ -50,7 +51,7 @@ class EnableOrDisableProjectTest extends TestCase
     /** @test */
     public function toggling_project_with_missing_domain_throws_exception(): void
     {
-        $this->expectExceptionMessage('Project missing domain name');
+        $this->expectExceptionObject(new MissingProjectData('domain name'));
 
         $project = Project::create(['name' => 'nodomain', 'is_enabled' => true]);
         $project->applications()->save($app = new Application([

@@ -12,6 +12,8 @@ interface Template
 
     public function nginxTemplate(): string;
 
+    public function checkNginxData(): void;
+
     public function publicDir(): string;
 
     public function pullCode(): bool;

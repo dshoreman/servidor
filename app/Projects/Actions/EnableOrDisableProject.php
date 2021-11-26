@@ -2,7 +2,6 @@
 
 namespace Servidor\Projects\Actions;
 
-use Exception;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
 use Servidor\Projects\Redirect;
@@ -19,9 +18,7 @@ class EnableOrDisableProject
     public function __construct(
         private Application|Redirect $appOrRedirect,
     ) {
-        if (!$appOrRedirect->domain_name) {
-            throw new Exception('Project missing domain name');
-        }
+        $appOrRedirect->checkNginxData();
 
         $this->configFile = $appOrRedirect->domain_name . '.conf';
 

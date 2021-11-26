@@ -86,6 +86,11 @@ class Application extends Model
         return $this->sourceRoot . $this->template()->publicDir();
     }
 
+    public function checkNginxData(): void
+    {
+        $this->template()->checkNginxData();
+    }
+
     public function getLogsAttribute(): array
     {
         return array_map(static fn (LogFile $log): string => $log->getTitle(), $this->logs());

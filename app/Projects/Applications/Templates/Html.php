@@ -3,14 +3,22 @@
 namespace Servidor\Projects\Applications\Templates;
 
 use Servidor\Projects\Application;
+use Servidor\Projects\RequiresNginxData;
 
 class Html implements Template
 {
+    use RequiresNginxData;
+
     protected Application $app;
 
     protected string $nginxTemplate = 'basic';
 
     protected string $publicDir = '';
+
+    protected array $requiredNginxData = [
+        'domain_name' => 'domain name',
+        'source_repository' => 'source repo',
+    ];
 
     protected bool $requiresUser = false;
 

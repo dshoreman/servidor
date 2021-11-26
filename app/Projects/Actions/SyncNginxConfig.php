@@ -15,6 +15,8 @@ class SyncNginxConfig
     public function __construct(
         private Application|Redirect $appOrRedirect,
     ) {
+        $appOrRedirect->checkNginxData();
+
         $this->configFile = $appOrRedirect->domain_name . '.conf';
     }
 

@@ -32,6 +32,8 @@ use Servidor\Projects\Redirects\ProjectRedirectSaved;
  */
 class Redirect extends Model
 {
+    use RequiresNginxData;
+
     protected $dispatchesEvents = [
         'saved' => ProjectRedirectSaved::class,
     ];
@@ -40,6 +42,11 @@ class Redirect extends Model
         'domain_name',
         'type',
         'target',
+    ];
+
+    protected array $requiredNginxData = [
+        'domain_name' => 'domain name',
+        'target' => 'target',
     ];
 
     protected $table = 'project_redirects';
