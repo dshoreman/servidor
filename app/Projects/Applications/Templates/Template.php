@@ -6,10 +6,6 @@ use Servidor\Projects\Application;
 
 interface Template
 {
-    public function disable(): void;
-
-    public function enable(): void;
-
     public function getApp(): Application;
 
     public function getLogs(): array;

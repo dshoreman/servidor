@@ -2,6 +2,7 @@
 
 namespace Servidor\Projects;
 
+use Servidor\Projects\Actions\EnableOrDisableProject;
 use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
 
@@ -27,7 +28,7 @@ class ToggleProjectVisibility
             return;
         }
 
-        $project->is_enabled ? $appOrRedirect->enable() : $appOrRedirect->disable();
+        (new EnableOrDisableProject($appOrRedirect))->execute();
 
         ProjectProgress::dispatch($project, $step->complete());
     }

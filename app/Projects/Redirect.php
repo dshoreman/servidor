@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
-use Servidor\Traits\TogglesNginxConfigs;
 
 /**
  * A Redirect is similar to a Project's Application, but it has no files
@@ -31,10 +30,8 @@ use Servidor\Traits\TogglesNginxConfigs;
  * @method static Builder|Redirect whereType($value)
  * @method static Builder|Redirect whereUpdatedAt($value)
  */
-class Redirect extends Model implements Domainable
+class Redirect extends Model
 {
-    use TogglesNginxConfigs;
-
     protected $dispatchesEvents = [
         'saved' => ProjectRedirectSaved::class,
     ];
@@ -46,11 +43,6 @@ class Redirect extends Model implements Domainable
     ];
 
     protected $table = 'project_redirects';
-
-    public function domainName(): string
-    {
-        return (string) $this->attributes['domain_name'];
-    }
 
     public function project(): BelongsTo
     {

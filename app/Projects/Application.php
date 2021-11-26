@@ -81,16 +81,6 @@ class Application extends Model
     /** @var string */
     private $templatesNamespace = 'Servidor\Projects\Applications\Templates\\';
 
-    public function disable(): void
-    {
-        $this->template()->disable();
-    }
-
-    public function enable(): void
-    {
-        $this->template()->enable();
-    }
-
     public function getDocumentRootAttribute(): string
     {
         return $this->sourceRoot . $this->template()->publicDir();
