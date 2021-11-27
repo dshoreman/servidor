@@ -3,6 +3,7 @@
 namespace Tests\Unit\Projects\Applications\Templates;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Servidor\Projects\Actions\SyncAppFiles;
 use Servidor\Projects\Application;
 use Servidor\Projects\Project;
 use Tests\TestCase;
@@ -46,7 +47,7 @@ class HtmlTest extends TestCase
             'source_branch' => 'develop',
             'template' => 'php',
         ]));
-        $app->template()->pullCode();
+        (new SyncAppFiles($app))->execute();
 
         $this->assertDirectoryExists($path);
     }
@@ -65,7 +66,7 @@ class HtmlTest extends TestCase
             'source_branch' => 'develop',
             'template' => 'html',
         ]));
-        $app->template()->pullCode();
+        (new SyncAppFiles($app))->execute();
 
         $stat = system("stat -c '%a' \"{$path}\"");
 

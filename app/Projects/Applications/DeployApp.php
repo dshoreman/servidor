@@ -2,6 +2,7 @@
 
 namespace Servidor\Projects\Applications;
 
+use Servidor\Projects\Actions\SyncAppFiles;
 use Servidor\Projects\ProgressStep;
 use Servidor\Projects\ProjectProgress;
 
@@ -17,7 +18,7 @@ class DeployApp
 
         if ($app->source_repository && $app->domain_name) {
             if ($project->is_enabled) {
-                $app->template()->pullCode();
+                (new SyncAppFiles($app))->execute();
 
                 ProjectProgress::dispatch($project, $step->complete());
 

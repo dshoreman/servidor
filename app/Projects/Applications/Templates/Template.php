@@ -16,7 +16,5 @@ interface Template
 
     public function publicDir(): string;
 
-    public function pullCode(): bool;
-
     public function requiresUser(): bool;
 }
