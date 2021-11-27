@@ -15,6 +15,8 @@ class SyncAppFiles
     public function __construct(
         public Application $app,
     ) {
+        $app->checkNginxData();
+
         $this->sourcePath = $app->source_root;
     }
 
