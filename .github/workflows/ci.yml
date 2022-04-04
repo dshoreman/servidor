@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: ${{ matrix.nodejs }}
       - name: Cache node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.1
         with:
           path: ~/.npm
           key: npm-node${{ matrix.nodejs }}-${{ hashFiles('**/package-lock.json') }}
@@ -68,7 +68,7 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
       - name: Validate composer.json and lockfile
         run: composer validate
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3.0.1
         id: composer-test-cache
         with:
           path: ~/.cache/composer/files
