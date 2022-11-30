@@ -61,14 +61,15 @@ class StatsBarTest extends TestCase
         $this->assertSame('Linux', $data['os']['name']);
     }
 
-    /**
-     * @test
-     * @group broken-travis
-     * */
+    /** @test */
     public function free_memory_matches_total_minus_used(): void
     {
         $data = StatsBar::stats()['ram'];
+        $diff = $data['total'] - $data['used'];
+        $free = $data['free'];
+        $slop = 1;
 
-        $this->assertEquals($data['total'] - $data['used'], $data['free']);
+        $this->assertGreaterThanOrEqual($free - $slop, $diff);
+        $this->assertLessThanOrEqual($free + $slop, $diff);
     }
 }
