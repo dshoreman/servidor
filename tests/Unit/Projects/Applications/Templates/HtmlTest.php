@@ -42,6 +42,7 @@ class HtmlTest extends TestCase
 
         $project = Project::create(['name' => 'pull sans root']);
         $project->applications()->save($app = new Application([
+            'domain_name' => 'pullsansroot.com',
             'source_repository' => 'dshoreman/servidor-test-site',
             'source_provider' => 'github',
             'source_branch' => 'develop',

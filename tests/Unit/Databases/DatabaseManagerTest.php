@@ -93,7 +93,7 @@ class DatabaseManagerTest extends TestCase
         $this->assertInstanceOf(TableCollection::class, $database->tables);
 
         $sorted = $database->tables->toArray();
-        usort($sorted, fn($a, $b) => strcmp($a['name'], $b['name']));
+        usort($sorted, static fn ($a, $b) => strcmp($a['name'], $b['name']));
 
         $this->assertInstanceOf(TableDTO::class, $database->tables->first());
         $this->assertEquals('failed_jobs', $sorted[0]['name']);
