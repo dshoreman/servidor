@@ -43,7 +43,7 @@ class ListDatabasesTest extends TestCase
         $result = $json[array_search('information_schema', array_column($json, 'name'), true)];
 
         $this->assertIsInt($result['tableCount']);
-        $this->assertContains($result['charset'], ['utf8', 'utf8mb4']);
-        $this->assertContains($result['collation'], ['utf8_general_ci', 'utf8mb4_0900_ai_ci']);
+        $this->assertContains($result['charset'], ['utf8', 'utf8mb3', 'utf8mb4']);
+        $this->assertContains($result['collation'], ['utf8_general_ci', 'utf8mb3_general_ci', 'utf8mb4_0900_ai_ci']);
     }
 }
