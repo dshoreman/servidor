@@ -2,14 +2,11 @@
 
 namespace Servidor\Projects;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
-use Servidor\Traits\TogglesNginxConfigs;
 
 /**
  * A Redirect is similar to a Project's Application, but it has no files
@@ -33,9 +30,9 @@ use Servidor\Traits\TogglesNginxConfigs;
  * @method static Builder|Redirect whereType($value)
  * @method static Builder|Redirect whereUpdatedAt($value)
  */
-class Redirect extends Model implements Domainable
+class Redirect extends Model
 {
-    use TogglesNginxConfigs;
+    use RequiresNginxData;
 
     protected $dispatchesEvents = [
         'saved' => ProjectRedirectSaved::class,
@@ -47,12 +44,12 @@ class Redirect extends Model implements Domainable
         'target',
     ];
 
-    protected $table = 'project_redirects';
+    protected array $requiredNginxData = [
+        'domain_name' => 'domain name',
+        'target' => 'target',
+    ];
 
-    public function domainName(): string
-    {
-        return (string) $this->attributes['domain_name'];
-    }
+    protected $table = 'project_redirects';
 
     public function project(): BelongsTo
     {
@@ -62,17 +59,5 @@ class Redirect extends Model implements Domainable
     public function getType(): string
     {
         return 'redirect';
-    }
-
-    public function writeNginxConfig(): void
-    {
-        $view = view('projects.app-templates.redirect');
-        \assert($view instanceof View);
-
-        $src = "vhosts/{$this->domain_name}.conf";
-        $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
-
-        Storage::put($src, (string) $view->with('redirect', $this));
-        exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
     }
 }
