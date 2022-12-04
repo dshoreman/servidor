@@ -26,7 +26,7 @@
             <sui-segment v-else-if="step == 'domain'">
                 <h3 is="sui-header">Set the main entry point for your app</h3>
                 <domain-form :errors="errors" v-model="defaultApp.domain"
-                    @next="nextStep('domain')" @cancel="cancel" />
+                    @next="setDomain" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'redirect'">
@@ -216,6 +216,15 @@ export default {
             this.extraData = { repoUri };
 
             this.nextStep('source');
+        },
+        setDomain(values) {
+            if ('archive' === this.defaultApp.template) {
+                this.defaultRedirect = { ...this.defaultRedirect, ...values };
+            } else {
+                this.defaultApp = { ...this.defaultApp, ...values };
+            }
+
+            this.nextStep('domain');
         },
         setRedirect(redirect) {
             this.defaultRedirect = { ...this.defaultRedirect, ...redirect };

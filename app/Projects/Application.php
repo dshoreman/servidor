@@ -71,6 +71,7 @@ class Application extends Model
     protected $fillable = [
         'template',
         'domain_name',
+        'include_www',
         'source_provider',
         'source_repository',
         'source_branch',
