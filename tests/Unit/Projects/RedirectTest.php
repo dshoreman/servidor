@@ -66,7 +66,7 @@ class RedirectTest extends TestCase
 
         $this->assertFileExists($config = storage_path('app/vhosts/a-redir.example.conf'));
         $this->assertStringContainsString('server_name a-redir.example;', $txt = file_get_contents($config));
-        $this->assertStringContainsString('return 301 b-redir.example;', $txt = file_get_contents($config));
+        $this->assertStringContainsString('return 301 b-redir.example$request_uri;', $txt = file_get_contents($config));
     }
 
     public static function tearDownAfterClass(): void
