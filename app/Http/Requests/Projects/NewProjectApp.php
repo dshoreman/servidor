@@ -23,6 +23,7 @@ class NewProjectApp extends FormRequest
         return [
             'template' => 'required|in:html,php,laravel',
             'domain' => [new Domain()],
+            'includeWww' => 'boolean',
             'provider' => 'required|in:github,bitbucket',
             'repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
             'branch' => 'nullable|string',
@@ -36,6 +37,7 @@ class NewProjectApp extends FormRequest
         return [
             'template' => $data['template'],
             'domain_name' => $data['domain'],
+            'include_www' => $data['includeWww'] ?? false,
             'source_provider' => $data['provider'],
             'source_repository' => $data['repository'],
             'source_branch' => $data['branch'] ?? '',

@@ -40,6 +40,7 @@ class Redirect extends Model
 
     protected $fillable = [
         'domain_name',
+        'include_www',
         'type',
         'target',
     ];
