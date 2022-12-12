@@ -44,6 +44,11 @@
             </sui-form-fields>
         </sui-form-field>
 
+        <sui-form-field v-show="target">
+            <label>Rule Preview</label>
+            <code>{{ realTarget }}</code>
+        </sui-form-field>
+
         <step-buttons @cancel="$emit('cancel')" />
 
     </sui-form>
@@ -70,9 +75,8 @@ export default {
             type: 301,
         };
     },
-    methods: {
-        save() {
-            const { domain, type } = this;
+    computed: {
+        realTarget() {
             let { date, target, time } = this;
 
             date = date.replaceAll('-', '');
@@ -86,7 +90,14 @@ export default {
                 target += '$request_uri';
             }
 
-            this.$emit('next', { domain, target, type });
+            return target;
+        },
+    },
+    methods: {
+        save() {
+            const { domain, realTarget, type } = this;
+
+            this.$emit('next', { domain, target: realTarget, type });
         },
     },
 };

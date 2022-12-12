@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] The `www.` subdomain can now be auto-included in `server_name`
 * [projects] Fully custom target domains can now be set when creating redirects
 * [projects] Redirect targets can now have `$request_uri` appended during creation
+* [projects] When creating redirects, there is now a preview of the generated rule
 
 ### Fixed
 * [installer] Fixed code coverage being unavailable in Vagrant
