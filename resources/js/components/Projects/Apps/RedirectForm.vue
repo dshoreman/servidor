@@ -28,6 +28,10 @@
             </sui-label>
         </sui-form-field>
 
+        <sui-form-field>
+            <sui-checkbox toggle v-model="appendRequest" label="Append source request URI" />
+        </sui-form-field>
+
         <sui-form-field v-show="'archive' === ruleTpl">
             <label>Archive Date</label>
             <sui-form-fields>
@@ -62,6 +66,7 @@ export default {
             time: '',
             target: '',
             ruleTpl: 'custom',
+            appendRequest: false,
             type: 301,
         };
     },
@@ -75,6 +80,10 @@ export default {
 
             if ('archive' === this.ruleTpl) {
                 target = `https://web.archive.org/web/${date}${time}/${target}`;
+            }
+
+            if (this.appendRequest) {
+                target += '$request_uri';
             }
 
             this.$emit('next', { domain, target, type });
