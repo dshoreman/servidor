@@ -71,7 +71,7 @@ install_php_extensions() {
     extensions=()
 
     for ext in "$@"; do
-        extensions+=("php8.0-${ext}" "php8.1-${ext}")
+        extensions+=("php8.1-${ext}" "php8.2-${ext}")
     done
 
     install_pkg "${extensions[@]}"

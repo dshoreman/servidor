@@ -43,12 +43,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-18.04, ubuntu-20.04]
-        php: ['8.0']
+        php: ['8.1']
         experimental: [false]
         composer-flags: ['--prefer-dist']
         phpstan-args: ['']
         include:
-          - php: '8.1'
+          - php: '8.2'
             os: ubuntu-latest
             experimental: true
             composer-flags: '--prefer-dist --ignore-platform-req=php'
@@ -94,12 +94,12 @@ jobs:
       - name: Check for magic numbers
         run: make phpmnd
       - name: Gather PHP insights
-        if: ${{ '8.0-ubuntu-20.04' == format('{0}-{1}', matrix.php, matrix.os) }}
+        if: ${{ '8.1-ubuntu-20.04' == format('{0}-{1}', matrix.php, matrix.os) }}
         run: make insights INSIGHT_ARGS="--ansi --format=github-action --disable-security-check"
       - name: Run static analysis checks
         run: |
           echo "::group::$ vendor/bin/phpstan analyze"
-          php -v | grep '8.1' || make phpstan STAN_ARGS=${{ matrix.phpstan-args }}
+          php -v | grep '8.2' || make phpstan STAN_ARGS=${{ matrix.phpstan-args }}
           echo -e "::endgroup::\n::group::$ vendor/bin/phan"
           make phan
           echo -e "::endgroup::\n::group::$ vendor/bin/psalm"

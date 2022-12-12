@@ -4,7 +4,7 @@
     "license": "LGPL-2.1-or-later",
     "type": "project",
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "doctrine/dbal": "^3.5.1",
         "fruitcake/laravel-cors": "^2.0.4",
         "laravel/framework": "^8.70.1",

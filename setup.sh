@@ -331,7 +331,7 @@ install_composer() {
 install_php_extensions() {
     extensions=()
     for ext in "$@"; do
-        extensions+=("php8.0-${ext}" "php8.1-${ext}")
+        extensions+=("php8.1-${ext}" "php8.2-${ext}")
     done
     install_pkg "${extensions[@]}"
 }
@@ -360,7 +360,7 @@ server {
         try_files \$uri \$uri/ /index.php?\$query_string;
     }
     location ~ \.php\$ {
-        fastcgi_pass unix:/run/php/php8.0-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         include fastcgi_params;
