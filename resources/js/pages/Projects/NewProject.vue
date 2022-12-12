@@ -30,7 +30,7 @@
             </sui-segment>
 
             <sui-segment v-else-if="step == 'redirect'">
-                <h3 is="sui-header">Configure the preferred target archive on WayBack Machine</h3>
+                <h3 is="sui-header">Time to set the target!</h3>
                 <redirect-form :errors="errors" :domain="defaultApp.domain"
                     @next="setRedirect" @cancel="cancel" />
             </sui-segment>
