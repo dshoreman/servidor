@@ -3,10 +3,6 @@
     "description": "A tool to aid in server management.",
     "license": "LGPL-2.1-or-later",
     "type": "project",
-    "repositories": [{
-        "type": "vcs",
-        "url": "https://github.com/dshoreman/phpmnd"
-    }],
     "require": {
         "php": "^8.0",
         "doctrine/dbal": "^3.1.4",
@@ -33,7 +29,7 @@
         "phpstan/phpstan": "^0.12.99",
         "phpstan/phpstan-mockery": "^0.12.14",
         "phpunit/phpunit": "^9.5.10",
-        "povils/phpmnd": "^2.4-dev",
+        "povils/phpmnd": "^3.0.1",
         "psalm/plugin-laravel": "^1.5.1",
         "spatie/macroable": "^2.0.0",
         "squizlabs/php_codesniffer": "^3.6.1",
