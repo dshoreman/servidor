@@ -1,31 +1,15 @@
 <template>
     <sui-form @submit.prevent="save()">
 
-        <sui-form-field :error="'target' in errors">
-
-            <label>Archived Domain</label>
-
-            <sui-input v-model="target" placeholder="example.com" required />
-
-            <sui-label basic color="red" pointing v-if="'target' in errors">
-                {{ errors['target'][0] }}
-            </sui-label>
-
-        </sui-form-field>
-
         <sui-form-fields>
-            <sui-form-field :width="10">
-                <label>Archive Date</label>
-                <sui-form-fields>
-                    <sui-form-field :width="9">
-                        <sui-input type="date" v-model="date" />
-                    </sui-form-field>
-                    <sui-form-field :width="7">
-                        <sui-input type="time" v-model="time" step="1" />
-                    </sui-form-field>
-                </sui-form-fields>
+            <sui-form-field :width="9">
+                <label>Rule Template</label>
+                <sui-dropdown selection v-model="ruleTpl"
+                    :options="[{ text: 'Archive (via WayBack Machine)', value: 'archive' },
+                               { text: 'Custom', value: 'custom' }]" />
             </sui-form-field>
-            <sui-form-field :width="6" :error="'type' in errors">
+
+            <sui-form-field :width="7" :error="'type' in errors">
                 <label>Redirect Type</label>
                 <sui-dropdown :options="[{ text: 'Temporary', value: 302 },
                                          { text: 'Permanent', value: 301 }]"
@@ -35,6 +19,26 @@
                 </sui-label>
             </sui-form-field>
         </sui-form-fields>
+
+        <sui-form-field :error="'target' in errors">
+            <label>{{ 'archive' === ruleTpl ? 'Archived' : 'Target' }} Domain</label>
+            <sui-input v-model="target" placeholder="example.com" required />
+            <sui-label basic color="red" pointing v-if="'target' in errors">
+                {{ errors['target'][0] }}
+            </sui-label>
+        </sui-form-field>
+
+        <sui-form-field v-show="'archive' === ruleTpl">
+            <label>Archive Date</label>
+            <sui-form-fields>
+                <sui-form-field :width="9">
+                    <sui-input type="date" v-model="date" />
+                </sui-form-field>
+                <sui-form-field :width="7">
+                    <sui-input type="time" v-model="time" step="1" />
+                </sui-form-field>
+            </sui-form-fields>
+        </sui-form-field>
 
         <step-buttons @cancel="$emit('cancel')" />
 
@@ -57,6 +61,7 @@ export default {
             date: '',
             time: '',
             target: '',
+            ruleTpl: 'custom',
             type: 301,
         };
     },
@@ -67,7 +72,10 @@ export default {
 
             date = date.replaceAll('-', '');
             time = time.replaceAll(':', '');
-            target = `https://web.archive.org/web/${date}${time}/${target}`;
+
+            if ('archive' === this.ruleTpl) {
+                target = `https://web.archive.org/web/${date}${time}/${target}`;
+            }
 
             this.$emit('next', { domain, target, type });
         },

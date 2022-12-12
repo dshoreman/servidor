@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * [installer] Both PHP 8.0 and 8.1 are now installed to allow local testing in either
 * [projects] The `www.` subdomain can now be auto-included in `server_name`
+* [projects] Fully custom target domains can now be set when creating redirects
 
 ### Fixed
 * [installer] Fixed code coverage being unavailable in Vagrant
