@@ -5,5 +5,5 @@ server {
     server_name {{ $redirect->domain_name }};
 @endif
 
-    return {{ $redirect->type }} {{ $redirect->target }}$request_uri;
+    return {{ $redirect->type }} {{ $redirect->target }};
 }
