@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Fixed
+* [auth] Added port to `APP_URL` when used as stateful domain to fix CSRF Token Mismatch
 
 
 ## [0.15.0] - 2022-12-27
