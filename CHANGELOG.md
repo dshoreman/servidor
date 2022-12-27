@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.15.1] - 2022-12-27
+### Fixed
+* [auth] Added port to `APP_URL` when used as stateful domain to fix CSRF Token Mismatch
+* [installer] Build static assets later to avoid pusher-related console errors
+
+
 ## [0.15.0] - 2022-12-27
 ### Added
 * [installer] Both PHP 8.0 and 8.1 are now installed to allow local testing in either
@@ -271,7 +277,8 @@ This is the first version with a "true" GitHub Release. For older releases, chec
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.15.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.15.1...develop
+[0.15.1]: https://github.com/dshoreman/servidor/compare/v0.15.0...v0.15.1
 [0.15.0]: https://github.com/dshoreman/servidor/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/dshoreman/servidor/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/dshoreman/servidor/compare/v0.12.0...v0.13.0
