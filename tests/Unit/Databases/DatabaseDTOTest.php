@@ -3,21 +3,22 @@
 namespace Tests\Unit\Databases;
 
 use Mockery;
-use Servidor\Databases\DatabaseData;
+use Servidor\Databases\DatabaseDTO;
 use Servidor\Databases\TableCollection;
+use Servidor\Databases\TableDTO;
 use Servidor\Http\Requests\Databases\NewDatabase;
 use Tests\TestCase;
 
-class DatabaseDataTest extends TestCase
+class DatabaseDTOTest extends TestCase
 {
     public function testFromRequest(): void
     {
         $request = Mockery::mock(NewDatabase::class);
         $request->shouldReceive('validated')->andReturn(['database' => 'validated_db_name']);
 
-        $database = DatabaseData::fromRequest($request);
+        $database = DatabaseDTO::fromRequest($request);
 
-        $this->assertInstanceOf(DatabaseData::class, $database);
+        $this->assertInstanceOf(DatabaseDTO::class, $database);
 
         $this->assertObjectHasAttribute('name', $database);
         $this->assertObjectNotHasAttribute('database', $database);
@@ -29,7 +30,7 @@ class DatabaseDataTest extends TestCase
 
     public function testToArray(): void
     {
-        $database = new DatabaseData('name_only');
+        $database = new DatabaseDTO(name: 'name_only');
 
         $array = $database->toArray();
 
@@ -48,19 +49,24 @@ class DatabaseDataTest extends TestCase
 
         $this->assertIsArray($array['tables']);
         $this->assertSame([], $array['tables']);
+        $this->assertSame($database->toArray()['tables'], $database->tables->toArray());
     }
 
     public function testWithTables(): void
     {
-        $database = (new DatabaseData('collected_tables'))
-            ->withTables(new TableCollection([[], []]))
+        $database = (new DatabaseDTO(name: 'collected_tables'))
+            ->withTables([['foo'], ['bar']])
         ;
 
-        $this->assertInstanceOf(DatabaseData::class, $database);
+        $this->assertInstanceOf(DatabaseDTO::class, $database);
         $this->assertObjectHasAttribute('tables', $database);
         $this->assertArrayHasKey('tables', $database->toArray());
+        $this->assertSame($database->toArray()['tables'], $database->tables->toArray());
 
         $this->assertInstanceOf(TableCollection::class, $database->tables);
-        $this->assertSame([[], []], $database->tables->toArray());
+        $this->assertSame(array_map(
+            static fn (string $table): array => (new TableDTO(name: $table))->toArray(),
+            ['foo', 'bar'],
+        ), $database->tables->toArray());
     }
 }

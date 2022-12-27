@@ -36,7 +36,7 @@ class DatabaseManager
         );
     }
 
-    public function create(DatabaseData $database): DatabaseData
+    public function create(DatabaseDTO $database): DatabaseDTO
     {
         try {
             $this->manager->createDatabase($database->name);
@@ -62,26 +62,22 @@ class DatabaseManager
         $sql = self::databasesSql();
 
         foreach ($this->connection->fetchAllAssociativeIndexed($sql) as $name => $result) {
-            $databases[$name] = new DatabaseData(
-                (string) $name,
-                null,
-                (int) $result['tableCount'],
-                (string) $result['charset'],
-                (string) $result['collation'],
+            $databases[$name] = new DatabaseDTO(
+                name: (string) $name,
+                charset: (string) $result['charset'],
+                collation: (string) $result['collation'],
+                tableCount: (int) $result['tableCount'],
             );
         }
 
         return new DatabaseCollection($databases);
     }
 
-    public function tables(DatabaseData $database): TableCollection
+    public function databaseWithTables(DatabaseDTO|string $db): DatabaseDTO
     {
-        $results = $this->connection->fetchAllAssociative(
-            self::tablesSql(),
-            ['db' => $database->name],
-        );
+        $db = $db instanceof DatabaseDTO ? $db : new DatabaseDTO($db);
 
-        return new TableCollection(array_map(static function (array $result): TableData {
+        return $db->withTables(array_map(static function (array $result): TableDTO {
             /**
              * @var array{ TABLE_NAME: string,
              *             TABLE_COLLATION: string,
@@ -91,8 +87,11 @@ class DatabaseManager
              *             } $result
              */
 
-            return TableData::fromInfoSchema($result);
-        }, $results));
+            return TableDTO::fromInfoSchema($result);
+        }, $this->connection->fetchAllAssociative(
+            self::tablesSql(),
+            ['db' => $db->name],
+        )));
     }
 
     public static function databasesSql(): string

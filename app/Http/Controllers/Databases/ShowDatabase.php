@@ -5,7 +5,7 @@ namespace Servidor\Http\Controllers\Databases;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
-use Servidor\Databases\DatabaseData;
+use Servidor\Databases\DatabaseDTO;
 use Servidor\Databases\DatabaseManager;
 
 class ShowDatabase
@@ -15,9 +15,6 @@ class ShowDatabase
 
     public function __invoke(DatabaseManager $manager, string $name): JsonResponse
     {
-        $database = new DatabaseData($name);
-        $tables = $manager->tables($database);
-
-        return new JsonResponse($database->withTables($tables));
+        return new JsonResponse($manager->databaseWithTables(new DatabaseDTO(name: $name)));
     }
 }

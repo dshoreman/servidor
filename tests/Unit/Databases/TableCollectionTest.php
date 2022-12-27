@@ -4,28 +4,28 @@ namespace Tests\Unit\Databases;
 
 use PHPUnit\Framework\TestCase;
 use Servidor\Databases\TableCollection;
-use Servidor\Databases\TableData;
+use Servidor\Databases\TableDTO;
 
 class TableCollectionTest extends TestCase
 {
     public function testGetCanReturnTableByName(): void
     {
         $collection = (new TableCollection([
-            new TableData('foo'),
-            new TableData('bar'),
-            new TableData('baz'),
+            new TableDTO('foo'),
+            new TableDTO('bar'),
+            new TableDTO('baz'),
         ]))->keyBy('name');
 
         $table = $collection->get('bar');
 
-        $this->assertInstanceOf(TableData::class, $table);
+        $this->assertInstanceOf(TableDTO::class, $table);
         $this->assertEquals('bar', $table->name);
     }
 
     public function testGetReturnsDefaultWhenTableIsNotFound(): void
     {
         $collection = new TableCollection();
-        $default = new TableData('NOMATCH');
+        $default = new TableDTO('NOMATCH');
 
         $this->assertInstanceOf(TableCollection::class, $collection);
         $this->assertEquals('NOMATCH', $collection->get('c', $default)->name);

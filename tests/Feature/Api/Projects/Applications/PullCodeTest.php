@@ -33,7 +33,11 @@ class PullCodeTest extends TestCase
         $response->assertJsonCount(1);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
         $response->assertJson(['message' => 'Unauthenticated.']);
-        $this->assertArraySubset($project->toArray(), Project::with('applications')->firstOrFail()->toArray());
+
+        self::assertArraySubset(
+            $project->toArray(),
+            Project::with(['applications', 'redirects'])->firstOrFail()->toArray(),
+        );
     }
 
     /** @test */
@@ -41,6 +45,7 @@ class PullCodeTest extends TestCase
     {
         $project = Project::create(['name' => 'Pullable Project']);
         $project->applications()->save($app = new Application([
+            'domain_name' => 'apppull.com',
             'source_provider' => 'github',
             'source_repository' => self::TEST_REPO,
             'template' => 'html',
@@ -63,6 +68,7 @@ class PullCodeTest extends TestCase
         // we need to recreate the project here as db is refreshed in between.
         $project = Project::create(['name' => 'Pullable Project']);
         $project->applications()->save($app = new Application([
+            'domain_name' => 'checkout.test',
             'source_provider' => 'github',
             'source_repository' => self::TEST_REPO,
             'template' => 'html',
@@ -85,6 +91,7 @@ class PullCodeTest extends TestCase
         $this->assertDirectoryDoesNotExist($root = '/var/www/initially-appless');
         $project = Project::create(['name' => 'Initially Appless']);
         $project->applications()->save($app = new Application([
+            'domain_name' => 'srcmk.test',
             'source_provider' => 'github',
             'source_repository' => self::TEST_REPO,
             'template' => 'html',

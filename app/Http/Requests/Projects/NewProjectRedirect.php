@@ -11,6 +11,7 @@ class NewProjectRedirect extends FormRequest
     {
         return [
             'domain' => ['required', new Domain()],
+            'includeWww' => 'boolean',
             'target' => 'required|string',
             'type' => 'required|integer',
         ];
@@ -20,8 +21,9 @@ class NewProjectRedirect extends FormRequest
     {
         $data = parent::validated();
 
-        $data['domain_name'] = (string) $data['domain'];
-        unset($data['domain']);
+        $data['domain_name'] = (string) ($data['domain'] ?? '');
+        $data['include_www'] = (bool) ($data['includeWww'] ?? false);
+        unset($data['domain'], $data['includeWww']);
 
         return $data;
     }

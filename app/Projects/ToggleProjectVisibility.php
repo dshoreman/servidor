@@ -2,30 +2,30 @@
 
 namespace Servidor\Projects;
 
+use Servidor\Projects\Actions\EnableOrDisableProject;
+use Servidor\Projects\Actions\MissingProjectData;
 use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
 
 class ToggleProjectVisibility
 {
-    public function handle(ProjectAppSaved|ProjectRedirectSaved $event): void
+    public function handle(ProjectSaved|ProjectAppSaved|ProjectRedirectSaved $event): void
     {
         $project = $event->getProject();
         $appOrRedirect = $event->getAppOrRedirect();
-        $step = $this->addStep($project, $appOrRedirect);
 
-        // This is required because TogglesNginxConfigs::configFilename()
-        // relies on the app's domain being set as configs are per-domain.
-        //
-        // TODO: If we switch to per-project configs, this can be removed.
-        if (!$appOrRedirect->domain_name) {
-            ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_MISSING_DATA));
-
+        if (null === $appOrRedirect) {
             return;
         }
+        $step = $this->addStep($project, $appOrRedirect);
 
-        $project->is_enabled ? $appOrRedirect->enable() : $appOrRedirect->disable();
+        try {
+            (new EnableOrDisableProject($appOrRedirect))->execute();
 
-        ProjectProgress::dispatch($project, $step->complete());
+            ProjectProgress::dispatch($project, $step->complete());
+        } catch (MissingProjectData $_) {
+            ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_MISSING_DATA));
+        }
     }
 
     private function addStep(

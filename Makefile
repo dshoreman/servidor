@@ -96,18 +96,23 @@ laravel-diff:
 	@echo "Done! Opening diff tool..."
 	@meld /tmp/laradiff .
 
-test:
-	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg -qrr vendor/bin/phpunit -c build/phpunit/config.xml"
+test: test-8.0 test-8.1
+
+test-8.0:
+	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg8.0 -qrr vendor/bin/phpunit -c build/phpunit/config.xml $(test)"
+
+test-8.1:
+	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg8.1 -qrr vendor/bin/phpunit -c build/phpunit/config.xml $(test)"
 
 test-for-ci:
 	vendor/bin/phpunit -c build/phpunit/config.xml --coverage-clover=coverage.xml --exclude-group "broken-travis"
 
 coverage:
-	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
+	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php8.0 vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
 	@echo
 
 coverage-html:
-	vagrant ssh -c "cd /var/servidor && sudo -u www-data php vendor/bin/phpunit -c build/phpunit/config.xml --coverage-html tests/reports/coverage/latest"
+	vagrant ssh -c "cd /var/servidor && sudo -u www-data php8.0 vendor/bin/phpunit -c build/phpunit/config.xml --coverage-html tests/reports/coverage/latest"
 	@mv tests/reports/coverage/latest tests/reports/coverage/$(now)/ && xdg-open ./tests/reports/coverage/$(now)/index.html
 	@echo
 

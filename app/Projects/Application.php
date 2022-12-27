@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Servidor\Projects\Applications\LogFile;
 use Servidor\Projects\Applications\ProjectAppSaved;
@@ -72,6 +71,7 @@ class Application extends Model
     protected $fillable = [
         'template',
         'domain_name',
+        'include_www',
         'source_provider',
         'source_repository',
         'source_branch',
@@ -82,19 +82,14 @@ class Application extends Model
     /** @var string */
     private $templatesNamespace = 'Servidor\Projects\Applications\Templates\\';
 
-    public function disable(): void
-    {
-        $this->template()->disable();
-    }
-
-    public function enable(): void
-    {
-        $this->template()->enable();
-    }
-
     public function getDocumentRootAttribute(): string
     {
         return $this->sourceRoot . $this->template()->publicDir();
+    }
+
+    public function checkNginxData(): void
+    {
+        $this->template()->checkNginxData();
     }
 
     public function getLogsAttribute(): array
@@ -184,16 +179,5 @@ class Application extends Model
             default:
                 throw new Exception("Invalid template '{$template}'.");
         }
-    }
-
-    public function writeNginxConfig(): void
-    {
-        $view = $this->template()->nginxTemplate();
-
-        $src = "vhosts/{$this->domain_name}.conf";
-        $dst = "/etc/nginx/sites-available/{$this->domain_name}.conf";
-
-        Storage::put($src, $view->with('app', $this)->render());
-        exec('sudo cp "' . storage_path('app/' . $src) . '" "' . $dst . '"');
     }
 }

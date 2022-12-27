@@ -18,9 +18,9 @@
 }, {
   "disabled": true,
   "errorKeys": ["type", "target"],
-  "icon": "archive",
+  "icon": "exchange",
   "name": "redirect",
-  "title": "Archived Copy"
+  "title": "Redirection"
 }, {
   "disabled": true,
   "errorKey": "name",

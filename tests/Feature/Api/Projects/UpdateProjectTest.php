@@ -5,6 +5,7 @@ namespace Tests\Feature\Api\Projects;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Servidor\Projects\Project;
 use Tests\RequiresAuth;
 use Tests\TestCase;
@@ -14,6 +15,13 @@ class UpdateProjectTest extends TestCase
     use ArraySubsetAsserts;
     use RefreshDatabase;
     use RequiresAuth;
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        exec('sudo rm -f /etc/nginx/sites-*/*-symlink.test.conf');
+    }
 
     /** @test */
     public function guest_cannot_update_project(): void
@@ -82,6 +90,53 @@ class UpdateProjectTest extends TestCase
             'name' => 'My Enabled Blog',
             'is_enabled' => true,
         ]);
+    }
+
+    /**
+     * @test
+     * @dataProvider symlinkProvider
+     */
+    public function updating_project_also_toggles_symlink(string $type, array $data): void
+    {
+        $name = $type . ' Symlink Test';
+        $domain = $type . '-symlink.test';
+
+        $this->assertFileDoesNotExist("/etc/nginx/sites-available/{$domain}.conf");
+        $this->assertFileDoesNotExist("/etc/nginx/sites-enabled/{$domain}.conf");
+        $project = new Project(['name' => $name, 'is_enabled' => true]);
+        $project->save();
+
+        $this->authed()->postJson(
+            '/api/projects/' . $project->id . '/' . Str::plural($type),
+            array_merge(['domain' => $domain], $data),
+        );
+        $this->assertFileExists("/etc/nginx/sites-available/{$domain}.conf");
+        $this->assertFileExists("/etc/nginx/sites-enabled/{$domain}.conf");
+
+        $response = $this->authed()->putJson("/api/projects/{$project->id}", [
+            'is_enabled' => false,
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment(['name' => $name, 'is_enabled' => false]);
+        $this->assertFileExists("/etc/nginx/sites-available/{$domain}.conf");
+        $this->assertFileDoesNotExist("/etc/nginx/sites-enabled/{$domain}.conf");
+    }
+
+    public function symlinkProvider(): array
+    {
+        return [
+            'Project with an application' => ['app', [
+                'template' => 'html',
+                'provider' => 'github',
+                'repository' => 'dshoreman/servidor-test-site',
+                'branch' => 'develop',
+            ]],
+            'Project with a redirect' => ['redirect', [
+                'target' => 'example.com',
+                'type' => 301,
+            ]],
+        ];
     }
 
     /** @test */

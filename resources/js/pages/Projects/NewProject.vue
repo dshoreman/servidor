@@ -26,11 +26,11 @@
             <sui-segment v-else-if="step == 'domain'">
                 <h3 is="sui-header">Set the main entry point for your app</h3>
                 <domain-form :errors="errors" v-model="defaultApp.domain"
-                    @next="nextStep('domain')" @cancel="cancel" />
+                    @next="setDomain" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'redirect'">
-                <h3 is="sui-header">Configure the preferred target archive on WayBack Machine</h3>
+                <h3 is="sui-header">Time to set the target!</h3>
                 <redirect-form :errors="errors" :domain="defaultApp.domain"
                     @next="setRedirect" @cancel="cancel" />
             </sui-segment>
@@ -216,6 +216,15 @@ export default {
             this.extraData = { repoUri };
 
             this.nextStep('source');
+        },
+        setDomain(values) {
+            if ('archive' === this.defaultApp.template) {
+                this.defaultRedirect = { ...this.defaultRedirect, ...values };
+            } else {
+                this.defaultApp = { ...this.defaultApp, ...values };
+            }
+
+            this.nextStep('domain');
         },
         setRedirect(redirect) {
             this.defaultRedirect = { ...this.defaultRedirect, ...redirect };
