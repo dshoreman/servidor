@@ -5,7 +5,7 @@ install_servidor() {
     prepare_home && clone_and_install
 
     info "Configuring application..."
-    configure_application
+    configure_application && build_assets
 
     log "Patching nginx config..."
     patch_nginx && systemctl reload nginx.service
@@ -36,14 +36,6 @@ clone_and_install() {
     log "Installing required Composer packages..."
     is_vagrant && c_dev="--prefer-source" || c_dev="--no-dev"
     sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress
-
-    log "Compiling static assets..."
-    if is_vagrant; then
-        info " Running in Vagrant, skipping asset build!"
-        info " Run \`npm install && npm run dev\` to build for development."
-    else
-        npm_install && sudo -Hu servidor npm run prod
-    fi
 }
 
 configure_application() {
@@ -64,6 +56,16 @@ configure_application() {
 
     log "Migrating the database..."
     sudo -Hu servidor php artisan migrate --seed
+}
+
+build_assets() {
+    log "Compiling static assets..."
+    if is_vagrant; then
+        info " Running in Vagrant, skipping asset build!"
+        info " Run \`npm install && npm run dev\` to build for development."
+    else
+        npm_install && sudo -Hu servidor npm run prod
+    fi
 }
 
 create_database() {
