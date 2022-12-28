@@ -3,6 +3,7 @@
 /.vscode
 /.vagrant
 /node_modules
+/notes
 /public/mix-manifest.json
 /public/css/app.css
 /public/css/theme.*.css
