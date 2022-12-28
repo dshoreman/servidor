@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* [installer] Pusher app credentials can now be set with `--pusher id:key:secret[:cluster]`
 
 
 ## [0.15.1] - 2022-12-27

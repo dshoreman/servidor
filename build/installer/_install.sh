@@ -54,6 +54,13 @@ configure_application() {
     is_vagrant || app_url="http://$(hostname -f)"
     edit_line .env "APP_URL" "${app_url}"
 
+    if ${writePusherCreds:-1}; then
+        edit_line .env "PUSHER_APP_ID" "${pusherId:?}"
+        edit_line .env "PUSHER_APP_KEY" "${pusherKey:?}"
+        edit_line .env "PUSHER_APP_SECRET" "${pusherSecret:?}"
+        edit_line .env "PUSHER_APP_CLUSTER" "${pusherCluster:?}"
+    fi
+
     log "Migrating the database..."
     sudo -Hu servidor php artisan migrate --seed
 }
