@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] The presence or absence of the 'www.' can now optionally be forced
 
 ### Changed
+* [chore] PHPStan reporting increased from level 5 to 6
 * [projects] App/redirect creation steps are now added to progress modal together
 * [projects] Project Apps and Project Redirects are now simply Project Services
 

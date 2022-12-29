@@ -15,6 +15,9 @@ class Html implements Template
 
     protected string $publicDir = '';
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $requiredNginxData = [
         'domain_name' => 'domain name',
         'config.source.repository' => 'source repo',

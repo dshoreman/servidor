@@ -18,6 +18,7 @@ class NewProjectService extends FormRequest
     private const GIT_NO_REFS = 2;
     private const GIT_NOT_FOUND = 128;
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         $rules = [
@@ -36,7 +37,7 @@ class NewProjectService extends FormRequest
     }
 
     /**
-     * @return array<string,array|string>
+     * @return array<string,array<string>|string>
      */
     private function configRules(): array
     {
@@ -63,7 +64,7 @@ class NewProjectService extends FormRequest
     }
 
     /**
-     * @return array<string,array|string>
+     * @return array<string,array<string>|string>
      */
     private function sourceRules(): array
     {
@@ -87,18 +88,29 @@ class NewProjectService extends FormRequest
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
      * @suppress PhanUnusedPublicMethodParameter
+     * @suppress PhanUnextractableAnnotationSuffix
      *
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     *
+     * @param mixed $key
+     * @param mixed $default
+     *
+     * @return array{
+     *  template: string,
+     *  domain_name: string,
+     *  include_www: bool,
+     *  config: array<array-key, mixed>
+     * }
      */
     public function validated($key = null, $default = null): array
     {
         $data = (array) parent::validated();
 
         return [
-            'template' => $data['template'],
-            'domain_name' => $data['domain'],
-            'include_www' => $data['includeWww'] ?? false,
-            'config' => $data['config'] ?? [],
+            'template' => (string) $data['template'],
+            'domain_name' => (string) $data['domain'],
+            'include_www' => (bool) ($data['includeWww'] ?? null),
+            'config' => (array) ($data['config'] ?? null),
         ];
     }
 

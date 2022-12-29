@@ -16,7 +16,7 @@ class ListProjectsTest extends TestCase
     use RefreshDatabase;
     use RequiresAuth;
 
-    protected $endpoint = '/api/projects';
+    protected string $endpoint = '/api/projects';
 
     /** @test */
     public function guest_cannot_list_projects(): void
@@ -41,7 +41,11 @@ class ListProjectsTest extends TestCase
         $response->assertJson(Project::all()->toArray());
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @return array<string, mixed>
+     */
     public function listed_projects_include_services(): array
     {
         $project = Project::create(['name' => 'Laratest']);
@@ -60,8 +64,10 @@ class ListProjectsTest extends TestCase
      * @test
      *
      * @depends listed_projects_include_services
+     *
+     * @param array<string, mixed> $project
      */
-    public function project_services_include_list_of_logs($project): void
+    public function project_services_include_list_of_logs(array $project): void
     {
         $service = $project['services'][0];
 
@@ -70,7 +76,11 @@ class ListProjectsTest extends TestCase
         $this->assertArraySubset(['laravel' => 'Laravel Log'], $service['logs']);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @return array<string, mixed>
+     */
     public function listed_projects_include_redirects(): array
     {
         $project = Project::create(['name' => 'Redirtest']);

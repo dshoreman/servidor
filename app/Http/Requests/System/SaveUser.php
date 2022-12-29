@@ -14,6 +14,9 @@ class SaveUser extends FormRequest
         return (bool) $this->user();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [

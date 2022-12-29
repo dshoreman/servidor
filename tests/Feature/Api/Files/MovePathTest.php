@@ -10,7 +10,7 @@ class MovePathTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/files/rename';
+    protected string $endpoint = '/api/files/rename';
 
     /** @test */
     public function guest_cannot_rename_a_file(): void

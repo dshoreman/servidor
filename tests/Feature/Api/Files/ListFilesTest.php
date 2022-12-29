@@ -11,7 +11,7 @@ class ListFilesTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/files';
+    protected string $endpoint = '/api/files';
 
     /** @test */
     public function authed_user_can_list_web_root(): void

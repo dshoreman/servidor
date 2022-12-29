@@ -10,7 +10,7 @@ class ListBranchesTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/system/git/branches';
+    protected string $endpoint = '/api/system/git/branches';
 
     /** @test */
     public function guest_cannot_list_branches(): void
@@ -67,6 +67,9 @@ class ListBranchesTest extends TestCase
         $response->assertJsonValidationErrors(['provider']);
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function repositoryProvider(): array
     {
         return [

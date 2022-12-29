@@ -35,8 +35,12 @@ class DeleteGroupTest extends TestCase
         $search->assertJsonFragment(['name' => 'guestdeletetest']);
     }
 
-    /** @test */
-    public function authed_user_can_delete_group()
+    /**
+     * @test
+     *
+     * @return array<string, mixed>
+     */
+    public function authed_user_can_delete_group(): array
     {
         $group = $this->authed()->postJson($this->endpoint, [
             'name' => 'deletetestgroup',
@@ -52,9 +56,11 @@ class DeleteGroupTest extends TestCase
     /**
      * @test
      *
+     * @param array<string, mixed> $group
+     *
      * @depends authed_user_can_delete_group
      */
-    public function group_does_not_exist_after_deletion($group): void
+    public function group_does_not_exist_after_deletion(array $group): void
     {
         $response = $this->authed()->getJson($this->endpoint($group['gid']));
 

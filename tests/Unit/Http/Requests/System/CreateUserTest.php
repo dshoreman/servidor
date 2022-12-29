@@ -11,6 +11,9 @@ class CreateUserTest extends TestCase
 {
     use ValidatesFormRequest;
 
+    /**
+     * @var array<string, array<int, string>|string>
+     */
     public array $gidRule = ['gid' => 'required_unless:user_group,true'];
 
     public function setUp(): void
@@ -64,14 +67,14 @@ class CreateUserTest extends TestCase
         $this->shouldPass($validator, 1);
     }
 
-    private function shouldFail(Validator $validator, $value): void
+    private function shouldFail(Validator $validator, int|string $value): void
     {
         $message = $this->validationMessage('gid', $value, 'fail', 'passed');
 
         $this->assertFalse($validator->passes(), $message);
     }
 
-    private function shouldPass(Validator $validator, $value): void
+    private function shouldPass(Validator $validator, int|string $value): void
     {
         $message = $this->validationMessage('gid', $value, 'pass', 'failed');
 

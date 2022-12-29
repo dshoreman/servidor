@@ -39,7 +39,7 @@ trait RequiresNginxData
             [$key, $property] = explode('.', $property);
 
             /**
-             * @var array $key
+             * @var array<string, mixed> $key
              *
              * @psalm-suppress InvalidArgument
              * */

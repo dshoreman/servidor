@@ -9,6 +9,9 @@ class Redirect implements Template
 {
     use RequiresNginxData;
 
+    /**
+     * @var array<string, string>
+     */
     protected array $requiredNginxData = [
         'config.redirect.target' => 'target',
         'domain_name' => 'domain name',

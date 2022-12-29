@@ -55,6 +55,7 @@ class ProgressStep
         return $this;
     }
 
+    /** @return array{name: string, progress: int, reason: string, status: string, text: string} */
     public function toArray(): array
     {
         return [

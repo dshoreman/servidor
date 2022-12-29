@@ -13,7 +13,7 @@ class ShowDatabaseTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/databases/{id}';
+    protected string $endpoint = '/api/databases/{id}';
 
     public function testItCanListTables(): void
     {

@@ -4,10 +4,23 @@ namespace Servidor;
 
 class StatsBar
 {
+    /**
+     * @suppress PhanUnextractableAnnotationSuffix
+     *
+     * @return array{
+     *   cpu: float,
+     *   load_average: array{'1m': string, '5m': string, '15m': string},
+     *   ram: array{total: float, used: float, free: float},
+     *   disk: array<string, string>,
+     *   hostname: string,
+     *   os: array{name: string, distro: string, version: string}
+     * }
+     */
     public static function stats(): array
     {
         $os = self::parseReleaseFile('os');
         $lsb = self::parseReleaseFile('lsb');
+        \assert(isset($os['NAME'], $lsb['DISTRIB_RELEASE']));
 
         return [
             'cpu' => self::getCpuUsage(),
@@ -23,6 +36,7 @@ class StatsBar
         ];
     }
 
+    /** @return array<string, string> */
     private static function parseReleaseFile(string $file): array
     {
         $flags = FILE_IGNORE_NEW_LINES;
@@ -50,6 +64,10 @@ class StatsBar
 
     /**
      * Get the CPU load average over 1, 5 and 15 minute intervals.
+     *
+     * @suppress PhanUnextractableAnnotationSuffix
+     *
+     * @return array{'1m': string, '5m': string, '15m': string}
      */
     private static function getLoadAverage(): array
     {
@@ -64,6 +82,8 @@ class StatsBar
 
     /**
      * Get details about the RAM currently used/free.
+     *
+     * @return array{total: float, used: float, free: float}
      */
     private static function getRamUsage(): array
     {
@@ -81,6 +101,8 @@ class StatsBar
 
     /**
      * Get the disk usage details for the root mountpoint.
+     *
+     * @return array<string, string>
      */
     private static function getDiskUsage(): array
     {

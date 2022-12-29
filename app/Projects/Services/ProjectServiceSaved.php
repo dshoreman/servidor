@@ -16,8 +16,6 @@ class ProjectServiceSaved
 
     public function __construct(ProjectService $service)
     {
-        \assert($service->project instanceof Project);
-
         $this->service = $service;
         $this->project = $service->project;
     }

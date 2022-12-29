@@ -4,6 +4,7 @@ namespace Tests\Feature\Api\System\Users;
 
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Http\Response;
+use Illuminate\Testing\TestResponse;
 use Tests\PrunesDeletables;
 use Tests\RequiresAuth;
 
@@ -31,7 +32,7 @@ class ListUsersTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_list_users()
+    public function authed_user_can_list_users(): TestResponse
     {
         $response = $this->authed()->getJson($this->endpoint);
 
@@ -45,7 +46,7 @@ class ListUsersTest extends TestCase
      *
      * @depends authed_user_can_list_users
      */
-    public function list_includes_normal_users($response): void
+    public function list_includes_normal_users(TestResponse $response): void
     {
         // Vagrant has a vagrant (and ubuntu) user but PHP could be running as
         // www-data instead, so we use the SUDO_USER value that it also sets.
@@ -59,7 +60,7 @@ class ListUsersTest extends TestCase
      *
      * @depends authed_user_can_list_users
      */
-    public function list_includes_system_users($response): void
+    public function list_includes_system_users(TestResponse $response): void
     {
         $response->assertJsonFragment(['name' => 'root']);
     }
@@ -94,7 +95,7 @@ class ListUsersTest extends TestCase
      *
      * @depends authed_user_can_list_users
      */
-    public function list_response_contains_expected_data($response): void
+    public function list_response_contains_expected_data(TestResponse $response): void
     {
         $responseJson = json_decode($response->getContent());
 

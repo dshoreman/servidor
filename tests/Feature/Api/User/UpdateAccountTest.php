@@ -76,6 +76,9 @@ class UpdateAccountTest extends TestCase
 
     /** @test
      * @dataProvider passwordData
+     *
+     * @param array<string, mixed>                   $data
+     * @param array<string, array<array-key, mixed>> $expectedErrors
      */
     public function updating_password_requires_valid_data(array $data, array $expectedErrors): void
     {
@@ -94,6 +97,7 @@ class UpdateAccountTest extends TestCase
         }
     }
 
+    /** @return array<int, mixed> */
     public function passwordData(): array
     {
         return [[

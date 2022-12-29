@@ -10,7 +10,7 @@ class ShowFileTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/files';
+    protected string $endpoint = '/api/files';
 
     /** @test */
     public function authed_user_can_view_file_contents(): void

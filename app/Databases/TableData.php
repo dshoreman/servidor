@@ -16,7 +16,16 @@ class TableData extends Data
     }
 
     /**
-     * @param array{TABLE_NAME:string,TABLE_COLLATION:string,ENGINE:string,TABLE_ROWS:int,DATA_LENGTH:int} $result
+     * @suppress PhanUnextractableAnnotationElementName
+     * @suppress PhanUnextractableAnnotationSuffix
+     *
+     * @param array{
+     *   TABLE_NAME: string,
+     *   TABLE_COLLATION: string,
+     *   ENGINE: string,
+     *   TABLE_ROWS: int,
+     *   DATA_LENGTH: int
+     * } $result
      */
     public static function fromInfoSchema(array $result): self
     {

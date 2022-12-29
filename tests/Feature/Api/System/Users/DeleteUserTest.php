@@ -38,7 +38,11 @@ class DeleteUserTest extends TestCase
         $search->assertJsonFragment(['name' => 'guestdeleteuser']);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @return array<array-key, mixed>
+     */
     public function authed_user_can_delete_user(): array
     {
         $user = $this->authed()->postJson($this->endpoint, [
@@ -56,9 +60,11 @@ class DeleteUserTest extends TestCase
     /**
      * @test
      *
+     * @param array<array-key, mixed> $user
+     *
      * @depends authed_user_can_delete_user
      */
-    public function user_does_not_exist_after_deletion($user): void
+    public function user_does_not_exist_after_deletion(array $user): void
     {
         $response = $this->authed()->getJson($this->endpoint($user['uid']));
 
