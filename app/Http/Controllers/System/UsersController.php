@@ -23,26 +23,9 @@ class UsersController extends Controller
     public function store(CreateUser $request): JsonResponse
     {
         $data = $request->validated();
-        $createGroup = (bool) $request->input('user_group', false);
 
         try {
-            $user = new LinuxUser(['name' => $data['name']]);
-
-            $user->setCreateHome((bool) $request->input('create_home', false))
-                ->setHomeDirectory((string) ($data['dir'] ?? ''))
-                ->setShell((string) ($data['shell'] ?? ''))
-                ->setSystem((bool) ($data['system'] ?? false))
-                ->setUid(isset($data['uid']) ? (int) $data['uid'] : null)
-            ;
-
-            $gid = isset($data['gid']) ? (int) $data['gid'] : null;
-            if (!$createGroup && $gid) {
-                $user->setGid($gid);
-            }
-
-            $user->setUserGroup($createGroup);
-
-            $user = SystemUser::createCustom($user);
+            $user = $this->createUser($request, $data);
         } catch (GenericUserSaveFailure $e) {
             $data['error'] = $e->getMessage();
 
@@ -50,6 +33,28 @@ class UsersController extends Controller
         }
 
         return response()->json($user, Response::HTTP_CREATED);
+    }
+
+    private function createUser(CreateUser $request, array $data): array
+    {
+        $user = new LinuxUser(['name' => $data['name']]);
+        $createGroup = (bool) $request->input('user_group', false);
+
+        $user->setCreateHome((bool) $request->input('create_home', false))
+            ->setHomeDirectory((string) ($data['dir'] ?? ''))
+            ->setShell((string) ($data['shell'] ?? ''))
+            ->setSystem((bool) ($data['system'] ?? false))
+            ->setUid(isset($data['uid']) ? (int) $data['uid'] : null)
+        ;
+
+        $gid = isset($data['gid']) ? (int) $data['gid'] : null;
+        if (!$createGroup && $gid) {
+            $user->setGid($gid);
+        }
+
+        $user->setUserGroup($createGroup);
+
+        return SystemUser::createCustom($user);
     }
 
     public function update(UpdateUser $request, int $uid): JsonResponse
