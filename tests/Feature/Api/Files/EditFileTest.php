@@ -48,12 +48,34 @@ class EditFileTest extends TestCase
     /** @test */
     public function updating_file_requires_filename(): void
     {
-        $response = $this->authed()->putJson($this->endpoint(['file' => '']));
+        $response = $this->authed()->putJson($this->endpoint(['file' => '']), [
+            'contents' => "This won't validate.",
+        ]);
 
         $response->assertJsonCount(1, 'errors');
         $response->assertJsonValidationErrors(['file']);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertEquals('File path must be specified.', $response['errors']['file'][0]);
+    }
+
+    /** @test */
+    public function file_contents_can_be_erased(): void
+    {
+        $file = resource_path('test-skel/clearable.txt');
+        if ('notempty' !== file_get_contents($file)) {
+            file_put_contents($file, "notempty\n");
+        }
+
+        $response = $this->authed()->putJson($this->endpoint(['file' => $file]), [
+            'contents' => '',
+        ]);
+
+        $response->assertValid();
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertEquals('application/x-empty', $response['mimetype']);
+        $this->assertEquals('', $response['contents']);
+
+        file_put_contents($file, "notempty\n");
     }
 
     /** @test */
@@ -71,8 +93,9 @@ class EditFileTest extends TestCase
     /** @test */
     public function cannot_save_file_with_identical_contents(): void
     {
-        $args = ['file' => resource_path('test-skel/editme.txt')];
-        $response = $this->authed()->putJson($this->endpoint($args), [
+        $response = $this->authed()->putJson($this->endpoint([
+            'file' => resource_path('test-skel/editme.txt'),
+        ]), [
             'contents' => "test file for testing edits\n",
         ]);
 
