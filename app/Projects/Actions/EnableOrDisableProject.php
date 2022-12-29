@@ -20,10 +20,10 @@ class EnableOrDisableProject
     ) {
         $appOrRedirect->checkNginxData();
 
-        $this->configFile = $appOrRedirect->domain_name . '.conf';
+        $this->configFile = $this->appOrRedirect->domain_name . '.conf';
 
-        \assert($appOrRedirect->project instanceof Project);
-        $this->project = $appOrRedirect->project;
+        \assert($this->appOrRedirect->project instanceof Project);
+        $this->project = $this->appOrRedirect->project;
     }
 
     public function execute(): void

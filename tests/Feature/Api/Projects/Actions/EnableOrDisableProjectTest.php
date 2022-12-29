@@ -35,6 +35,7 @@ class EnableOrDisableProjectTest extends TestCase
 
     /**
      * @test
+     *
      * @depends enabling_project_creates_config_symlink
      */
     public function enabling_project_does_not_create_symlink_when_already_valid(Application $app): void
@@ -65,6 +66,7 @@ class EnableOrDisableProjectTest extends TestCase
 
     /**
      * @test
+     *
      * @depends enabling_project_creates_config_symlink
      */
     public function outdated_symlinks_get_replaced(Application $app): void
@@ -84,6 +86,7 @@ class EnableOrDisableProjectTest extends TestCase
 
     /**
      * @test
+     *
      * @depends enabling_project_creates_config_symlink
      */
     public function disabling_project_removes_nginx_symlink(Application $app): void

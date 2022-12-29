@@ -31,6 +31,7 @@ class ListGroupsTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_list_groups
      */
     public function list_response_contains_expected_data($response): void
@@ -44,6 +45,7 @@ class ListGroupsTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_list_groups
      */
     public function list_results_include_default_groups($response): void

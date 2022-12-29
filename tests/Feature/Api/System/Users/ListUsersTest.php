@@ -42,6 +42,7 @@ class ListUsersTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_list_users
      */
     public function list_includes_normal_users($response): void
@@ -55,6 +56,7 @@ class ListUsersTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_list_users
      */
     public function list_includes_system_users($response): void
@@ -89,6 +91,7 @@ class ListUsersTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_list_users
      */
     public function list_response_contains_expected_data($response): void

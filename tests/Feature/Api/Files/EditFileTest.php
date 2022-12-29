@@ -14,6 +14,7 @@ class EditFileTest extends TestCase
 
     /**
      * @test
+     *
      * @group broken-travis
      */
     public function authed_user_can_update_file(): void

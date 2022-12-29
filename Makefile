@@ -143,6 +143,9 @@ psalm:
 phpcsf:
 	vendor/bin/php-cs-fixer fix $(PHP_CSF_ARGS) --config build/php-cs-fixer/config.php
 
+phpcsfix:
+	vendor/bin/php-cs-fixer fix $(CS_ARGS) --config build/php-cs-fixer/config.php
+
 phpcs:
 	vendor/bin/phpcs app -p --standard=PSR12
 
