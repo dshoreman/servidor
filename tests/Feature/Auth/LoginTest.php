@@ -11,10 +11,6 @@ class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $jill = [
-        'password_confirmation' => 'hunter42',
-    ];
-
     /** @test */
     public function user_can_login_with_email(): void
     {

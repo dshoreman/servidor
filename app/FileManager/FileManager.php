@@ -158,6 +158,10 @@ class FileManager
 
             [$filename, $text, $octal] = explode(' ', $file);
 
+            if (self::DECIMAL_PERMISSION_LENGTH === mb_strlen($octal)) {
+                $octal = '0' . $octal;
+            }
+
             $perms[$filename] = compact('text', 'octal');
         }
 
@@ -165,16 +169,9 @@ class FileManager
     }
 
     /**
-     * TODO: See if the ErrorControlOperator still needs
-     * to be suppressed once phpmd is working on PHP 8.x.
-     *
-     * @param SplFileInfo|string $file
-     *
-     * @SuppressWarnings(PHPMD.ErrorControlOperator)
-     *
      * @return array{0: SplFileInfo, 1: array}
      */
-    private function loadFile($file): array
+    private function loadFile(SplFileInfo|string $file): array
     {
         if (\is_string($file)) {
             $path = explode('/', $file);
@@ -183,28 +180,28 @@ class FileManager
             $file = new SplFileInfo($file, implode('/', $path), $name);
         }
 
-        $owner = posix_getpwuid($file->getOwner()) ?: [];
-        $group = posix_getgrgid($file->getGroup()) ?: [];
+        return [$file, $this->makeFileData($file)];
+    }
 
-        $data = [
-            'filename' => $file->getFilename(),
+    /**
+     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     */
+    private function makeFileData(SplFileInfo $file): array
+    {
+        $filename = $file->getFilename();
+
+        return [
+            'filename' => $filename,
             'filepath' => $file->getPath(),
             'mimetype' => @mime_content_type((string) $file->getRealPath()),
             'isDir' => $file->isDir(),
             'isFile' => $file->isFile(),
             'isLink' => $file->isLink(),
             'target' => $file->isLink() ? $file->getLinkTarget() : '',
-            'owner' => $owner['name'] ?? '???',
-            'group' => $group['name'] ?? '???',
+            'owner' => (posix_getpwuid($file->getOwner()) ?: [])['name'] ?? '???',
+            'group' => (posix_getgrgid($file->getGroup()) ?: [])['name'] ?? '???',
+            'perms' => $this->filePerms[$filename],
         ];
-
-        $data['perms'] = $this->filePerms[$data['filename']];
-
-        if (self::DECIMAL_PERMISSION_LENGTH === mb_strlen($data['perms']['octal'])) {
-            $data['perms']['octal'] = '0' . $data['perms']['octal'];
-        }
-
-        return [$file, $data];
     }
 
     /** @param SplFileInfo|string $file */
@@ -219,21 +216,34 @@ class FileManager
     {
         [$file, $data] = $this->loadFile($file);
 
-        if ($data['mimetype'] && 'text/' !== mb_substr((string) $data['mimetype'], 0, 5)) {
-            throw new UnsupportedFileType('Unsupported filetype');
+        if (
+            $data['mimetype']
+            && 'application/x-empty' !== $data['mimetype']
+            && 'text/' !== mb_substr((string) $data['mimetype'], 0, 5)
+        ) {
+            throw new UnsupportedFileType("Unsupported filetype {$data['mimetype']}");
         }
 
         try {
             $data['contents'] = $file->getContents();
         } catch (RuntimeException $e) {
-            $msg = $e->getMessage();
-            $data['contents'] = '';
-            $data['error'] = ['code' => 418, 'msg' => $msg];
-            $deniedError = 'failed to open stream: permission denied';
+            $data = $this->addErrorFromException($e, $data);
+        }
 
-            if (Str::contains(mb_strtolower($msg), $deniedError)) {
-                $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
-            }
+        return $data;
+    }
+
+    private function addErrorFromException(RuntimeException $e, array $data): array
+    {
+        $msg = $e->getMessage();
+
+        $data = array_merge($data, [
+            'error' => ['code' => 418, 'msg' => $msg],
+            'contents' => '',
+        ]);
+
+        if (Str::contains(mb_strtolower($msg), 'failed to open stream: permission denied')) {
+            $data['error'] = ['code' => 403, 'msg' => 'Permission denied'];
         }
 
         return $data;

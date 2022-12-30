@@ -51,6 +51,7 @@ class ApplicationTest extends TestCase
 
     /**
      * @test
+     *
      * @depends template_can_be_set_with_new_application
      */
     public function can_access_project(Application $app): Application
@@ -64,6 +65,7 @@ class ApplicationTest extends TestCase
 
     /**
      * @test
+     *
      * @depends can_access_project
      */
     public function source_repo_is_parsed_correctly(Application $app): void
@@ -76,6 +78,7 @@ class ApplicationTest extends TestCase
 
     /**
      * @test
+     *
      * @depends can_access_project
      */
     public function system_user_is_null_when_not_found(Application $app): void
@@ -94,6 +97,7 @@ class ApplicationTest extends TestCase
 
     /**
      * @test
+     *
      * @depends can_access_project
      */
     public function system_user_is_created_on_save(Application $app): void
@@ -119,6 +123,7 @@ class ApplicationTest extends TestCase
 
     /**
      * @test
+     *
      * @depends can_access_project
      */
     public function laravel_apps_use_php_nginx_template(Application $app): void

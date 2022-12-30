@@ -55,6 +55,7 @@ class DeleteUserTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_delete_user
      */
     public function user_does_not_exist_after_deletion($user): void

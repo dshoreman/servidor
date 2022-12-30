@@ -18,8 +18,9 @@ class NewDatabase extends FormRequest
      */
     public function validated(): array
     {
+        /** @var array{database: string} $data */
         $data = parent::validated();
 
-        return array_merge($data, ['database' => (string) $data['database']]);
+        return array_merge($data, ['database' => $data['database']]);
     }
 }

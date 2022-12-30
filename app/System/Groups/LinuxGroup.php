@@ -22,6 +22,7 @@ class LinuxGroup extends LinuxCommand
     {
         $this->gid = $group['gid'] ?? null ? (int) $group['gid'] : null;
         $this->name = (string) $group['name'];
+
         /** @var array<string>|null $group['members'] */
         $this->users = $group['members'] ?? [];
 

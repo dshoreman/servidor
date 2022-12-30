@@ -12,7 +12,7 @@ class Php extends Html
 
     public function getLogs(): array
     {
-        $default = ini_get('error_log');
+        $default = \ini_get('error_log');
         $fallbackPath = '/var/log/php%d.%d-fpm.log';
 
         $phpErrorLog = $default ?: sprintf($fallbackPath, PHP_MAJOR_VERSION, PHP_MINOR_VERSION);

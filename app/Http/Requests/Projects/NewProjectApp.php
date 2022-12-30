@@ -48,7 +48,7 @@ class NewProjectApp extends FormRequest
     {
         $validator->after(function (Validator $validator): void {
             /**
-             * @var array{provider: string, repository: string, branch?: string}
+             * @var array{provider?: string, repository?: string, branch?: string}
              */
             $app = $validator->getData();
 

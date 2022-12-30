@@ -51,6 +51,7 @@ class DeleteGroupTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_delete_group
      */
     public function group_does_not_exist_after_deletion($group): void

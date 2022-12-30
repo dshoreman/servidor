@@ -6,10 +6,7 @@ use Servidor\User;
 
 trait RequiresAuth
 {
-    /**
-     * @var User
-     */
-    private $user;
+    private ?User $user;
 
     protected function authed()
     {

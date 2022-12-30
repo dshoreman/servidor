@@ -60,6 +60,7 @@ class PullCodeTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_pull_app_source
      */
     public function can_checkout_after_initial_pull(): void

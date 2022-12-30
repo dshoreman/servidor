@@ -55,6 +55,7 @@ class UpdateProjectTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_rename_project
      */
     public function update_response_includes_applications(array $data): void
@@ -65,6 +66,7 @@ class UpdateProjectTest extends TestCase
 
     /**
      * @test
+     *
      * @depends authed_user_can_rename_project
      */
     public function update_response_includes_redirects(array $data): void
@@ -94,6 +96,7 @@ class UpdateProjectTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider symlinkProvider
      */
     public function updating_project_also_toggles_symlink(string $type, array $data): void

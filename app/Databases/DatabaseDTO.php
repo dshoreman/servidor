@@ -24,6 +24,10 @@ class DatabaseDTO extends DataTransferObject implements Arrayable
     {
         $this->tables = new TableCollection();
 
+        if (!isset($args['tables'])) {
+            $args['tables'] = $this->tables;
+        }
+
         parent::__construct($args);
     }
 

@@ -52,6 +52,7 @@ set_test_skel_permissions() {
     sudo chown -Rv root:root "${skeleton}/protected"
 
     sudo chmod -v 777 "${skeleton}"
+    sudo chmod -v 666 "${skeleton}"/clearable.txt
     sudo chmod -v 775 "${skeleton}"/mixed/another-dir
     sudo chmod -v 664 "${skeleton}"/mixed/hello.md "${skeleton}"/hidden/.bar
     sudo chmod -v 600 "${skeleton}/protected/forbidden"

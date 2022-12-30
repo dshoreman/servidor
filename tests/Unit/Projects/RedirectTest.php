@@ -42,6 +42,7 @@ class RedirectTest extends TestCase
 
     /**
      * @test
+     *
      * @depends attributes_can_be_set_with_new_redirect
      */
     public function can_access_project(Redirect $redirect): Redirect
