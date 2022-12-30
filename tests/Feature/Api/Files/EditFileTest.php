@@ -63,7 +63,7 @@ class EditFileTest extends TestCase
     public function file_contents_can_be_erased(): void
     {
         $file = resource_path('test-skel/clearable.txt');
-        if ('notempty' !== file_get_contents($file)) {
+        if ('notempty' !== trim(file_get_contents($file))) {
             file_put_contents($file, "notempty\n");
         }
 

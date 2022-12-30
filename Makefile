@@ -105,7 +105,7 @@ test-8.1:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg8.1 -qrr vendor/bin/phpunit -c build/phpunit/config.xml $(test)"
 
 test-for-ci:
-	vendor/bin/phpunit -c build/phpunit/config.xml --coverage-clover=coverage.xml --exclude-group "broken-travis"
+	vendor/bin/phpunit -c build/phpunit/config.xml --coverage-clover=coverage.xml
 
 coverage:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php8.0 vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
