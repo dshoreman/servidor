@@ -147,6 +147,7 @@ class UpdateUserTest extends TestCase
 
     /**
      * @test
+     *
      * @group issue154
      */
     public function group_should_be_set_after_updating_a_user(): void

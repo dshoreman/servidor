@@ -59,6 +59,7 @@ class ListProjectsTest extends TestCase
 
     /**
      * @test
+     *
      * @depends listed_projects_include_applications
      */
     public function project_applications_include_list_of_logs($project): void

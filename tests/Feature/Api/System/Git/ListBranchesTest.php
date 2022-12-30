@@ -24,6 +24,7 @@ class ListBranchesTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider repositoryProvider
      */
     public function user_can_list_branches(string $repo, ?string $provider = ''): void

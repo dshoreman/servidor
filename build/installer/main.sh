@@ -62,9 +62,9 @@ sanity_check() {
 }
 
 parse_opts() {
-    local -r OPTS=b:hv
-    local -r LONG=branch:,help,verbose
-    local parsed
+    local -r OPTS=b:hP:v
+    local -r LONG=branch:,help,pusher:,verbose
+    local parsed pusher
 
     # shellcheck disable=SC2251
     ! parsed=$(getopt -o "$OPTS" -l "$LONG" -n "$0" -- "$@")
@@ -80,6 +80,26 @@ parse_opts() {
                 servidor_branch="$2"; shift 2 ;;
             -h|--help)
                 usage && exit 0 ;;
+            -P|--pusher)
+                info "Setting Pusher API credentials..."
+
+                IFS=":" read -ra pusher <<< "$2"
+
+                pusherId=${pusher[0]//=/}
+                pusherKey=${pusher[1]}
+                pusherSecret=${pusher[2]}
+                pusherCluster=${pusher[3]}
+                writePusherCreds=0
+
+                if [[ -z $pusherCluster || $pusherCluster == eu ]]; then
+                    unset pusherCluster
+                fi
+
+                log "Pusher App ID: ${pusherId}"
+                log "      API Key: ${pusherKey}"
+                log "       Secret: ${pusherSecret}"
+                log "      Cluster: ${pusherCluster:-Default (eu)}"
+                shift 2 ;;
             -v|--verbose)
                 debug=true; shift ;;
             --)

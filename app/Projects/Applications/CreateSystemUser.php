@@ -3,6 +3,7 @@
 namespace Servidor\Projects\Applications;
 
 use Illuminate\Support\Str;
+use Servidor\Projects\Application;
 use Servidor\Projects\ProgressStep;
 use Servidor\Projects\ProjectProgress;
 use Servidor\System\User as SystemUser;
@@ -17,15 +18,10 @@ class CreateSystemUser
 
         $step = new ProgressStep('user.create', 'Creating system user', 35);
         ProjectProgress::dispatch($project, $step);
+        $reason = $this->shouldPreventCreation($app);
 
-        if (!$app->template()->requiresUser()) {
-            ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_REQUIRED));
-
-            return;
-        }
-
-        if ($app->system_user) {
-            ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_EXISTS));
+        if (\is_string($reason)) {
+            ProjectProgress::dispatch($project, $step->skip($reason));
 
             return;
         }
@@ -37,5 +33,18 @@ class CreateSystemUser
         SystemUser::createCustom($user->setCreateHome(true));
 
         ProjectProgress::dispatch($project, $step->complete());
+    }
+
+    private function shouldPreventCreation(Application $app): bool|string
+    {
+        if (!$app->template()->requiresUser()) {
+            return ProgressStep::REASON_REQUIRED;
+        }
+
+        if ($app->system_user) {
+            return ProgressStep::REASON_EXISTS;
+        }
+
+        return false;
     }
 }

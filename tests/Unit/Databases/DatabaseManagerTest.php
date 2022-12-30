@@ -16,14 +16,14 @@ class DatabaseManagerTest extends TestCase
     /** @test */
     public function it_can_list_databases(): DatabaseManager
     {
-        $manager = new DatabaseManager(config(), null, new FakeSchemaManager());
+        $this->manager = new DatabaseManager(config(), null, new FakeSchemaManager());
 
-        $collection = $manager->databases();
+        $collection = $this->manager->databases();
 
         $this->assertInstanceOf(DatabaseCollection::class, $collection);
         $this->assertContainsOnlyInstancesOf(DatabaseDTO::class, $collection);
 
-        return $manager;
+        return $this->manager;
     }
 
     /**
@@ -43,6 +43,7 @@ class DatabaseManagerTest extends TestCase
 
     /**
      * @test
+     *
      * @depends it_can_list_databases
      */
     public function it_can_list_databases_with_table_details(DatabaseManager $manager): void
@@ -62,6 +63,7 @@ class DatabaseManagerTest extends TestCase
 
     /**
      * @test
+     *
      * @depends it_can_list_databases
      */
     public function it_can_create_a_database(DatabaseManager $manager): DatabaseManager
@@ -84,6 +86,7 @@ class DatabaseManagerTest extends TestCase
 
     /**
      * @test
+     *
      * @depends it_can_create_a_database
      */
     public function it_can_list_tables_of_a_database(DatabaseManager $manager): void
@@ -101,6 +104,7 @@ class DatabaseManagerTest extends TestCase
 
     /**
      * @test
+     *
      * @depends it_can_create_a_database
      */
     public function create_returns_database_when_it_already_exists(

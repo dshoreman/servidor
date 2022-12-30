@@ -6,7 +6,6 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Doctrine\DBAL\Schema\MySQLSchemaManager;
 use Illuminate\Contracts\Config\Repository;
 
 class DatabaseManager
@@ -22,18 +21,18 @@ class DatabaseManager
         ?Connection $connection = null,
         ?AbstractSchemaManager $manager = null,
     ) {
+        /** @var array{user: string, password: string} $dbalConfig */
+        $dbalConfig = $config->get('database.dbal');
         $socket = (string) $config->get('database.connections.mysql.unix_socket');
 
+        /** @psalm-suppress InvalidArgument */
         $this->connection = $connection ?? DriverManager::getConnection(
-            array_merge((array) $config->get('database.dbal'), [
+            array_merge($dbalConfig, [
                 'driver' => 'pdo_mysql',
                 'unix_socket' => $socket,
             ]),
         );
-        $this->manager = $manager ?: new MySQLSchemaManager(
-            $this->connection,
-            $this->connection->getDatabasePlatform(),
-        );
+        $this->manager = $manager ?: $this->connection->createSchemaManager();
     }
 
     public function create(DatabaseDTO $database): DatabaseDTO

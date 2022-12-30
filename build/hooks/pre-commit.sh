@@ -10,10 +10,10 @@ csFixerBin=./vendor/bin/php-cs-fixer
 changedInstallFiles=$(git diff-index --cached --name-only HEAD | grep -c 'build/installer/')
 
 if [[ changedInstallFiles -gt 0 ]]; then
-    echo "${cOrange}Detected change in install scripts, rebuilding installer!${cEnd}"
+    echo "${cOrange}Detected change in install scripts, testing installer...${cEnd}"
 
-    if make installer && git add setup.sh; then
-        echo "${cGreen}setup.sh updated.${cEnd}"
+    if make installer && shellcheck setup.sh; then
+        echo "${cGreen}setup.sh built and tested successfully!${cEnd}"
         echo
     else
         echo "${cRed}Installer build failed, aborting commit.${cEnd}"

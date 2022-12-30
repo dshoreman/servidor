@@ -21,12 +21,24 @@ class Group
     private $group;
 
     /**
+     * @var array<int, string>
+     */
+    private array $errors;
+
+    /**
      * @param array|LinuxGroup $group
      */
     public function __construct($group)
     {
         $this->group = $group instanceof LinuxGroup
                      ? $group : new LinuxGroup($group);
+
+        $this->errors = [
+            self::GROUP_GID_TAKEN => "The group's GID must be unique",
+            self::GROUP_NAME_TAKEN => 'The group name must be unique',
+            self::GROUP_OPTION_INVALID => 'Invalid argument to option',
+            self::GROUP_SYNTAX_INVALID => 'Invalid command syntax.',
+        ];
     }
 
     private function commit(string $cmd, ?string $args = null): int
@@ -49,15 +61,8 @@ class Group
             return $this;
         }
 
-        $errors = [
-            self::GROUP_GID_TAKEN => "The group's GID must be unique",
-            self::GROUP_NAME_TAKEN => 'The group name must be unique',
-            self::GROUP_OPTION_INVALID => 'Invalid argument to option',
-            self::GROUP_SYNTAX_INVALID => 'Invalid command syntax.',
-        ];
-
-        if (isset($errors[$retval])) {
-            $error = $errors[$retval];
+        if (isset($this->errors[$retval])) {
+            $error = $this->errors[$retval];
             $visibleExitStatus = 0;
         }
 
@@ -74,20 +79,27 @@ class Group
             }
         }
 
-        if ($this->group->hasChangedUsers()) {
-            $users = $this->group->users;
-
-            $this->refresh($this->group->gid ?? $this->group->name);
-            $this->group->setUsers($users);
-
-            $retval = $this->commit('gpasswd', '-M "' . implode(',', $this->group->users) . '"');
-
-            if (0 !== $retval) {
-                throw new GenericGroupSaveFailure("Couldn't update the group's users.", $retval);
-            }
-        }
+        $this->updateUsers();
 
         return $this;
+    }
+
+    private function updateUsers(): void
+    {
+        if (!$this->group->hasChangedUsers()) {
+            return;
+        }
+
+        $users = $this->group->users;
+
+        $this->refresh($this->group->gid ?? $this->group->name);
+        $this->group->setUsers($users);
+
+        $retval = $this->commit('gpasswd', '-M "' . implode(',', $this->group->users) . '"');
+
+        if (0 !== $retval) {
+            throw new GenericGroupSaveFailure("Couldn't update the group's users.", $retval);
+        }
     }
 
     public static function create(string $name, bool $system = false, ?int $gid = null): array

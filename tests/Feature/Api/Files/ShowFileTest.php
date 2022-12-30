@@ -39,14 +39,12 @@ class ShowFileTest extends TestCase
     public function non_text_files_show_unsupported_filetype_error(): void
     {
         $response = $this->authed()->getJson($this->endpoint([
-            // TODO: Dump some shitty small (1px?) image into test-skel and use that,
-            // probably easier than making sure fonts are copied in travis build
             'file' => resource_path('test-skel/files/image.png'),
         ]));
 
         $response->assertStatus(Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         $response->assertJsonStructure(['filename', 'filepath', 'error' => ['code', 'msg']]);
-        $response->assertJsonFragment(['code' => 415, 'msg' => 'Unsupported filetype']);
+        $response->assertJsonFragment(['code' => 415, 'msg' => 'Unsupported filetype image/png']);
         // Maybe shouldn't have this assertion? Not sure if mime is used on frontend
         // $response->assertJsonFragment(['isFile' => true, 'mimetype' => 'image/png']);
     }
