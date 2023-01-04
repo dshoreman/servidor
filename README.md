@@ -14,7 +14,7 @@ Servidor is still very much a work in progress, but what has been [added so far]
 * [Introduction]
 * [Installation]
   * [Interactive Setup]
-  * [Startup Script]
+  * [Cloud-init]
 * [Development]
   * [Running Tests]
 * [Contributing]
@@ -47,19 +47,21 @@ In case you don't have DNS pointing at the server yet, both IP and hostname-base
 
 Running locally? Follow the [Development] instructions below to set up your local test environment.
 
-#### Startup Script
+#### Cloud-init
 
-If your server provider supports startup scripts for fully automated installation, you can pipe the installer directly to bash:
-```sh
-#/bin/sh
-curl -s https://raw.githubusercontent.com/dshoreman/servidor/installer/setup.sh | bash
+If your server provider supports cloud-init scripts, you can run the installer automatically on first boot:
+
+```yaml
+#cloud-config
+runcmd:
+  - curl -sSL https://github.com/dshoreman/servidor/releases/download/v0.15.3/setup.sh > /tmp/setup.sh
+  - |
+    bash /tmp/setup-servidor.sh -v --branch master \
+      --pusher 1234567:123abc45d67890e12f34:12345a6b7890c1defa2b
 ```
 
-Options can be passed to the installer by appending them after `-s --` like so:
-```sh
-#/bin/sh
-curl -s https://raw.githubusercontent.com/dshoreman/servidor/installer/setup.sh | bash -s -- -v --branch develop
-```
+Remember to update the download link using the [latest version] from the [Releases] page.  
+An example of [a basic cloud-init script] can be found in the wiki.
 
 ## Development
 
@@ -78,6 +80,8 @@ To recompile assets automatically when you make changes, run `npm run hot` or `n
 
 ### Running Tests
 
+* **tl;dr:** *`make kitchen-sink`* (assuming vagrant is up)
+
 With many tests relying on certain system utilities, it's best to run them in Vagrant as the web server user to avoid any issues.  
 To run the PHPUnit tests, use `make test` which will automatically SSH into the Vagrant VM and run phpunit as www-data.
 
@@ -89,14 +93,15 @@ Where possible, issues are grouped into one of various projects based on the pag
 find something to work on in a certain part of Servidor, then the Projects tab is a good place to start. Questions, bug reports,
 ideas and PRs are all welcome and highly appreciated, so don't be afraid to ask if there's something you're not sure of!
 
-If you use IRC, find me in *#servidor* on Freenode where I'll be happy to answer questions in a more real-time fashion.
-
 [Introduction]: #servidor
 [What it Does]: #what-it-does
 [added so far]: #what-it-does
 [Installation]: #installation
 [Interactive Setup]: #interactive-setup
-[Startup Script]: #startup-script
+[latest version]: https://github.com/dshoreman/servidor/blob/master/bootstrap/app.php#L1-L5
+[Releases]: https://github.com/dshoreman/servidor/releases
+[a basic cloud-init script]: https://github.com/dshoreman/servidor/wiki/Example-Cloud-init-Script
+[Cloud-init]: #startup-script
 [Development]: #development
 [Running Tests]: #running-tests
 [Contributing]: #contributing
