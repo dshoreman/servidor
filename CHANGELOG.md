@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Fixed
+* [installer] Composer install would fail when `$HOME` isn't set in cloud-init
 
 
 ## [0.15.2] - 2022-12-30

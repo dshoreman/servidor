@@ -63,7 +63,8 @@ install_composer() {
 
     if [ "$actual" = "$expected" ]; then
         log " Checksums match! Starting install..."
-        php $target --quiet --install-dir="/usr/local/bin" --filename="composer"
+        COMPOSER_HOME=/tmp/composer php $target --quiet \
+            --install-dir="/usr/local/bin" --filename="composer"
     fi
 }
 

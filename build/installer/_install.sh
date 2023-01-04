@@ -33,9 +33,18 @@ clone_and_install() {
         sudo -u servidor git clone -qb "${branch}" https://github.com/dshoreman/servidor.git .
     fi
 
+    log "Moving Composer keys into place..."
+    if [[ -d /tmp/composer ]]; then
+        mkdir /var/servidor/.config
+        mv /tmp/composer /var/servidor/.config/composer
+    fi
+
     log "Installing required Composer packages..."
-    is_vagrant && c_dev="--prefer-source" || c_dev="--no-dev"
-    sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress
+    if is_vagrant; then
+        sudo -Hu servidor composer install --no-interaction --no-progress --prefer-source
+    else
+        sudo -Hu servidor composer install --no-interaction --no-progress --no-dev
+    fi
 }
 
 configure_application() {
