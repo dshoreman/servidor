@@ -63,11 +63,15 @@ configure_application() {
     is_vagrant || app_url="http://$(hostname -f)"
     edit_line .env "APP_URL" "${app_url}"
 
-    if ${writePusherCreds:-1}; then
-        edit_line .env "PUSHER_APP_ID" "${pusherId:?}"
-        edit_line .env "PUSHER_APP_KEY" "${pusherKey:?}"
-        edit_line .env "PUSHER_APP_SECRET" "${pusherSecret:?}"
-        edit_line .env "PUSHER_APP_CLUSTER" "${pusherCluster:?}"
+    log "Writing Pusher credentials..."
+    if (( 0 == ${writePusherCreds:-1} )); then
+        edit_line .env "MIX_PUSHER_APP_ID" "${pusherId:?}"
+        edit_line .env "MIX_PUSHER_APP_KEY" "${pusherKey:?}"
+        edit_line .env "MIX_PUSHER_APP_SECRET" "${pusherSecret:?}"
+        [[ -z $pusherCluster ]] || edit_line .env \
+            "MIX_PUSHER_APP_CLUSTER" "${pusherCluster}"
+    else
+        log "  ...none provided."
     fi
 
     log "Migrating the database..."
