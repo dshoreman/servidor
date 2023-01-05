@@ -22,26 +22,45 @@ class SyncAppFiles
 
     public function execute(): void
     {
-        if (!is_dir($this->sourcePath)) {
-            $cmd = 'sudo mkdir -p "%s" && sudo chown www-data:www-data "%s"';
+        $user = $this->app->template()->requiresUser()
+              ? (string) ($this->app->system_user['name'] ?? '')
+              : 'www-data';
 
-            $this->runShellCmd(sprintf($cmd, $this->sourcePath, $this->sourcePath));
+        if (!is_dir($this->sourcePath)) {
+            $this->createProjectDir($user, $this->sourcePath);
         }
+
         if (0 === $this->status) {
-            $this->runShellCmd($this->pull($this->app->source_branch ?: ''));
+            $this->runShellCmd($this->pull($user, $this->app->source_branch ?: ''));
         }
     }
 
-    private function pull(string $branch): string
+    private function createProjectDir(string $user, string $path): void
+    {
+        $cmds = [
+            "sudo mkdir -p '{$path}'",
+            "sudo chown {$user}:www-data '{$path}'",
+            "sudo chmod g+s {$path}",
+        ];
+
+        if ('www-data' !== $user) {
+            $cmds[] = "sudo chmod o+x '" . \dirname($path) . "'";
+        }
+
+        $this->runShellCmd(implode(' && ', $cmds));
+    }
+
+    private function pull(string $user, string $branch): string
     {
         if (is_dir($this->sourcePath . '/.git')) {
             $action = $branch ? "checkout \"{$branch}\"" : 'pull';
 
-            return sprintf('cd "%s" && sudo -u www-data git %s', $this->sourcePath, $action);
+            return sprintf('cd "%s" && sudo -u %s git %s', $user, $this->sourcePath, $action);
         }
 
         return sprintf(
-            'sudo -u www-data git clone %s"%s" "%s"',
+            'sudo -u %s git clone %s"%s" "%s"',
+            $user,
             $branch ? "--branch \"{$branch}\" " : '',
             $this->app->source_uri,
             $this->sourcePath,

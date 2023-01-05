@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * [installer] Composer install would fail when `$HOME` isn't set in cloud-init
 * [installer] Cleaned up syntax that prevented Pusher config being set in .env
+* [projects] Adjusted permissions and ownerships to solve 404 in homedir-based projects
 
 
 ## [0.15.2] - 2022-12-30

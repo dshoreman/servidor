@@ -72,7 +72,7 @@ class HtmlTest extends TestCase
         $stat = system("stat -c '%a' \"{$path}\"");
 
         $this->assertDirectoryExists($path);
-        $this->assertEquals(755, $stat);
+        $this->assertEquals(2755, $stat);
     }
 
     public static function tearDownAfterClass(): void
