@@ -31,7 +31,7 @@ class SyncAppFiles
         }
 
         if (0 === $this->status) {
-            $this->runShellCmd($this->pull($user, $this->app->source_branch ?: ''));
+            $this->pull($user, $this->app->source_branch ?: '');
         }
     }
 
@@ -47,24 +47,32 @@ class SyncAppFiles
             $cmds[] = "sudo chmod o+x '" . \dirname($path) . "'";
         }
 
-        $this->runShellCmd(implode(' && ', $cmds));
+        $this->runCmds($cmds);
     }
 
-    private function pull(string $user, string $branch): string
+    private function pull(string $user, string $branch): void
     {
-        if (is_dir($this->sourcePath . '/.git')) {
-            $action = $branch ? "checkout \"{$branch}\"" : 'pull';
+        $gitExists = is_dir($this->sourcePath . '/.git');
+        $branchOpt = $branch ? " --branch '{$branch}'" : '';
+        $cmds = ["cd '{$this->sourcePath}'"];
 
-            return sprintf('cd "%s" && sudo -u %s git %s', $user, $this->sourcePath, $action);
+        if ($gitExists && $branch) {
+            $cmds[] = "sudo -u {$user} git checkout '{$branch}'";
         }
 
-        return sprintf(
-            'sudo -u %s git clone %s"%s" "%s"',
-            $user,
-            $branch ? "--branch \"{$branch}\" " : '',
-            $this->app->source_uri,
-            $this->sourcePath,
-        );
+        $this->runCmds(array_merge($cmds, [
+            "sudo -u {$user} git " . (
+                $gitExists ? 'pull' : "clone{$branchOpt} '{$this->app->source_uri}' ."
+            ),
+        ]));
+    }
+
+    /**
+     * @param array<string> $cmds
+     */
+    private function runCmds(array $cmds): void
+    {
+        $this->runShellCmd(implode(' && ', $cmds));
     }
 
     private function runShellCmd(string $cmd): void
