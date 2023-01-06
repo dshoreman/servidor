@@ -72,8 +72,11 @@ install_php_extensions() {
     extensions=()
 
     for ext in "$@"; do
-        extensions+=("php8.0-${ext}" "php8.1-${ext}")
+        extensions+=(php7.{0,1,2,3,4}-"${ext}")
+        extensions+=(php8.{0,1}-"${ext}")
     done
+
+    extensions+=("php7.0-mcrypt" "php7.1-mcrypt")
 
     install_pkg "${extensions[@]}"
 }

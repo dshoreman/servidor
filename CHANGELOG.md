@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Changed
+* [installer] PHP 7.0-7.4 now get preinstalled, with mcrypt for 7.0-7.1
+
 ### Fixed
 * [installer] Composer install would fail when `$HOME` isn't set in cloud-init
 * [installer] Cleaned up syntax that prevented Pusher config being set in .env
