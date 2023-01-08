@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('SERVIDOR_VERSION')) {
-    define('SERVIDOR_VERSION', '0.15.2');
+    define('SERVIDOR_VERSION', '0.15.3');
 }
 
 /*

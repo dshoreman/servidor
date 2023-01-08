@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+
+## [0.15.3] - 2023-01-08
 ### Changed
 * [installer] PHP 7.0-7.4 now get preinstalled, with mcrypt for 7.0-7.1
 
@@ -290,7 +293,8 @@ This is the first version with a "true" GitHub Release. For older releases, chec
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.15.2...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.15.3...develop
+[0.15.3]: https://github.com/dshoreman/servidor/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/dshoreman/servidor/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/dshoreman/servidor/compare/v0.15.0...v0.15.1
 [0.15.0]: https://github.com/dshoreman/servidor/compare/v0.14.0...v0.15.0
