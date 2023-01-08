@@ -57,7 +57,7 @@ laravel-diff:
 	@echo "Removing any old diffs..."
 	@rm -rf /tmp/{lara,servi}diff
 	@echo "Cloning latest laravel/laravel repo..."
-	@git clone -q git@github.com:laravel/laravel.git /tmp/laradiff
+	@git clone --branch 8.x -q git@github.com:laravel/laravel.git /tmp/laradiff
 	@echo "Copying configs..."
 	@cp -R ./build /tmp/laradiff/
 	@echo "Applying CS fixes..."
@@ -84,7 +84,7 @@ laravel-diff:
 	@cp ./database/migrations/* /tmp/laradiff/database/migrations/
 	@cp {.,/tmp/laradiff}/database/seeders/DefaultUserSeeder.php
 	@cp -R ./resources/{sass,test-skel,views} /tmp/laradiff/resources/
-	@cp -R ./public/{css,fonts,js,hot,mix-manifest.json} /tmp/laradiff/public/
+	@cp -R ./public/{css,fonts,js,mix-manifest.json} /tmp/laradiff/public/
 	@cp -R ./resources/js/{components,layouts,pages,plugins,store,routes.js} /tmp/laradiff/resources/js/
 	@cp -R ./storage/framework/{cache,sessions,testing,views} /tmp/laradiff/storage/framework/
 	@cp -R ./storage/{app,clockwork,logs} /tmp/laradiff/storage/

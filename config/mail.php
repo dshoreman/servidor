@@ -22,7 +22,7 @@ return [
         ],
         'sendmail' => [
             'transport' => 'sendmail',
-            'path' => '/usr/sbin/sendmail -bs',
+            'path' => '/usr/sbin/sendmail -t -i',
         ],
         'ses' => [
             'transport' => 'ses',

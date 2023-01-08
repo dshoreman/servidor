@@ -63,7 +63,8 @@ install_composer() {
 
     if [ "$actual" = "$expected" ]; then
         log " Checksums match! Starting install..."
-        php $target --quiet --install-dir="/usr/local/bin" --filename="composer"
+        COMPOSER_HOME=/tmp/composer php $target --quiet \
+            --install-dir="/usr/local/bin" --filename="composer"
     fi
 }
 
@@ -71,8 +72,11 @@ install_php_extensions() {
     extensions=()
 
     for ext in "$@"; do
-        extensions+=("php8.0-${ext}" "php8.1-${ext}")
+        extensions+=(php7.{0,1,2,3,4}-"${ext}")
+        extensions+=(php8.{0,1}-"${ext}")
     done
+
+    extensions+=("php7.0-mcrypt" "php7.1-mcrypt")
 
     install_pkg "${extensions[@]}"
 }

@@ -3,7 +3,9 @@
 namespace Servidor\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Servidor\Providers\RouteServiceProvider;
 
@@ -11,6 +13,8 @@ class RedirectIfAuthenticated
 {
     /**
      * Redirect authed users to home for guest-only routes.
+     *
+     * @param  Closure(Request): (Response|RedirectResponse)  $next
      *
      * @return mixed
      */
