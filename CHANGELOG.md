@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.15.3] - 2023-01-08
+### Changed
+* [installer] PHP 7.0-7.4 now get preinstalled, with mcrypt for 7.0-7.1
+
+### Fixed
+* [installer] Composer install would fail when `$HOME` isn't set in cloud-init
+* [installer] Cleaned up syntax that prevented Pusher config being set in .env
+* [projects] Adjusted permissions and ownerships to solve 404 in homedir-based projects
+* [projects] Solved potential issue where code wouldn't be updated if branch was set
+
+
 ## [0.15.2] - 2022-12-30
 ### Added
 * [installer] Pusher app credentials can now be set with `--pusher id:key:secret[:cluster]`
@@ -282,7 +293,8 @@ This is the first version with a "true" GitHub Release. For older releases, chec
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.15.2...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.15.3...develop
+[0.15.3]: https://github.com/dshoreman/servidor/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/dshoreman/servidor/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/dshoreman/servidor/compare/v0.15.0...v0.15.1
 [0.15.0]: https://github.com/dshoreman/servidor/compare/v0.14.0...v0.15.0

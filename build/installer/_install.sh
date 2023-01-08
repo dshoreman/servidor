@@ -33,9 +33,18 @@ clone_and_install() {
         sudo -u servidor git clone -qb "${branch}" https://github.com/dshoreman/servidor.git .
     fi
 
+    log "Moving Composer keys into place..."
+    if [[ -d /tmp/composer ]]; then
+        mkdir /var/servidor/.config
+        mv /tmp/composer /var/servidor/.config/composer
+    fi
+
     log "Installing required Composer packages..."
-    is_vagrant && c_dev="--prefer-source" || c_dev="--no-dev"
-    sudo -Hu servidor composer install ${c_dev} --no-interaction --no-progress
+    if is_vagrant; then
+        sudo -Hu servidor composer install --no-interaction --no-progress --prefer-source
+    else
+        sudo -Hu servidor composer install --no-interaction --no-progress --no-dev
+    fi
 }
 
 configure_application() {
@@ -54,11 +63,15 @@ configure_application() {
     is_vagrant || app_url="http://$(hostname -f)"
     edit_line .env "APP_URL" "${app_url}"
 
-    if ${writePusherCreds:-1}; then
-        edit_line .env "PUSHER_APP_ID" "${pusherId:?}"
-        edit_line .env "PUSHER_APP_KEY" "${pusherKey:?}"
-        edit_line .env "PUSHER_APP_SECRET" "${pusherSecret:?}"
-        edit_line .env "PUSHER_APP_CLUSTER" "${pusherCluster:?}"
+    log "Writing Pusher credentials..."
+    if (( 0 == ${writePusherCreds:-1} )); then
+        edit_line .env "MIX_PUSHER_APP_ID" "${pusherId:?}"
+        edit_line .env "MIX_PUSHER_APP_KEY" "${pusherKey:?}"
+        edit_line .env "MIX_PUSHER_APP_SECRET" "${pusherSecret:?}"
+        [[ -z $pusherCluster ]] || edit_line .env \
+            "MIX_PUSHER_APP_CLUSTER" "${pusherCluster}"
+    else
+        log "  ...none provided."
     fi
 
     log "Migrating the database..."
