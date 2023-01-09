@@ -69,4 +69,16 @@ class NewProjectAppTest extends TestCase
         $this->validateFieldFails('repository', true);
         $this->validateFieldFails('repository', ['a', 'b']);
     }
+
+    /** @test */
+    public function config_must_be_an_array(): void
+    {
+        $this->validateFieldPasses('config', ['foo' => 'bar']);
+        $this->validateFieldFails('config', 'foo');
+        $this->validateFieldFails('config', '[]');
+        $this->validateFieldFails('config', true);
+        $this->validateFieldFails('config', null);
+        $this->validateFieldFails('config', []);
+        $this->validateFieldFails('config', '');
+    }
 }
