@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+* [projects] PHP version can now be set when creating a project
 
 
 ## [0.15.3] - 2023-01-08

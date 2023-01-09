@@ -5,6 +5,12 @@
   "title": "Project Template"
 }, {
   "disabled": true,
+  "errorKeys": ["config.php_version"],
+  "icon": "php",
+  "name": "phpver",
+  "title": "PHP Version"
+}, {
+  "disabled": true,
   "errorKeys": ["repository", "branch"],
   "icon": "code",
   "name": "source",
