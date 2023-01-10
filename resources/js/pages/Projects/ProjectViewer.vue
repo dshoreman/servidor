@@ -38,7 +38,14 @@
                             The system user required by this project does not exist!
                         </sui-segment>
 
-                        <sui-header attached="top" :inverted="darkMode">Source Files</sui-header>
+                        <sui-header attached="top" :inverted="darkMode">
+                            <sui-label style="float: right; margin: 0;"
+                                size="tiny" color="violet" title="PHP Version"
+                                v-if="app.config && app.config.phpVersion">
+                                <sui-icon name="php" /> {{ app.config.phpVersion }}
+                            </sui-label>
+                            Source Files
+                        </sui-header>
                         <sui-segment attached :inverted="darkMode">
                             <sui-grid>
                                 <sui-grid-row :columns="2">
