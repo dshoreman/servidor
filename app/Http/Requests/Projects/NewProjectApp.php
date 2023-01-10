@@ -27,6 +27,8 @@ class NewProjectApp extends FormRequest
             'provider' => 'required|in:github,bitbucket',
             'repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
             'branch' => 'nullable|string',
+            'config' => 'sometimes|required|array:phpVersion',
+            'config.phpVersion' => 'sometimes|required|regex:/^[7-8]\.[0-4]$/',
         ];
     }
 
@@ -41,6 +43,7 @@ class NewProjectApp extends FormRequest
             'source_provider' => $data['provider'],
             'source_repository' => $data['repository'],
             'source_branch' => $data['branch'] ?? '',
+            'config' => $data['config'] ?? [],
         ];
     }
 

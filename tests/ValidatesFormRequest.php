@@ -51,28 +51,30 @@ trait ValidatesFormRequest
         );
     }
 
-    private function validateChildField(string $field, string $parent, $value): bool
+    private function validateChildField(string $field, string $parent, $value, bool $nested = true): bool
     {
-        $rule = "{$parent}.*.{$field}";
+        $glue = $nested ? '.*.' : '.';
+        $rule = $parent . $glue . $field;
+        $data = $nested ? [[$field => $value]] : [$field => $value];
 
         return $this->getValidator(
-            [$parent => [[$field => $value]]],
+            [$parent => $data],
             [$rule => $this->rules[$rule]],
         )->passes();
     }
 
-    private function validateChildFieldFails(string $field, string $parent, $value): void
+    private function validateChildFieldFails(string $field, string $parent, $value, bool $nested = true): void
     {
         $this->assertFalse(
-            $this->validateChildField($field, $parent, $value),
+            $this->validateChildField($field, $parent, $value, $nested),
             $this->validationMessage("{$parent}.*.{$field}", $value, 'fail', 'passed'),
         );
     }
 
-    private function validateChildFieldPasses(string $field, string $parent, $value): void
+    private function validateChildFieldPasses(string $field, string $parent, $value, bool $nested = true): void
     {
         $this->assertTrue(
-            $this->validateChildField($field, $parent, $value),
+            $this->validateChildField($field, $parent, $value, $nested),
             $this->validationMessage("{$parent}.*.{$field}", $value, 'pass', 'failed'),
         );
     }

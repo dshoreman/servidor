@@ -69,4 +69,35 @@ class NewProjectAppTest extends TestCase
         $this->validateFieldFails('repository', true);
         $this->validateFieldFails('repository', ['a', 'b']);
     }
+
+    /** @test */
+    public function config_must_be_an_array(): void
+    {
+        $this->validateFieldPasses('config', ['phpVersion' => null]);
+        $this->validateFieldFails('config', 'foo');
+        $this->validateFieldFails('config', '[]');
+        $this->validateFieldFails('config', true);
+        $this->validateFieldFails('config', null);
+        $this->validateFieldFails('config', []);
+        $this->validateFieldFails('config', '');
+    }
+
+    /** @test */
+    public function config_php_version_must_be_valid(): void
+    {
+        $this->validateChildFieldPasses('phpVersion', 'config', '7.0', false);
+        $this->validateChildFieldPasses('phpVersion', 'config', '7.1', false);
+        $this->validateChildFieldPasses('phpVersion', 'config', '7.2', false);
+        $this->validateChildFieldPasses('phpVersion', 'config', '7.3', false);
+        $this->validateChildFieldPasses('phpVersion', 'config', '7.4', false);
+        $this->validateChildFieldPasses('phpVersion', 'config', '8.0', false);
+        $this->validateChildFieldPasses('phpVersion', 'config', '8.1', false);
+
+        $this->validateChildFieldFails('phpVersion', 'config', '6.9', false);
+        $this->validateChildFieldFails('phpVersion', 'config', 'foo', false);
+        $this->validateChildFieldFails('phpVersion', 'config', false, false);
+        $this->validateChildFieldFails('phpVersion', 'config', true, false);
+        $this->validateChildFieldFails('phpVersion', 'config', null, false);
+        $this->validateChildFieldFails('phpVersion', 'config', 80, false);
+    }
 }

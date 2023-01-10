@@ -33,13 +33,13 @@
   "colour": "violet",
   "isApp": true,
   "name": "PHP",
-  "steps": ["source", "domain", "confirm"],
+  "steps": ["phpver", "source", "domain", "confirm"],
   "text": "Like HTML projects, but with added support for dynamic PHP content."
 }, {
   "icon": "laravel",
   "colour": "red",
   "isApp": true,
   "name": "Laravel",
-  "steps": ["source", "domain", "confirm"],
+  "steps": ["phpver", "source", "domain", "confirm"],
   "text": "Modified PHP project with hooks for artisan migrations and composer/npm."
 }]

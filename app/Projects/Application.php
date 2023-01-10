@@ -4,6 +4,7 @@ namespace Servidor\Projects;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -64,6 +65,10 @@ class Application extends Model
         'system_user',
     ];
 
+    protected $casts = [
+        'config' => AsCollection::class,
+    ];
+
     protected $dispatchesEvents = [
         'saved' => ProjectAppSaved::class,
     ];
@@ -75,6 +80,7 @@ class Application extends Model
         'source_provider',
         'source_repository',
         'source_branch',
+        'config',
     ];
 
     protected $table = 'project_applications';

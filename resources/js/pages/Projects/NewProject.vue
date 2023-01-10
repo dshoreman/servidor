@@ -17,6 +17,12 @@
                     @selected="setAppTemplate" />
             </sui-segment>
 
+            <sui-segment v-else-if="step == 'phpver'">
+                <h3 is="sui-header">If your project requires an older PHP, set it here</h3>
+                <php-versions :errors="errors" v-model="defaultApp.config.phpVersion"
+                    @next="nextStep('phpver')" @cancel="cancel" />
+            </sui-segment>
+
             <sui-segment v-else-if="step == 'source'">
                 <h3 is="sui-header">Where are the project files stored?</h3>
                 <source-selector :errors="errors" :providers="providers" v-model="sourceData"
@@ -57,6 +63,7 @@ import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DiscardPrompt from '../../components/Projects/DiscardPrompt.vue';
 import DomainForm from '../../components/Projects/Apps/DomainForm';
+import PhpVersions from '../../components/Projects/Apps/PhpVersions';
 import ProgressModal from '../../components/ProgressModal';
 import RedirectForm from '../../components/Projects/Apps/RedirectForm';
 import SourceSelector from '../../components/Projects/Apps/SourceSelector';
@@ -83,6 +90,7 @@ export default {
         ConfirmationText,
         DiscardPrompt,
         DomainForm,
+        PhpVersions,
         ProgressModal,
         RedirectForm,
         StepList,
@@ -199,6 +207,10 @@ export default {
                     target: '',
                     type: 301,
                 });
+            }
+
+            if (tpl.steps.includes('phpver')) {
+                this.defaultApp.config = { phpVersion: '8.0' };
             }
 
             this.steps.forEach(s => {
