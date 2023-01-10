@@ -133,17 +133,10 @@
                             </sui-header>
                         </sui-segment>
 
-                        <sui-header v-if="logNames.length" attached="top" :inverted="darkMode">
+                        <sui-header v-if="app.logs.length" attached="top" :inverted="darkMode">
                             Project Logs
                         </sui-header>
-                        <sui-segment attached :inverted="darkMode" v-if="logNames.length">
-                            <sui-menu pointing secondary :inverted="darkMode">
-                                <a is="sui-menu-item" v-for="(title, key) in app.logs" :key="key"
-                                    :active="activeLog === key" :content="title"
-                                    @click="viewLog(app.id, key)" />
-                            </sui-menu>
-                            <pre>{{ logContent }}</pre>
-                        </sui-segment>
+                        <project-logs :project="project" :app="app" />
                     </div>
 
                     <div v-for="redir in project.redirects" :key="redir.id">
@@ -200,39 +193,30 @@
 </style>
 
 <script>
+import ProjectLogs from '../../components/Projects/Viewer/ProjectLogs';
 import ProjectTabs from '../../components/Projects/Viewer/ProjectTabs';
 import { mapActions } from 'vuex';
 
 export default {
     components: {
+        ProjectLogs,
         ProjectTabs,
     },
     async mounted() {
         if (!this.$store.getters['projects/all'].length) {
             await this.$store.dispatch('projects/load');
         }
-
-        this.initLog();
     },
     props: {
         id: { type: Number, default: 0 },
     },
     data() {
         return {
-            activeLog: '',
-            logContent: '',
             renaming: false,
             newProjectName: '',
         };
     },
     computed: {
-        logNames() {
-            if (0 === this.project.applications.length) {
-                return [];
-            }
-
-            return Object.keys(this.project.applications[0].logs);
-        },
         project() {
             return this.$store.getters['projects/find'](this.id);
         },
@@ -241,16 +225,6 @@ export default {
         ...mapActions({
             pullFiles: 'projects/pull',
         }),
-        initLog() {
-            const [ app ] = this.project.applications;
-
-            if (this.logNames.length) {
-                this.viewLog(app.id, this.logNames[0]);
-            } else {
-                this.logContent = '';
-                this.activeLog = '';
-            }
-        },
         filesLink(path) {
             return { name: 'files', params: { path }};
         },
@@ -284,20 +258,6 @@ export default {
             this.$store.dispatch(`projects/${endpoint}`, this.project.id).catch(() => {
                 this.project.is_enabled = !enabled;
             });
-        },
-        viewLog(appId, key) {
-            this.logContent = 'Loading...';
-            this.activeLog = key;
-
-            axios
-                .get(`/api/projects/${this.project.id}/logs/${this.activeLog}.app-${appId}.log`)
-                .then(response => {
-                    this.logContent = '' === response.data.trim()
-                        ? "Log file is empty or doesn't exist."
-                        : response.data;
-                }).catch(() => {
-                    this.logContent = `Failed to load ${this.activeLog} log!`;
-                });
         },
     },
 };
