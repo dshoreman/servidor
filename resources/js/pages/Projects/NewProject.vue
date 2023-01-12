@@ -35,6 +35,11 @@
                     @next="setDomain" @cancel="cancel" />
             </sui-segment>
 
+            <sui-segment v-else-if="step == 'ssl'">
+                <h3 is="sui-header">Have an SSL Certificate to use?</h3>
+                <ssl-form :errors="errors" @next="nextStep('ssl')" @cancel="cancel" />
+            </sui-segment>
+
             <sui-segment v-else-if="step == 'redirect'">
                 <h3 is="sui-header">Time to set the target!</h3>
                 <redirect-form :errors="errors" :domain="defaultApp.domain"
@@ -67,6 +72,7 @@ import PhpVersions from '../../components/Projects/Apps/PhpVersions';
 import ProgressModal from '../../components/ProgressModal';
 import RedirectForm from '../../components/Projects/Apps/RedirectForm';
 import SourceSelector from '../../components/Projects/Apps/SourceSelector';
+import SslForm from '../../components/Projects/Apps/SslForm';
 import StepList from '../../components/Projects/StepList';
 import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
 import providers from './source-providers.json';
@@ -93,6 +99,7 @@ export default {
         PhpVersions,
         ProgressModal,
         RedirectForm,
+        SslForm,
         StepList,
         SourceSelector,
         TemplateSelector,
