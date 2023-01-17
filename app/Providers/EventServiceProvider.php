@@ -9,6 +9,8 @@ use Servidor\Projects\Applications\ApplyAppNginxConfig;
 use Servidor\Projects\Applications\CreateSystemUser;
 use Servidor\Projects\Applications\DeployApp;
 use Servidor\Projects\Applications\ProjectAppSaved;
+use Servidor\Projects\Applications\ProjectAppSaving;
+use Servidor\Projects\Applications\SaveSslCertificate;
 use Servidor\Projects\ProjectSaved;
 use Servidor\Projects\Redirects\ApplyRedirectNginxConfig;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
@@ -21,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
         ProjectSaved::class => [
             ToggleProjectVisibility::class,
             ReloadNginxService::class,
+        ],
+        ProjectAppSaving::class => [
+            SaveSslCertificate::class,
         ],
         ProjectAppSaved::class => [
             CreateSystemUser::class,

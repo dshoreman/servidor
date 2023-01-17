@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Servidor\Projects\Applications\LogFile;
 use Servidor\Projects\Applications\ProjectAppSaved;
+use Servidor\Projects\Applications\ProjectAppSaving;
 use Servidor\Projects\Applications\Templates\Html;
 use Servidor\Projects\Applications\Templates\Laravel;
 use Servidor\Projects\Applications\Templates\Php;
@@ -21,22 +23,23 @@ use Servidor\System\Users\UserNotFound;
 /**
  * An Application is a Project component for websites, apps or server processes.
  *
- * @property int     $id
- * @property int     $project_id
- * @property string  $template
- * @property string  $domain_name
- * @property string  $source_provider
- * @property string  $source_repository
- * @property string  $source_branch
- * @property ?Carbon $created_at
- * @property ?Carbon $updated_at
- * @property string  $document_root
- * @property array   $logs
- * @property string  $source_repo_name
- * @property string  $source_root
- * @property string  $source_uri
- * @property ?array  $system_user
- * @property Project $project
+ * @property int         $id
+ * @property int         $project_id
+ * @property string      $template
+ * @property string      $domain_name
+ * @property string      $source_provider
+ * @property string      $source_repository
+ * @property string      $source_branch
+ * @property ?Collection $config
+ * @property ?Carbon     $created_at
+ * @property ?Carbon     $updated_at
+ * @property string      $document_root
+ * @property array       $logs
+ * @property string      $source_repo_name
+ * @property string      $source_root
+ * @property string      $source_uri
+ * @property ?array      $system_user
+ * @property Project     $project
  *
  * @method static Builder|Application query()
  * @method static Builder|Application whereCreatedAt($value)
@@ -70,6 +73,7 @@ class Application extends Model
     ];
 
     protected $dispatchesEvents = [
+        'saving' => ProjectAppSaving::class,
         'saved' => ProjectAppSaved::class,
     ];
 
