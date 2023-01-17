@@ -37,7 +37,8 @@
 
             <sui-segment v-else-if="step == 'ssl'">
                 <h3 is="sui-header">Have an SSL Certificate to use?</h3>
-                <ssl-form :errors="errors" @next="nextStep('ssl')" @cancel="cancel" />
+                <ssl-form :errors="errors" v-model="defaultApp.config"
+                    @next="nextStep('ssl')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'redirect'">

@@ -2,20 +2,21 @@
     <sui-form @submit.prevent="$emit('next')">
 
         <sui-form-field :error="'config.ssl' in errors">
-            <sui-checkbox toggle v-model="config.ssl"
-                                 label="Enable SSL for this project" />
+            <sui-checkbox toggle :checked="value.ssl"
+                          @change="checked => setConfig('ssl', checked)"
+                          label="Enable SSL for this project" />
         </sui-form-field>
 
-        <sui-form-field :error="'config.sslCertificate' in errors">
+        <sui-form-field :disabled="!value.ssl" :error="'config.sslCertificate' in errors">
             <label>SSL Certificate</label>
-            <textarea required :disabled="!config.ssl"
-                v-model="config.sslCertificate" />
+            <textarea :required="value.ssl" :value="value.sslCertificate"
+                @input="e => setConfig('sslCertificate', e.target.value)" />
         </sui-form-field>
 
-        <sui-form-field :error="'config.sslPrivateKey' in errors">
+        <sui-form-field :disabled="!value.ssl" :error="'config.sslPrivateKey' in errors">
             <label>Private Key</label>
-            <textarea required :disabled="!config.ssl"
-                v-model="config.sslPrivateKey" />
+            <textarea :required="value.ssl" :value="value.sslPrivateKey"
+                @input="e => setConfig('sslPrivateKey', e.target.value)" />
         </sui-form-field>
 
         <step-buttons @cancel="$emit('cancel')" />
@@ -32,11 +33,12 @@ export default {
     },
     props: {
         errors: { type: Object, default: () => ({}) },
+        value: { type: Object, default: () => ({}) },
     },
-    data() {
-        return {
-            config: { ssl: false, sslCertificate: '', sslPrivateKey: '' },
-        };
+    methods: {
+        setConfig(key, value) {
+            this.$emit('input', { ...this.value, [key]: value });
+        },
     },
 };
 </script>
