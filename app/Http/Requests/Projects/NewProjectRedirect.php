@@ -11,6 +11,10 @@ class NewProjectRedirect extends FormRequest
     {
         return [
             'domain' => ['required', new Domain()],
+            'config' => 'sometimes|required|array:ssl,sslCertificate,sslPrivateKey',
+            'config.ssl' => 'sometimes|required|boolean',
+            'config.sslCertificate' => 'sometimes|required|string|filled',
+            'config.sslPrivateKey' => 'sometimes|required|string|filled',
             'includeWww' => 'boolean',
             'target' => 'required|string',
             'type' => 'required|integer',
@@ -19,10 +23,13 @@ class NewProjectRedirect extends FormRequest
 
     public function validated(): array
     {
+        /** @var array{domain: string, config: ?array, includeWww: ?bool,
+         *             target: string, type: int} $data */
         $data = parent::validated();
 
-        $data['domain_name'] = (string) ($data['domain'] ?? '');
-        $data['include_www'] = (bool) ($data['includeWww'] ?? false);
+        $data['config'] ??= [];
+        $data['domain_name'] = $data['domain'];
+        $data['include_www'] = $data['includeWww'] ?? false;
         unset($data['domain'], $data['includeWww']);
 
         return $data;

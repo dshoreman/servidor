@@ -37,8 +37,11 @@
 
             <sui-segment v-else-if="step == 'ssl'">
                 <h3 is="sui-header">Have an SSL Certificate to use?</h3>
+                <ssl-form :errors="errors" v-model="defaultRedirect.config"
+                    @next="nextStep('ssl')" @cancel="cancel"
+                    v-if="template == 'archive'" />
                 <ssl-form :errors="errors" v-model="defaultApp.config"
-                    @next="nextStep('ssl')" @cancel="cancel" />
+                    @next="nextStep('ssl')" @cancel="cancel" v-else />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'redirect'">
@@ -204,13 +207,15 @@ export default {
 
             if (tpl.isApp) {
                 this.project.applications.push({
-                    template: tpl.name.toLowerCase(),
-                    provider: 'github',
+                    config: {},
                     domain: '',
+                    provider: 'github',
+                    template: tpl.name.toLowerCase(),
                 });
             } else {
                 this.project.applications.push({ template: 'archive', domain: '' });
                 this.project.redirects.push({
+                    config: {},
                     domain: '',
                     target: '',
                     type: 301,
