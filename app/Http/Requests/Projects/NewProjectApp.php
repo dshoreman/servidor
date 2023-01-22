@@ -27,11 +27,12 @@ class NewProjectApp extends FormRequest
             'provider' => 'required|in:github,bitbucket',
             'repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
             'branch' => 'nullable|string',
-            'config' => 'sometimes|required|array:phpVersion,ssl,sslCertificate,sslPrivateKey',
+            'config' => 'sometimes|required|array:phpVersion,ssl,sslCertificate,sslPrivateKey,sslRedirect',
             'config.phpVersion' => 'sometimes|required|regex:/^[7-8]\.[0-4]$/',
             'config.ssl' => 'sometimes|required|boolean',
             'config.sslCertificate' => 'sometimes|required|string|filled',
             'config.sslPrivateKey' => 'sometimes|required|string|filled',
+            'config.sslRedirect' => 'sometimes|required|boolean',
         ];
     }
 

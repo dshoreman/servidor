@@ -7,6 +7,12 @@
                           label="Enable SSL for this project" />
         </sui-form-field>
 
+        <sui-form-field :error="'config.sslRedirect' in errors">
+            <sui-checkbox toggle :disabled="!value.ssl" :checked="value.sslRedirect"
+                          @change="checked => setConfig('sslRedirect', checked)"
+                          label="Force SSL (redirect HTTP to HTTPS)" />
+        </sui-form-field>
+
         <sui-form-field :disabled="!value.ssl" :error="'config.sslCertificate' in errors">
             <label>SSL Certificate</label>
             <textarea :required="value.ssl" :value="value.sslCertificate"

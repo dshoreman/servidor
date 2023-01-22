@@ -11,20 +11,24 @@ export default {
     },
     data: () => ({
         icons: ['lock', 'unlock'],
-        colours: ['green', 'red'],
+        colours: ['green', 'orange', 'red'],
         statuses: ['SSL Enabled', 'SSL Disabled'],
         details: [
-            'SSL is enabled!',
+            'SSL is enabled and HTTP links are redirected!',
+            'SSL is enabled, but HTTP links are not redirected.',
             'SSL is not enabled. Data may be insecure.',
         ],
     }),
     methods: {
-        txt(good, bad) {
-            if (this.app.config.ssl) {
+        txt(good, ok, bad = '') {
+            if (this.app.config.ssl && this.app.config.sslRedirect) {
                 return good;
             }
+            if ('' === bad) {
+                return this.app.config.ssl ? good : ok;
+            }
 
-            return bad;
+            return this.app.config.ssl ? ok : bad;
         },
     },
 };

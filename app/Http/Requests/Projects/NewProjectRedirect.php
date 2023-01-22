@@ -11,10 +11,11 @@ class NewProjectRedirect extends FormRequest
     {
         return [
             'domain' => ['required', new Domain()],
-            'config' => 'sometimes|required|array:ssl,sslCertificate,sslPrivateKey',
+            'config' => 'sometimes|required|array:ssl,sslCertificate,sslPrivateKey,sslRedirect',
             'config.ssl' => 'sometimes|required|boolean',
             'config.sslCertificate' => 'sometimes|required|string|filled',
             'config.sslPrivateKey' => 'sometimes|required|string|filled',
+            'config.sslRedirect' => 'sometimes|required|boolean',
             'includeWww' => 'boolean',
             'target' => 'required|string',
             'type' => 'required|integer',

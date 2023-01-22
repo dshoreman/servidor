@@ -29,7 +29,7 @@
   "title": "Redirection"
 }, {
   "disabled": true,
-  "errorKeys": ["config.ssl", "config.sslCertificate", "config.sslPrivateKey"],
+  "errorKeys": ["config.ssl", "config.sslCertificate", "config.sslPrivateKey", "config.sslRedirect"],
   "icon": "shield",
   "name": "ssl",
   "title": "SSL / HTTPS"
