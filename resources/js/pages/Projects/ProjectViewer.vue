@@ -134,7 +134,7 @@
                             </sui-header>
                         </sui-segment>
 
-                        <sui-header v-if="app.logs.length" attached="top" :inverted="darkMode">
+                        <sui-header v-if="hasLogs(app)" attached="top" :inverted="darkMode">
                             Project Logs
                         </sui-header>
                         <project-logs :project="project" :app="app" />
@@ -230,6 +230,9 @@ export default {
         }),
         filesLink(path) {
             return { name: 'files', params: { path }};
+        },
+        hasLogs(app) {
+            return 0 !== Object.keys(app.logs).length;
         },
         removeProject() {
             /* eslint-disable no-alert */

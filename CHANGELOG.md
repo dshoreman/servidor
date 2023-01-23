@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] PHP version can now be set when creating a project
 * [projects] Added support for enabling HTTPS and setting SSL certificates
 
+### Fixed
+* [projects] The logs header is now correctly displayed when there are logs
+
 
 ## [0.15.3] - 2023-01-08
 ### Changed
