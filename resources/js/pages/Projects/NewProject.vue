@@ -39,7 +39,7 @@
                 <h3 is="sui-header">Have an SSL Certificate to use?</h3>
                 <ssl-form :errors="errors" v-model="defaultRedirect.config"
                     @next="nextStep('ssl')" @cancel="cancel"
-                    v-if="template == 'archive'" />
+                    v-if="defaultApp.template == 'archive'" />
                 <ssl-form :errors="errors" v-model="defaultApp.config"
                     @next="nextStep('ssl')" @cancel="cancel" v-else />
             </sui-segment>

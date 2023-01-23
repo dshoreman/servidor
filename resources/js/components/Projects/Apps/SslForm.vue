@@ -37,6 +37,11 @@ export default {
     components: {
         StepButtons,
     },
+    mounted() {
+        if (!Object.hasOwn(this.value, 'ssl')) {
+            this.setConfig('ssl', false);
+        }
+    },
     props: {
         errors: { type: Object, default: () => ({}) },
         value: { type: Object, default: () => ({}) },
