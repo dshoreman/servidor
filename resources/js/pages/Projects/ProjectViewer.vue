@@ -39,7 +39,8 @@
                         </sui-segment>
 
                         <sui-header attached="top" :inverted="darkMode">
-                            <sui-label style="float: right; margin: 0;"
+                            <ssl-indicator :app="app" style="float: right; margin: 0;" />
+                            <sui-label style="float: right; margin: 0 5px 0;"
                                 size="tiny" color="violet" title="PHP Version"
                                 v-if="app.config && app.config.phpVersion">
                                 <sui-icon name="php" /> {{ app.config.phpVersion }}
@@ -195,12 +196,14 @@
 <script>
 import ProjectLogs from '../../components/Projects/Viewer/ProjectLogs';
 import ProjectTabs from '../../components/Projects/Viewer/ProjectTabs';
+import SslIndicator from '../../components/Projects/Apps/SslIndicator';
 import { mapActions } from 'vuex';
 
 export default {
     components: {
         ProjectLogs,
         ProjectTabs,
+        SslIndicator,
     },
     async mounted() {
         if (!this.$store.getters['projects/all'].length) {

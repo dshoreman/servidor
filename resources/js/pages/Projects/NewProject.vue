@@ -35,6 +35,15 @@
                     @next="setDomain" @cancel="cancel" />
             </sui-segment>
 
+            <sui-segment v-else-if="step == 'ssl'">
+                <h3 is="sui-header">Have an SSL Certificate to use?</h3>
+                <ssl-form :errors="errors" v-model="defaultRedirect.config"
+                    @next="nextStep('ssl')" @cancel="cancel"
+                    v-if="defaultApp.template == 'archive'" />
+                <ssl-form :errors="errors" v-model="defaultApp.config"
+                    @next="nextStep('ssl')" @cancel="cancel" v-else />
+            </sui-segment>
+
             <sui-segment v-else-if="step == 'redirect'">
                 <h3 is="sui-header">Time to set the target!</h3>
                 <redirect-form :errors="errors" :domain="defaultApp.domain"
@@ -67,6 +76,7 @@ import PhpVersions from '../../components/Projects/Apps/PhpVersions';
 import ProgressModal from '../../components/ProgressModal';
 import RedirectForm from '../../components/Projects/Apps/RedirectForm';
 import SourceSelector from '../../components/Projects/Apps/SourceSelector';
+import SslForm from '../../components/Projects/Apps/SslForm';
 import StepList from '../../components/Projects/StepList';
 import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
 import providers from './source-providers.json';
@@ -93,6 +103,7 @@ export default {
         PhpVersions,
         ProgressModal,
         RedirectForm,
+        SslForm,
         StepList,
         SourceSelector,
         TemplateSelector,
@@ -196,13 +207,15 @@ export default {
 
             if (tpl.isApp) {
                 this.project.applications.push({
-                    template: tpl.name.toLowerCase(),
-                    provider: 'github',
+                    config: {},
                     domain: '',
+                    provider: 'github',
+                    template: tpl.name.toLowerCase(),
                 });
             } else {
                 this.project.applications.push({ template: 'archive', domain: '' });
                 this.project.redirects.push({
+                    config: {},
                     domain: '',
                     target: '',
                     type: 301,
