@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * [projects] The logs header is now correctly displayed when there are logs
+* [projects] Values on the Creation form no longer fail to reset when navigating away
 
 
 ## [0.15.3] - 2023-01-08

@@ -83,11 +83,7 @@ import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
-const DEFAULTS = {
-        extraData: { repository: '', provider: '' },
-        project: { name: '', applications: [], redirects: []},
-        sourceData: { repository: '', provider: 'github', branch: null, url: '' },
-    }, PERCENT_APP = 25,
+const PERCENT_APP = 25,
     PERCENT_REDIRECT = 40,
     STEP_APP = 'app.save',
     STEP_CREATE = 'project.create',
@@ -113,9 +109,9 @@ export default {
             bypassLeaveHandler: false,
             error: '',
             errors: {},
-            extraData: DEFAULTS.extraData,
-            project: DEFAULTS.project,
-            sourceData: DEFAULTS.sourceData,
+            extraData: { repository: '', provider: '' },
+            project: { name: '', applications: [], redirects: []},
+            sourceData: { repository: '', provider: 'github', branch: null, url: '' },
             projectCreatedId: 0,
             providers,
             step: 'template',
@@ -163,9 +159,9 @@ export default {
             }, 'projects');
         },
         discard() {
-            this.extraData = DEFAULTS.extraData;
-            this.sourceData = DEFAULTS.sourceData;
-            this.project = DEFAULTS.project;
+            this.extraData = { repository: '', provider: '' };
+            this.project = { name: '', applications: [], redirects: []};
+            this.sourceData = { repository: '', provider: 'github', branch: null, url: '' };
 
             this.steps.forEach(s => {
                 if ('template' !== s.name) {
