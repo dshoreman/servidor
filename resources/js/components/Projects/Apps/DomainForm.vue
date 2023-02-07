@@ -5,9 +5,9 @@
 
             <label>Domain name</label>
 
-            <sui-input :value="value"
+            <sui-input :value="value.domain"
                 placeholder="example.com" required
-                @input="$emit('input', $event)" />
+                @input="setValue('domain', $event)" />
 
             <sui-label basic color="red" pointing
                 v-if="'domain' in errors">
@@ -20,13 +20,15 @@
             <label>Prefix Preferences</label>
             <sui-form-fields>
                 <sui-form-field :width="8">
-                    <sui-checkbox toggle v-model="includeWww"
-                        :disabled="this.value.startsWith('www.')"
+                    <sui-checkbox toggle :checked="value.includeWww"
+                        :disabled="value.domain.startsWith('www.')"
+                        @change="setValue('includeWww', $event)"
                         label="Handle 'www.' subdomain" />
                 </sui-form-field>
                 <sui-form-field :width="8">
-                    <sui-checkbox toggle v-model="redirectWww"
-                        :disabled="this.value.startsWith('www.') || !this.includeWww"
+                    <sui-checkbox toggle :checked="value.config.redirectWww"
+                        :disabled="!(value.domain.startsWith('www.') || value.includeWww)"
+                        @change="setConfig('redirectWww', $event)"
                         label="Auto-remove 'www.' prefix" />
                 </sui-form-field>
             </sui-form-fields>
@@ -46,7 +48,7 @@ export default {
     },
     props: {
         errors: { type: Object, default: () => ({}) },
-        value: { type: String, default: '' },
+        value: { type: Object, default: () => ({}) },
     },
     data() {
         return {
@@ -59,6 +61,12 @@ export default {
             const { value, includeWww } = this;
 
             this.$emit('next', { includeWww, domain: value });
+        },
+        setConfig(key, value) {
+            this.setValue('config', { ...this.value.config, [key]: value });
+        },
+        setValue(key, value) {
+            this.$emit('input', { ...this.value, [key]: value });
         },
     },
 };
