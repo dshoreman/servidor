@@ -19,13 +19,13 @@
         <sui-form-field>
             <label>Prefix Preferences</label>
             <sui-form-fields>
-                <sui-form-field :width="8">
+                <sui-form-field :width="isNotRedirect() ? 8 : 16">
                     <sui-checkbox toggle :checked="value.includeWww"
                         :disabled="value.domain.startsWith('www.')"
                         @change="setValue('includeWww', $event)"
                         label="Handle 'www.' subdomain" />
                 </sui-form-field>
-                <sui-form-field :width="8">
+                <sui-form-field :width="8" v-if="isNotRedirect()">
                     <sui-checkbox toggle :checked="value.config.redirectWww"
                         :disabled="!(value.domain.startsWith('www.') || value.includeWww)"
                         @change="setConfig('redirectWww', $event)"
@@ -57,6 +57,9 @@ export default {
         };
     },
     methods: {
+        isNotRedirect() {
+            return Object.hasOwn(this.value, 'template') && 'archive' !== this.value.template;
+        },
         save() {
             const { value, includeWww } = this;
 
