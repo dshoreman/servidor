@@ -17,9 +17,19 @@
         </sui-form-field>
 
         <sui-form-field>
-            <sui-checkbox toggle v-model="includeWww"
-                :disabled="this.value.startsWith('www.')"
-                label="Include 'www.' subdomain" />
+            <label>Prefix Preferences</label>
+            <sui-form-fields>
+                <sui-form-field :width="8">
+                    <sui-checkbox toggle v-model="includeWww"
+                        :disabled="this.value.startsWith('www.')"
+                        label="Handle 'www.' subdomain" />
+                </sui-form-field>
+                <sui-form-field :width="8">
+                    <sui-checkbox toggle v-model="redirectWww"
+                        :disabled="this.value.startsWith('www.') || !this.includeWww"
+                        label="Auto-remove 'www.' prefix" />
+                </sui-form-field>
+            </sui-form-fields>
         </sui-form-field>
 
         <step-buttons @cancel="$emit('cancel')" />
@@ -41,6 +51,7 @@ export default {
     data() {
         return {
             includeWww: false,
+            redirectWww: true,
         };
     },
     methods: {
