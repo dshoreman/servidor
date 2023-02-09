@@ -1,4 +1,4 @@
-@if ($app->include_www && $app->config?->get('redirectWww'))
+@if ($app->config?->get('redirectWww'))
 server {
 @if ($app->config?->get('ssl'))
     listen 80;
@@ -8,9 +8,15 @@ server {
     ssl_certificate_key {{ $app->config?->get('sslPrivateKey') }};
 
 @endif
+@if (1 === $app->config?->get('redirectWww'))
     server_name www.{{ $app->domain_name }};
 
     return 301 http{{ $app->config?->get('ssl') ? 's' : '' }}://{{ $app->domain_name }};
+@else
+    server_name {{ $app->domain_name }};
+
+    return 301 http{{ $app->config?->get('ssl') ? 's' : '' }}://www.{{ $app->domain_name }};
+@endif
 }
 
 @endif
@@ -41,6 +47,8 @@ server {
 
 @if ($app->include_www && !$app->config?->get('redirectWww'))
     server_name {{ $app->domain_name }} www.{{ $app->domain_name }};
+@elseif ($app->include_www && 0 > $app->config?->get('redirectWww'))
+    server_name www.{{ $app->domain_name }};
 @else
     server_name {{ $app->domain_name }};
 @endif

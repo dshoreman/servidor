@@ -18,18 +18,17 @@
 
         <sui-form-field>
             <label>Prefix Preferences</label>
-            <sui-form-fields>
+            <sui-form-fields inline>
                 <sui-form-field :width="isNotRedirect() ? 8 : 16">
                     <sui-checkbox toggle :checked="value.includeWww"
                         :disabled="value.domain.startsWith('www.')"
                         @change="setValue('includeWww', $event)"
                         label="Handle 'www.' subdomain" />
                 </sui-form-field>
-                <sui-form-field :width="8" v-if="isNotRedirect()">
-                    <sui-checkbox toggle :checked="value.config.redirectWww"
+                <sui-form-field :width="8" v-if="isNotRedirect()" style="display: block">
+                    <sui-dropdown :options="redirectOptions" :value="value.config.redirectWww"
                         :disabled="!(value.domain.startsWith('www.') || value.includeWww)"
-                        @change="setConfig('redirectWww', $event)"
-                        label="Auto-remove 'www.' prefix" />
+                        fluid selection @input="setConfig('redirectWww', $event)" />
                 </sui-form-field>
             </sui-form-fields>
         </sui-form-field>
@@ -52,8 +51,11 @@ export default {
     },
     data() {
         return {
-            includeWww: false,
-            redirectWww: true,
+            redirectOptions: [
+                { text: 'Serve both (no preference)', value: 0 },
+                { text: 'Redirect www → non-www', value: 1 },
+                { text: 'Redirect non-www → www', value: -1 },
+            ],
         };
     },
     methods: {
