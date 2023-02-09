@@ -43,8 +43,8 @@ server {
 
     ssl_certificate {{ $app->config?->get('sslCertificate') }};
     ssl_certificate_key {{ $app->config?->get('sslPrivateKey') }};
-@endif
 
+@endif
 @if ($app->include_www && !$app->config?->get('redirectWww'))
     server_name {{ $app->domain_name }} www.{{ $app->domain_name }};
 @elseif ($app->include_www && 0 > $app->config?->get('redirectWww'))

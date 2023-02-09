@@ -16,7 +16,7 @@ class NewProjectRedirect extends FormRequest
             'config.sslCertificate' => 'sometimes|required|string|filled',
             'config.sslPrivateKey' => 'sometimes|required|string|filled',
             'config.sslRedirect' => 'sometimes|required|boolean',
-            'config.redirectWww' => 'sometimes|required|boolean',
+            'config.redirectWww' => 'sometimes|required|integer|between:-1,1',
             'includeWww' => 'boolean',
             'target' => 'required|string',
             'type' => 'required|integer',
