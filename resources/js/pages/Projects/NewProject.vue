@@ -31,8 +31,11 @@
 
             <sui-segment v-else-if="step == 'domain'">
                 <h3 is="sui-header">Set the main entry point for your app</h3>
-                <domain-form :errors="errors" v-model="defaultApp.domain"
-                    @next="setDomain" @cancel="cancel" />
+                <domain-form :errors="errors" v-model="defaultRedirect"
+                    @next="nextStep('domain')" @cancel="cancel"
+                    v-if="defaultApp.template == 'archive'" />
+                <domain-form :errors="errors" v-model="defaultApp" v-else
+                    @next="nextStep('domain')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'ssl'">
