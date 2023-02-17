@@ -13,7 +13,7 @@ class PrepareSsl
     {
         $project = $event->getProject();
 
-        $step = new ProgressStep('nginx.ssl', 'Saving SSL certificate', 40);
+        $step = new ProgressStep('nginx.ssl', 'Saving SSL certificate', 20);
         ProjectProgress::dispatch($project, $step->start());
 
         try {

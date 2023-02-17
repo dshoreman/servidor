@@ -86,8 +86,8 @@ import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
-const PERCENT_APP = 25,
-    PERCENT_REDIRECT = 40,
+const PERCENT_APP = 95,
+    PERCENT_REDIRECT = 95,
     STEP_APP = 'app.save',
     STEP_CREATE = 'project.create',
     STEP_REDIRECT = 'redirect.save',
@@ -312,7 +312,7 @@ export default {
                 ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
                 : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
 
-            await this.$store.dispatch('progress/start', { step });
+            await this.$store.dispatch('progress/stepStarted', { step });
             await this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data });
             await this.$store.dispatch('progress/stepCompleted', { step, progress });
         },

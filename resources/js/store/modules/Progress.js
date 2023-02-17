@@ -65,7 +65,7 @@ export default {
                         dispatch('stepSkipped', data);
                         break;
                     case 'working':
-                        dispatch('stepProgressed', data);
+                        dispatch('stepStarted', data);
                         break;
                     case 'complete':
                         dispatch('stepCompleted', data);
@@ -78,20 +78,17 @@ export default {
         progress: ({ commit }, { progress }) => {
             commit('setProgress', progress);
         },
-        start: ({ commit }, { step }) => {
-            commit('setIcon', { step, icon: 'loading spinner' });
-        },
-        stepCompleted({ commit }, { step, progress = 0 }) {
-            if (0 < progress) {
+        stepCompleted({ commit, state }, { step, progress = 0 }) {
+            const maxdiff = 40;
+
+            // Prevents an issue where config reload sets 100% progress too soon
+            if (0 < progress && progress < maxdiff + state.percentComplete) {
                 commit('setProgress', progress);
             }
             commit('setIcon', { step, icon: 'check', colour: 'green' });
         },
-        stepProgressed({ commit }, { step, progress = 0 }) {
-            if (0 < progress) {
-                commit('setProgress', progress);
-            }
-            commit('setIcon', { step, icon: 'loading spinner', colour: 'purple' });
+        stepStarted({ commit }, { step }) {
+            commit('setIcon', { step, icon: 'loading spinner' });
         },
         stepSkipped({ commit }, { step, progress = 0 }) {
             if (0 < progress) {
