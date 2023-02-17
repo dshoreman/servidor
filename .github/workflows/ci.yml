@@ -109,7 +109,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           command: make test-for-ci
-          timeout_minutes: 2
+          timeout_minutes: 3
           max_attempts: 3
           retry_on: error
       - name: Upload coverage results
