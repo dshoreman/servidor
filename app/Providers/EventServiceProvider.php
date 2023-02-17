@@ -17,6 +17,7 @@ use Servidor\Projects\Redirects\PrepareRedirectSsl;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
 use Servidor\Projects\Redirects\ProjectRedirectSaving;
 use Servidor\Projects\ReloadNginxService;
+use Servidor\Projects\CalculateSteps;
 use Servidor\Projects\ToggleProjectVisibility;
 
 class EventServiceProvider extends ServiceProvider
@@ -27,6 +28,7 @@ class EventServiceProvider extends ServiceProvider
             ReloadNginxService::class,
         ],
         ProjectAppSaving::class => [
+            CalculateSteps::class,
             PrepareSsl::class,
         ],
         ProjectAppSaved::class => [
@@ -37,6 +39,7 @@ class EventServiceProvider extends ServiceProvider
             ReloadNginxService::class,
         ],
         ProjectRedirectSaving::class => [
+            CalculateSteps::class,
             PrepareRedirectSsl::class,
         ],
         ProjectRedirectSaved::class => [

@@ -11,7 +11,7 @@ export default {
         addStep: (state, { name, text, status }) => {
             state.steps.push({ name,
                 text,
-                icon: 'working' === status ? 'loading spinner' : 'minus disabled',
+                icon: 'minus disabled',
                 colour: 'grey' });
         },
         setup: (state, title) => {
@@ -58,13 +58,21 @@ export default {
                     resolve();
                 })
                 .listen('.progress', e => {
-                    const { name, status, progress } = e.step,
-                        complete = 'complete' === status,
-                        progressAction = complete ? 'stepCompleted' : 'stepSkipped';
+                    const data = { progress: e.step.progress, step: e.step.name };
 
-                    'working' === status
-                        ? commit('addStep', e.step)
-                        : dispatch(progressAction, { progress, step: name });
+                    switch (e.step.status) {
+                    case 'skipped':
+                        dispatch('stepSkipped', data);
+                        break;
+                    case 'working':
+                        dispatch('stepProgressed', data);
+                        break;
+                    case 'complete':
+                        dispatch('stepCompleted', data);
+                        break;
+                    default:
+                        commit('addStep', e.step);
+                    }
                 }).error(error => reject(error));
         }),
         progress: ({ commit }, { progress }) => {
@@ -78,6 +86,12 @@ export default {
                 commit('setProgress', progress);
             }
             commit('setIcon', { step, icon: 'check', colour: 'green' });
+        },
+        stepProgressed({ commit }, { step, progress = 0 }) {
+            if (0 < progress) {
+                commit('setProgress', progress);
+            }
+            commit('setIcon', { step, icon: 'loading spinner', colour: 'purple' });
         },
         stepSkipped({ commit }, { step, progress = 0 }) {
             if (0 < progress) {
