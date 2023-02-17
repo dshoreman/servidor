@@ -17,7 +17,7 @@ class CreateSystemUser
         $project = $event->getProject();
 
         $step = new ProgressStep('user.create', 'Creating system user', 35);
-        ProjectProgress::dispatch($project, $step);
+        ProjectProgress::dispatch($project, $step->start());
         $reason = $this->shouldPreventCreation($app);
 
         if (\is_string($reason)) {
