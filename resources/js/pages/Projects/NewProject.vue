@@ -241,15 +241,6 @@ export default {
 
             this.nextStep('source');
         },
-        setDomain(values) {
-            if ('archive' === this.defaultApp.template) {
-                this.defaultRedirect = { ...this.defaultRedirect, ...values };
-            } else {
-                this.defaultApp = { ...this.defaultApp, ...values };
-            }
-
-            this.nextStep('domain');
-        },
         setRedirect(redirect) {
             this.defaultRedirect = { ...this.defaultRedirect, ...redirect };
 

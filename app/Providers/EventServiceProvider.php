@@ -11,13 +11,13 @@ use Servidor\Projects\Applications\DeployApp;
 use Servidor\Projects\Applications\PrepareSsl;
 use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Applications\ProjectAppSaving;
+use Servidor\Projects\CalculateSteps;
 use Servidor\Projects\ProjectSaved;
 use Servidor\Projects\Redirects\ApplyRedirectNginxConfig;
 use Servidor\Projects\Redirects\PrepareRedirectSsl;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
 use Servidor\Projects\Redirects\ProjectRedirectSaving;
 use Servidor\Projects\ReloadNginxService;
-use Servidor\Projects\CalculateSteps;
 use Servidor\Projects\ToggleProjectVisibility;
 
 class EventServiceProvider extends ServiceProvider

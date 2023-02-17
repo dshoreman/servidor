@@ -8,7 +8,7 @@ export default {
         title: 'Loading...',
     },
     mutations: {
-        addStep: (state, { name, text, status }) => {
+        addStep: (state, { name, text }) => {
             state.steps.push({ name,
                 text,
                 icon: 'minus disabled',
