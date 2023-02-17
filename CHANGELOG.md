@@ -10,10 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * [projects] PHP version can now be set when creating a project
 * [projects] Added support for enabling HTTPS and setting SSL certificates
+* [projects] The presence or absence of the 'www.' can now optionally be forced
+
+### Changed
+* [projects] App/redirect creation steps are now added together
 
 ### Fixed
 * [projects] The logs header is now correctly displayed when there are logs
 * [projects] Values on the Creation form no longer fail to reset when navigating away
+* [projects] Missing steps when saving project apps are now correctly added
+* [projects] Progress bar no longer jumps around somewhat eratically during creation
 
 
 ## [0.15.3] - 2023-01-08

@@ -11,6 +11,7 @@ use Servidor\Projects\Applications\DeployApp;
 use Servidor\Projects\Applications\PrepareSsl;
 use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Applications\ProjectAppSaving;
+use Servidor\Projects\CalculateSteps;
 use Servidor\Projects\ProjectSaved;
 use Servidor\Projects\Redirects\ApplyRedirectNginxConfig;
 use Servidor\Projects\Redirects\PrepareRedirectSsl;
@@ -27,6 +28,7 @@ class EventServiceProvider extends ServiceProvider
             ReloadNginxService::class,
         ],
         ProjectAppSaving::class => [
+            CalculateSteps::class,
             PrepareSsl::class,
         ],
         ProjectAppSaved::class => [
@@ -37,6 +39,7 @@ class EventServiceProvider extends ServiceProvider
             ReloadNginxService::class,
         ],
         ProjectRedirectSaving::class => [
+            CalculateSteps::class,
             PrepareRedirectSsl::class,
         ],
         ProjectRedirectSaved::class => [

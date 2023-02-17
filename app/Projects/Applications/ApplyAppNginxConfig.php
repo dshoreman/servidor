@@ -15,7 +15,7 @@ class ApplyAppNginxConfig
         $project = $event->getProject();
 
         $step = new ProgressStep('nginx.save', 'Saving nginx config', 50);
-        ProjectProgress::dispatch($project, $step);
+        ProjectProgress::dispatch($project, $step->start());
 
         try {
             (new SyncNginxConfig($app))->execute();

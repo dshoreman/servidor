@@ -15,7 +15,7 @@ class DeployApp
         $project = $event->getProject();
 
         $step = new ProgressStep('clone', 'Cloning project files', 85);
-        ProjectProgress::dispatch($project, $step);
+        ProjectProgress::dispatch($project, $step->start());
 
         if (!$project->is_enabled) {
             ProjectProgress::dispatch($project, $step->skip(ProgressStep::REASON_NOT_ENABLED));
