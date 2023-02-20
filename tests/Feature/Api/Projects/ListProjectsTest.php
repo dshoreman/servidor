@@ -46,7 +46,7 @@ class ListProjectsTest extends TestCase
     public function listed_projects_include_applications(): array
     {
         $project = Project::create(['name' => 'Laratest']);
-        $project->applications()->save(new Application(['template' => 'Laravel']));
+        $project->applications()->save(new Application(['template' => 'laravel']));
 
         $response = $this->authed()->getJson('/api/projects');
 

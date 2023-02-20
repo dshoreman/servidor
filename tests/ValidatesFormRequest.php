@@ -65,17 +65,54 @@ trait ValidatesFormRequest
 
     private function validateChildFieldFails(string $field, string $parent, $value, bool $nested = true): void
     {
+        $glued = $nested ? "{$parent}.*.{$field}" : "{$parent}.{$field}";
+
         $this->assertFalse(
             $this->validateChildField($field, $parent, $value, $nested),
-            $this->validationMessage("{$parent}.*.{$field}", $value, 'fail', 'passed'),
+            $this->validationMessage($glued, $value, 'fail', 'passed'),
         );
     }
 
     private function validateChildFieldPasses(string $field, string $parent, $value, bool $nested = true): void
     {
+        $glued = $nested ? "{$parent}.*.{$field}" : "{$parent}.{$field}";
+
         $this->assertTrue(
             $this->validateChildField($field, $parent, $value, $nested),
-            $this->validationMessage("{$parent}.*.{$field}", $value, 'pass', 'failed'),
+            $this->validationMessage($glued, $value, 'pass', 'failed'),
+        );
+    }
+
+    private function validateConfigField(string $property, $value): bool
+    {
+        $data = [$property => $value];
+        $rule = 'config.' . $property;
+
+        if (str_contains($property, '.')) {
+            [$key, $prop] = explode('.', $property);
+
+            $data = [$key => [$prop => $value]];
+        }
+
+        return $this->getValidator(
+            ['config' => $data],
+            [$rule => $this->rules[$rule]],
+        )->passes();
+    }
+
+    private function validateConfigFieldFails(string $field, $value): void
+    {
+        $this->assertFalse(
+            $this->validateConfigField($field, $value),
+            $this->validationMessage('config.' . $field, $value, 'fail', 'passed'),
+        );
+    }
+
+    private function validateConfigFieldPasses(string $field, $value): void
+    {
+        $this->assertTrue(
+            $this->validateConfigField($field, $value),
+            $this->validationMessage('config.' . $field, $value, 'pass', 'failed'),
         );
     }
 

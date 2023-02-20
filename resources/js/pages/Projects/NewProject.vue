@@ -25,8 +25,8 @@
 
             <sui-segment v-else-if="step == 'source'">
                 <h3 is="sui-header">Where are the project files stored?</h3>
-                <source-selector :errors="errors" :providers="providers" v-model="sourceData"
-                    @selected="setAppSource" @cancel="cancel" />
+                <source-selector :errors="errors" :providers="providers"
+                    v-model="defaultApp" @next="nextStep('source')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'domain'">
@@ -55,7 +55,7 @@
 
             <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
                 <h3 is="sui-header">Let's get this Project started!</h3>
-                <confirmation-text :app="defaultApp" :source="extraData" />
+                <confirmation-text :app="defaultApp" :providers="providers" />
                 <confirmation-form :errors="errors" v-model="project.name"
                                    :template="defaultApp.template"
                                    @created="create" :created-id="projectCreatedId" />
@@ -112,9 +112,7 @@ export default {
             bypassLeaveHandler: false,
             error: '',
             errors: {},
-            extraData: { repository: '', provider: '' },
             project: { name: '', applications: [], redirects: []},
-            sourceData: { repository: '', provider: 'github', branch: null, url: '' },
             projectCreatedId: 0,
             providers,
             step: 'template',
@@ -162,9 +160,7 @@ export default {
             }, 'projects');
         },
         discard() {
-            this.extraData = { repository: '', provider: '' };
             this.project = { name: '', applications: [], redirects: []};
-            this.sourceData = { repository: '', provider: 'github', branch: null, url: '' };
 
             this.steps.forEach(s => {
                 if ('template' !== s.name) {
@@ -206,9 +202,8 @@ export default {
 
             if (tpl.isApp) {
                 this.project.applications.push({
-                    config: {},
+                    config: { source: { provider: 'github' }},
                     domain: '',
-                    provider: 'github',
                     template: tpl.name.toLowerCase(),
                 });
             } else {
@@ -222,7 +217,7 @@ export default {
             }
 
             if (tpl.steps.includes('phpver')) {
-                this.defaultApp.config = { phpVersion: '8.0' };
+                this.defaultApp.config.phpVersion = '8.0';
             }
 
             this.steps.forEach(s => {
@@ -232,14 +227,6 @@ export default {
             });
 
             this.goto(firstStep);
-        },
-        setAppSource(source) {
-            const { branch, provider, repository, repoUri } = source;
-
-            this.defaultApp = { ...this.defaultApp, repository, provider, branch };
-            this.extraData = { repoUri };
-
-            this.nextStep('source');
         },
         setRedirect(redirect) {
             this.defaultRedirect = { ...this.defaultRedirect, ...redirect };

@@ -22,9 +22,11 @@ class LogFileTest extends TestCase
         $project = Project::create(['name' => 'logrel']);
         $project->applications()->save($app = new Application([
             'template' => 'laravel',
-            'source_provider' => 'github',
-            'source_repository' => 'laravel/laravel',
-            'source_branch' => 'master',
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => 'laravel/laravel',
+                'branch' => 'master',
+            ]],
         ]));
         exec(sprintf(
             'sudo mkdir -p /home/logrel/laravel/storage/logs && sudo cp "%s" "%s"',

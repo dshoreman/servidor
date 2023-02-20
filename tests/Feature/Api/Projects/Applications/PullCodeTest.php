@@ -23,8 +23,11 @@ class PullCodeTest extends TestCase
     {
         $project = Project::create(['name' => 'Pullable Project']);
         $project->applications()->save($app = new Application([
-            'source_provider' => 'github',
-            'source_repository' => self::TEST_REPO,
+            'domain_name' => 'nopull.com',
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => self::TEST_REPO,
+            ]],
             'template' => 'html',
         ]));
 
@@ -46,8 +49,10 @@ class PullCodeTest extends TestCase
         $project = Project::create(['name' => 'Pullable Project']);
         $project->applications()->save($app = new Application([
             'domain_name' => 'apppull.com',
-            'source_provider' => 'github',
-            'source_repository' => self::TEST_REPO,
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => self::TEST_REPO,
+            ]],
             'template' => 'html',
         ]));
 
@@ -70,8 +75,10 @@ class PullCodeTest extends TestCase
         $project = Project::create(['name' => 'Pullable Project']);
         $project->applications()->save($app = new Application([
             'domain_name' => 'checkout.test',
-            'source_provider' => 'github',
-            'source_repository' => self::TEST_REPO,
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => self::TEST_REPO,
+            ]],
             'template' => 'html',
         ]));
 
@@ -93,8 +100,10 @@ class PullCodeTest extends TestCase
         $project = Project::create(['name' => 'Initially Appless']);
         $project->applications()->save($app = new Application([
             'domain_name' => 'srcmk.test',
-            'source_provider' => 'github',
-            'source_repository' => self::TEST_REPO,
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => self::TEST_REPO,
+            ]],
             'template' => 'html',
         ]));
 

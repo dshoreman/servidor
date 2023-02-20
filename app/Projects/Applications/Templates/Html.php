@@ -17,7 +17,7 @@ class Html implements Template
 
     protected array $requiredNginxData = [
         'domain_name' => 'domain name',
-        'source_repository' => 'source repo',
+        'config.source.repository' => 'source repo',
     ];
 
     protected bool $requiresUser = false;

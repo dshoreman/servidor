@@ -31,7 +31,7 @@ class SyncAppFiles
         }
 
         if (0 === $this->status) {
-            $this->pull($user, $this->app->source_branch ?: '');
+            $this->pull($user, (string) ($this->app->config?->get('source')['branch'] ?? ''));
         }
     }
 

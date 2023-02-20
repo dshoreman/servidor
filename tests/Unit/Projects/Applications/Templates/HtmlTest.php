@@ -17,8 +17,10 @@ class HtmlTest extends TestCase
     {
         $app = new Application([
             'template' => 'html',
-            'source_provider' => 'github',
-            'source_repository' => 'dshoreman/servidor-test-site',
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => 'dshoreman/servidor-test-site',
+            ]],
         ]);
         $project = Project::create(['name' => 'htmlroot']);
         $project->applications()->save($app);
@@ -43,9 +45,11 @@ class HtmlTest extends TestCase
         $project = Project::create(['name' => 'pull sans root']);
         $project->applications()->save($app = new Application([
             'domain_name' => 'pullsansroot.com',
-            'source_repository' => 'dshoreman/servidor-test-site',
-            'source_provider' => 'github',
-            'source_branch' => 'develop',
+            'config' => ['source' => [
+                'repository' => 'dshoreman/servidor-test-site',
+                'provider' => 'github',
+                'branch' => 'develop',
+            ]],
             'template' => 'php',
         ]));
         (new SyncAppFiles($app))->execute();
@@ -62,9 +66,11 @@ class HtmlTest extends TestCase
         $project = Project::create(['name' => 'rootperms']);
         $project->applications()->save($app = new Application([
             'domain_name' => 'rootperms.example',
-            'source_repository' => 'dshoreman/servidor-test-site',
-            'source_provider' => 'github',
-            'source_branch' => 'develop',
+            'config' => ['source' => [
+                'repository' => 'dshoreman/servidor-test-site',
+                'provider' => 'github',
+                'branch' => 'develop',
+            ]],
             'template' => 'html',
         ]));
         (new SyncAppFiles($app))->execute();

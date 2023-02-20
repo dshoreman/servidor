@@ -52,9 +52,10 @@
                                 <sui-grid-row :columns="2">
                                     <sui-grid-column>
                                         <sui-header size="tiny" :inverted="darkMode">Repository
-                                            <sui-header-subheader v-if="app.source_repository">
-                                                <sui-icon :name="app.source_provider" />
-                                                <span>{{ app.source_repository }}</span>
+                                            <sui-header-subheader
+                                                v-if="app.config.source.repository">
+                                                <sui-icon :name="app.config.source.provider" />
+                                                <span>{{ app.config.source.repository }}</span>
                                             </sui-header-subheader>
                                             <sui-header-subheader v-else>
                                                 No source repository has been set for this project!
@@ -66,8 +67,8 @@
                                             <sui-button basic positive icon="download"
                                                 content="Pull Latest Code" floated="right"
                                                 @click="pullFiles(app)" />
-                                            <sui-header-subheader v-if="app.source_branch">
-                                                {{ app.source_branch }}
+                                            <sui-header-subheader v-if="app.config.source.branch">
+                                                {{ app.config.source.branch }}
                                             </sui-header-subheader>
                                             <sui-header-subheader v-else>
                                                 Using default branch

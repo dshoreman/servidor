@@ -70,8 +70,11 @@ class ApplicationTest extends TestCase
      */
     public function source_repo_is_parsed_correctly(Application $app): void
     {
-        $app->source_provider = 'github';
-        $app->source_repository = 'dshoreman/servidor-test-site';
+        /** @phpstan-ignore-next-line */
+        $app->config = ['source' => [
+            'provider' => 'github',
+            'repository' => 'dshoreman/servidor-test-site',
+        ]];
 
         $this->assertEquals('https://github.com/dshoreman/servidor-test-site.git', $app->source_uri);
     }
@@ -113,8 +116,10 @@ class ApplicationTest extends TestCase
     {
         $this->project->applications()->save($app = new Application([
             'domain_name' => 'basicdefault.example',
-            'source_provider' => 'github',
-            'source_repository' => 'dshoreman/servidor-test-site',
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => 'dshoreman/servidor-test-site',
+            ]],
         ]));
 
         $this->assertFileExists($config = storage_path('app/vhosts/basicdefault.example.conf'));

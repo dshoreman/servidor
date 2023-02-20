@@ -46,28 +46,28 @@ class NewProjectAppTest extends TestCase
     /** @test */
     public function provider_must_be_valid(): void
     {
-        $this->validateFieldFails('provider', 42);
-        $this->validateFieldPasses('provider', 'github');
-        $this->validateFieldFails('provider', 'gitlab');
-        $this->validateFieldPasses('provider', 'bitbucket');
+        $this->validateConfigFieldFails('source.provider', 42);
+        $this->validateConfigFieldPasses('source.provider', 'github');
+        $this->validateConfigFieldFails('source.provider', 'gitlab');
+        $this->validateConfigFieldPasses('source.provider', 'bitbucket');
     }
 
     /** @test */
     public function repository_is_required(): void
     {
-        $this->validateFieldFails('repository', '');
+        $this->validateConfigFieldFails('source.repository', '');
     }
 
     /** @test */
     public function repository_must_be_a_valid_url(): void
     {
-        $this->validateFieldPasses('repository', 'foo/bar');
-        $this->validateFieldFails('repository', 'foo/bar.git');
-        $this->validateFieldFails('repository', 'https://github.com/foo/bar');
-        $this->validateFieldFails('repository', 'localhost');
-        $this->validateFieldFails('repository', 42);
-        $this->validateFieldFails('repository', true);
-        $this->validateFieldFails('repository', ['a', 'b']);
+        $this->validateConfigFieldPasses('source.repository', 'foo/bar');
+        $this->validateConfigFieldFails('source.repository', 'foo/bar.git');
+        $this->validateConfigFieldFails('source.repository', 'https://github.com/foo/bar');
+        $this->validateConfigFieldFails('source.repository', 'localhost');
+        $this->validateConfigFieldFails('source.repository', 42);
+        $this->validateConfigFieldFails('source.repository', true);
+        $this->validateConfigFieldFails('source.repository', ['a', 'b']);
     }
 
     /** @test */
@@ -85,19 +85,19 @@ class NewProjectAppTest extends TestCase
     /** @test */
     public function config_php_version_must_be_valid(): void
     {
-        $this->validateChildFieldPasses('phpVersion', 'config', '7.0', false);
-        $this->validateChildFieldPasses('phpVersion', 'config', '7.1', false);
-        $this->validateChildFieldPasses('phpVersion', 'config', '7.2', false);
-        $this->validateChildFieldPasses('phpVersion', 'config', '7.3', false);
-        $this->validateChildFieldPasses('phpVersion', 'config', '7.4', false);
-        $this->validateChildFieldPasses('phpVersion', 'config', '8.0', false);
-        $this->validateChildFieldPasses('phpVersion', 'config', '8.1', false);
+        $this->validateConfigFieldPasses('phpVersion', '7.0');
+        $this->validateConfigFieldPasses('phpVersion', '7.1');
+        $this->validateConfigFieldPasses('phpVersion', '7.2');
+        $this->validateConfigFieldPasses('phpVersion', '7.3');
+        $this->validateConfigFieldPasses('phpVersion', '7.4');
+        $this->validateConfigFieldPasses('phpVersion', '8.0');
+        $this->validateConfigFieldPasses('phpVersion', '8.1');
 
-        $this->validateChildFieldFails('phpVersion', 'config', '6.9', false);
-        $this->validateChildFieldFails('phpVersion', 'config', 'foo', false);
-        $this->validateChildFieldFails('phpVersion', 'config', false, false);
-        $this->validateChildFieldFails('phpVersion', 'config', true, false);
-        $this->validateChildFieldFails('phpVersion', 'config', null, false);
-        $this->validateChildFieldFails('phpVersion', 'config', 80, false);
+        $this->validateConfigFieldFails('phpVersion', '6.9');
+        $this->validateConfigFieldFails('phpVersion', 'foo');
+        $this->validateConfigFieldFails('phpVersion', false);
+        $this->validateConfigFieldFails('phpVersion', true);
+        $this->validateConfigFieldFails('phpVersion', null);
+        $this->validateConfigFieldFails('phpVersion', 80);
     }
 }

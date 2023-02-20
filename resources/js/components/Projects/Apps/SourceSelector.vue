@@ -1,17 +1,18 @@
 <template>
-    <sui-form @submit.prevent="submit()">
+    <sui-form @submit.prevent="$emit('next')">
 
         <sui-form-fields inline>
             <label>Source Provider</label>
             <sui-form-field v-for="p in providers" :key="p.name">
-                <sui-checkbox radio v-model="values.provider" required
-                    :value="p.name" :label="p.text" name="provider" />
+                <sui-checkbox radio :inputValue="source.provider" required
+                    :value="p.name" @change="setValue('provider', $event)"
+                    :label="p.text" name="provider" />
             </sui-form-field>
         </sui-form-fields>
 
-        <sui-form-field :error="'repository' in errors" v-if="values.provider === 'custom'">
+        <sui-form-field :error="'repository' in errors" v-if="source.provider === 'custom'">
             <label>Repository URL:</label>
-            <sui-input v-model="values.url" required />
+            <sui-input :value="source.url" @input="setValue('url', $event)" required />
             <sui-label basic color="red" pointing v-if="'repository' in errors">
                 {{ errors['repository'][0] }}
             </sui-label>
@@ -20,7 +21,8 @@
         <sui-form-field :error="'repository' in errors" v-else>
             <label>Repository:</label>
             <sui-input placeholder="dshoreman/servidor-test-site" required
-                v-model="values.repository" @change="loadBranches()" />
+                :value="source.repository" @input="setValue('repository', $event)"
+                @change="loadBranches()" />
             <sui-label basic color="red" pointing v-if="'repository' in errors">
                 {{ errors['repository'][0] }}
             </sui-label>
@@ -29,7 +31,7 @@
         <sui-form-field :error="'branch' in errors">
             <label>Deployment Branch:</label>
             <sui-dropdown search selection :loading="branchesLoading" required
-                :options="branchOptions" v-model="values.branch" text="Select branch..." />
+                :options="branchOptions" v-model="source.branch" text="Select branch..." />
             <sui-label basic color="red" pointing v-if="'branch' in errors">
                 {{ errors['branch'][0] }}
             </sui-label>
@@ -62,18 +64,13 @@ export default {
         branchOptions() {
             return this.branches.map(b => ({ text: b, value: b }));
         },
-        values: {
-            get() {
-                return this.value;
-            },
-            set(values) {
-                this.$emit('input', values);
-            },
+        source() {
+            return this.value.config.source;
         },
     },
     methods: {
         loadBranches() {
-            const { provider, repository: repo } = this.value;
+            const { provider, repository: repo } = this.value.config.source;
 
             if ('' === repo) {
                 this.branches = [];
@@ -90,17 +87,10 @@ export default {
                 },
             );
         },
-        submit() {
-            let repoUri = this.values.repository;
-
-            const providerOpts = this.providers.find(p => p.name === this.values.provider),
-                { repository, branch, provider } = this.values;
-
-            if ('urlFormat' in providerOpts) {
-                repoUri = providerOpts.urlFormat.replace('%REPO%', repository);
-            }
-
-            this.$emit('selected', { branch, provider, repository, repoUri });
+        setValue(key, value) {
+            this.$emit('input', { ...this.value,
+                config: { ...this.value.config,
+                    source: { ...this.value.config.source, [key]: value }}});
         },
     },
 };

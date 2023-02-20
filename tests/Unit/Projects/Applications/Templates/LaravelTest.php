@@ -16,8 +16,10 @@ class LaravelTest extends TestCase
     {
         $app = new Application([
             'template' => 'laravel',
-            'source_provider' => 'github',
-            'source_repository' => 'dshoreman/servidor-test-site',
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => 'dshoreman/servidor-test-site',
+            ]],
         ]);
         $project = Project::create(['name' => 'lararoot']);
         $project->applications()->save($app);
@@ -30,8 +32,10 @@ class LaravelTest extends TestCase
     {
         $app = new Application([
             'template' => 'laravel',
-            'source_provider' => 'github',
-            'source_repository' => 'dshoreman/servidor-test-site',
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => 'dshoreman/servidor-test-site',
+            ]],
         ]);
         Project::create(['name' => 'laralog'])->applications()->save($app);
         $logs = $app->template()->getLogs();

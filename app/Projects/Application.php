@@ -27,9 +27,6 @@ use Servidor\System\Users\UserNotFound;
  * @property int         $project_id
  * @property string      $template
  * @property string      $domain_name
- * @property string      $source_provider
- * @property string      $source_repository
- * @property string      $source_branch
  * @property ?Collection $config
  * @property ?Carbon     $created_at
  * @property ?Carbon     $updated_at
@@ -46,9 +43,6 @@ use Servidor\System\Users\UserNotFound;
  * @method static Builder|Application whereDomainName($value)
  * @method static Builder|Application whereId($value)
  * @method static Builder|Application whereProjectId($value)
- * @method static Builder|Application whereSourceBranch($value)
- * @method static Builder|Application whereSourceProvider($value)
- * @method static Builder|Application whereSourceRepository($value)
  * @method static Builder|Application whereTemplate($value)
  * @method static Builder|Application whereUpdatedAt($value)
  */
@@ -81,9 +75,6 @@ class Application extends Model
         'template',
         'domain_name',
         'include_www',
-        'source_provider',
-        'source_repository',
-        'source_branch',
         'config',
     ];
 
@@ -119,7 +110,12 @@ class Application extends Model
 
     public function getSourceRepoNameAttribute(): string
     {
-        $repo = (string) $this->attributes['source_repository'];
+        if (!$this->config || !$this->config->has('source')) {
+            return '';
+        }
+
+        $source = (array) $this->config->get('source');
+        $repo = (string) $source['repository'];
         $match = mb_strpos($repo, '/');
 
         return false === $match ? $repo
@@ -144,8 +140,13 @@ class Application extends Model
 
     public function getSourceUriAttribute(): string
     {
-        $provider = (string) $this->attributes['source_provider'];
-        $repo = (string) $this->attributes['source_repository'];
+        if (!$this->config || !$this->config->has('source')) {
+            return '';
+        }
+
+        $source = (array) $this->config->get('source');
+        $provider = (string) $source['provider'];
+        $repo = (string) $source['repository'];
 
         return str_replace('{repo}', $repo, self::SOURCE_PROVIDERS[$provider ?: 'custom']);
     }

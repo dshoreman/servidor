@@ -16,8 +16,10 @@ class PhpTest extends TestCase
     {
         $app = new Application([
             'template' => 'php',
-            'source_provider' => 'github',
-            'source_repository' => 'dshoreman/servidor-test-site',
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => 'dshoreman/servidor-test-site',
+            ]],
         ]);
         $project = Project::create(['name' => 'phproot']);
         $project->applications()->save($app);

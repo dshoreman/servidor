@@ -23,14 +23,16 @@ class NginxConfigGenerationTest extends TestCase
         $path = storage_path('app/vhosts/nginx.test.conf');
 
         $response = $this->authed()->postJson('/api/projects/' . $project->id . '/apps', [
-            'repository' => 'dshoreman/servidor-test-site',
             'domain' => 'nginx.test',
-            'provider' => 'github',
-            'branch' => 'develop',
             'includeWww' => $www,
             'template' => $tpl,
             'config' => [
                 'redirectWww' => $redirect,
+                'source' => [
+                    'repository' => 'dshoreman/servidor-test-site',
+                    'provider' => 'github',
+                    'branch' => 'develop',
+                ],
             ],
         ]);
 

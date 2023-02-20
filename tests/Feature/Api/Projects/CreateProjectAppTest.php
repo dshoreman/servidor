@@ -27,12 +27,14 @@ class CreateProjectAppTest extends TestCase
         $response = $this->authed()->postJson($this->endpoint($project->id), [
             'template' => 'php',
             'domain' => 'example.com',
-            'provider' => 'github',
-            'repository' => 'dshoreman/servidor-test-site',
+            'config' => ['source' => [
+                'provider' => 'github',
+                'repository' => 'dshoreman/servidor-test-site',
+            ]],
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJsonStructure(['template', 'domain_name', 'source_provider']);
+        $response->assertJsonStructure(['template', 'domain_name', 'config' => ['source' => ['provider']]]);
         $response->assertJsonFragment([
             'template' => 'php',
             'domain_name' => 'example.com',
@@ -55,13 +57,15 @@ class CreateProjectAppTest extends TestCase
 
         $response = $this->authed()->postJson($this->endpoint($project->id), [
             'template' => 'php',
-            'provider' => 'custom',
-            'repository' => 'some/missing-test-site',
+            'config' => ['source' => [
+                'provider' => 'custom',
+                'repository' => 'some/missing-test-site',
+            ]],
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrors('repository');
-        $response->assertJsonFragment(['repository' => [
+        $response->assertJsonValidationErrors('config.source.repository');
+        $response->assertJsonFragment(['config.source.repository' => [
             "This repo couldn't be found. Does it require auth?",
         ]]);
     }
@@ -73,14 +77,16 @@ class CreateProjectAppTest extends TestCase
 
         $response = $this->authed()->postJson($this->endpoint($project->id), [
             'template' => 'html',
-            'branch' => 'unicoorn',
-            'provider' => 'github',
-            'repository' => 'dshoreman/servidor-test-site',
+            'config' => ['source' => [
+                'branch' => 'unicoorn',
+                'provider' => 'github',
+                'repository' => 'dshoreman/servidor-test-site',
+            ]],
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrors('branch');
-        $response->assertJsonFragment(['branch' => [
+        $response->assertJsonValidationErrors('config.source.branch');
+        $response->assertJsonFragment(['config.source.branch' => [
             "This branch doesn't exist.",
         ]]);
     }

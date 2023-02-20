@@ -24,16 +24,23 @@ class NewProjectApp extends FormRequest
             'template' => 'required|in:html,php,laravel',
             'domain' => [new Domain()],
             'includeWww' => 'boolean',
-            'provider' => 'required|in:github,bitbucket',
-            'repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
-            'branch' => 'nullable|string',
-            'config' => 'sometimes|required|array:phpVersion,redirectWww,ssl,sslCertificate,sslPrivateKey,sslRedirect',
+            'config' => [
+                'sometimes', 'required', 'array:' . implode(',', [
+                    'phpVersion', 'redirectWww',
+                    'source', 'source.provider', 'source.branch', 'source.repository',
+                    'ssl', 'sslCertificate', 'sslPrivateKey', 'sslRedirect',
+                ]),
+            ],
             'config.phpVersion' => 'sometimes|required|regex:/^[7-8]\.[0-4]$/',
+            'config.redirectWww' => 'sometimes|required|integer|between:-1,1',
+            'config.source' => 'sometimes|required|array:provider,repository,branch',
+            'config.source.provider' => 'required|in:github,bitbucket',
+            'config.source.repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
+            'config.source.branch' => 'nullable|string',
             'config.ssl' => 'sometimes|required|boolean',
             'config.sslCertificate' => 'sometimes|required|string|filled',
             'config.sslPrivateKey' => 'sometimes|required|string|filled',
             'config.sslRedirect' => 'sometimes|required|boolean',
-            'config.redirectWww' => 'sometimes|required|integer|between:-1,1',
         ];
     }
 
@@ -45,9 +52,6 @@ class NewProjectApp extends FormRequest
             'template' => $data['template'],
             'domain_name' => $data['domain'],
             'include_www' => $data['includeWww'] ?? false,
-            'source_provider' => $data['provider'],
-            'source_repository' => $data['repository'],
-            'source_branch' => $data['branch'] ?? '',
             'config' => $data['config'] ?? [],
         ];
     }
@@ -55,34 +59,34 @@ class NewProjectApp extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
-            /**
-             * @var array{provider?: string, repository?: string, branch?: string}
-             */
-            $app = $validator->getData();
+            /** @var array{source: array{provider?:string, branch:string, repository?:string}} */
+            $config = $validator->getData()['config'];
 
-            if (isset($app['repository'], $app['provider'])) {
-                $this->validateAppRepository($validator, $app);
+            if (isset($config['source']['repository'], $config['source']['provider'])) {
+                $this->validateAppRepository($validator, $config['source']);
             }
         });
     }
 
-    /** @param array{provider: string, repository: string, branch?: string} $app */
-    private function validateAppRepository(Validator $validator, array $app): void
+    /**
+     * @param array{branch?: string, provider: string, repository: string} $source
+     */
+    private function validateAppRepository(Validator $validator, array $source): void
     {
-        $branch = $app['branch'] ?? '';
+        $branch = $source['branch'] ?? '';
         $branch = $branch ? escapeshellarg($branch) : '';
-        $repo = Application::SOURCE_PROVIDERS[$app['provider']];
-        $repo = str_replace('{repo}', $app['repository'], $repo);
+        $repo = Application::SOURCE_PROVIDERS[$source['provider']];
+        $repo = str_replace('{repo}', $source['repository'], $repo);
 
         exec(sprintf(self::BRANCH_CMD, $repo, $branch), $_, $status);
 
         if (self::GIT_NO_REFS === $status) {
-            $validator->errors()->add('branch', self::ERR_NO_REFS);
+            $validator->errors()->add('config.source.branch', self::ERR_NO_REFS);
         } elseif (0 !== $status) {
             $message = self::GIT_NOT_FOUND === $status
                 ? self::ERR_NOT_FOUND : self::ERR_NON_ZERO;
 
-            $validator->errors()->add('repository', $message);
+            $validator->errors()->add('config.source.repository', $message);
         }
     }
 }

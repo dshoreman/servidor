@@ -5,13 +5,13 @@
             <strong>{{ app.template }}</strong> application.
         </p>
         <p>
-            Code will be pulled from the <code>{{ source.repoUri }}</code>
-            repository on <strong>{{ app.provider }}</strong> using:<br>
-            <strong>{{ app.repository }}</strong>.
+            Code will be pulled from the <code>{{ repoUri }}</code>
+            repository on <strong>{{ app.config.source.provider }}</strong> using:<br>
+            <strong>{{ app.config.source.repository }}</strong>.
         </p>
         <p>
             The project will be configured to track the
-            <code>{{ app.branch }}</code> branch.
+            <code>{{ app.config.source.branch }}</code> branch.
         </p>
         <p>
             If it's enabled, the {{ app.template }} application
@@ -27,9 +27,13 @@ export default {
             type: Object,
             default: () => ({}),
         },
-        source: {
-            type: Object,
-            default: () => ({}),
+        providers: { type: Array, default: () => []},
+    },
+    computed: {
+        repoUri() {
+            const provider = this.providers.find(p => p.name === this.app.config.source.provider);
+
+            return provider.urlFormat.replace('%REPO%', this.app.config.source.repository);
         },
     },
 };

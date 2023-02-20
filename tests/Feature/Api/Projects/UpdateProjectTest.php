@@ -131,9 +131,11 @@ class UpdateProjectTest extends TestCase
         return [
             'Project with an application' => ['app', [
                 'template' => 'html',
-                'provider' => 'github',
-                'repository' => 'dshoreman/servidor-test-site',
-                'branch' => 'develop',
+                'config' => ['source' => [
+                    'provider' => 'github',
+                    'repository' => 'dshoreman/servidor-test-site',
+                    'branch' => 'develop',
+                ]],
             ]],
             'Project with a redirect' => ['redirect', [
                 'target' => 'example.com',

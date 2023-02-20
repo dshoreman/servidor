@@ -21,9 +21,11 @@ class EnableOrDisableProjectTest extends TestCase
         $project = Project::create(['name' => 'symlinkery', 'is_enabled' => true]);
         $project->applications()->save($app = new Application([
             'domain_name' => 'symlinkery.dev',
-            'source_repository' => 'dshoreman/servidor-test-site',
-            'source_provider' => 'github',
-            'source_branch' => 'develop',
+            'config' => ['source' => [
+                'repository' => 'dshoreman/servidor-test-site',
+                'provider' => 'github',
+                'branch' => 'develop',
+            ]],
         ]));
 
         $this->assertFileExists($link);
@@ -42,10 +44,13 @@ class EnableOrDisableProjectTest extends TestCase
     {
         $linkBefore = readlink($link = '/etc/nginx/sites-enabled/symlinkery.dev.conf');
 
-        $app->source_branch = 'master';
+        $app->config = $app->config->replace(['source' => array_merge(
+            $app->config->get('source'),
+            ['branch' => 'master'],
+        )]);
         $app->save();
 
-        $this->assertEquals('master', $app->source_branch);
+        $this->assertEquals('master', $app->config->get('source')['branch']);
         $this->assertSame($linkBefore, readlink($link));
     }
 
@@ -56,9 +61,11 @@ class EnableOrDisableProjectTest extends TestCase
 
         $project = Project::create(['name' => 'nodomain', 'is_enabled' => true]);
         $project->applications()->save($app = new Application([
-            'source_repository' => 'dshoreman/servidor-test-site',
-            'source_provider' => 'github',
-            'source_branch' => 'develop',
+            'config' => ['source' => [
+                'repository' => 'dshoreman/servidor-test-site',
+                'provider' => 'github',
+                'branch' => 'develop',
+            ]],
         ]));
 
         new EnableOrDisableProject($app);
@@ -75,7 +82,10 @@ class EnableOrDisableProjectTest extends TestCase
         exec("sudo rm {$link} && sudo ln -s /dev/null {$link}");
         $this->assertNotEquals($link, readlink($link));
 
-        $app->source_branch = 'develop';
+        $app->config = $app->config->replace(['source' => array_merge(
+            $app->config->get('source'),
+            ['branch' => 'develop'],
+        )]);
         $app->save();
 
         $this->assertFileExists($link);
