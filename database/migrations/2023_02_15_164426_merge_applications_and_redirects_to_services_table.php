@@ -15,6 +15,13 @@ class MergeApplicationsAndRedirectsToServicesTable extends Migration
                 'source_repository',
             ]);
         });
+
+        Schema::table('project_redirects', static function (Blueprint $table): void {
+            $table->dropColumn([
+                'target',
+                'type',
+            ]);
+        });
     }
 
     public function down(): void
@@ -23,6 +30,11 @@ class MergeApplicationsAndRedirectsToServicesTable extends Migration
             $table->string('source_provider')->default('');
             $table->string('source_repository')->default('');
             $table->string('source_branch')->default('');
+        });
+
+        Schema::table('project_redirects', static function (Blueprint $table): void {
+            $table->string('target');
+            $table->smallInteger('type');
         });
     }
 }

@@ -77,8 +77,10 @@ class ListProjectsTest extends TestCase
         $project = Project::create(['name' => 'Redirtest']);
         $project->redirects()->save(new Redirect([
             'domain_name' => 'a',
-            'target' => 'b',
-            'type' => 301,
+            'config' => ['redirect' => [
+                'target' => 'b',
+                'type' => 301,
+            ]],
         ]));
 
         $response = $this->authed()->getJson('/api/projects');

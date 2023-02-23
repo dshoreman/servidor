@@ -50,14 +50,12 @@ class Redirect extends Model
     protected $fillable = [
         'domain_name',
         'include_www',
-        'type',
-        'target',
         'config',
     ];
 
     protected array $requiredNginxData = [
+        'config.redirect.target' => 'target',
         'domain_name' => 'domain name',
-        'target' => 'target',
     ];
 
     protected $table = 'project_redirects';

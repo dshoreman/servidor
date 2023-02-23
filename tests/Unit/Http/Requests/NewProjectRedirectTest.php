@@ -23,38 +23,38 @@ class NewProjectRedirectTest extends TestCase
     public function redirect_type_is_required(): void
     {
         $v = $this->getValidator(['name' => 'redir', 'redirects' => [[
-            'target' => 'example.com',
+            'config' => ['redirect' => ['target' => 'example.com']],
         ]]]);
 
-        $this->assertStringContainsString('required', $v->errors()->first('type'));
+        $this->assertStringContainsString('required', $v->errors()->first('config.redirect.type'));
     }
 
     /** @test */
     public function redirect_type_must_be_an_integer(): void
     {
-        $this->validateFieldPasses('type', 301);
-        $this->validateFieldFails('type', ['a']);
-        $this->validateFieldFails('type', 'string');
-        $this->validateFieldFails('type', (object) ['a']);
+        $this->validateConfigFieldPasses('redirect.type', 301);
+        $this->validateConfigFieldFails('redirect.type', ['a']);
+        $this->validateConfigFieldFails('redirect.type', 'string');
+        $this->validateConfigFieldFails('redirect.type', (object) ['a']);
     }
 
     /** @test */
     public function redirect_target_is_required_when_type_is_redirect(): void
     {
         $v = $this->getValidator(['name' => 'redir', 'redirects' => [[
-            'type' => 301,
+            'config' => ['redirect' => ['type' => 301]],
         ]]]);
 
-        $this->assertStringContainsString('required', $v->errors()->first('target'));
+        $this->assertStringContainsString('required', $v->errors()->first('config.redirect.target'));
     }
 
     /** @test */
     public function redirect_target_must_be_a_string(): void
     {
-        $this->validateFieldPasses('target', '/');
-        $this->validateFieldFails('target', 42);
-        $this->validateFieldFails('target', true);
-        $this->validateFieldFails('target', ['a', 'redirects', 'b']);
-        $this->validateFieldFails('target', (object) ['a', 'redirects', 'b']);
+        $this->validateConfigFieldPasses('redirect.target', '/');
+        $this->validateConfigFieldFails('redirect.target', 42);
+        $this->validateConfigFieldFails('redirect.target', true);
+        $this->validateConfigFieldFails('redirect.target', ['a', 'redirects', 'b']);
+        $this->validateConfigFieldFails('redirect.target', (object) ['a', 'redirects', 'b']);
     }
 }

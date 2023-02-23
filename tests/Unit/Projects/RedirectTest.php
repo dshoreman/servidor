@@ -31,11 +31,17 @@ class RedirectTest extends TestCase
     /** @test */
     public function attributes_can_be_set_with_new_redirect(): Redirect
     {
-        $redirect = new Redirect(['domain_name' => 'a', 'target' => 'b', 'type' => 302]);
+        $redirect = new Redirect([
+            'domain_name' => 'a',
+            'config' => ['redirect' => [
+                'target' => 'b',
+                'type' => 302,
+            ]],
+        ]);
 
         $this->assertEquals('a', $redirect->domain_name);
-        $this->assertEquals('b', $redirect->target);
-        $this->assertEquals(302, $redirect->type);
+        $this->assertEquals('b', $redirect->config->get('redirect')['target']);
+        $this->assertEquals(302, $redirect->config->get('redirect')['type']);
 
         return $redirect;
     }
@@ -61,8 +67,10 @@ class RedirectTest extends TestCase
     {
         $this->project->applications()->save($redirect = new Redirect([
             'domain_name' => 'a-redir.example',
-            'target' => 'b-redir.example',
-            'type' => 301,
+            'config' => ['redirect' => [
+                'target' => 'b-redir.example',
+                'type' => 301,
+            ]],
         ]));
 
         $this->assertFileExists($config = storage_path('app/vhosts/a-redir.example.conf'));

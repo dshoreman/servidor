@@ -11,22 +11,27 @@ class NewProjectRedirect extends FormRequest
     {
         return [
             'domain' => ['required', new Domain()],
-            'config' => 'sometimes|required|array:redirectWww,ssl,sslCertificate,sslPrivateKey,sslRedirect',
+            'config' => [
+                'sometimes', 'required', 'array:' . implode(',', [
+                    'redirectWww',
+                    'redirect', 'redirect.target', 'redirect.type',
+                    'ssl', 'sslCertificate', 'sslPrivateKey', 'sslRedirect',
+                ]),
+            ],
+            'config.redirectWww' => 'sometimes|required|integer|between:-1,1',
+            'config.redirect.target' => 'required|string',
+            'config.redirect.type' => 'required|integer',
             'config.ssl' => 'sometimes|required|boolean',
             'config.sslCertificate' => 'sometimes|required|string|filled',
             'config.sslPrivateKey' => 'sometimes|required|string|filled',
             'config.sslRedirect' => 'sometimes|required|boolean',
-            'config.redirectWww' => 'sometimes|required|integer|between:-1,1',
             'includeWww' => 'boolean',
-            'target' => 'required|string',
-            'type' => 'required|integer',
         ];
     }
 
     public function validated(): array
     {
-        /** @var array{domain: string, config: ?array, includeWww: ?bool,
-         *             target: string, type: int} $data */
+        /** @var array{domain: string, config: ?array, includeWww: ?bool} $data */
         $data = parent::validated();
 
         $data['config'] ??= [];

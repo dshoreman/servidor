@@ -25,17 +25,23 @@ class CreateProjectRedirectTest extends TestCase
         $project = Project::create(['name' => 'Project with Redirect']);
 
         $response = $this->authed()->postJson($this->endpoint($project->id), [
-            'type' => 301,
             'domain' => 'example.com',
-            'target' => 'https://example.com',
+            'config' => ['redirect' => [
+                'target' => 'https://example.com',
+                'type' => 301,
+            ]],
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJsonStructure(['domain_name', 'target', 'type']);
+        $response->assertJsonStructure(['domain_name', 'config' => [
+            'redirect' => ['target', 'type'],
+        ]]);
         $response->assertJsonFragment([
-            'type' => 301,
             'domain_name' => 'example.com',
-            'target' => 'https://example.com',
+            'config' => ['redirect' => [
+                'target' => 'https://example.com',
+                'type' => 301,
+            ]],
         ]);
 
         $project = Project::with('redirects')->firstOrFail();
@@ -43,6 +49,8 @@ class CreateProjectRedirectTest extends TestCase
 
         $redirect = $project->redirects->first();
         $this->assertInstanceOf(Redirect::class, $redirect);
-        $this->assertArraySubset(['type' => 301, 'target' => 'https://example.com'], $redirect->toArray());
+        $this->assertArraySubset(['config' => ['redirect' => [
+            'type' => 301, 'target' => 'https://example.com'],
+        ]], $redirect->toArray());
     }
 }

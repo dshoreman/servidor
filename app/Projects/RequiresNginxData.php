@@ -3,7 +3,6 @@
 namespace Servidor\Projects;
 
 use Servidor\Projects\Actions\MissingProjectData;
-use Servidor\Projects\Applications\Templates\Template;
 
 /**
  * @property array<string, string> $requiredNginxData
@@ -15,10 +14,7 @@ trait RequiresNginxData
         $type = $this instanceof Redirect ? 'Redirect' : 'App';
 
         foreach ($this->requiredNginxData as $property => $name) {
-            if ($this instanceof Template && $this->checkConfig($property)) {
-                continue;
-            }
-            if ($this instanceof Redirect && $this->{$property}) {
+            if ($this->checkConfig($property)) {
                 continue;
             }
 
@@ -28,25 +24,35 @@ trait RequiresNginxData
         }
     }
 
+    /** @phan-suppress PhanUndeclaredMethod, PhanUndeclaredProperty */
     private function checkConfig(string $property): bool
     {
-        \assert($this instanceof Template);
+        /**
+         * @var Application|Redirect $data
+         *
+         * @phpstan-ignore-next-line
+         */
+        $data = method_exists(self::class, 'getApp') ? $this->getApp() : $this;
+
         if ('config.' !== mb_substr($property, 0, 7)) {
-            return isset($this->getApp()->{$property});
+            return isset($data->{$property});
         }
 
-        $config = $this->getApp()->config;
+        if (!$data->config) {
+            return false;
+        }
+
         $property = mb_substr($property, 7);
 
-        if ($config && str_contains($property, '.')) {
+        if (str_contains($property, '.')) {
             [$key, $property] = explode('.', $property);
 
-            /** @var array */
-            $key = $config->get($key, []);
+            /** @var array $key */
+            $key = $data->config->get($key, []);
 
             return isset($key[$property]);
         }
 
-        return $config && $config->has($property);
+        return $data->config->has($property);
     }
 }

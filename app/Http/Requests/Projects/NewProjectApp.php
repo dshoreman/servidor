@@ -20,27 +20,37 @@ class NewProjectApp extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'template' => 'required|in:html,php,laravel',
             'domain' => [new Domain()],
             'includeWww' => 'boolean',
-            'config' => [
-                'sometimes', 'required', 'array:' . implode(',', [
-                    'phpVersion', 'redirectWww',
-                    'source', 'source.provider', 'source.branch', 'source.repository',
-                    'ssl', 'sslCertificate', 'sslPrivateKey', 'sslRedirect',
-                ]),
-            ],
-            'config.phpVersion' => 'sometimes|required|regex:/^[7-8]\.[0-4]$/',
-            'config.redirectWww' => 'sometimes|required|integer|between:-1,1',
-            'config.source' => 'sometimes|required|array:provider,repository,branch',
-            'config.source.provider' => 'required|in:github,bitbucket',
-            'config.source.repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
-            'config.source.branch' => 'nullable|string',
-            'config.ssl' => 'sometimes|required|boolean',
-            'config.sslCertificate' => 'sometimes|required|string|filled',
-            'config.sslPrivateKey' => 'sometimes|required|string|filled',
-            'config.sslRedirect' => 'sometimes|required|boolean',
+            'config' => 'sometimes|required|array:'
+                . implode(',', array_keys($this->configRules())),
+        ];
+
+        foreach ($this->configRules() as $field => $ruleset) {
+            $rules['config.' . $field] = $ruleset;
+        }
+
+        return $rules;
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    private function configRules(): array
+    {
+        return [
+            'phpVersion' => 'sometimes|required|regex:/^[7-8]\.[0-4]$/',
+            'redirectWww' => 'sometimes|required|integer|between:-1,1',
+            'source' => 'sometimes|required|array:provider,repository,branch',
+            'source.branch' => 'nullable|string',
+            'source.provider' => 'required|in:github,bitbucket',
+            'source.repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
+            'ssl' => 'sometimes|required|boolean',
+            'sslCertificate' => 'sometimes|required|string|filled',
+            'sslPrivateKey' => 'sometimes|required|string|filled',
+            'sslRedirect' => 'sometimes|required|boolean',
         ];
     }
 
@@ -59,7 +69,7 @@ class NewProjectApp extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
-            /** @var array{source: array{provider?:string, branch:string, repository?:string}} */
+            /** @var array{source: array{provider?:string, branch:string, repository?:string}} $config */
             $config = $validator->getData()['config'];
 
             if (isset($config['source']['repository'], $config['source']['provider'])) {

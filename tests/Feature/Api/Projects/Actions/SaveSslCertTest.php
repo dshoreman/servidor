@@ -47,9 +47,11 @@ class SaveSslCertTest extends TestCase
         $project = Project::create(['name' => 'SSL RTest']);
         $project->redirects()->save($redirect = new Redirect([
             'domain_name' => 'ssl.rtest',
-            'target' => 'foo',
-            'type' => 301,
             'config' => [
+                'redirect' => [
+                    'target' => 'foo',
+                    'type' => 301,
+                ],
                 'ssl' => true,
                 'sslCertificate' => 'redirect cert',
                 'sslPrivateKey' => 'redirect key',

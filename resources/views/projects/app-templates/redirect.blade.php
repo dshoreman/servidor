@@ -29,5 +29,5 @@ server {
     server_name {{ $redirect->domain_name }};
 @endif
 
-    return {{ $redirect->type }} {{ $redirect->target }};
+    return {{ $redirect->config->get('redirect')['type'] }} {{ $redirect->config->get('redirect')['target'] }};
 }

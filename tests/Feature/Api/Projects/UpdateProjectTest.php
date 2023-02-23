@@ -138,8 +138,10 @@ class UpdateProjectTest extends TestCase
                 ]],
             ]],
             'Project with a redirect' => ['redirect', [
-                'target' => 'example.com',
-                'type' => 301,
+                'config' => ['redirect' => [
+                    'target' => 'example.com',
+                    'type' => 301,
+                ]],
             ]],
         ];
     }
