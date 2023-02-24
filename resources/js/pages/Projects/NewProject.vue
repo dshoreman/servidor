@@ -55,7 +55,7 @@
 
             <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
                 <h3 is="sui-header">Let's get this Project started!</h3>
-                <confirmation-text :app="defaultApp" :providers="providers" />
+                <confirmation-text :service="defaultApp" :providers="providers" />
                 <confirmation-form :errors="errors" v-model="project.name"
                                    :template="defaultApp.template"
                                    @created="create" :created-id="projectCreatedId" />
@@ -74,20 +74,20 @@
 import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DiscardPrompt from '../../components/Projects/DiscardPrompt.vue';
-import DomainForm from '../../components/Projects/Apps/DomainForm';
-import PhpVersions from '../../components/Projects/Apps/PhpVersions';
+import DomainForm from '../../components/Projects/Services/DomainForm';
+import PhpVersions from '../../components/Projects/Services/PhpVersions';
 import ProgressModal from '../../components/ProgressModal';
-import RedirectForm from '../../components/Projects/Apps/RedirectForm';
-import SourceSelector from '../../components/Projects/Apps/SourceSelector';
-import SslForm from '../../components/Projects/Apps/SslForm';
+import RedirectForm from '../../components/Projects/Services/RedirectForm';
+import SourceSelector from '../../components/Projects/Services/SourceSelector';
+import SslForm from '../../components/Projects/Services/SslForm';
 import StepList from '../../components/Projects/StepList';
-import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
+import TemplateSelector from '../../components/Projects/Services/TemplateSelector';
 import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
-const PERCENT_APP = 95,
-    PERCENT_REDIRECT = 95,
+const PERCENT_REDIRECT = 95,
+    PERCENT_SERVICE = 95,
     STEP_APP = 'app.save',
     STEP_CREATE = 'project.create',
     STEP_REDIRECT = 'redirect.save',
@@ -112,7 +112,7 @@ export default {
             bypassLeaveHandler: false,
             error: '',
             errors: {},
-            project: { name: '', applications: [], redirects: []},
+            project: { name: '', services: [], redirects: []},
             projectCreatedId: 0,
             providers,
             step: 'template',
@@ -135,10 +135,10 @@ export default {
     computed: {
         defaultApp: {
             get() {
-                return this.project.applications[0];
+                return this.project.services[0];
             },
             set(data) {
-                Vue.set(this.project.applications, 0, data);
+                Vue.set(this.project.services, 0, data);
             },
         },
         defaultRedirect: {
@@ -160,7 +160,7 @@ export default {
             }, 'projects');
         },
         discard() {
-            this.project = { name: '', applications: [], redirects: []};
+            this.project = { name: '', services: [], redirects: []};
 
             this.steps.forEach(s => {
                 if ('template' !== s.name) {
@@ -201,13 +201,13 @@ export default {
             const [ firstStep ] = tpl.steps;
 
             if (tpl.isApp) {
-                this.project.applications.push({
+                this.project.services.push({
                     config: { source: { provider: 'github' }},
                     domain: '',
                     template: tpl.name.toLowerCase(),
                 });
             } else {
-                this.project.applications.push({ template: 'archive', domain: '' });
+                this.project.services.push({ template: 'archive', domain: '' });
                 this.project.redirects.push({
                     config: {},
                     domain: '',
@@ -287,7 +287,7 @@ export default {
         },
         async createAppOrRedirect(project, step) {
             const [action, data, progress] = step === STEP_APP
-                ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
+                ? ['createService', { service: this.project.services[0] }, PERCENT_SERVICE]
                 : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
 
             await this.$store.dispatch('progress/stepStarted', { step });
@@ -312,7 +312,7 @@ export default {
             this.error = res && 'statusText' in res ? res.statusText : error.message;
         },
         progressInit() {
-            const [ { template } ] = this.project.applications,
+            const [ { template } ] = this.project.services,
                 isApp = 'archive' !== template,
                 step = isApp ? STEP_APP : STEP_REDIRECT,
                 text = isApp ? `${template} application` : 'redirect';

@@ -28,11 +28,11 @@ trait RequiresNginxData
     private function checkConfig(string $property): bool
     {
         /**
-         * @var Application|Redirect $data
+         * @var ProjectService|Redirect $data
          *
          * @phpstan-ignore-next-line
          */
-        $data = method_exists(self::class, 'getApp') ? $this->getApp() : $this;
+        $data = method_exists(self::class, 'getService') ? $this->getService() : $this;
 
         if ('config.' !== mb_substr($property, 0, 7)) {
             return isset($data->{$property});

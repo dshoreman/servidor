@@ -9,7 +9,7 @@ class ListProjects extends Controller
 {
     public function __invoke(): JsonResponse
     {
-        $projects = Project::with(['applications', 'redirects'])->get();
+        $projects = Project::with(['services', 'redirects'])->get();
 
         return response()->json($projects);
     }

@@ -1,21 +1,21 @@
 <template>
-    <div v-if="app.template != 'Clean Slate'">
+    <div v-if="service.template != 'Clean Slate'">
         <p>
             When you continue, the new project will be created with a
-            <strong>{{ app.template }}</strong> application.
+            <strong>{{ service.template }}</strong> application.
         </p>
         <p>
             Code will be pulled from the <code>{{ repoUri }}</code>
-            repository on <strong>{{ app.config.source.provider }}</strong> using:<br>
-            <strong>{{ app.config.source.repository }}</strong>.
+            repository on <strong>{{ service.config.source.provider }}</strong> using:<br>
+            <strong>{{ service.config.source.repository }}</strong>.
         </p>
         <p>
             The project will be configured to track the
-            <code>{{ app.config.source.branch }}</code> branch.
+            <code>{{ service.config.source.branch }}</code> branch.
         </p>
         <p>
-            If it's enabled, the {{ app.template }} application
-            will be accessible at <code>{{ app.domain }}</code>.
+            If it's enabled, the {{ service.template }} application
+            will be accessible at <code>{{ service.domain }}</code>.
         </p>
     </div>
 </template>
@@ -23,7 +23,7 @@
 <script>
 export default {
     props: {
-        app: {
+        service: {
             type: Object,
             default: () => ({}),
         },
@@ -31,9 +31,11 @@ export default {
     },
     computed: {
         repoUri() {
-            const provider = this.providers.find(p => p.name === this.app.config.source.provider);
+            const provider = this.providers.find(
+                p => p.name === this.service.config.source.provider,
+            );
 
-            return provider.urlFormat.replace('%REPO%', this.app.config.source.repository);
+            return provider.urlFormat.replace('%REPO%', this.service.config.source.repository);
         },
     },
 };

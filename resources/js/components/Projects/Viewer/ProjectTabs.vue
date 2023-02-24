@@ -1,7 +1,7 @@
 <template>
 
     <sui-list divided relaxed>
-        <sui-list-item v-for="app in project.applications" :key="app.id">
+        <sui-list-item v-for="app in project.services" :key="app.id">
 
             <sui-list-icon
                 size="large"
@@ -50,7 +50,7 @@ export default {
     computed: {
         appIcon() {
             const tpl = templates.find(
-                t => t.name.toLowerCase() === this.project.applications[0].template.toLowerCase(),
+                t => t.name.toLowerCase() === this.project.services[0].template.toLowerCase(),
             );
 
             return { name: tpl.icon, color: tpl.colour };

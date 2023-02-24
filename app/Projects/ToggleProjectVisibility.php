@@ -4,12 +4,12 @@ namespace Servidor\Projects;
 
 use Servidor\Projects\Actions\EnableOrDisableProject;
 use Servidor\Projects\Actions\MissingProjectData;
-use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
+use Servidor\Projects\Services\ProjectServiceSaved;
 
 class ToggleProjectVisibility
 {
-    public function handle(ProjectSaved|ProjectAppSaved|ProjectRedirectSaved $event): void
+    public function handle(ProjectSaved|ProjectServiceSaved|ProjectRedirectSaved $event): void
     {
         $project = $event->getProject();
         $appOrRedirect = $event->getAppOrRedirect();
@@ -30,7 +30,7 @@ class ToggleProjectVisibility
 
     private function addStep(
         Project $project,
-        Application|Redirect $appOrRedirect,
+        ProjectService|Redirect $appOrRedirect,
     ): ProgressStep {
         $type = $appOrRedirect->getType();
 

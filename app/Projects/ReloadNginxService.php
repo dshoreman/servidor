@@ -2,13 +2,13 @@
 
 namespace Servidor\Projects;
 
-use Servidor\Projects\Applications\ProjectAppSaved;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
+use Servidor\Projects\Services\ProjectServiceSaved;
 
 class ReloadNginxService
 {
     /**
-     * @param ProjectAppSaved|ProjectRedirectSaved $event
+     * @param ProjectRedirectSaved|ProjectServiceSaved $event
      */
     public function handle($event): void
     {

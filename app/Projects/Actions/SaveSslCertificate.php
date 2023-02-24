@@ -5,9 +5,9 @@ namespace Servidor\Projects\Actions;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Servidor\Projects\Application;
 use Servidor\Projects\ProgressStep;
 use Servidor\Projects\Project;
+use Servidor\Projects\ProjectService;
 use Servidor\Projects\Redirect;
 
 class SaveSslCertificate
@@ -15,7 +15,7 @@ class SaveSslCertificate
     private Collection $config;
 
     public function __construct(
-        private Application|Redirect $appOrRedirect,
+        private ProjectService|Redirect $appOrRedirect,
     ) {
         $config = $appOrRedirect->config;
 

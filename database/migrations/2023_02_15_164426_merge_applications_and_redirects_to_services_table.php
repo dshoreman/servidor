@@ -22,10 +22,14 @@ class MergeApplicationsAndRedirectsToServicesTable extends Migration
                 'type',
             ]);
         });
+
+        Schema::rename('project_applications', 'project_services');
     }
 
     public function down(): void
     {
+        Schema::rename('project_services', 'project_applications');
+
         Schema::table('project_applications', static function (Blueprint $table): void {
             $table->string('source_provider')->default('');
             $table->string('source_repository')->default('');

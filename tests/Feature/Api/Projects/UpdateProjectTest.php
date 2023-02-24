@@ -58,10 +58,10 @@ class UpdateProjectTest extends TestCase
      *
      * @depends authed_user_can_rename_project
      */
-    public function update_response_includes_applications(array $data): void
+    public function update_response_includes_services(array $data): void
     {
-        $this->assertArrayHasKey('applications', $data);
-        $this->assertEmpty($data['applications']);
+        $this->assertArrayHasKey('services', $data);
+        $this->assertEmpty($data['services']);
     }
 
     /**
@@ -129,7 +129,7 @@ class UpdateProjectTest extends TestCase
     public function symlinkProvider(): array
     {
         return [
-            'Project with an application' => ['app', [
+            'Project with a service' => ['service', [
                 'template' => 'html',
                 'config' => ['source' => [
                     'provider' => 'github',

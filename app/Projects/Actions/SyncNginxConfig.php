@@ -5,7 +5,7 @@ namespace Servidor\Projects\Actions;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Factory as ViewFactory;
-use Servidor\Projects\Application;
+use Servidor\Projects\ProjectService;
 use Servidor\Projects\Redirect;
 
 class SyncNginxConfig
@@ -13,7 +13,7 @@ class SyncNginxConfig
     private string $configFile;
 
     public function __construct(
-        private Application|Redirect $appOrRedirect,
+        private ProjectService|Redirect $appOrRedirect,
     ) {
         $appOrRedirect->checkNginxData();
 
@@ -35,7 +35,7 @@ class SyncNginxConfig
 
     private function fileContents(): View
     {
-        $type = $this->appOrRedirect instanceof Application ? 'app' : 'redirect';
+        $type = $this->appOrRedirect instanceof ProjectService ? 'service' : 'redirect';
         $view = app(ViewFactory::class)->make($this->template());
 
         return $view->with($type, $this->appOrRedirect);
@@ -46,6 +46,6 @@ class SyncNginxConfig
         $template = $this->appOrRedirect instanceof Redirect ? 'redirect'
             : $this->appOrRedirect->template()->nginxTemplate();
 
-        return 'projects.app-templates.' . $template;
+        return 'projects.templates.' . $template;
     }
 }

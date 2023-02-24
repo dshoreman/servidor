@@ -2,8 +2,8 @@
 
 namespace Servidor\Projects;
 
-use Servidor\Projects\Applications\ProjectAppSaving;
 use Servidor\Projects\Redirects\ProjectRedirectSaving;
+use Servidor\Projects\Services\ProjectServiceSaving;
 
 class CalculateSteps
 {
@@ -18,11 +18,11 @@ class CalculateSteps
 
     private ?Project $project = null;
 
-    public function handle(ProjectAppSaving|ProjectRedirectSaving $event): void
+    public function handle(ProjectServiceSaving|ProjectRedirectSaving $event): void
     {
         $this->project = $event->getProject();
 
-        if ($event instanceof ProjectAppSaving) {
+        if ($event instanceof ProjectServiceSaving) {
             $this->triggerAppEvents();
         }
 

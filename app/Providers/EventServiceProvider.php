@@ -5,12 +5,6 @@ namespace Servidor\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Servidor\Projects\Applications\ApplyAppNginxConfig;
-use Servidor\Projects\Applications\CreateSystemUser;
-use Servidor\Projects\Applications\DeployApp;
-use Servidor\Projects\Applications\PrepareSsl;
-use Servidor\Projects\Applications\ProjectAppSaved;
-use Servidor\Projects\Applications\ProjectAppSaving;
 use Servidor\Projects\CalculateSteps;
 use Servidor\Projects\ProjectSaved;
 use Servidor\Projects\Redirects\ApplyRedirectNginxConfig;
@@ -18,6 +12,12 @@ use Servidor\Projects\Redirects\PrepareRedirectSsl;
 use Servidor\Projects\Redirects\ProjectRedirectSaved;
 use Servidor\Projects\Redirects\ProjectRedirectSaving;
 use Servidor\Projects\ReloadNginxService;
+use Servidor\Projects\Services\ApplyNginxConfig;
+use Servidor\Projects\Services\CreateSystemUser;
+use Servidor\Projects\Services\DeployApp;
+use Servidor\Projects\Services\PrepareSsl;
+use Servidor\Projects\Services\ProjectServiceSaved;
+use Servidor\Projects\Services\ProjectServiceSaving;
 use Servidor\Projects\ToggleProjectVisibility;
 
 class EventServiceProvider extends ServiceProvider
@@ -27,13 +27,13 @@ class EventServiceProvider extends ServiceProvider
             ToggleProjectVisibility::class,
             ReloadNginxService::class,
         ],
-        ProjectAppSaving::class => [
+        ProjectServiceSaving::class => [
             CalculateSteps::class,
             PrepareSsl::class,
         ],
-        ProjectAppSaved::class => [
+        ProjectServiceSaved::class => [
             CreateSystemUser::class,
-            ApplyAppNginxConfig::class,
+            ApplyNginxConfig::class,
             DeployApp::class,
             ToggleProjectVisibility::class,
             ReloadNginxService::class,

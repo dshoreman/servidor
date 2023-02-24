@@ -5,8 +5,8 @@ namespace Tests\Feature\Api\Projects;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
-use Servidor\Projects\Application;
 use Servidor\Projects\Project;
+use Servidor\Projects\ProjectService;
 use Servidor\Projects\Redirect;
 use Tests\RequiresAuth;
 use Tests\TestCase;
@@ -43,16 +43,16 @@ class ListProjectsTest extends TestCase
     }
 
     /** @test */
-    public function listed_projects_include_applications(): array
+    public function listed_projects_include_services(): array
     {
         $project = Project::create(['name' => 'Laratest']);
-        $project->applications()->save(new Application(['template' => 'laravel']));
+        $project->services()->save(new ProjectService(['template' => 'laravel']));
 
         $response = $this->authed()->getJson('/api/projects');
 
         $response->assertOk();
         $response->assertJsonCount(1);
-        $response->assertJson(Project::with('applications')->get()->toArray());
+        $response->assertJson(Project::with('services')->get()->toArray());
 
         return $response->json()[0];
     }
@@ -60,15 +60,15 @@ class ListProjectsTest extends TestCase
     /**
      * @test
      *
-     * @depends listed_projects_include_applications
+     * @depends listed_projects_include_services
      */
-    public function project_applications_include_list_of_logs($project): void
+    public function project_services_include_list_of_logs($project): void
     {
-        $app = $project['applications'][0];
+        $service = $project['services'][0];
 
-        $this->assertArrayHasKey('logs', $app);
-        $this->assertArraySubset(['php' => 'PHP Error Log'], $app['logs']);
-        $this->assertArraySubset(['laravel' => 'Laravel Log'], $app['logs']);
+        $this->assertArrayHasKey('logs', $service);
+        $this->assertArraySubset(['php' => 'PHP Error Log'], $service['logs']);
+        $this->assertArraySubset(['laravel' => 'Laravel Log'], $service['logs']);
     }
 
     /** @test */

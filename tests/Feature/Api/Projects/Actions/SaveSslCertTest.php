@@ -3,8 +3,8 @@
 namespace Tests\Feature\Api\Projects\Actions;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Servidor\Projects\Application;
 use Servidor\Projects\Project;
+use Servidor\Projects\ProjectService;
 use Servidor\Projects\Redirect;
 use Tests\TestCase;
 
@@ -22,7 +22,7 @@ class SaveSslCertTest extends TestCase
         $this->assertFileDoesNotExist($key);
 
         $project = Project::create(['name' => 'SSL Test']);
-        $project->applications()->save($app = new Application([
+        $project->services()->save($service = new ProjectService([
             'domain_name' => 'ssl.test',
             'config' => [
                 'ssl' => true,
@@ -66,7 +66,7 @@ class SaveSslCertTest extends TestCase
     public function certs_are_skipped_when_not_set(): void
     {
         $project = Project::create(['name' => 'NoSSL Test']);
-        $project->applications()->save($app = new Application([
+        $project->services()->save($service = new ProjectService([
             'domain_name' => 'nossl.test',
             'config' => ['ssl' => true],
         ]));

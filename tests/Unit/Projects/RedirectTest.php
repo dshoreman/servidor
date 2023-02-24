@@ -65,7 +65,7 @@ class RedirectTest extends TestCase
     /** @test */
     public function nginx_config_uses_redirect_template(): void
     {
-        $this->project->applications()->save($redirect = new Redirect([
+        $this->project->services()->save($redirect = new Redirect([
             'domain_name' => 'a-redir.example',
             'config' => ['redirect' => [
                 'target' => 'b-redir.example',

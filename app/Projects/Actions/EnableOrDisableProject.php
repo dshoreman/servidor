@@ -2,8 +2,8 @@
 
 namespace Servidor\Projects\Actions;
 
-use Servidor\Projects\Application;
 use Servidor\Projects\Project;
+use Servidor\Projects\ProjectService;
 use Servidor\Projects\Redirect;
 
 class EnableOrDisableProject
@@ -16,7 +16,7 @@ class EnableOrDisableProject
     private Project $project;
 
     public function __construct(
-        private Application|Redirect $appOrRedirect,
+        private ProjectService|Redirect $appOrRedirect,
     ) {
         $appOrRedirect->checkNginxData();
 
