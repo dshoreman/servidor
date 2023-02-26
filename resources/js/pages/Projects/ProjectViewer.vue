@@ -31,30 +31,31 @@
                 </sui-grid-column>
 
                 <sui-grid-column :width="13">
-                    <div v-for="app in project.applications" :key="app.id">
+                    <div v-for="service in project.services" :key="service.id">
                         <sui-segment inverted color="red"
-                            emphasis="secondary" v-if="!app.system_user">
+                            emphasis="secondary" v-if="isApp(service) && !service.system_user">
                             <sui-icon name="exclamation triangle" />
                             The system user required by this project does not exist!
                         </sui-segment>
 
-                        <sui-header attached="top" :inverted="darkMode">
-                            <ssl-indicator :app="app" style="float: right; margin: 0;" />
+                        <sui-header attached="top" :inverted="darkMode" v-if="isApp(service)">
+                            <ssl-indicator :service="service" style="float: right; margin: 0;" />
                             <sui-label style="float: right; margin: 0 5px 0;"
                                 size="tiny" color="violet" title="PHP Version"
-                                v-if="app.config && app.config.phpVersion">
-                                <sui-icon name="php" /> {{ app.config.phpVersion }}
+                                v-if="service.config && service.config.phpVersion">
+                                <sui-icon name="php" /> {{ service.config.phpVersion }}
                             </sui-label>
                             Source Files
                         </sui-header>
-                        <sui-segment attached :inverted="darkMode">
+                        <sui-segment attached :inverted="darkMode" v-if="isApp(service)">
                             <sui-grid>
                                 <sui-grid-row :columns="2">
                                     <sui-grid-column>
                                         <sui-header size="tiny" :inverted="darkMode">Repository
-                                            <sui-header-subheader v-if="app.source_repository">
-                                                <sui-icon :name="app.source_provider" />
-                                                <span>{{ app.source_repository }}</span>
+                                            <sui-header-subheader
+                                                v-if="service.config.source.repository">
+                                                <sui-icon :name="service.config.source.provider" />
+                                                <span>{{ service.config.source.repository }}</span>
                                             </sui-header-subheader>
                                             <sui-header-subheader v-else>
                                                 No source repository has been set for this project!
@@ -65,9 +66,10 @@
                                         <sui-header size="tiny" :inverted="darkMode">Tracking Branch
                                             <sui-button basic positive icon="download"
                                                 content="Pull Latest Code" floated="right"
-                                                @click="pullFiles(app)" />
-                                            <sui-header-subheader v-if="app.source_branch">
-                                                {{ app.source_branch }}
+                                                @click="pullFiles(service)" />
+                                            <sui-header-subheader
+                                                v-if="service.config.source.branch">
+                                                {{ service.config.source.branch }}
                                             </sui-header-subheader>
                                             <sui-header-subheader v-else>
                                                 Using default branch
@@ -77,12 +79,14 @@
                                 </sui-grid-row>
                             </sui-grid>
 
-                            <sui-header size="tiny" :inverted="darkMode" v-if="app.source_root">
-                                <router-link :to="filesLink(app.source_root)" is="sui-button"
+                            <sui-header size="tiny" :inverted="darkMode" v-if="isApp(service)">
+                                <router-link :to="filesLink(service.source_root)" is="sui-button"
                                              content="Browse files" floated="right"
                                              basic primary icon="open folder" />
                                 Project Root
-                                <sui-header-subheader>{{ app.source_root }}</sui-header-subheader>
+                                <sui-header-subheader>
+                                    {{ service.source_root }}
+                                </sui-header-subheader>
                             </sui-header>
                             <sui-header size="tiny" :inverted="darkMode" v-else>
                                 Project Root
@@ -92,76 +96,77 @@
                             </sui-header>
                         </sui-segment>
 
-                        <sui-header attached="top" :inverted="darkMode" v-if="app.system_user">
+                        <sui-header attached="top" :inverted="darkMode" v-if="service.system_user">
                             <sui-icon name="check" color="green" style="float: right; margin: 0;" />
                             System User
                         </sui-header>
-                        <sui-segment attached :inverted="darkMode" v-if="app.system_user">
+                        <sui-segment attached :inverted="darkMode" v-if="service.system_user">
                             <sui-grid>
                                 <sui-grid-row>
                                     <sui-grid-column :width="8">
                                         <sui-header size="tiny" :inverted="darkMode">Username
                                             <sui-header-subheader>
-                                                {{ app.system_user.name }}
+                                                {{ service.system_user.name }}
                                             </sui-header-subheader>
                                         </sui-header>
                                     </sui-grid-column>
                                     <sui-grid-column :width="4">
                                         <sui-header size="tiny" :inverted="darkMode">User ID
                                             <sui-header-subheader>
-                                                {{ app.system_user.uid }}
+                                                {{ service.system_user.uid }}
                                             </sui-header-subheader>
                                         </sui-header>
                                     </sui-grid-column>
                                     <sui-grid-column :width="4">
                                         <sui-header size="tiny" :inverted="darkMode">Group ID
                                             <sui-header-subheader>
-                                                {{ app.system_user.gid }}
+                                                {{ service.system_user.gid }}
                                             </sui-header-subheader>
                                         </sui-header>
                                     </sui-grid-column>
                                 </sui-grid-row>
                             </sui-grid>
 
-                            <sui-header size="tiny" :inverted="darkMode" v-if="app.system_user.dir">
-                                <router-link :to="filesLink(app.system_user.dir)" is="sui-button"
-                                             content="Browse files" floated="right"
-                                             basic primary icon="open folder" />
+                            <sui-header size="tiny" :inverted="darkMode"
+                                v-if="service.system_user.dir">
+                                <router-link is="sui-button" content="Browse files" floated="right"
+                                            :to="filesLink(service.system_user.dir)"
+                                            basic primary icon="open folder" />
                                 Home Directory
                                 <sui-header-subheader>
-                                    {{ app.system_user.dir }}
+                                    {{ service.system_user.dir }}
                                 </sui-header-subheader>
                             </sui-header>
                         </sui-segment>
 
-                        <sui-header v-if="hasLogs(app)" attached="top" :inverted="darkMode">
+                        <sui-header v-if="hasLogs(service)" attached="top" :inverted="darkMode">
                             Project Logs
                         </sui-header>
-                        <project-logs :project="project" :app="app" />
-                    </div>
+                        <project-logs :project="project" :service="service" />
 
-                    <div v-for="redir in project.redirects" :key="redir.id">
-                        <sui-header attached="top" :inverted="darkMode">
+                        <sui-header attached="top" :inverted="darkMode" v-if="!isApp(service)">
                             Domain Redirection
                         </sui-header>
-                        <sui-segment attached :inverted="darkMode">
+                        <sui-segment attached :inverted="darkMode" v-if="!isApp(service)">
                             <sui-grid>
                                 <sui-grid-row>
                                     <sui-grid-column :width="11">
                                         <sui-header size="tiny" :inverted="darkMode">
                                             Target URL
                                             <sui-header-subheader>
-                                                {{ redir.target }}
+                                                {{ service.config.redirect.target }}
                                             </sui-header-subheader>
                                         </sui-header>
                                     </sui-grid-column>
                                     <sui-grid-column :width="5">
                                         <sui-header size="tiny" :inverted="darkMode">
                                             Redirect Type
-                                            <sui-header-subheader v-if="redir.type == 301">
+                                            <sui-header-subheader
+                                                v-if="service.config.redirect.type == 301">
                                                 Permanent
                                             </sui-header-subheader>
-                                            <sui-header-subheader v-else-if="redir.type == 302">
+                                            <sui-header-subheader
+                                                v-else-if="service.config.redirect.type == 302">
                                                 Temporary
                                             </sui-header-subheader>
                                             <sui-header-subheader v-else>
@@ -196,7 +201,7 @@
 <script>
 import ProjectLogs from '../../components/Projects/Viewer/ProjectLogs';
 import ProjectTabs from '../../components/Projects/Viewer/ProjectTabs';
-import SslIndicator from '../../components/Projects/Apps/SslIndicator';
+import SslIndicator from '../../components/Projects/Services/SslIndicator';
 import { mapActions } from 'vuex';
 
 export default {
@@ -231,8 +236,11 @@ export default {
         filesLink(path) {
             return { name: 'files', params: { path }};
         },
-        hasLogs(app) {
-            return 0 !== Object.keys(app.logs).length;
+        hasLogs(service) {
+            return 0 !== Object.keys(service.logs).length;
+        },
+        isApp(service) {
+            return 'redirect' !== service.template;
         },
         removeProject() {
             /* eslint-disable no-alert */

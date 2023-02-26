@@ -2,17 +2,15 @@
 
 namespace Servidor\Projects;
 
-use Servidor\Projects\Applications\ProjectAppSaved;
-use Servidor\Projects\Redirects\ProjectRedirectSaved;
+use Servidor\Projects\Services\ProjectServiceSaved;
 
 class ReloadNginxService
 {
-    /**
-     * @param ProjectAppSaved|ProjectRedirectSaved $event
-     */
-    public function handle($event): void
+    public function handle(ProjectSaved|ProjectServiceSaved $event): void
     {
-        $step = new ProgressStep('nginx.reload', 'Reloading nginx service', 100);
+        $progress = $event instanceof ProjectSaved ? 5 : 100;
+
+        $step = new ProgressStep('nginx.reload', 'Reloading nginx service', $progress);
         ProjectProgress::dispatch($event->getProject(), $step->start());
 
         exec('sudo systemctl reload-or-restart nginx.service');

@@ -5,16 +5,13 @@ namespace Servidor\Http\Controllers\System\Git;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Servidor\Http\Controllers\System\Controller;
-use Servidor\Projects\Application;
+use Servidor\Projects\ProjectService;
 
 class ListBranches extends Controller
 {
     private const GIT_COMMAND = "git ls-remote --heads '%s' | sed 's^.*refs/heads/^^'";
 
-    /**
-     * @var array
-     */
-    private $patterns = Application::SOURCE_PROVIDERS;
+    private array $patterns = ProjectService::SOURCE_PROVIDERS;
 
     public function __invoke(Request $request): JsonResponse
     {

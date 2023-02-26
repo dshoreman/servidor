@@ -3,7 +3,7 @@
     <sui-segment attached :inverted="darkMode" v-if="logNames.length">
 
         <sui-menu pointing secondary :inverted="darkMode">
-            <a is="sui-menu-item" v-for="(title, key) in app.logs" :key="key"
+            <a is="sui-menu-item" v-for="(title, key) in service.logs" :key="key"
                 :active="activeLog === key" :content="title"
                 @click="viewLog(key)" />
         </sui-menu>
@@ -20,7 +20,7 @@ export default {
         this.initLog();
     },
     props: {
-        app: { type: Object, default: () => ({}) },
+        service: { type: Object, default: () => ({}) },
         project: { type: Object, default: () => ({}) },
     },
     data() {
@@ -31,7 +31,7 @@ export default {
     },
     computed: {
         logNames() {
-            return Object.keys(this.app.logs);
+            return Object.keys(this.service.logs);
         },
     },
     methods: {
@@ -48,7 +48,7 @@ export default {
             this.activeLog = key;
 
             axios
-                .get(`/api/projects/${this.project.id}/logs/${key}.app-${this.app.id}.log`)
+                .get(`/api/projects/${this.project.id}/logs/${key}.service-${this.service.id}.log`)
                 .then(response => {
                     this.logContent = '' === response.data.trim()
                         ? "Log file is empty or doesn't exist."

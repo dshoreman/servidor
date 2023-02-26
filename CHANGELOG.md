@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] The presence or absence of the 'www.' can now optionally be forced
 
 ### Changed
-* [projects] App/redirect creation steps are now added together
+* [projects] App/redirect creation steps are now added to progress modal together
+* [projects] Project Apps and Project Redirects are now simply Project Services
 
 ### Fixed
 * [projects] The logs header is now correctly displayed when there are logs

@@ -25,26 +25,20 @@
 
             <sui-segment v-else-if="step == 'source'">
                 <h3 is="sui-header">Where are the project files stored?</h3>
-                <source-selector :errors="errors" :providers="providers" v-model="sourceData"
-                    @selected="setAppSource" @cancel="cancel" />
+                <source-selector :errors="errors" :providers="providers"
+                    v-model="defaultApp" @next="nextStep('source')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'domain'">
                 <h3 is="sui-header">Set the main entry point for your app</h3>
-                <domain-form :errors="errors" v-model="defaultRedirect"
-                    @next="nextStep('domain')" @cancel="cancel"
-                    v-if="defaultApp.template == 'archive'" />
-                <domain-form :errors="errors" v-model="defaultApp" v-else
+                <domain-form :errors="errors" v-model="defaultApp"
                     @next="nextStep('domain')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'ssl'">
                 <h3 is="sui-header">Have an SSL Certificate to use?</h3>
-                <ssl-form :errors="errors" v-model="defaultRedirect.config"
-                    @next="nextStep('ssl')" @cancel="cancel"
-                    v-if="defaultApp.template == 'archive'" />
                 <ssl-form :errors="errors" v-model="defaultApp.config"
-                    @next="nextStep('ssl')" @cancel="cancel" v-else />
+                    @next="nextStep('ssl')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'redirect'">
@@ -55,7 +49,7 @@
 
             <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
                 <h3 is="sui-header">Let's get this Project started!</h3>
-                <confirmation-text :app="defaultApp" :source="extraData" />
+                <confirmation-text :service="defaultApp" :providers="providers" />
                 <confirmation-form :errors="errors" v-model="project.name"
                                    :template="defaultApp.template"
                                    @created="create" :created-id="projectCreatedId" />
@@ -74,20 +68,20 @@
 import ConfirmationForm from '../../components/Projects/ConfirmationForm';
 import ConfirmationText from '../../components/Projects/ConfirmationText';
 import DiscardPrompt from '../../components/Projects/DiscardPrompt.vue';
-import DomainForm from '../../components/Projects/Apps/DomainForm';
-import PhpVersions from '../../components/Projects/Apps/PhpVersions';
+import DomainForm from '../../components/Projects/Services/DomainForm';
+import PhpVersions from '../../components/Projects/Services/PhpVersions';
 import ProgressModal from '../../components/ProgressModal';
-import RedirectForm from '../../components/Projects/Apps/RedirectForm';
-import SourceSelector from '../../components/Projects/Apps/SourceSelector';
-import SslForm from '../../components/Projects/Apps/SslForm';
+import RedirectForm from '../../components/Projects/Services/RedirectForm';
+import SourceSelector from '../../components/Projects/Services/SourceSelector';
+import SslForm from '../../components/Projects/Services/SslForm';
 import StepList from '../../components/Projects/StepList';
-import TemplateSelector from '../../components/Projects/Apps/TemplateSelector';
+import TemplateSelector from '../../components/Projects/Services/TemplateSelector';
 import providers from './source-providers.json';
 import steps from './steps.json';
 import templates from './templates.json';
 
-const PERCENT_APP = 95,
-    PERCENT_REDIRECT = 95,
+const PERCENT_REDIRECT = 95,
+    PERCENT_SERVICE = 95,
     STEP_APP = 'app.save',
     STEP_CREATE = 'project.create',
     STEP_REDIRECT = 'redirect.save',
@@ -112,9 +106,7 @@ export default {
             bypassLeaveHandler: false,
             error: '',
             errors: {},
-            extraData: { repository: '', provider: '' },
-            project: { name: '', applications: [], redirects: []},
-            sourceData: { repository: '', provider: 'github', branch: null, url: '' },
+            project: { name: '', services: []},
             projectCreatedId: 0,
             providers,
             step: 'template',
@@ -137,18 +129,10 @@ export default {
     computed: {
         defaultApp: {
             get() {
-                return this.project.applications[0];
+                return this.project.services[0];
             },
             set(data) {
-                Vue.set(this.project.applications, 0, data);
-            },
-        },
-        defaultRedirect: {
-            get() {
-                return this.project.redirects[0];
-            },
-            set(data) {
-                Vue.set(this.project.redirects, 0, data);
+                Vue.set(this.project.services, 0, data);
             },
         },
         template() {
@@ -162,9 +146,7 @@ export default {
             }, 'projects');
         },
         discard() {
-            this.extraData = { repository: '', provider: '' };
-            this.project = { name: '', applications: [], redirects: []};
-            this.sourceData = { repository: '', provider: 'github', branch: null, url: '' };
+            this.project = { name: '', services: []};
 
             this.steps.forEach(s => {
                 if ('template' !== s.name) {
@@ -202,27 +184,17 @@ export default {
             this.goto(this.template.steps[step + 1]);
         },
         setAppTemplate(tpl) {
-            const [ firstStep ] = tpl.steps;
+            const [ firstStep ] = tpl.steps,
+                config = tpl.isApp
+                    ? { source: { provider: 'github' }}
+                    : { redirect: { target: '', type: 301 }};
 
-            if (tpl.isApp) {
-                this.project.applications.push({
-                    config: {},
-                    domain: '',
-                    provider: 'github',
-                    template: tpl.name.toLowerCase(),
-                });
-            } else {
-                this.project.applications.push({ template: 'archive', domain: '' });
-                this.project.redirects.push({
-                    config: {},
-                    domain: '',
-                    target: '',
-                    type: 301,
-                });
-            }
+            this.project.services.push({
+                config, domain: '', template: tpl.name.toLowerCase(),
+            });
 
             if (tpl.steps.includes('phpver')) {
-                this.defaultApp.config = { phpVersion: '8.0' };
+                this.defaultApp.config.phpVersion = '8.0';
             }
 
             this.steps.forEach(s => {
@@ -233,16 +205,11 @@ export default {
 
             this.goto(firstStep);
         },
-        setAppSource(source) {
-            const { branch, provider, repository, repoUri } = source;
-
-            this.defaultApp = { ...this.defaultApp, repository, provider, branch };
-            this.extraData = { repoUri };
-
-            this.nextStep('source');
-        },
         setRedirect(redirect) {
-            this.defaultRedirect = { ...this.defaultRedirect, ...redirect };
+            const { domain, target, type } = redirect;
+
+            this.defaultApp.domain = domain;
+            this.defaultApp.config.redirect = { target, type };
 
             this.nextStep('redirect');
         },
@@ -259,7 +226,7 @@ export default {
             }
 
             try {
-                await this.createAppOrRedirect(project, step);
+                await this.createService(project, step);
 
                 await this.$store.dispatch('progress/activateContinueButton', {
                     name: 'projects.view',
@@ -298,13 +265,13 @@ export default {
 
             return this.$store.getters['projects/find'](this.projectCreatedId);
         },
-        async createAppOrRedirect(project, step) {
-            const [action, data, progress] = step === STEP_APP
-                ? ['createApp', { app: this.project.applications[0] }, PERCENT_APP]
-                : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
+        async createService(project, step) {
+            const progress = step === STEP_APP ? PERCENT_SERVICE : PERCENT_REDIRECT;
 
             await this.$store.dispatch('progress/stepStarted', { step });
-            await this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data });
+            await this.$store.dispatch('projects/createService', {
+                projectId: project.id, service: this.defaultApp,
+            });
             await this.$store.dispatch('progress/stepCompleted', { step, progress });
         },
         handleCreationError(step, error) {
@@ -325,7 +292,7 @@ export default {
             this.error = res && 'statusText' in res ? res.statusText : error.message;
         },
         progressInit() {
-            const [ { template } ] = this.project.applications,
+            const [ { template } ] = this.project.services,
                 isApp = 'archive' !== template,
                 step = isApp ? STEP_APP : STEP_REDIRECT,
                 text = isApp ? `${template} application` : 'redirect';

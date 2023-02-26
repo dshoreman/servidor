@@ -18,13 +18,13 @@
                             {{ p.name }}
                         </router-link>
                     </sui-table-cell>
-                    <sui-table-cell selectable collapsing v-if="p.applications.length">
-                        <a :href="'https://' + p.applications[0].domain_name">
+                    <sui-table-cell selectable collapsing v-if="p.services.length">
+                        <a :href="'https://' + p.services[0].domain_name">
                             <sui-icon name="external" />
-                            {{ p.applications[0].domain_name }}
+                            {{ p.services[0].domain_name }}
                         </a>
                     </sui-table-cell>
-                    <sui-table-cell collapsing v-if="p.applications.length">
+                    <sui-table-cell collapsing v-if="p.services.length">
                         <router-link is="sui-button" basic size="tiny" compact
                             :to="makeBrowseLink(p)" v-if="canBrowse(p)">
                             <sui-icon name="open folder" /> Browse Source
@@ -88,34 +88,34 @@ export default {
     },
     methods: {
         getColspan(project) {
-            const WIDTH_NO_APP = 3,
-                WIDTH_NO_DOMAIN = 2,
+            const WIDTH_NO_DOMAIN = 2,
+                WIDTH_NO_SERVICE = 3,
                 WIDTH_WITH_DOMAIN = 1;
 
-            if (!project.applications.length) {
-                return WIDTH_NO_APP;
+            if (!project.services.length) {
+                return WIDTH_NO_SERVICE;
             }
 
-            return project.applications[0].domain_name ? WIDTH_WITH_DOMAIN : WIDTH_NO_DOMAIN;
+            return project.services[0].domain_name ? WIDTH_WITH_DOMAIN : WIDTH_NO_DOMAIN;
         },
         getIcon(project) {
             let tpl = { icon: 'question mark', colour: 'grey' };
 
-            if (project.applications && 0 < project.applications.length) {
+            if (project.services && 0 < project.services.length) {
                 tpl = templates.find(
-                    t => t.name.toLowerCase() === project.applications[0].template.toLowerCase(),
+                    t => t.name.toLowerCase() === project.services[0].template.toLowerCase(),
                 );
             }
 
             return { name: tpl.icon, color: tpl.colour };
         },
         canBrowse(project) {
-            return project.applications.length && 'source_root' in project.applications[0];
+            return project.services.length && 'source_root' in project.services[0];
         },
         makeBrowseLink(project) {
             return {
                 name: 'files',
-                params: { path: project.applications[0].source_root },
+                params: { path: project.services[0].source_root },
             };
         },
         viewSelected() {

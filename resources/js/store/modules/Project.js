@@ -8,19 +8,11 @@ export default {
         addNewProject: (state, project) => {
             state.projects.push(project);
         },
-        addProjectApp: (state, app) => {
-            const { project_id: pID } = app,
+        addProjectService: (state, service) => {
+            const { project_id: pID } = service,
                 project = { ...state.projects.find(p => p.id === pID) };
 
-            project.applications.push(app);
-
-            Vue.set(state.projects, state.projects.findIndex(p => p.id === pID), project);
-        },
-        addProjectRedirect: (state, redirect) => {
-            const { project_id: pID } = redirect,
-                project = { ...state.projects.find(p => p.id === pID) };
-
-            project.redirects.push(redirect);
+            project.services.push(service);
 
             Vue.set(state.projects, state.projects.findIndex(p => p.id === pID), project);
         },
@@ -57,23 +49,18 @@ export default {
                 return Promise.reject(error);
             }
         },
-        createApp: async ({ commit }, { projectId, app }) => {
-            const { data } = await axios.post(`/api/projects/${projectId}/apps`, app);
+        createService: async ({ commit }, { projectId, service }) => {
+            const { data } = await axios.post(`/api/projects/${projectId}/services`, service);
 
-            commit('addProjectApp', data);
-
-            return data;
-        },
-        createRedirect: async ({ commit }, { projectId, redirect }) => {
-            const { data } = await axios.post(`/api/projects/${projectId}/redirects`, redirect);
-
-            commit('addProjectRedirect', data);
+            commit('addProjectService', data);
 
             return data;
         },
         disable: ({ dispatch }, id) => dispatch('toggle', { id }),
         enable: ({ dispatch }, id) => dispatch('toggle', { id, enabled: true }),
-        pull: ({ _ }, app) => axios.post(`/api/projects/${app.project.id}/apps/${app.id}/pull`),
+        pull: ({ _ }, service) => axios.post(
+            `/api/projects/${service.project.id}/services/${service.id}/pull`,
+        ),
         remove: ({ commit }, id) => new Promise((resolve, reject) => {
             axios.delete(`/api/projects/${id}`).then(response => {
                 commit('removeProject', id);
@@ -103,8 +90,8 @@ export default {
         all: state => state.projects,
         find: state => id => state.projects.find(p => id === p.id),
         findByDocroot: state => path => state.projects.find(
-            p => p.applications && 0 < p.applications.length
-                && path === p.applications[0].document_root,
+            p => p.services && 0 < p.services.length
+                && path === p.services[0].document_root,
         ),
     },
 };
