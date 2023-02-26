@@ -4,23 +4,22 @@ namespace Servidor\Projects;
 
 use Servidor\Projects\Actions\EnableOrDisableProject;
 use Servidor\Projects\Actions\MissingProjectData;
-use Servidor\Projects\Redirects\ProjectRedirectSaved;
 use Servidor\Projects\Services\ProjectServiceSaved;
 
 class ToggleProjectVisibility
 {
-    public function handle(ProjectSaved|ProjectServiceSaved|ProjectRedirectSaved $event): void
+    public function handle(ProjectSaved|ProjectServiceSaved $event): void
     {
         $project = $event->getProject();
-        $appOrRedirect = $event->getAppOrRedirect();
+        $service = $event->getService();
 
-        if (null === $appOrRedirect) {
+        if (null === $service) {
             return;
         }
-        $step = $this->addStep($project, $appOrRedirect);
+        $step = $this->addStep($project, $service);
 
         try {
-            (new EnableOrDisableProject($appOrRedirect))->execute();
+            (new EnableOrDisableProject($service))->execute();
 
             ProjectProgress::dispatch($project, $step->complete());
         } catch (MissingProjectData $_) {
@@ -30,9 +29,9 @@ class ToggleProjectVisibility
 
     private function addStep(
         Project $project,
-        ProjectService|Redirect $appOrRedirect,
+        ProjectService $service,
     ): ProgressStep {
-        $type = $appOrRedirect->getType();
+        $type = $service->getType();
 
         [$step, $text, $progress] = $project->is_enabled
             ? ['enable', 'Enabling ' . $type, 90]

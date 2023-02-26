@@ -31,20 +31,14 @@
 
             <sui-segment v-else-if="step == 'domain'">
                 <h3 is="sui-header">Set the main entry point for your app</h3>
-                <domain-form :errors="errors" v-model="defaultRedirect"
-                    @next="nextStep('domain')" @cancel="cancel"
-                    v-if="defaultApp.template == 'archive'" />
-                <domain-form :errors="errors" v-model="defaultApp" v-else
+                <domain-form :errors="errors" v-model="defaultApp"
                     @next="nextStep('domain')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'ssl'">
                 <h3 is="sui-header">Have an SSL Certificate to use?</h3>
-                <ssl-form :errors="errors" v-model="defaultRedirect.config"
-                    @next="nextStep('ssl')" @cancel="cancel"
-                    v-if="defaultApp.template == 'archive'" />
                 <ssl-form :errors="errors" v-model="defaultApp.config"
-                    @next="nextStep('ssl')" @cancel="cancel" v-else />
+                    @next="nextStep('ssl')" @cancel="cancel" />
             </sui-segment>
 
             <sui-segment v-else-if="step == 'redirect'">
@@ -112,7 +106,7 @@ export default {
             bypassLeaveHandler: false,
             error: '',
             errors: {},
-            project: { name: '', services: [], redirects: []},
+            project: { name: '', services: []},
             projectCreatedId: 0,
             providers,
             step: 'template',
@@ -141,14 +135,6 @@ export default {
                 Vue.set(this.project.services, 0, data);
             },
         },
-        defaultRedirect: {
-            get() {
-                return this.project.redirects[0];
-            },
-            set(data) {
-                Vue.set(this.project.redirects, 0, data);
-            },
-        },
         template() {
             return this.templates.find(t => t.name.toLowerCase() === this.defaultApp.template);
         },
@@ -160,7 +146,7 @@ export default {
             }, 'projects');
         },
         discard() {
-            this.project = { name: '', services: [], redirects: []};
+            this.project = { name: '', services: []};
 
             this.steps.forEach(s => {
                 if ('template' !== s.name) {
@@ -198,23 +184,14 @@ export default {
             this.goto(this.template.steps[step + 1]);
         },
         setAppTemplate(tpl) {
-            const [ firstStep ] = tpl.steps;
+            const [ firstStep ] = tpl.steps,
+                config = tpl.isApp
+                    ? { source: { provider: 'github' }}
+                    : { redirect: { target: '', type: 301 }};
 
-            if (tpl.isApp) {
-                this.project.services.push({
-                    config: { source: { provider: 'github' }},
-                    domain: '',
-                    template: tpl.name.toLowerCase(),
-                });
-            } else {
-                this.project.services.push({ template: 'archive', domain: '' });
-                this.project.redirects.push({
-                    config: {},
-                    domain: '',
-                    target: '',
-                    type: 301,
-                });
-            }
+            this.project.services.push({
+                config, domain: '', template: tpl.name.toLowerCase(),
+            });
 
             if (tpl.steps.includes('phpver')) {
                 this.defaultApp.config.phpVersion = '8.0';
@@ -229,7 +206,10 @@ export default {
             this.goto(firstStep);
         },
         setRedirect(redirect) {
-            this.defaultRedirect = { ...this.defaultRedirect, ...redirect };
+            const { domain, target, type } = redirect;
+
+            this.defaultApp.domain = domain;
+            this.defaultApp.config.redirect = { target, type };
 
             this.nextStep('redirect');
         },
@@ -246,7 +226,7 @@ export default {
             }
 
             try {
-                await this.createAppOrRedirect(project, step);
+                await this.createService(project, step);
 
                 await this.$store.dispatch('progress/activateContinueButton', {
                     name: 'projects.view',
@@ -285,13 +265,13 @@ export default {
 
             return this.$store.getters['projects/find'](this.projectCreatedId);
         },
-        async createAppOrRedirect(project, step) {
-            const [action, data, progress] = step === STEP_APP
-                ? ['createService', { service: this.project.services[0] }, PERCENT_SERVICE]
-                : ['createRedirect', { redirect: this.project.redirects[0] }, PERCENT_REDIRECT];
+        async createService(project, step) {
+            const progress = step === STEP_APP ? PERCENT_SERVICE : PERCENT_REDIRECT;
 
             await this.$store.dispatch('progress/stepStarted', { step });
-            await this.$store.dispatch(`projects/${action}`, { projectId: project.id, ...data });
+            await this.$store.dispatch('projects/createService', {
+                projectId: project.id, service: this.defaultApp,
+            });
             await this.$store.dispatch('progress/stepCompleted', { step, progress });
         },
         handleCreationError(step, error) {

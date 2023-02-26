@@ -11,7 +11,7 @@ class UpdateProject extends Controller
     public function __invoke(UpdateProjectRequest $request, Project $project): JsonResponse
     {
         $project->update($request->validated());
-        $project->load(['services', 'redirects']);
+        $project->load(['services']);
 
         return response()->json($project);
     }

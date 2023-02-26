@@ -21,4 +21,9 @@ class Php extends Html
             'php' => new LogFile($this->service, 'PHP Error Log', $phpErrorLog),
         ];
     }
+
+    public function serviceType(): string
+    {
+        return 'application';
+    }
 }

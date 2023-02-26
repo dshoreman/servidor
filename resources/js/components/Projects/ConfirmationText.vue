@@ -4,12 +4,12 @@
             When you continue, the new project will be created with a
             <strong>{{ service.template }}</strong> application.
         </p>
-        <p>
+        <p v-if="service.template !== 'redirect'">
             Code will be pulled from the <code>{{ repoUri }}</code>
             repository on <strong>{{ service.config.source.provider }}</strong> using:<br>
             <strong>{{ service.config.source.repository }}</strong>.
         </p>
-        <p>
+        <p v-if="service.template !== 'redirect'">
             The project will be configured to track the
             <code>{{ service.config.source.branch }}</code> branch.
         </p>

@@ -33,12 +33,12 @@
                 <sui-grid-column :width="13">
                     <div v-for="service in project.services" :key="service.id">
                         <sui-segment inverted color="red"
-                            emphasis="secondary" v-if="!service.system_user">
+                            emphasis="secondary" v-if="isApp(service) && !service.system_user">
                             <sui-icon name="exclamation triangle" />
                             The system user required by this project does not exist!
                         </sui-segment>
 
-                        <sui-header attached="top" :inverted="darkMode">
+                        <sui-header attached="top" :inverted="darkMode" v-if="isApp(service)">
                             <ssl-indicator :service="service" style="float: right; margin: 0;" />
                             <sui-label style="float: right; margin: 0 5px 0;"
                                 size="tiny" color="violet" title="PHP Version"
@@ -47,7 +47,7 @@
                             </sui-label>
                             Source Files
                         </sui-header>
-                        <sui-segment attached :inverted="darkMode">
+                        <sui-segment attached :inverted="darkMode" v-if="isApp(service)">
                             <sui-grid>
                                 <sui-grid-row :columns="2">
                                     <sui-grid-column>
@@ -79,7 +79,7 @@
                                 </sui-grid-row>
                             </sui-grid>
 
-                            <sui-header size="tiny" :inverted="darkMode" v-if="service.source_root">
+                            <sui-header size="tiny" :inverted="darkMode" v-if="isApp(service)">
                                 <router-link :to="filesLink(service.source_root)" is="sui-button"
                                              content="Browse files" floated="right"
                                              basic primary icon="open folder" />
@@ -143,30 +143,30 @@
                             Project Logs
                         </sui-header>
                         <project-logs :project="project" :service="service" />
-                    </div>
 
-                    <div v-for="redir in project.redirects" :key="redir.id">
-                        <sui-header attached="top" :inverted="darkMode">
+                        <sui-header attached="top" :inverted="darkMode" v-if="!isApp(service)">
                             Domain Redirection
                         </sui-header>
-                        <sui-segment attached :inverted="darkMode">
+                        <sui-segment attached :inverted="darkMode" v-if="!isApp(service)">
                             <sui-grid>
                                 <sui-grid-row>
                                     <sui-grid-column :width="11">
                                         <sui-header size="tiny" :inverted="darkMode">
                                             Target URL
                                             <sui-header-subheader>
-                                                {{ redir.target }}
+                                                {{ service.config.redirect.target }}
                                             </sui-header-subheader>
                                         </sui-header>
                                     </sui-grid-column>
                                     <sui-grid-column :width="5">
                                         <sui-header size="tiny" :inverted="darkMode">
                                             Redirect Type
-                                            <sui-header-subheader v-if="redir.type == 301">
+                                            <sui-header-subheader
+                                                v-if="service.config.redirect.type == 301">
                                                 Permanent
                                             </sui-header-subheader>
-                                            <sui-header-subheader v-else-if="redir.type == 302">
+                                            <sui-header-subheader
+                                                v-else-if="service.config.redirect.type == 302">
                                                 Temporary
                                             </sui-header-subheader>
                                             <sui-header-subheader v-else>
@@ -238,6 +238,9 @@ export default {
         },
         hasLogs(service) {
             return 0 !== Object.keys(service.logs).length;
+        },
+        isApp(service) {
+            return 'redirect' !== service.template;
         },
         removeProject() {
             /* eslint-disable no-alert */

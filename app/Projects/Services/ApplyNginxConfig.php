@@ -13,8 +13,9 @@ class ApplyNginxConfig
     {
         $service = $event->getService();
         $project = $event->getProject();
+        $progress = 'redirect' === $service->getType() ? 60 : 50;
 
-        $step = new ProgressStep('nginx.save', 'Saving nginx config', 50);
+        $step = new ProgressStep('nginx.save', 'Saving nginx config', $progress);
         ProjectProgress::dispatch($project, $step->start());
 
         try {

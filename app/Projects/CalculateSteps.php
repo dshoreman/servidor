@@ -2,7 +2,6 @@
 
 namespace Servidor\Projects;
 
-use Servidor\Projects\Redirects\ProjectRedirectSaving;
 use Servidor\Projects\Services\ProjectServiceSaving;
 
 class CalculateSteps
@@ -18,34 +17,25 @@ class CalculateSteps
 
     private ?Project $project = null;
 
-    public function handle(ProjectServiceSaving|ProjectRedirectSaving $event): void
+    public function handle(ProjectServiceSaving $event): void
     {
         $this->project = $event->getProject();
+        $type = $event->getService()->getType();
+        $isApp = 'redirect' !== $type;
 
-        if ($event instanceof ProjectServiceSaving) {
-            $this->triggerAppEvents();
+        $this->trigger('nginx.ssl');
+
+        if ($isApp) {
+            $this->trigger('user.create');
         }
 
-        if ($event instanceof ProjectRedirectSaving) {
-            $this->triggerRedirectEvents();
+        $this->trigger('nginx.save');
+
+        if ($isApp) {
+            $this->trigger('clone');
         }
-    }
 
-    private function triggerAppEvents(): void
-    {
-        $this->trigger('nginx.ssl');
-        $this->trigger('user.create');
-        $this->trigger('nginx.save');
-        $this->trigger('clone');
-        $this->trigger('enable', 'Enabling application');
-        $this->trigger('nginx.reload');
-    }
-
-    private function triggerRedirectEvents(): void
-    {
-        $this->trigger('nginx.ssl');
-        $this->trigger('nginx.save');
-        $this->trigger('enable', 'Enabling redirect');
+        $this->trigger('enable', 'Enabling ' . $type);
         $this->trigger('nginx.reload');
     }
 

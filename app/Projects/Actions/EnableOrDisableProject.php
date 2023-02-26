@@ -4,7 +4,6 @@ namespace Servidor\Projects\Actions;
 
 use Servidor\Projects\Project;
 use Servidor\Projects\ProjectService;
-use Servidor\Projects\Redirect;
 
 class EnableOrDisableProject
 {
@@ -13,26 +12,22 @@ class EnableOrDisableProject
 
     private string $configFile;
 
-    private Project $project;
-
     public function __construct(
-        private ProjectService|Redirect $appOrRedirect,
+        private ProjectService $service,
     ) {
-        $appOrRedirect->checkNginxData();
+        $service->checkNginxData();
 
-        $this->configFile = $this->appOrRedirect->domain_name . '.conf';
-
-        \assert($this->appOrRedirect->project instanceof Project);
-        $this->project = $this->appOrRedirect->project;
+        $this->configFile = $this->service->domain_name . '.conf';
     }
 
     public function execute(): void
     {
+        \assert($this->service->project instanceof Project);
         $target = self::PATH_AVAILABLE . $this->configFile;
         $symlink = self::PATH_ENABLED . $this->configFile;
 
         $isEnabled = is_link($symlink) && readlink($symlink) === $target;
-        $shouldBeEnabled = $this->project->is_enabled;
+        $shouldBeEnabled = $this->service->project->is_enabled;
 
         if ($isEnabled === $shouldBeEnabled) {
             return;

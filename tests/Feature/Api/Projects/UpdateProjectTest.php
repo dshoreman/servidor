@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\Projects;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 use Servidor\Projects\Project;
 use Tests\RequiresAuth;
 use Tests\TestCase;
@@ -64,17 +63,6 @@ class UpdateProjectTest extends TestCase
         $this->assertEmpty($data['services']);
     }
 
-    /**
-     * @test
-     *
-     * @depends authed_user_can_rename_project
-     */
-    public function update_response_includes_redirects(array $data): void
-    {
-        $this->assertArrayHasKey('redirects', $data);
-        $this->assertEmpty($data['redirects']);
-    }
-
     /** @test */
     public function project_can_be_enabled(): void
     {
@@ -99,10 +87,10 @@ class UpdateProjectTest extends TestCase
      *
      * @dataProvider symlinkProvider
      */
-    public function updating_project_also_toggles_symlink(string $type, array $data): void
+    public function updating_project_also_toggles_symlink(array $data): void
     {
-        $name = $type . ' Symlink Test';
-        $domain = $type . '-symlink.test';
+        $name = 'Service Symlink Test';
+        $domain = 'service-symlink.test';
 
         $this->assertFileDoesNotExist("/etc/nginx/sites-available/{$domain}.conf");
         $this->assertFileDoesNotExist("/etc/nginx/sites-enabled/{$domain}.conf");
@@ -110,7 +98,7 @@ class UpdateProjectTest extends TestCase
         $project->save();
 
         $this->authed()->postJson(
-            '/api/projects/' . $project->id . '/' . Str::plural($type),
+            '/api/projects/' . $project->id . '/services',
             array_merge(['domain' => $domain], $data),
         );
         $this->assertFileExists("/etc/nginx/sites-available/{$domain}.conf");
@@ -129,7 +117,7 @@ class UpdateProjectTest extends TestCase
     public function symlinkProvider(): array
     {
         return [
-            'Project with a service' => ['service', [
+            'Project with a service' => [[
                 'template' => 'html',
                 'config' => ['source' => [
                     'provider' => 'github',
@@ -137,7 +125,8 @@ class UpdateProjectTest extends TestCase
                     'branch' => 'develop',
                 ]],
             ]],
-            'Project with a redirect' => ['redirect', [
+            'Project with a redirect' => [[
+                'template' => 'redirect',
                 'config' => ['redirect' => [
                     'target' => 'example.com',
                     'type' => 301,

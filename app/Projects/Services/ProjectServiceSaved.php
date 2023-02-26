@@ -27,11 +27,6 @@ class ProjectServiceSaved
         return $this->service;
     }
 
-    public function getAppOrRedirect(): ProjectService
-    {
-        return $this->getService();
-    }
-
     public function getProject(): Project
     {
         return $this->project;

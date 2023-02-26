@@ -6,18 +6,17 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Factory as ViewFactory;
 use Servidor\Projects\ProjectService;
-use Servidor\Projects\Redirect;
 
 class SyncNginxConfig
 {
     private string $configFile;
 
     public function __construct(
-        private ProjectService|Redirect $appOrRedirect,
+        private ProjectService $service,
     ) {
-        $appOrRedirect->checkNginxData();
+        $service->checkNginxData();
 
-        $this->configFile = $appOrRedirect->domain_name . '.conf';
+        $this->configFile = $service->domain_name . '.conf';
     }
 
     public function execute(): void
@@ -35,16 +34,14 @@ class SyncNginxConfig
 
     private function fileContents(): View
     {
-        $type = $this->appOrRedirect instanceof ProjectService ? 'service' : 'redirect';
         $view = app(ViewFactory::class)->make($this->template());
 
-        return $view->with($type, $this->appOrRedirect);
+        return $view->with('service', $this->service);
     }
 
     private function template(): string
     {
-        $template = $this->appOrRedirect instanceof Redirect ? 'redirect'
-            : $this->appOrRedirect->template()->nginxTemplate();
+        $template = $this->service->template()->nginxTemplate();
 
         return 'projects.templates.' . $template;
     }

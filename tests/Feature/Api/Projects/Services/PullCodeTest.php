@@ -39,7 +39,7 @@ class PullCodeTest extends TestCase
 
         self::assertArraySubset(
             $project->toArray(),
-            Project::with(['services', 'redirects'])->firstOrFail()->toArray(),
+            Project::with(['services'])->firstOrFail()->toArray(),
         );
     }
 

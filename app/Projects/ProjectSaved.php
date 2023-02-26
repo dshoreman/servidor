@@ -16,17 +16,13 @@ class ProjectSaved
         $this->project = $project;
     }
 
-    public function getAppOrRedirect(): ProjectService|Redirect|null
+    public function getService(): ?ProjectService
     {
         /** @var array<ProjectService>|Collection<ProjectService> $services */
         $services = $this->project->services;
         \assert($services instanceof Collection);
 
-        /** @var array<Redirect>|Collection<Redirect> $redirects */
-        $redirects = $this->project->redirects;
-        \assert($redirects instanceof Collection);
-
-        return $services->first() ?? $redirects->first();
+        return $services->first();
     }
 
     public function getProject(): Project

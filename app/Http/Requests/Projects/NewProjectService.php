@@ -21,7 +21,7 @@ class NewProjectService extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'template' => 'required|in:html,php,laravel',
+            'template' => 'required|in:html,php,laravel,redirect',
             'domain' => [new Domain()],
             'includeWww' => 'boolean',
             'config' => 'sometimes|required|array:'
@@ -36,17 +36,28 @@ class NewProjectService extends FormRequest
     }
 
     /**
-     * @return array<string,string>
+     * @return array<string,array|string>
      */
     private function configRules(): array
     {
         return [
             'phpVersion' => 'sometimes|required|regex:/^[7-8]\.[0-4]$/',
+            'redirect' => 'required_if:template,redirect|array:target,type',
+            'redirect.target' => 'required_if:template,redirect|string',
+            'redirect.type' => 'required_if:template,redirect|integer',
             'redirectWww' => 'sometimes|required|integer|between:-1,1',
-            'source' => 'sometimes|required|array:provider,repository,branch',
+            'source' => [
+                'sometimes',
+                'required_unless:template,redirect',
+                'array:provider,repository,branch',
+            ],
             'source.branch' => 'nullable|string',
-            'source.provider' => 'required|in:github,bitbucket',
-            'source.repository' => 'required|nullable|regex:_^([a-z-]+)/([a-z-]+)$_i',
+            'source.provider' => 'required_unless:template,redirect|in:github,bitbucket',
+            'source.repository' => [
+                'required_unless:template,redirect',
+                'regex:_^([a-z-]+)/([a-z-]+)$_i',
+                'nullable',
+            ],
             'ssl' => 'sometimes|required|boolean',
             'sslCertificate' => 'sometimes|required|string|filled',
             'sslPrivateKey' => 'sometimes|required|string|filled',

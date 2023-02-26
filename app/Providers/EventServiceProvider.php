@@ -7,10 +7,6 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Servidor\Projects\CalculateSteps;
 use Servidor\Projects\ProjectSaved;
-use Servidor\Projects\Redirects\ApplyRedirectNginxConfig;
-use Servidor\Projects\Redirects\PrepareRedirectSsl;
-use Servidor\Projects\Redirects\ProjectRedirectSaved;
-use Servidor\Projects\Redirects\ProjectRedirectSaving;
 use Servidor\Projects\ReloadNginxService;
 use Servidor\Projects\Services\ApplyNginxConfig;
 use Servidor\Projects\Services\CreateSystemUser;
@@ -35,15 +31,6 @@ class EventServiceProvider extends ServiceProvider
             CreateSystemUser::class,
             ApplyNginxConfig::class,
             DeployApp::class,
-            ToggleProjectVisibility::class,
-            ReloadNginxService::class,
-        ],
-        ProjectRedirectSaving::class => [
-            CalculateSteps::class,
-            PrepareRedirectSsl::class,
-        ],
-        ProjectRedirectSaved::class => [
-            ApplyRedirectNginxConfig::class,
             ToggleProjectVisibility::class,
             ReloadNginxService::class,
         ],

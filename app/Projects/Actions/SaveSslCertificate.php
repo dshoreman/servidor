@@ -8,21 +8,19 @@ use Illuminate\Support\Str;
 use Servidor\Projects\ProgressStep;
 use Servidor\Projects\Project;
 use Servidor\Projects\ProjectService;
-use Servidor\Projects\Redirect;
 
 class SaveSslCertificate
 {
     private Collection $config;
 
-    public function __construct(
-        private ProjectService|Redirect $appOrRedirect,
-    ) {
-        $config = $appOrRedirect->config;
+    public function __construct(private ProjectService $service)
+    {
+        $config = $service->config;
 
         if (
             null === $config
             || !$config->get('ssl', false)
-            || !$appOrRedirect->domain_name
+            || !$service->domain_name
         ) {
             throw new Exception(ProgressStep::REASON_REQUIRED);
         }
@@ -36,12 +34,12 @@ class SaveSslCertificate
 
     public function execute(): void
     {
-        \assert($this->appOrRedirect->project instanceof Project);
-        $this->createCertsDir($this->appOrRedirect->project);
+        \assert($this->service->project instanceof Project);
+        $this->createCertsDir($this->service->project);
 
-        \assert($this->appOrRedirect->config instanceof Collection);
-        $this->appOrRedirect->config['sslCertificate'] = $this->saveCert($this->config);
-        $this->appOrRedirect->config['sslPrivateKey'] = $this->saveKey($this->config);
+        \assert($this->service->config instanceof Collection);
+        $this->service->config['sslCertificate'] = $this->saveCert($this->config);
+        $this->service->config['sslPrivateKey'] = $this->saveKey($this->config);
     }
 
     private function createCertsDir(Project $project): bool
@@ -67,9 +65,9 @@ class SaveSslCertificate
 
     private function saveFile(string $contents, string $extension): string
     {
-        \assert($this->appOrRedirect->project instanceof Project);
-        $projectName = $this->appOrRedirect->project->name;
-        $file = $this->appOrRedirect->domain_name . '.' . $extension;
+        \assert($this->service->project instanceof Project);
+        $projectName = $this->service->project->name;
+        $file = $this->service->domain_name . '.' . $extension;
         $path = storage_path('certs/' . Str::slug($projectName) . '/' . $file);
 
         file_put_contents($path, $contents);

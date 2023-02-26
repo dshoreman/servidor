@@ -16,6 +16,7 @@ use Servidor\Projects\Services\ProjectServiceSaving;
 use Servidor\Projects\Services\Templates\Html;
 use Servidor\Projects\Services\Templates\Laravel;
 use Servidor\Projects\Services\Templates\Php;
+use Servidor\Projects\Services\Templates\Redirect;
 use Servidor\Projects\Services\Templates\Template;
 use Servidor\System\User as SystemUser;
 use Servidor\System\Users\UserNotFound;
@@ -124,16 +125,14 @@ class ProjectService extends Model
 
     public function getSourceRootAttribute(): string
     {
-        $tpl = $this->template();
-
-        if ($tpl->requiresUser() && $this->systemUser) {
+        if ($this->template()->requiresUser() && $this->systemUser) {
             // TODO: If user doesn't exist, this should throw UserNotFoundException
             //  (or some similar error) and NOT just default to a root-based path!
             return ((string) $this->systemUser['dir']) . '/' . $this->sourceRepoName;
         }
 
-        /** @var \Servidor\Projects\Project $project */
         $project = $this->project;
+        \assert($project instanceof Project);
 
         return '/var/www/' . Str::slug($project->name) . '/' . $this->sourceRepoName;
     }
@@ -170,7 +169,7 @@ class ProjectService extends Model
 
     public function getType(): string
     {
-        return 'application';
+        return $this->template()->serviceType();
     }
 
     public function template(): Template
@@ -181,11 +180,14 @@ class ProjectService extends Model
             case Html::class:
                 return new Html($this);
 
+            case Laravel::class:
+                return new Laravel($this);
+
             case Php::class:
                 return new Php($this);
 
-            case Laravel::class:
-                return new Laravel($this);
+            case Redirect::class:
+                return new Redirect($this);
 
             default:
                 throw new Exception("Invalid template '{$template}'.");

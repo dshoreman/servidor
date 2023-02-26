@@ -16,14 +16,6 @@ export default {
 
             Vue.set(state.projects, state.projects.findIndex(p => p.id === pID), project);
         },
-        addProjectRedirect: (state, redirect) => {
-            const { project_id: pID } = redirect,
-                project = { ...state.projects.find(p => p.id === pID) };
-
-            project.redirects.push(redirect);
-
-            Vue.set(state.projects, state.projects.findIndex(p => p.id === pID), project);
-        },
         removeProject: (state, project) => {
             state.projects.splice(state.projects.findIndex(
                 p => p.id === project.id,
@@ -61,13 +53,6 @@ export default {
             const { data } = await axios.post(`/api/projects/${projectId}/services`, service);
 
             commit('addProjectService', data);
-
-            return data;
-        },
-        createRedirect: async ({ commit }, { projectId, redirect }) => {
-            const { data } = await axios.post(`/api/projects/${projectId}/redirects`, redirect);
-
-            commit('addProjectRedirect', data);
 
             return data;
         },

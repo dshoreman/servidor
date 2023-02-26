@@ -12,8 +12,9 @@ class PrepareSsl
     public function handle(ProjectServiceSaving $event): void
     {
         $project = $event->getProject();
+        $progress = 'redirect' === $event->getService()->getType() ? 40 : 20;
 
-        $step = new ProgressStep('nginx.ssl', 'Saving SSL certificate', 20);
+        $step = new ProgressStep('nginx.ssl', 'Saving SSL certificate', $progress);
         ProjectProgress::dispatch($project, $step->start());
 
         try {

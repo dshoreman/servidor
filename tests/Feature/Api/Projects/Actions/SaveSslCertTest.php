@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\Projects\Actions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Servidor\Projects\Project;
 use Servidor\Projects\ProjectService;
-use Servidor\Projects\Redirect;
 use Tests\TestCase;
 
 class SaveSslCertTest extends TestCase
@@ -45,8 +44,9 @@ class SaveSslCertTest extends TestCase
         $this->assertFileDoesNotExist($key);
 
         $project = Project::create(['name' => 'SSL RTest']);
-        $project->redirects()->save($redirect = new Redirect([
+        $project->services()->save($service = new ProjectService([
             'domain_name' => 'ssl.rtest',
+            'template' => 'redirect',
             'config' => [
                 'redirect' => [
                     'target' => 'foo',

@@ -4,6 +4,7 @@ namespace Tests\Unit\Projects;
 
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Exception;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Servidor\Projects\Project;
 use Servidor\Projects\ProjectService;
@@ -49,6 +50,22 @@ class ProjectServiceTest extends TestCase
         ]));
     }
 
+    /** @test */
+    public function redirect_attributes_can_be_set_with_new_service(): void
+    {
+        $service = new ProjectService([
+            'domain_name' => 'a',
+            'config' => ['redirect' => [
+                'target' => 'b',
+                'type' => 302,
+            ]],
+        ]);
+
+        $this->assertEquals('a', $service->domain_name);
+        $this->assertEquals('b', $service->config->get('redirect')['target']);
+        $this->assertEquals(302, $service->config->get('redirect')['type']);
+    }
+
     /**
      * @test
      *
@@ -56,6 +73,8 @@ class ProjectServiceTest extends TestCase
      */
     public function can_access_project(ProjectService $service): ProjectService
     {
+        $this->assertInstanceOf(BelongsTo::class, $service->project());
+
         $service->project()->associate($this->project);
 
         $this->assertEquals('ghosty', $service->project->name);
@@ -142,9 +161,26 @@ class ProjectServiceTest extends TestCase
         $this->assertStringContainsString('try_files $uri $uri/ /index.php?query_string', $s);
     }
 
+    /** @test */
+    public function redirect_only_services_use_redirect_template(): void
+    {
+        $this->project->services()->save($service = new ProjectService([
+            'domain_name' => 'a-redir.example',
+            'template' => 'redirect',
+            'config' => ['redirect' => [
+                'target' => 'b-redir.example',
+                'type' => 301,
+            ]],
+        ]));
+
+        $this->assertFileExists($config = storage_path('app/vhosts/a-redir.example.conf'));
+        $this->assertStringContainsString('server_name a-redir.example;', $txt = file_get_contents($config));
+        $this->assertStringContainsString('return 301 b-redir.example;', $txt = file_get_contents($config));
+    }
+
     public static function tearDownAfterClass(): void
     {
         exec('grep ^ghosty /etc/passwd && sudo userdel -r ghosty 2>/dev/null');
-        exec('cd /var/servidor/storage/app/vhosts; sudo rm basicdefault.example.conf laratest.dev.conf');
+        exec('cd /var/servidor/storage/app/vhosts; sudo rm basicdefault.example.conf laratest.dev.conf a-redir.example.conf');
     }
 }

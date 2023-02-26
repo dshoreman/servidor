@@ -16,14 +16,8 @@ class MergeApplicationsAndRedirectsToServicesTable extends Migration
             ]);
         });
 
-        Schema::table('project_redirects', static function (Blueprint $table): void {
-            $table->dropColumn([
-                'target',
-                'type',
-            ]);
-        });
-
         Schema::rename('project_applications', 'project_services');
+        Schema::dropIfExists('project_redirects');
     }
 
     public function down(): void
@@ -36,9 +30,17 @@ class MergeApplicationsAndRedirectsToServicesTable extends Migration
             $table->string('source_branch')->default('');
         });
 
-        Schema::table('project_redirects', static function (Blueprint $table): void {
+        Schema::create('project_redirects', static function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('project_id');
+            $table->string('domain_name');
+            $table->boolean('include_www')->default(false);
+            $table->json('config')->nullable();
             $table->string('target');
             $table->smallInteger('type');
+            $table->timestamps();
+
+            $table->foreign('project_id')->references('id')->on('projects');
         });
     }
 }

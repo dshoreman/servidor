@@ -15,7 +15,6 @@ use Servidor\Http\Controllers\Files\EditFile;
 use Servidor\Http\Controllers\Files\ListOrShowPath;
 use Servidor\Http\Controllers\Files\MovePath;
 use Servidor\Http\Controllers\Projects\CreateProject;
-use Servidor\Http\Controllers\Projects\CreateProjectRedirect;
 use Servidor\Http\Controllers\Projects\CreateProjectService;
 use Servidor\Http\Controllers\Projects\ListProjects;
 use Servidor\Http\Controllers\Projects\RemoveProject;
@@ -42,9 +41,6 @@ Route::middleware('auth:api')->group(static function (): void {
         Route::prefix('{project}/services')->group(static function (): void {
             Route::post('/', CreateProjectService::class);
             Route::post('{service}/pull', PullCode::class);
-        });
-        Route::prefix('{project}/redirects')->group(static function (): void {
-            Route::post('/', CreateProjectRedirect::class);
         });
 
         Route::get('{project}/logs/{log}.service-{service}.log', ViewLog::class);

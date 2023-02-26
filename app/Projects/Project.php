@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- * A Project is a container for one or more ProjectServices or Redirects.
+ * A Project is a container for one or more ProjectServices.
  *
  * @property int                              $id
  * @property string                           $name
@@ -18,8 +18,6 @@ use Illuminate\Support\Carbon;
  * @property ?Carbon                          $updated_at
  * @property array<ProjectService>|Collection $services
  * @property ?int                             $services_count
- * @property array<Redirect>|Collection       $redirects
- * @property ?int                             $redirects_count
  *
  * @method static Project         create()
  * @method static Builder|Project query()
@@ -49,10 +47,5 @@ class Project extends Model
     public function services(): HasMany
     {
         return $this->hasMany(ProjectService::class);
-    }
-
-    public function redirects(): HasMany
-    {
-        return $this->hasMany(Redirect::class);
     }
 }

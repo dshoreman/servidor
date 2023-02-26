@@ -5,26 +5,18 @@ namespace Servidor\Projects\Services\Templates;
 use Servidor\Projects\ProjectService;
 use Servidor\Projects\RequiresNginxData;
 
-class Html implements Template
+class Redirect implements Template
 {
     use RequiresNginxData;
 
-    protected ProjectService $service;
-
-    protected string $nginxTemplate = 'basic';
-
-    protected string $publicDir = '';
-
     protected array $requiredNginxData = [
+        'config.redirect.target' => 'target',
         'domain_name' => 'domain name',
-        'config.source.repository' => 'source repo',
     ];
 
-    protected bool $requiresUser = false;
-
-    public function __construct(ProjectService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        protected ProjectService $service,
+    ) {
     }
 
     public function getService(): ProjectService
@@ -39,21 +31,21 @@ class Html implements Template
 
     public function nginxTemplate(): string
     {
-        return $this->nginxTemplate;
+        return 'redirect';
     }
 
     public function publicDir(): string
     {
-        return $this->publicDir;
+        return '';
     }
 
     public function requiresUser(): bool
     {
-        return $this->requiresUser;
+        return false;
     }
 
     public function serviceType(): string
     {
-        return 'website';
+        return 'redirect';
     }
 }

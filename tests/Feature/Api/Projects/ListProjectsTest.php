@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Servidor\Projects\Project;
 use Servidor\Projects\ProjectService;
-use Servidor\Projects\Redirect;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
@@ -75,8 +74,9 @@ class ListProjectsTest extends TestCase
     public function listed_projects_include_redirects(): array
     {
         $project = Project::create(['name' => 'Redirtest']);
-        $project->redirects()->save(new Redirect([
+        $project->services()->save(new ProjectService([
             'domain_name' => 'a',
+            'template' => 'redirect',
             'config' => ['redirect' => [
                 'target' => 'b',
                 'type' => 301,
@@ -87,7 +87,7 @@ class ListProjectsTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonCount(1);
-        $response->assertJson(Project::with('redirects')->get()->toArray());
+        $response->assertJson(Project::with('services')->get()->toArray());
 
         return $response->json()[0];
     }

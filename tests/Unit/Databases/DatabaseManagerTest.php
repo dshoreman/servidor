@@ -56,7 +56,7 @@ class DatabaseManagerTest extends TestCase
         $this->assertObjectHasAttribute('tableCount', $database);
         $this->assertObjectHasAttribute('charset', $database);
         $this->assertObjectHasAttribute('collation', $database);
-        $this->assertEquals(8, $database->tableCount);
+        $this->assertEquals(7, $database->tableCount);
         $this->assertEquals('utf8mb4', $database->charset);
         $this->assertContains($database->collation, ['utf8mb4_general_ci', 'utf8mb4_0900_ai_ci']);
     }

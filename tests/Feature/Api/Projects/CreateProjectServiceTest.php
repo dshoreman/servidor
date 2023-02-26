@@ -51,7 +51,44 @@ class CreateProjectServiceTest extends TestCase
     }
 
     /** @test */
-    public function cannot_create_project_app_when_repository_not_found(): void
+    public function can_create_project_with_redirect_service(): void
+    {
+        $project = Project::create(['name' => 'Project with Redirect']);
+
+        $response = $this->authed()->postJson($this->endpoint($project->id), [
+            'domain' => 'example.com',
+            'template' => 'redirect',
+            'config' => ['redirect' => [
+                'target' => 'https://example.com',
+                'type' => 301,
+            ]],
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure(['domain_name', 'config' => [
+            'redirect' => ['target', 'type'],
+        ]]);
+        $response->assertJsonFragment([
+            'domain_name' => 'example.com',
+            'template' => 'redirect',
+            'config' => ['redirect' => [
+                'target' => 'https://example.com',
+                'type' => 301,
+            ]],
+        ]);
+
+        $project = Project::with('services')->firstOrFail();
+        $this->assertInstanceOf(Collection::class, $project->services);
+
+        $service = $project->services->first();
+        $this->assertInstanceOf(ProjectService::class, $service);
+        $this->assertArraySubset(['config' => ['redirect' => [
+            'type' => 301, 'target' => 'https://example.com'],
+        ]], $service->toArray());
+    }
+
+    /** @test */
+    public function cannot_create_service_with_source_when_repository_not_found(): void
     {
         $project = Project::create(['name' => 'Project with Repo 404']);
 
@@ -71,7 +108,7 @@ class CreateProjectServiceTest extends TestCase
     }
 
     /** @test */
-    public function cannot_create_project_app_when_branch_not_found(): void
+    public function cannot_create_service_with_source_when_branch_not_found(): void
     {
         $project = Project::create(['name' => 'Project with Branch 404']);
 

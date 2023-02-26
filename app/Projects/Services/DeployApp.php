@@ -14,6 +14,10 @@ class DeployApp
         $service = $event->getService();
         $project = $event->getProject();
 
+        if ('redirect' === $service->getType()) {
+            return;
+        }
+
         $step = new ProgressStep('clone', 'Cloning project files', 85);
         ProjectProgress::dispatch($project, $step->start());
 

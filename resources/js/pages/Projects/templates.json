@@ -1,11 +1,11 @@
 [{
-  "icon": "archive",
-  "colour": "brown",
+  "icon": "exchange",
+  "colour": "olive",
   "disabled": false,
   "isApp": false,
-  "name": "Archive",
+  "name": "Redirect",
   "steps": ["domain", "redirect", "ssl", "confirm"],
-  "text": "Redirect all requests on a domain to an archived copy on Wayback Machine."
+  "text": "Point requests to a domain/page to Wayback Machine or any other address."
 }, {
   "icon": "question mark",
   "colour": "grey",

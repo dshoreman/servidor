@@ -17,4 +17,6 @@ interface Template
     public function publicDir(): string;
 
     public function requiresUser(): bool;
+
+    public function serviceType(): string;
 }

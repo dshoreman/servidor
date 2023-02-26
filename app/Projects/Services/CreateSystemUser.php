@@ -16,6 +16,10 @@ class CreateSystemUser
         $service = $event->getService();
         $project = $event->getProject();
 
+        if ('redirect' === $service->getType()) {
+            return;
+        }
+
         $step = new ProgressStep('user.create', 'Creating system user', 35);
         ProjectProgress::dispatch($project, $step->start());
         $reason = $this->shouldPreventCreation($service);
