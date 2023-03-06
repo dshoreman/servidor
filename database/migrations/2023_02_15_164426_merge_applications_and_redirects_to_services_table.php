@@ -14,6 +14,13 @@ class MergeApplicationsAndRedirectsToServicesTable extends Migration
                 'source_provider',
                 'source_repository',
             ]);
+
+            $table->dropForeign(['project_id']);
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('projects')
+                ->onDelete('cascade')
+            ;
         });
 
         Schema::rename('project_applications', 'project_services');
@@ -28,6 +35,9 @@ class MergeApplicationsAndRedirectsToServicesTable extends Migration
             $table->string('source_provider')->default('');
             $table->string('source_repository')->default('');
             $table->string('source_branch')->default('');
+
+            $table->dropForeign(['project_id']);
+            $table->foreign('project_id')->references('id')->on('projects');
         });
 
         Schema::create('project_redirects', static function (Blueprint $table): void {

@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] Values on the Creation form no longer fail to reset when navigating away
 * [projects] Missing steps when saving project apps are now correctly added
 * [projects] Progress bar no longer jumps around somewhat eratically during creation
+* [projects] Deleting a project is now possible even when it has a service attached
 
 
 ## [0.15.3] - 2023-01-08
