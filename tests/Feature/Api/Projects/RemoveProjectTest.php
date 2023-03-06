@@ -6,6 +6,7 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Servidor\Projects\Project;
+use Servidor\Projects\ProjectService;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
@@ -41,5 +42,20 @@ class RemoveProjectTest extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
         $this->assertNull(Project::find($project->id));
+    }
+
+    /** @test */
+    public function project_with_service_can_still_be_deleted(): void
+    {
+        $project = Project::create(['name' => 'Delete me again!']);
+        $service = $project->services()->create([
+            'template' => 'html',
+        ]);
+
+        $response = $this->authed()->deleteJson('/api/projects/' . $project->id);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $this->assertNull(Project::find($project->id));
+        $this->assertNull(ProjectService::find($service->id));
     }
 }
