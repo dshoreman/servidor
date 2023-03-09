@@ -40,11 +40,6 @@ install_packages() {
     install_pkg nginx mariadb-server
 
     info "Installing PHP and required extensions..."
-
-    is_vagrant && \
-        log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
-        phpexts+=(pcov phpdbg)
-
     install_php_extensions "${phpexts[@]}"
 
     info "Installing latest stable Composer..."
@@ -75,6 +70,11 @@ install_php_extensions() {
         extensions+=(php7.{0,1,2,3,4}-"${ext}")
         extensions+=(php8.{0,1}-"${ext}")
     done
+
+    is_vagrant && \
+        log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
+        extensions+=(php8.{0,1}-pcov)
+        extensions+=(php8.{0,1}-phpdbg)
 
     extensions+=("php7.0-mcrypt" "php7.1-mcrypt")
 

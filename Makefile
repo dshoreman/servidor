@@ -26,7 +26,7 @@ dev-env:
 	@echo "Go stick the kettle on, this'll take a while." && sleep 2
 	@echo
 	@echo "[1/5] Destroying Vagrant VM and purging package caches..." && \
-		rm -rf ./composer ./node_modules ./vendor; vagrant destroy -f
+		rm -rf ./{.config/,}composer ./node_modules ./vendor; vagrant destroy -f
 	@echo
 	@echo "[2/5] Installing Composer/NPM packages and building assets..."
 ifeq (, $(shell command -v composer))
@@ -61,7 +61,7 @@ laravel-diff:
 	@echo "Copying configs..."
 	@cp -R ./build /tmp/laradiff/
 	@echo "Applying CS fixes..."
-	@vendor/bin/php-cs-fixer fix -q --config /tmp/laradiff/build/php-cs-fixer/config.php
+	@PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix -q --config /tmp/laradiff/build/php-cs-fixer/config.php
 	@echo "Updating App namespace..."
 	@find /tmp/laradiff -type f -name '*.php' -exec sed -i 's/App\\/Servidor\\/g' {} +
 	@echo "Removing comments from (some) config files..."
@@ -108,11 +108,11 @@ test-for-ci:
 	vendor/bin/phpunit -c build/phpunit/config.xml --coverage-clover=coverage.xml
 
 coverage:
-	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php8.0 vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
+	@vagrant ssh -c "cd /var/servidor && sudo -u www-data php8.1 vendor/bin/phpunit -c build/phpunit/config.xml --coverage-text"
 	@echo
 
 coverage-html:
-	vagrant ssh -c "cd /var/servidor && sudo -u www-data php8.0 vendor/bin/phpunit -c build/phpunit/config.xml --coverage-html tests/reports/coverage/latest"
+	vagrant ssh -c "cd /var/servidor && sudo -u www-data php8.1 vendor/bin/phpunit -c build/phpunit/config.xml --coverage-html tests/reports/coverage/latest"
 	@mv tests/reports/coverage/latest tests/reports/coverage/$(now)/ && xdg-open ./tests/reports/coverage/$(now)/index.html
 	@echo
 
@@ -141,10 +141,10 @@ psalm:
 	vendor/bin/psalm -c build/psalm/psalm.xml
 
 phpcsf:
-	vendor/bin/php-cs-fixer fix $(PHP_CSF_ARGS) --config build/php-cs-fixer/config.php
+	PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix $(PHP_CSF_ARGS) --config build/php-cs-fixer/config.php
 
 phpcsfix:
-	vendor/bin/php-cs-fixer fix $(CS_ARGS) --config build/php-cs-fixer/config.php
+	PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix $(CS_ARGS) --config build/php-cs-fixer/config.php
 
 phpcs:
 	vendor/bin/phpcs app -p --standard=PSR12
