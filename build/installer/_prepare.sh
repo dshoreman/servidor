@@ -68,13 +68,13 @@ install_php_extensions() {
 
     for ext in "$@"; do
         extensions+=(php7.{0,1,2,3,4}-"${ext}")
-        extensions+=(php8.{0,1}-"${ext}")
+        extensions+=(php8.{0,1,2}-"${ext}")
     done
 
     is_vagrant && \
         log "Adding phpdbg and php-pcov for testing in Vagrant..." && \
-        extensions+=(php8.{0,1}-pcov)
-        extensions+=(php8.{0,1}-phpdbg)
+        extensions+=(php8.{0,1,2}-pcov)
+        extensions+=(php8.{0,1,2}-phpdbg)
 
     extensions+=("php7.0-mcrypt" "php7.1-mcrypt")
 

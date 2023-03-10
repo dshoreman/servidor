@@ -24,7 +24,6 @@ use Illuminate\Support\Carbon;
  * @property array<Notification>|Notifications $notifications
  * @property ?int                              $notifications_count
  *
- * @method static Builder|User query()
  * @method static Builder|User whereCreatedAt($value)
  * @method static Builder|User whereEmail($value)
  * @method static Builder|User whereEmailVerifiedAt($value)

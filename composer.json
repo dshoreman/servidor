@@ -4,7 +4,7 @@
     "license": "LGPL-2.1-or-later",
     "type": "project",
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "doctrine/dbal": "^3.6.1",
         "fruitcake/laravel-cors": "^3.0.0",
         "laravel/framework": "^8.83.27",
@@ -77,6 +77,6 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

@@ -194,7 +194,7 @@ export default {
             });
 
             if (tpl.steps.includes('phpver')) {
-                this.defaultApp.config.phpVersion = '8.0';
+                this.defaultApp.config.phpVersion = '8.1';
             }
 
             this.steps.forEach(s => {

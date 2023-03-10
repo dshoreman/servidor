@@ -96,13 +96,13 @@ laravel-diff:
 	@echo "Done! Opening diff tool..."
 	@meld /tmp/laradiff .
 
-test: test-8.0 test-8.1
-
-test-8.0:
-	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg8.0 -qrr vendor/bin/phpunit -c build/phpunit/config.xml $(test)"
+test: test-8.1 test-8.2
 
 test-8.1:
 	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg8.1 -qrr vendor/bin/phpunit -c build/phpunit/config.xml $(test)"
+
+test-8.2:
+	@vagrant ssh -c "cd /var/servidor && sudo -u www-data phpdbg8.2 -qrr vendor/bin/phpunit -c build/phpunit/config.xml $(test)"
 
 test-for-ci:
 	vendor/bin/phpunit -c build/phpunit/config.xml --coverage-clover=coverage.xml

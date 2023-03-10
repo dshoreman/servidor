@@ -127,4 +127,9 @@ class CreateProjectServiceTest extends TestCase
             "This branch doesn't exist.",
         ]]);
     }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel project-with-app; sudo rm -rf /home/project-with-app');
+    }
 }

@@ -39,4 +39,9 @@ class LogFileTest extends TestCase
         $this->assertEquals($this->baseDir . $this->laravelLog, $log->getPath());
         $this->assertEquals('It works!', (string) $log);
     }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel logrel; sudo rm -rf /home/logrel');
+    }
 }

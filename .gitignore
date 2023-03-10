@@ -1,5 +1,7 @@
-/.config/psysh
+/.cache
+/.config
 /.idea
+/.local
 /.vscode
 /.vagrant
 /node_modules
