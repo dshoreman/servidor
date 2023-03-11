@@ -26,10 +26,5 @@
                 <file name="app/Console/Commands/Version.php" />
             </errorLevel>
         </PropertyNotSetInConstructor>
-        <MissingTemplateParam>
-            <errorLevel type="suppress">
-                <file name="app/*/*Collection.php" />
-            </errorLevel>
-        </MissingTemplateParam>
     </issueHandlers>
 </psalm>

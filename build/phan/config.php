@@ -350,7 +350,7 @@ return [
         'vendor/laravel/framework/src/Illuminate',
         'vendor/laravel/sanctum/src',
         'vendor/psr/http-message/src',
-        'vendor/spatie/data-transfer-object/src',
+        'vendor/spatie/laravel-data/src',
         'vendor/symfony/finder',
         'vendor/symfony/http-foundation',
         'vendor/symfony/http-kernel/Exception',

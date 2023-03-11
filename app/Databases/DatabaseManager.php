@@ -7,6 +7,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Contracts\Config\Repository;
+use Spatie\LaravelData\DataCollection;
 
 class DatabaseManager
 {
@@ -35,7 +36,7 @@ class DatabaseManager
         $this->manager = $manager ?: $this->connection->createSchemaManager();
     }
 
-    public function create(DatabaseDTO $database): DatabaseDTO
+    public function create(DatabaseData $database): DatabaseData
     {
         try {
             $this->manager->createDatabase($database->name);
@@ -45,38 +46,46 @@ class DatabaseManager
             }
         }
 
-        return $this->databases()->get($database->name);
+        $data = $this->databases()->where('name', '=', $database->name)->first();
+        \assert($data instanceof DatabaseData);
+
+        return $data;
     }
 
-    public function databases(): DatabaseCollection
+    public function databases(): DataCollection
     {
-        $databases = $this->manager->listDatabases();
+        $databases = DatabaseData::collection($this->manager->listDatabases());
 
-        return DatabaseCollection::fromNames($databases);
+        \assert($databases instanceof DataCollection);
+
+        return $databases;
     }
 
-    public function detailedDatabases(): DatabaseCollection
+    public function detailedDatabases(): DataCollection
     {
         $databases = [];
         $sql = self::databasesSql();
 
         foreach ($this->connection->fetchAllAssociativeIndexed($sql) as $name => $result) {
-            $databases[$name] = new DatabaseDTO(
-                name: (string) $name,
-                charset: (string) $result['charset'],
-                collation: (string) $result['collation'],
-                tableCount: (int) $result['tableCount'],
-            );
+            $databases[] = DatabaseData::from([
+                'name' => (string) $name,
+                'charset' => (string) $result['charset'],
+                'collation' => (string) $result['collation'],
+                'tableCount' => (int) $result['tableCount'],
+            ]);
         }
 
-        return new DatabaseCollection($databases);
+        $collection = DatabaseData::collection($databases);
+        \assert($collection instanceof DataCollection);
+
+        return $collection;
     }
 
-    public function databaseWithTables(DatabaseDTO|string $db): DatabaseDTO
+    public function databaseWithTables(DatabaseData|string $db): DatabaseData
     {
-        $db = $db instanceof DatabaseDTO ? $db : new DatabaseDTO($db);
+        $db = $db instanceof DatabaseData ? $db : DatabaseData::from($db);
 
-        return $db->withTables(array_map(static function (array $result): TableDTO {
+        return $db->withTables(array_map(static function (array $result): TableData {
             /**
              * @var array{ TABLE_NAME: string,
              *             TABLE_COLLATION: string,
@@ -86,7 +95,7 @@ class DatabaseManager
              *             } $result
              */
 
-            return TableDTO::fromInfoSchema($result);
+            return TableData::fromInfoSchema($result);
         }, $this->connection->fetchAllAssociative(
             self::tablesSql(),
             ['db' => $db->name],

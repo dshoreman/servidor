@@ -2,10 +2,9 @@
 
 namespace Servidor\Databases;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 
-class TableDTO extends DataTransferObject implements Arrayable
+class TableData extends Data
 {
     public function __construct(
         public string $name,
@@ -14,7 +13,6 @@ class TableDTO extends DataTransferObject implements Arrayable
         public int $rowCount = -1,
         public int $size = -1,
     ) {
-        parent::__construct(compact('name', 'collation', 'engine', 'rowCount', 'size'));
     }
 
     /**
@@ -28,6 +26,13 @@ class TableDTO extends DataTransferObject implements Arrayable
             collation: $result['TABLE_COLLATION'],
             rowCount: $result['TABLE_ROWS'],
             size: $result['DATA_LENGTH'],
+        );
+    }
+
+    public static function fromString(string $tableName): self
+    {
+        return new self(
+            name: $tableName,
         );
     }
 }

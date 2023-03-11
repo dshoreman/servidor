@@ -2,11 +2,10 @@
 
 namespace Tests\Unit\Databases;
 
-use Servidor\Databases\DatabaseCollection;
-use Servidor\Databases\DatabaseDTO;
+use Servidor\Databases\DatabaseData;
 use Servidor\Databases\DatabaseManager;
-use Servidor\Databases\TableCollection;
-use Servidor\Databases\TableDTO;
+use Servidor\Databases\TableData;
+use Spatie\LaravelData\DataCollection;
 use Tests\TestCase;
 
 class DatabaseManagerTest extends TestCase
@@ -20,8 +19,8 @@ class DatabaseManagerTest extends TestCase
 
         $collection = $this->manager->databases();
 
-        $this->assertInstanceOf(DatabaseCollection::class, $collection);
-        $this->assertContainsOnlyInstancesOf(DatabaseDTO::class, $collection);
+        $this->assertInstanceOf(DataCollection::class, $collection);
+        $this->assertContainsOnlyInstancesOf(DatabaseData::class, $collection);
 
         return $this->manager;
     }
@@ -50,9 +49,9 @@ class DatabaseManagerTest extends TestCase
     {
         $databases = $manager->detailedDatabases();
 
-        $this->assertInstanceOf(DatabaseCollection::class, $databases);
+        $this->assertInstanceOf(DataCollection::class, $databases);
 
-        $database = $databases->get('servidor_testing');
+        $database = $databases->where('name', '=', 'servidor_testing')->first();
         $this->assertObjectHasAttribute('tableCount', $database);
         $this->assertObjectHasAttribute('charset', $database);
         $this->assertObjectHasAttribute('collation', $database);
@@ -68,7 +67,7 @@ class DatabaseManagerTest extends TestCase
      */
     public function it_can_create_a_database(DatabaseManager $manager): DatabaseManager
     {
-        $data = new DatabaseDTO(name: 'testdb');
+        $data = DatabaseData::from('testdb');
         $before = $manager->databases()->toArray();
         $expected = array_merge($before, [$data->toArray()]);
 
@@ -76,7 +75,7 @@ class DatabaseManagerTest extends TestCase
         $actual = $manager->databases()->toArray();
         sort($expected);
 
-        $this->assertInstanceOf(DatabaseDTO::class, $database);
+        $this->assertInstanceOf(DatabaseData::class, $database);
         $this->assertEquals('testdb', $database->name);
         $this->assertCount(1 + \count($before), $actual);
         $this->assertSame($expected, $actual);
@@ -91,14 +90,14 @@ class DatabaseManagerTest extends TestCase
      */
     public function it_can_list_tables_of_a_database(DatabaseManager $manager): void
     {
-        $database = $manager->databaseWithTables(new DatabaseDTO(name: 'servidor_testing'));
+        $database = $manager->databaseWithTables(DatabaseData::from('servidor_testing'));
 
-        $this->assertInstanceOf(TableCollection::class, $database->tables);
+        $this->assertInstanceOf(DataCollection::class, $database->tables);
 
         $sorted = $database->tables->toArray();
         usort($sorted, static fn ($a, $b) => strcmp($a['name'], $b['name']));
 
-        $this->assertInstanceOf(TableDTO::class, $database->tables->first());
+        $this->assertInstanceOf(TableData::class, $database->tables->first());
         $this->assertEquals('failed_jobs', $sorted[0]['name']);
     }
 
@@ -111,9 +110,9 @@ class DatabaseManagerTest extends TestCase
         DatabaseManager $manager,
     ): void {
         $before = $manager->databases()->toArray();
-        $database = $manager->create(new DatabaseDTO(name: 'testdb'));
+        $database = $manager->create(DatabaseData::from('testdb'));
 
-        $this->assertInstanceOf(DatabaseDTO::class, $database);
+        $this->assertInstanceOf(DatabaseData::class, $database);
         $this->assertEquals('testdb', $database->name);
         $this->assertCount(\count($before), $manager->databases());
         $this->assertSame($before, $manager->databases()->toArray());
