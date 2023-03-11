@@ -57,7 +57,7 @@ laravel-diff:
 	@echo "Removing any old diffs..."
 	@rm -rf /tmp/{lara,servi}diff
 	@echo "Cloning latest laravel/laravel repo..."
-	@git clone --branch 8.x -q git@github.com:laravel/laravel.git /tmp/laradiff
+	@git clone --branch 9.x -q git@github.com:laravel/laravel.git /tmp/laradiff
 	@echo "Copying configs..."
 	@cp -R ./build /tmp/laradiff/
 	@echo "Applying CS fixes..."
@@ -65,7 +65,7 @@ laravel-diff:
 	@echo "Updating App namespace..."
 	@find /tmp/laradiff -type f -name '*.php' -exec sed -i 's/App\\/Servidor\\/g' {} +
 	@echo "Removing comments from (some) config files..."
-	@sed -e '/^$$/N;/^\n$$/D' -e '/^\s\+\(\/\*\|\*\/\|\(|\|\*\).*\)/d' -i /tmp/laradiff/{server,config/{app,database,filesystems,mail}}.php
+	@sed -e '/^$$/N;/^\n$$/D' -e '/^\s\+\(\/\*\|\*\/\|\(|\|\*\).*\)/d' -i /tmp/laradiff/config/{app,database,filesystems,mail}.php
 	@echo "Updating paths in PHPUnit config..."
 	@sed -i 's^\./^../../^g' /tmp/laradiff/phpunit.xml
 	@echo "Moving files into place..."
@@ -91,7 +91,7 @@ laravel-diff:
 	@cp -R ./tests/{Feature,Unit,reports,{Prunes,Requires,Validates}*.php} /tmp/laradiff/tests/
 	@cp ./{composer.lock,package-lock.json,_ide_helper.php,*.log,.*.{cache,meta.php}} /tmp/laradiff/
 	@cp ./{.env,*.md,LICENSE,Makefile,setup.sh,Vagrantfile} /tmp/laradiff
-	@rm /tmp/laradiff/{database/migrations/*_create_personal_access_tokens_table.php,webpack.mix.js}
+	@rm /tmp/laradiff/database/migrations/*_create_personal_access_tokens_table.php
 	@echo
 	@echo "Done! Opening diff tool..."
 	@meld /tmp/laradiff .

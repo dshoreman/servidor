@@ -4,7 +4,6 @@ namespace Servidor\Projects;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -64,7 +63,7 @@ class ProjectService extends Model
     ];
 
     protected $casts = [
-        'config' => AsCollection::class,
+        'config' => 'collection',
     ];
 
     protected $dispatchesEvents = [

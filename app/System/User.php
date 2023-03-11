@@ -65,19 +65,18 @@ class User
         exec('cat /etc/passwd', $lines);
 
         $keys = ['name', 'passwd', 'uid', 'gid', 'gecos', 'dir', 'shell'];
-        $users = collect();
+        $users = [];
 
+        /** @var array<string> $lines */
         foreach ($lines as $line) {
-            \assert(\is_string($line));
-
             $user = new self(
                 array_combine($keys, explode(':', $line)),
             );
 
-            $users->push($user->toArray());
+            $users[] = $user->toArray();
         }
 
-        return $users;
+        return collect($users);
     }
 
     public static function create(string $name, ?int $uid = null, ?int $gid = null): array

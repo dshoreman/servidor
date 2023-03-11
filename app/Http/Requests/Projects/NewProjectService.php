@@ -40,12 +40,34 @@ class NewProjectService extends FormRequest
      */
     private function configRules(): array
     {
-        return [
+        return array_merge([
             'phpVersion' => 'sometimes|required|regex:/^[7-8]\.[0-4]$/',
+            'ssl' => 'sometimes|required|boolean',
+            'sslCertificate' => 'sometimes|required|string|filled',
+            'sslPrivateKey' => 'sometimes|required|string|filled',
+            'sslRedirect' => 'sometimes|required|boolean',
+        ], $this->sourceRules(), $this->redirectRules());
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    private function redirectRules(): array
+    {
+        return [
             'redirect' => 'required_if:template,redirect|array:target,type',
             'redirect.target' => 'required_if:template,redirect|string',
             'redirect.type' => 'required_if:template,redirect|integer',
             'redirectWww' => 'sometimes|required|integer|between:-1,1',
+        ];
+    }
+
+    /**
+     * @return array<string,array|string>
+     */
+    private function sourceRules(): array
+    {
+        return [
             'source' => [
                 'sometimes',
                 'required_unless:template,redirect',
@@ -58,16 +80,19 @@ class NewProjectService extends FormRequest
                 'regex:_^([a-z-]+)/([a-z-]+)$_i',
                 'nullable',
             ],
-            'ssl' => 'sometimes|required|boolean',
-            'sslCertificate' => 'sometimes|required|string|filled',
-            'sslPrivateKey' => 'sometimes|required|string|filled',
-            'sslRedirect' => 'sometimes|required|boolean',
         ];
     }
 
-    public function validated(): array
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
+     * @suppress PhanUnusedPublicMethodParameter
+     *
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     */
+    public function validated($key = null, $default = null): array
     {
-        $data = parent::validated();
+        $data = (array) parent::validated();
 
         return [
             'template' => $data['template'],

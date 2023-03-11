@@ -136,7 +136,7 @@ class Group
         exec('cat /etc/group', $lines);
 
         $keys = ['name', 'password', 'gid', 'users'];
-        $groups = collect();
+        $groups = [];
 
         foreach ($lines as $line) {
             \assert(\is_string($line));
@@ -144,10 +144,10 @@ class Group
             $group = array_combine($keys, explode(':', $line));
             $group['users'] = '' === $group['users'] ? [] : explode(',', $group['users']);
 
-            $groups->push($group);
+            $groups[] = $group;
         }
 
-        return $groups;
+        return collect($groups);
     }
 
     public function update(array $data): array
