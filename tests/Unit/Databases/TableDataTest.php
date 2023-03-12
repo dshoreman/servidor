@@ -20,7 +20,7 @@ class TableDataTest extends TestCase
 
         $this->assertInstanceOf(TableData::class, $table);
 
-        $this->assertObjectHasAttribute('name', $table);
+        $this->assertTrue(property_exists($table, 'name'));
         $this->assertEquals($result['TABLE_NAME'], $table->name);
     }
 

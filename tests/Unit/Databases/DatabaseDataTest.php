@@ -20,11 +20,11 @@ class DatabaseDataTest extends TestCase
 
         $this->assertInstanceOf(DatabaseData::class, $database);
 
-        $this->assertObjectHasAttribute('name', $database);
-        $this->assertObjectNotHasAttribute('database', $database);
+        $this->assertTrue(property_exists($database, 'name'));
+        $this->assertFalse(property_exists($database, 'database'));
         $this->assertEquals('validated_db_name', $database->name);
 
-        $this->assertObjectHasAttribute('tableCount', $database);
+        $this->assertTrue(property_exists($database, 'tableCount'));
         $this->assertNull($database->toArray()['tableCount']);
     }
 
@@ -55,7 +55,7 @@ class DatabaseDataTest extends TestCase
         $database = DatabaseData::from('collected_tables')->withTables(['foo', 'bar']);
 
         $this->assertInstanceOf(DatabaseData::class, $database);
-        $this->assertObjectHasAttribute('tables', $database);
+        $this->assertTrue(property_exists($database, 'tables'));
         $this->assertArrayHasKey('tables', $database->toArray());
         $this->assertSame($database->toArray()['tables'], $database->tables->toArray());
 

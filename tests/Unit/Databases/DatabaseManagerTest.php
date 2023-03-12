@@ -52,9 +52,9 @@ class DatabaseManagerTest extends TestCase
         $this->assertInstanceOf(DataCollection::class, $databases);
 
         $database = $databases->where('name', '=', 'servidor_testing')->first();
-        $this->assertObjectHasAttribute('tableCount', $database);
-        $this->assertObjectHasAttribute('charset', $database);
-        $this->assertObjectHasAttribute('collation', $database);
+        $this->assertTrue(property_exists($database, 'tableCount'));
+        $this->assertTrue(property_exists($database, 'charset'));
+        $this->assertTrue(property_exists($database, 'collation'));
         $this->assertEquals(7, $database->tableCount);
         $this->assertEquals('utf8mb4', $database->charset);
         $this->assertContains($database->collation, ['utf8mb4_general_ci', 'utf8mb4_0900_ai_ci']);
