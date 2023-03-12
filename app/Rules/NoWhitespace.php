@@ -2,24 +2,21 @@
 
 namespace Servidor\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
-class NoWhitespace implements Rule
+class NoWhitespace implements ValidationRule
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
      * @param string $attribute @unused-param
-     * @param mixed  $value
      */
-    public function passes($attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        return !Str::contains((string) $value, ["\t", "\n", ' ']);
-    }
-
-    public function message(): string
-    {
-        return 'The :attribute cannot contain whitespace or newlines.';
+        if (Str::contains((string) $value, ["\t", "\n", ' '])) {
+            $fail('The :attribute cannot contain whitespace or newlines.');
+        }
     }
 }

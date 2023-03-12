@@ -8,7 +8,7 @@ return [
     'env' => env('APP_ENV', 'production'),
 
     'url' => env('APP_URL', 'http://servidor.local') . ':8042',
-    'asset_url' => env('ASSET_URL', null),
+    'asset_url' => env('ASSET_URL'),
     'registration_enabled' => env('APP_REGISTRATION', false),
 
     'locale' => 'en',

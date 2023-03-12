@@ -6,11 +6,11 @@
     "require": {
         "php": "^8.1",
         "doctrine/dbal": "^3.6.1",
-        "laravel/framework": "^9.52.4",
+        "laravel/framework": "^10.3.3",
         "laravel/sanctum": "^3.2.1",
         "laravel/tinker": "^2.8.1",
         "pusher/pusher-php-server": "^7.2.2",
-        "spatie/laravel-data": "^2.2.3"
+        "spatie/laravel-data": "^3.1.2"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.4.0",
@@ -30,7 +30,7 @@
         "povils/phpmnd": "^3.0.1",
         "psalm/plugin-laravel": "^2.8.0",
         "spatie/macroable": "^2.0.0",
-        "spatie/laravel-ignition": "^1.6.4",
+        "spatie/laravel-ignition": "^2.0.0",
         "squizlabs/php_codesniffer": "^3.7.2",
         "vimeo/psalm": "^5.8.0"
     },

@@ -57,7 +57,7 @@ laravel-diff:
 	@echo "Removing any old diffs..."
 	@rm -rf /tmp/{lara,servi}diff
 	@echo "Cloning latest laravel/laravel repo..."
-	@git clone --branch 9.x -q git@github.com:laravel/laravel.git /tmp/laradiff
+	@git clone --branch 10.x -q git@github.com:laravel/laravel.git /tmp/laradiff
 	@echo "Copying configs..."
 	@cp -R ./build /tmp/laradiff/
 	@echo "Applying CS fixes..."
