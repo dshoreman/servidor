@@ -37,4 +37,9 @@ class PhpTest extends TestCase
         $this->assertArrayHasKey('php', $logs);
         $this->assertEquals('PHP Error Log', $logs['php']->getTitle());
     }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel phproot; sudo rm -rf /home/phproot');
+    }
 }

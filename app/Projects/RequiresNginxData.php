@@ -38,12 +38,16 @@ trait RequiresNginxData
         if (str_contains($property, '.')) {
             [$key, $property] = explode('.', $property);
 
-            /** @var array $key */
-            $key = $config->get($key, []);
+            /**
+             * @var array $key
+             *
+             * @psalm-suppress InvalidArgument
+             * */
+            $key = $config->get($key) ?: [];
 
             return isset($key[$property]);
         }
 
-        return $config->has($property);
+        return \array_key_exists($property, $config->toArray());
     }
 }

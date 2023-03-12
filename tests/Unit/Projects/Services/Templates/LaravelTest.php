@@ -46,4 +46,10 @@ class LaravelTest extends TestCase
         $this->assertEquals('PHP Error Log', $logs['php']->getTitle());
         $this->assertEquals('Laravel Log', $logs['laravel']->getTitle());
     }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel laralog; sudo rm -rf /home/laralog');
+        exec('sudo userdel lararoot; sudo rm -rf /home/lararoot');
+    }
 }

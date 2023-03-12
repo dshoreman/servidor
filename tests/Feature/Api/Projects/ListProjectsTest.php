@@ -91,4 +91,9 @@ class ListProjectsTest extends TestCase
 
         return $response->json()[0];
     }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel laratest; sudo rm -rf /home/laratest');
+    }
 }

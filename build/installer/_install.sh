@@ -35,8 +35,8 @@ clone_and_install() {
 
     log "Moving Composer keys into place..."
     if [[ -d /tmp/composer ]]; then
-        mkdir /var/servidor/.config
-        mv /tmp/composer /var/servidor/.config/composer
+        mkdir -p /var/servidor/.config
+        mv /tmp/composer /var/servidor/.config/
     fi
 
     log "Installing required Composer packages..."

@@ -22,11 +22,20 @@ class EditFile extends FormRequest
     }
 
     /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     *
+     * @suppress PhanUnusedPublicMethodParameter
+     *
+     * @param array|int|string|null $key
+     * @param mixed                 $default
+     *
      * @return array{file: string, contents: string}
      */
-    public function validated(): array
+    public function validated($key = null, $default = null): array
     {
-        $data = parent::validated();
+        $data = (array) parent::validated();
 
         return [
             'file' => (string) $data['file'],

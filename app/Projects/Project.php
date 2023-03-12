@@ -20,6 +20,8 @@ use Illuminate\Support\Carbon;
  * @property ?int                             $services_count
  *
  * @method static Project         create()
+ * @method static ?Project        find()
+ * @method static Project         findOrFail()
  * @method static Builder|Project query()
  * @method static Builder|Project whereCreatedAt($value)
  * @method static Builder|Project whereId($value)

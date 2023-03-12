@@ -20,7 +20,7 @@ class GroupsController extends Controller
 
     public function store(CreateGroup $request): JsonResponse
     {
-        $data = $request->validated();
+        $data = (array) $request->validated();
 
         try {
             $group = SystemGroup::create(
@@ -43,7 +43,7 @@ class GroupsController extends Controller
             $group = SystemGroup::find($gid);
 
             return response()->json(
-                $group->update($request->validated()),
+                $group->update((array) $request->validated()),
                 Response::HTTP_OK,
             );
         } catch (GroupNotFound $_) {

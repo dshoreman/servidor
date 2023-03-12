@@ -46,4 +46,10 @@ class ViewLogTest extends TestCase
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         $this->withExceptionHandling();
     }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel mismatch1; sudo rm -rf /home/mismatch1');
+        exec('sudo userdel logtest; sudo rm -rf /home/logtest');
+    }
 }

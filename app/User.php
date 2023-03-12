@@ -24,7 +24,6 @@ use Illuminate\Support\Carbon;
  * @property array<Notification>|Notifications $notifications
  * @property ?int                              $notifications_count
  *
- * @method static Builder|User query()
  * @method static Builder|User whereCreatedAt($value)
  * @method static Builder|User whereEmail($value)
  * @method static Builder|User whereEmailVerifiedAt($value)
@@ -41,8 +40,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<string>
      */
     protected $fillable = [
         'name',
@@ -52,8 +49,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var array
      */
     protected $hidden = [
         'password',
@@ -62,8 +57,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be cast.
-     *
-     * @var array
      */
     protected $casts = [
         'email_verified_at' => 'datetime',

@@ -15,7 +15,9 @@ class FakeSchemaManager extends AbstractSchemaManager
 
     public function createDatabase($database): void
     {
-        $this->databases[] = $database;
+        if (!\in_array($database, $this->databases, true)) {
+            $this->databases[] = $database;
+        }
     }
 
     public function listDatabases(): array

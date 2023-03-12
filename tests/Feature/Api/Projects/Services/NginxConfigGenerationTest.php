@@ -52,4 +52,9 @@ class NginxConfigGenerationTest extends TestCase
             ['php', true, -1, 'php.nossl.force-www.conf'],
         ];
     }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel config-test; sudo rm -rf /home/config-test');
+    }
 }

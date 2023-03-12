@@ -57,7 +57,8 @@ if [[ ${#stagedPhpFiles[@]} -gt 0 ]]; then
         stashed=true
     fi
     # Then do a dry-run on staged files and exit if clean (real fix has unreliable exit codes)
-    if $csFixerBin fix --dry-run --config=build/php-cs-fixer/config.php; then
+    if PHP_CS_FIXER_IGNORE_ENV=1 $csFixerBin fix --dry-run --config=build/php-cs-fixer/config.php
+    then
         echo "${cGreen} Nothing to fix!${cEnd}"
         [ $stashed = true ] && git stash pop --quiet
         exit 0
@@ -65,7 +66,7 @@ if [[ ${#stagedPhpFiles[@]} -gt 0 ]]; then
 
     # Now fix for real, and add the safe files.
     echo "${cGreen} Fixing files...${cEnd}"
-    result=$( $csFixerBin fix --config=build/php-cs-fixer/config.php )
+    result=$( PHP_CS_FIXER_IGNORE_ENV=1 $csFixerBin fix --config=build/php-cs-fixer/config.php )
     echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
     for file in "${safeFiles[@]}"; do
         git add "${file}" && echo "${cOrange} Added fixes from ${file}${cEnd}"
@@ -100,7 +101,7 @@ if [[ ${#stagedPhpFiles[@]} -gt 0 ]]; then
 
     # ...before fixing one more time, but on all files, for a manual git add -p
     echo "${cBlue} Applying fixes on all files...${cEnd}"
-    result=$( $csFixerBin fix --config=build/php-cs-fixer/config.php )
+    result=$( PHP_CS_FIXER_IGNORE_ENV=1 $csFixerBin fix --config=build/php-cs-fixer/config.php )
     echo "$result" | sed -e "s/\(.*\)/$cBlue\1$cEnd/g; s/\+  /$cGreen+  /g; s/-  /$cRed-  /g;"
 
     echo "${cRed} Some files were fixed but could not be added automatically.${cEnd}"

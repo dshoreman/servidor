@@ -22,7 +22,7 @@ class UsersController extends Controller
 
     public function store(CreateUser $request): JsonResponse
     {
-        $data = $request->validated();
+        $data = (array) $request->validated();
 
         try {
             $user = $this->createUser($request, $data);
@@ -63,7 +63,7 @@ class UsersController extends Controller
             $user = SystemUser::find($uid);
 
             return response()->json(
-                $user->update($request->validated()),
+                $user->update((array) $request->validated()),
                 Response::HTTP_OK,
             );
         } catch (UserNotFound $_) {

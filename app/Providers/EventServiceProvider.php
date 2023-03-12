@@ -18,6 +18,11 @@ use Servidor\Projects\ToggleProjectVisibility;
 
 class EventServiceProvider extends ServiceProvider
 {
+    /**
+     * The event to listener mappings for the application.
+     *
+     * @var array<string, array<int, string>>
+     */
     protected $listen = [
         ProjectSaved::class => [
             ToggleProjectVisibility::class,

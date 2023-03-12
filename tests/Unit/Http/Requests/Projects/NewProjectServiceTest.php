@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Requests;
+namespace Tests\Unit\Http\Requests\Projects;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Servidor\Http\Requests\Projects\NewProjectService;

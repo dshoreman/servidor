@@ -18,7 +18,7 @@ class RedirectIfAuthenticated
      *
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, ?string ...$guards)
+    public function handle(Request $request, Closure $next, string ...$guards)
     {
         if ($this->isAuthed($guards ?: [null])) {
             return redirect(RouteServiceProvider::HOME);
