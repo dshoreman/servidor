@@ -26,6 +26,7 @@ use Servidor\Http\Controllers\System\GroupsController;
 use Servidor\Http\Controllers\System\UsersController;
 use Servidor\Http\Controllers\SystemInformationController;
 use Servidor\Http\Controllers\User\ShowProfile;
+use Servidor\Http\Controllers\User\UpdateAccount;
 
 Route::post('register', Register::class);
 Route::middleware('web')->name('login')->post('session', Login::class);
@@ -73,6 +74,7 @@ Route::middleware('auth:api')->group(static function (): void {
 
     Route::get('system-info', SystemInformationController::class);
     Route::get('user', ShowProfile::class);
+    Route::put('user', UpdateAccount::class);
 });
 
 Route::any('/{all?}', [FallbackController::class, 'api'])->where('all', '.*');
