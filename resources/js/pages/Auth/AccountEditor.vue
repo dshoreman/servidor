@@ -1,13 +1,13 @@
 <template>
     <sui-grid container>
         <sui-grid-column>
-            <sui-form @submit.prevent="save()">
-                <h2>Account Settings</h2>
+            <h2>Account Settings</h2>
 
-                <sui-segment>
+            <sui-segment>
+                <sui-form @submit.prevent="saveChanges()">
                     <sui-form-field :error="'name' in errors">
                         <label>Account Name</label>
-                        <sui-input required v-model="data.name"
+                        <sui-input v-model="data.name"
                             :placeholder="user.name" />
                         <sui-label basic color="red" pointing
                             v-if="'name' in errors">
@@ -17,16 +17,21 @@
 
                     <sui-form-field :error="'email' in errors">
                         <label>Email Address</label>
-                        <sui-input required type="email" v-model="data.email"
+                        <sui-input type="email" v-model="data.email"
                             :placeholder="user.email" />
                         <sui-label basic color="red" pointing
                             v-if="'email' in errors">
                             {{ errors['email'][0] }}
                         </sui-label>
                     </sui-form-field>
-                </sui-segment>
 
-                <sui-segment>
+                    <sui-button primary type="submit"
+                                content="Save changes" />
+                </sui-form>
+            </sui-segment>
+
+            <sui-segment>
+                <sui-form>
                     <sui-form-field>
                         <label>Current Password</label>
                         <sui-input required type="password" v-model="data.currentPassword" />
@@ -53,12 +58,12 @@
                             {{ errors['confirmPassword'][0] }}
                         </sui-label>
                     </sui-form-field>
-                </sui-segment>
 
-                <sui-button primary floated="right"
-                            content="Save changes" />
+                    <sui-button primary type="submit"
+                                content="Change password" />
+                </sui-form>
+            </sui-segment>
 
-            </sui-form>
         </sui-grid-column>
     </sui-grid>
 </template>
@@ -70,7 +75,7 @@ export default {
     data() {
         return {
             data: {},
-            errors: {},
+            errors: [],
         };
     },
     computed: {
@@ -80,6 +85,17 @@ export default {
         ...mapState({
             user: state => state.Auth.user,
         }),
+    },
+    methods: {
+        async saveChanges() {
+            const { name, email } = this.data;
+
+            try {
+                await this.$store.dispatch('updateAccount', { name, email });
+            } catch (error) {
+                this.errors.push(error);
+            }
+        },
     },
 };
 </script>

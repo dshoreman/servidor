@@ -74,6 +74,14 @@ export default {
 
             commit('setUser', response.data);
         },
+        updateAccount: ({ commit }, data) => new Promise((resolve, reject) => {
+            axios.put('/api/user', data).then(response => {
+                commit('setUser', response.data);
+                resolve(response);
+            }).catch(error => {
+                reject(error);
+            });
+        }),
         forceLogin: ({ commit }, reason) => {
             commit('setAlert', { title: reason, msg: 'Please login again.' });
             commit('clearUser');
