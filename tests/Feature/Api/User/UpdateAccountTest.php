@@ -23,7 +23,7 @@ class UpdateAccountTest extends TestCase
         $request = $this->authed();
         $data = [
             'name' => $this->user->name . ' (changed)',
-            'email' => $this->user->email . ' (changed)',
+            'email' => 'changed-' . $this->user->email,
         ];
         $response = $request->putJson('/api/user', $data);
 
@@ -33,5 +33,19 @@ class UpdateAccountTest extends TestCase
             'created_at', 'updated_at',
         ]);
         $response->assertJsonFragment($data);
+    }
+
+    /** @test */
+    public function email_must_be_valid(): void
+    {
+        $request = $this->authed();
+        $data = [
+            'email' => 'notanemail',
+        ];
+        $response = $request->putJson('/api/user', $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrorFor('email');
+        $response->assertJsonFragment(['email' => [__('validation.email', ['attribute' => 'email'])]]);
     }
 }

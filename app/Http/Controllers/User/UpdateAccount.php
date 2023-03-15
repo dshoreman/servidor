@@ -17,7 +17,10 @@ class UpdateAccount extends Controller
         $user = $request->user();
         \assert($user instanceof User);
 
-        $user->updateOrFail((array) $request->input());
+        $user->updateOrFail($request->validate([
+            'name' => 'string',
+            'email' => 'email',
+        ]));
 
         return response()->json($user);
     }
