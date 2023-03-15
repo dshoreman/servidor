@@ -31,31 +31,31 @@
             </sui-segment>
 
             <sui-segment>
-                <sui-form>
-                    <sui-form-field>
+                <sui-form @submit.prevent="changePassword()">
+                    <sui-form-field :error="'password' in errors">
                         <label>Current Password</label>
                         <sui-input required type="password" v-model="data.currentPassword" />
-                        <sui-label basic color="red" pointing
-                            v-if="'currentPassword' in errors">
-                            {{ errors['currentPassword'][0] }}
-                        </sui-label>
-                    </sui-form-field>
-
-                    <sui-form-field>
-                        <label>New Password</label>
-                        <sui-input required type="password" v-model="data.password" />
                         <sui-label basic color="red" pointing
                             v-if="'password' in errors">
                             {{ errors['password'][0] }}
                         </sui-label>
                     </sui-form-field>
 
-                    <sui-form-field>
+                    <sui-form-field :error="'newPassword' in errors">
+                        <label>New Password</label>
+                        <sui-input required type="password" v-model="data.newPassword" />
+                        <sui-label basic color="red" pointing
+                            v-if="'newPassword' in errors">
+                            {{ errors['newPassword'][0] }}
+                        </sui-label>
+                    </sui-form-field>
+
+                    <sui-form-field :error="'newPassword_confirmation' in errors">
                         <label>Confirm New Password</label>
                         <sui-input required type="password" v-model="data.confirmPassword" />
                         <sui-label basic color="red" pointing
-                            v-if="'confirmPassword' in errors">
-                            {{ errors['confirmPassword'][0] }}
+                            v-if="'newPassword_confirmation' in errors">
+                            {{ errors['newPassword_confirmation'][0] }}
                         </sui-label>
                     </sui-form-field>
 
@@ -93,9 +93,18 @@ export default {
             try {
                 await this.$store.dispatch('updateAccount', { name, email });
             } catch (error) {
-                const { response: res } = error;
-
-                this.errors = res.data.errors;
+                this.errors = error.response.data.errors;
+            }
+        },
+        async changePassword() {
+            try {
+                await this.$store.dispatch('updateAccount', {
+                    password: this.data.currentPassword,
+                    newPassword: this.data.newPassword,
+                    newPassword_confirmation: this.data.confirmPassword,
+                });
+            } catch (error) {
+                this.errors = error.response.data.errors;
             }
         },
     },
