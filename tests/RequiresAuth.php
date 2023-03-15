@@ -8,7 +8,7 @@ trait RequiresAuth
 {
     private ?User $user;
 
-    protected function authed()
+    protected function authed(): TestCase
     {
         if (!isset($this->user)) {
             $user = User::factory()->create();

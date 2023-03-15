@@ -1,3 +1,4 @@
+import AccountEditor from './pages/Auth/AccountEditor';
 import DatabaseList from './pages/Databases/DatabaseList';
 import DatabaseViewer from './pages/Databases/DatabaseViewer';
 import Databases from './pages/Databases';
@@ -21,6 +22,11 @@ const routes = [{
         name: 'dashboard',
         path: '/',
         redirect: 'projects',
+        meta: { auth: true },
+    }, {
+        name: 'account',
+        path: '/account',
+        component: AccountEditor,
         meta: { auth: true },
     }, {
         path: '/projects',

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+* [accounts] Name, login email and password can now be changed from the User menu
 * [projects] PHP version can now be set when creating a project
 * [projects] Added support for enabling HTTPS and setting SSL certificates
 * [projects] The presence or absence of the 'www.' can now optionally be forced

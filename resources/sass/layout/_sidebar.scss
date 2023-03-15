@@ -19,16 +19,16 @@
         }
 
         .item i.chevron.up {
-            transition: 0.3s;
+            transition: 0.6s;
         }
 
         &:hover {
-            max-height: 80px;
+            max-height: 110px;
             transition: max-height .2s ease-in;
 
             .item i.chevron.up {
                 transform: rotate(-180deg);
-                transition: 0.3s;
+                transition: 0.5s;
             }
         }
     }

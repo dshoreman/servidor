@@ -30,6 +30,9 @@
                 <a is="sui-menu-item">
                     {{ user.name }} <sui-icon name="chevron up" />
                 </a>
+                <router-link is="sui-menu-item" :to="{ name: 'account' }">
+                    Account Settings
+                </router-link>
                 <a is="sui-menu-item" @click.prevent="logout">
                     Logout
                 </a>

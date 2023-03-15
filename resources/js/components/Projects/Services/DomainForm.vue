@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="save()" v>
+    <sui-form @submit.prevent="save()">
 
         <sui-form-field :error="'domain' in errors">
 
