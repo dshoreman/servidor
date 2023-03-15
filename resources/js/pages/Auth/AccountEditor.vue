@@ -94,6 +94,7 @@ export default {
 
             try {
                 await this.$store.dispatch('updateAccount', { name, email });
+                this.data = {};
             } catch (error) {
                 this.errors = error.response.data.errors;
             }
