@@ -90,6 +90,8 @@ export default {
         async saveChanges() {
             const { name, email } = this.data;
 
+            this.errors = {};
+
             try {
                 await this.$store.dispatch('updateAccount', { name, email });
             } catch (error) {
@@ -97,11 +99,16 @@ export default {
             }
         },
         async changePassword() {
+            this.errors = {};
+
             try {
                 await this.$store.dispatch('updateAccount', {
                     password: this.data.currentPassword,
                     newPassword: this.data.newPassword,
                     newPassword_confirmation: this.data.confirmPassword,
+                });
+                this.$store.dispatch('logout').then(() => {
+                    this.$router.push({ name: 'login' });
                 });
             } catch (error) {
                 this.errors = error.response.data.errors;
