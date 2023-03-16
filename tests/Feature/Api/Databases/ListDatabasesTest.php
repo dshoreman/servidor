@@ -9,7 +9,7 @@ class ListDatabasesTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/databases';
+    protected string $endpoint = '/api/databases';
 
     /** @test */
     public function can_list_databases(): void

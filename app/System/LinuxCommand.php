@@ -4,13 +4,13 @@ namespace Servidor\System;
 
 abstract class LinuxCommand
 {
-    /**
-     * @var array<string>
-     */
+    /** @var array<string> */
     protected array $args = [];
 
+    /** @var array<string, mixed> */
     protected array $original = [];
 
+    /** @return array<string> */
     public function getArgs(): array
     {
         return $this->args;
@@ -39,5 +39,6 @@ abstract class LinuxCommand
         $this->original = $this->toArray();
     }
 
+    /** @return array<string, mixed> */
     abstract public function toArray(): array;
 }

@@ -12,9 +12,9 @@ class LogFileTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $baseDir = '/home/logrel/laravel';
+    private string $baseDir = '/home/logrel/laravel';
 
-    private $laravelLog = '/storage/logs/laravel.log';
+    private string $laravelLog = '/storage/logs/laravel.log';
 
     /** @test */
     public function relative_paths_are_prefixed_with_docroot(): void

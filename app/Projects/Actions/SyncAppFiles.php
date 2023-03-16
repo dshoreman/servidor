@@ -8,6 +8,11 @@ class SyncAppFiles
 {
     private string $sourcePath = '';
 
+    /**
+     * @var array<array-key, mixed>
+     *
+     * @suppress PhanUnextractableAnnotationSuffix
+     */
     private array $output = [];
 
     private int $status = 0;
@@ -23,7 +28,7 @@ class SyncAppFiles
     public function execute(): void
     {
         $user = $this->service->template()->requiresUser()
-              ? (string) ($this->service->system_user['name'] ?? '')
+              ? $this->service->system_user['name'] ?? ''
               : 'www-data';
 
         if (!is_dir($this->sourcePath)) {

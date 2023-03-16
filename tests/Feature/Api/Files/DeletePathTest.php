@@ -10,7 +10,7 @@ class DeletePathTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/files';
+    protected string $endpoint = '/api/files';
 
     /** @test */
     public function guest_cannot_delete_a_file(): void

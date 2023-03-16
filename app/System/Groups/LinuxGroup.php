@@ -18,6 +18,7 @@ class LinuxGroup extends LinuxCommand
      */
     public array $users;
 
+    /** @param array<string, mixed> $group */
     public function __construct(array $group = [])
     {
         $this->gid = $group['gid'] ?? null ? (int) $group['gid'] : null;
@@ -29,6 +30,7 @@ class LinuxGroup extends LinuxCommand
         $this->setOriginal();
     }
 
+    /** @return static */
     public function setGid(?int $gid = null): self
     {
         if (isset($gid) && $gid > 0) {
@@ -42,6 +44,7 @@ class LinuxGroup extends LinuxCommand
         return $this;
     }
 
+    /** @return static */
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -53,6 +56,7 @@ class LinuxGroup extends LinuxCommand
         return $this;
     }
 
+    /** @return static */
     public function setSystem(bool $enabled): self
     {
         return $this->toggleArg($enabled, '-r');
@@ -60,6 +64,8 @@ class LinuxGroup extends LinuxCommand
 
     /**
      * @param array<string>|null $users
+     *
+     * @return static
      */
     public function setUsers(?array $users): self
     {

@@ -6,9 +6,10 @@ use Tests\TestCase as BaseCase;
 
 abstract class TestCase extends BaseCase
 {
-    protected $endpoint = '/api/system/groups';
+    protected string $endpoint = '/api/system/groups';
 
-    protected $expectedKeys = [
+    /** @var array<int, string> */
+    protected array $expectedKeys = [
         'gid',
         'name',
         'users',

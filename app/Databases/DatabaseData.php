@@ -3,7 +3,6 @@
 namespace Servidor\Databases;
 
 use Servidor\Http\Requests\Databases\NewDatabase;
-use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Optional;
@@ -12,8 +11,7 @@ class DatabaseData extends Data
 {
     public function __construct(
         public string $name,
-        /** @phan-suppress-next-line PhanAttributeWrongTarget */
-        #[DataCollectionOf(TableData::class)]
+        /** @var DataCollection<int, TableData>|Optional */
         public DataCollection|Optional $tables,
         public string $charset = '',
         public string $collation = '',
@@ -31,6 +29,7 @@ class DatabaseData extends Data
         return new self($name, new Optional());
     }
 
+    /** @param array<mixed> $tables */
     public function withTables(array $tables): self
     {
         return self::from([

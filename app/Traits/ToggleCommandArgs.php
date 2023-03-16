@@ -9,6 +9,7 @@ trait ToggleCommandArgs
      */
     protected array $args = [];
 
+    /** @return static */
     public function toggleArg(bool $cond, string $on, string $off = ''): self
     {
         $keyOn = array_search($on, $this->args, true);

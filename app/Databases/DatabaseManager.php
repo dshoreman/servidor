@@ -5,6 +5,7 @@ namespace Servidor\Databases;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Contracts\Config\Repository;
 use Spatie\LaravelData\DataCollection;
@@ -15,8 +16,10 @@ class DatabaseManager
 
     private Connection $connection;
 
+    /** @var AbstractSchemaManager<AbstractPlatform> */
     private AbstractSchemaManager $manager;
 
+    /** @param AbstractSchemaManager<AbstractPlatform>|null $manager */
     public function __construct(
         Repository $config,
         ?Connection $connection = null,
@@ -52,6 +55,11 @@ class DatabaseManager
         return $data;
     }
 
+    /**
+     * @phpstan-return DataCollection<int, DatabaseData>
+     *
+     * @psalm-return DataCollection<array-key, mixed>
+     */
     public function databases(): DataCollection
     {
         $databases = DatabaseData::collection($this->manager->listDatabases());
@@ -61,6 +69,11 @@ class DatabaseManager
         return $databases;
     }
 
+    /**
+     * @phpstan-return DataCollection<int, DatabaseData>
+     *
+     * @psalm-return DataCollection<array-key, mixed>
+     */
     public function detailedDatabases(): DataCollection
     {
         $databases = [];

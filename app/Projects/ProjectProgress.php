@@ -37,6 +37,7 @@ class ProjectProgress implements ShouldBroadcast
         return new PrivateChannel('projects.' . $this->project->id);
     }
 
+    /** @return array{project: Project, step: array<string, int|string>} */
     public function broadcastWith(): array
     {
         return [

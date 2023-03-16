@@ -16,9 +16,9 @@ class User
     private $user;
 
     /**
-     * @param array|LinuxUser $user
+     * @param array<string, mixed>|LinuxUser $user
      */
-    public function __construct($user)
+    public function __construct(array|LinuxUser $user)
     {
         $this->user = $user instanceof LinuxUser
                     ? $user : new LinuxUser($user, true);
@@ -51,15 +51,26 @@ class User
      */
     private function refresh($nameOrUid): self
     {
+        /** @var array<string, mixed>|false $arr */
         $arr = is_numeric($nameOrUid)
              ? posix_getpwuid((int) $nameOrUid)
              : posix_getpwnam($nameOrUid);
+        \assert(false !== $arr);
 
-        $this->user = new LinuxUser((array) $arr, true);
+        $this->user = new LinuxUser($arr, true);
 
         return $this;
     }
 
+    /**
+     * @phpstan-return Collection<int, array{
+     *   name: string, dir: string, groups: array<string>, shell: string, gid: ?int, uid: ?int
+     * }>
+     *
+     * @psalm-return Collection<int<0, max>, array{
+     *   name: string, dir: string, groups: array<string>, shell: string, gid: ?int, uid: ?int
+     * }>
+     */
     public static function list(): Collection
     {
         exec('cat /etc/passwd', $lines);
@@ -79,6 +90,7 @@ class User
         return collect($users);
     }
 
+    /** @return array<string, mixed> */
     public static function create(string $name, ?int $uid = null, ?int $gid = null): array
     {
         return self::createCustom(
@@ -88,6 +100,7 @@ class User
         );
     }
 
+    /** @return array<string, mixed> */
     public static function createCustom(LinuxUser $user): array
     {
         $name = $user->name;
@@ -98,6 +111,11 @@ class User
         return $user->refresh($name)->toArray();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
     public function update(array $data): array
     {
         /** @var array<string>|null $groups */
@@ -146,6 +164,7 @@ class User
         exec($cmd . $this->user->name);
     }
 
+    /** @return array{name: string, dir: string, groups: array<string>, shell: string, gid: ?int, uid: ?int} */
     public function toArray(): array
     {
         return $this->user->toArray();

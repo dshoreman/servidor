@@ -25,6 +25,9 @@ class FileManager
         $this->finder = new Finder();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function list(string $path): array
     {
         // Symfony's Finder trims all slashes from the end,
@@ -42,6 +45,9 @@ class FileManager
         }
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function getFiles(string $path): array
     {
         /** @psalm-suppress TooManyArguments - sortByName */
@@ -56,6 +62,9 @@ class FileManager
         return array_map([$this, 'fileToArray'], $files);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function createDir(string $path): array
     {
         if (file_exists($path)) {
@@ -68,6 +77,9 @@ class FileManager
         return $this->open($path, false);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function createFile(string $file, string $contents): array
     {
         if (file_exists($file)) {
@@ -80,6 +92,9 @@ class FileManager
         return $this->open($file);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function open(string $file, bool $includeContent = true): array
     {
         if (!file_exists($file)) {
@@ -100,6 +115,9 @@ class FileManager
         return false !== file_put_contents($file, $contents);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function move(string $path, string $target): array
     {
         if (!file_exists($path)) {
@@ -133,6 +151,7 @@ class FileManager
         return unlink($path);
     }
 
+    /** @return array<string,array{text:string,octal:string}> */
     private function loadFilePermissions(string $path): array
     {
         $pathParts = explode('/', $path);
@@ -147,6 +166,7 @@ class FileManager
         return $this->loadPermissions($path, $name);
     }
 
+    /** @return array<string, array{text: string, octal: string}> */
     private function loadPermissions(string $path, string $name = '.* *'): array
     {
         $perms = [];
@@ -169,7 +189,7 @@ class FileManager
     }
 
     /**
-     * @return array{0: SplFileInfo, 1: array}
+     * @return array{0: SplFileInfo, 1: array<string, mixed>}
      */
     private function loadFile(SplFileInfo|string $file): array
     {
@@ -185,6 +205,8 @@ class FileManager
 
     /**
      * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     *
+     * @return array<string,mixed>
      */
     private function makeFileData(SplFileInfo $file): array
     {
@@ -204,7 +226,11 @@ class FileManager
         ];
     }
 
-    /** @param SplFileInfo|string $file */
+    /**
+     * @param SplFileInfo|string $file
+     *
+     * @return array<string, mixed>
+     */
     private function fileToArray($file): array
     {
         [$_, $data] = $this->loadFile($file);
@@ -212,6 +238,9 @@ class FileManager
         return $data;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function fileWithContents(string $file): array
     {
         [$file, $data] = $this->loadFile($file);
@@ -233,6 +262,11 @@ class FileManager
         return $data;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
     private function addErrorFromException(RuntimeException $e, array $data): array
     {
         $msg = $e->getMessage();

@@ -2,7 +2,6 @@
 
 namespace Servidor\Projects;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Queue\SerializesModels;
 
 class ProjectSaved
@@ -19,7 +18,6 @@ class ProjectSaved
     public function getService(): ?ProjectService
     {
         $services = $this->project->services;
-        \assert($services instanceof Collection);
 
         if (0 === $services->count()) {
             return null;

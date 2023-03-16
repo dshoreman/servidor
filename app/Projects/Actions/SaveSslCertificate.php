@@ -11,6 +11,11 @@ use Servidor\Projects\ProjectService;
 
 class SaveSslCertificate
 {
+    /**
+     * @phan-var Collection<mixed>
+     *
+     * @psalm-var Collection<array-key, mixed>
+     */
     private Collection $config;
 
     public function __construct(private ProjectService $service)
@@ -34,7 +39,6 @@ class SaveSslCertificate
 
     public function execute(): void
     {
-        \assert($this->service->project instanceof Project);
         $this->createCertsDir($this->service->project);
 
         \assert($this->service->config instanceof Collection);
@@ -49,6 +53,11 @@ class SaveSslCertificate
         return mkdir($path, 02750, true);
     }
 
+    /**
+     * @phan-param Collection<mixed> $config
+     *
+     * @psalm-param Collection<array-key, mixed> $config
+     */
     private function saveCert(Collection $config): string
     {
         $cert = (string) $config->get('sslCertificate');
@@ -56,6 +65,11 @@ class SaveSslCertificate
         return $this->saveFile($cert, 'crt');
     }
 
+    /**
+     * @phan-param Collection<mixed> $config
+     *
+     * @psalm-param Collection<array-key, mixed> $config
+     */
     private function saveKey(Collection $config): string
     {
         $key = (string) $config->get('sslPrivateKey');
@@ -65,7 +79,6 @@ class SaveSslCertificate
 
     private function saveFile(string $contents, string $extension): string
     {
-        \assert($this->service->project instanceof Project);
         $projectName = $this->service->project->name;
         $file = $this->service->domain_name . '.' . $extension;
         $path = storage_path('certs/' . Str::slug($projectName) . '/' . $file);

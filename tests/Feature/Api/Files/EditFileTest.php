@@ -10,7 +10,7 @@ class EditFileTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/files';
+    protected string $endpoint = '/api/files';
 
     /**
      * @test

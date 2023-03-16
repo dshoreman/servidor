@@ -35,7 +35,11 @@ class UpdateProjectTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @return array<string, mixed>
+     */
     public function authed_user_can_rename_project(): array
     {
         $project = Project::create(['name' => 'My Other Blog']);
@@ -54,6 +58,8 @@ class UpdateProjectTest extends TestCase
 
     /**
      * @test
+     *
+     * @param array<string, mixed> $data
      *
      * @depends authed_user_can_rename_project
      */
@@ -85,6 +91,8 @@ class UpdateProjectTest extends TestCase
     /**
      * @test
      *
+     * @param array<string, mixed> $data
+     *
      * @dataProvider symlinkProvider
      */
     public function updating_project_also_toggles_symlink(array $data): void
@@ -114,6 +122,7 @@ class UpdateProjectTest extends TestCase
         $this->assertFileDoesNotExist("/etc/nginx/sites-enabled/{$domain}.conf");
     }
 
+    /** @return array<string, mixed> $data */
     public function symlinkProvider(): array
     {
         return [

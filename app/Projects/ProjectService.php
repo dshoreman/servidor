@@ -54,6 +54,7 @@ class ProjectService extends Model
         'custom' => '{repo}',
     ];
 
+    /** @var array<mixed> */
     protected $appends = [
         'document_root',
         'logs',
@@ -66,6 +67,7 @@ class ProjectService extends Model
         'config' => 'collection',
     ];
 
+    /** @var array<mixed> */
     protected $dispatchesEvents = [
         'saving' => ProjectServiceSaving::class,
         'saved' => ProjectServiceSaved::class,
@@ -93,16 +95,23 @@ class ProjectService extends Model
         $this->template()->checkNginxData();
     }
 
+    /** @return array<string, string> */
     public function getLogsAttribute(): array
     {
         return array_map(static fn (LogFile $log): string => $log->getTitle(), $this->logs());
     }
 
+    /** @return array<string, LogFile> */
     public function logs(): array
     {
         return $this->template()->getLogs();
     }
 
+    /**
+     * @phpstan-return BelongsTo<Project, self>
+     *
+     * @psalm-return BelongsTo<Project>
+     * */
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
@@ -127,11 +136,10 @@ class ProjectService extends Model
         if ($this->template()->requiresUser() && $this->systemUser) {
             // TODO: If user doesn't exist, this should throw UserNotFoundException
             //  (or some similar error) and NOT just default to a root-based path!
-            return ((string) $this->systemUser['dir']) . '/' . $this->sourceRepoName;
+            return $this->systemUser['dir'] . '/' . $this->sourceRepoName;
         }
 
         $project = $this->project;
-        \assert($project instanceof Project);
 
         return '/var/www/' . Str::slug($project->name) . '/' . $this->sourceRepoName;
     }
@@ -149,6 +157,7 @@ class ProjectService extends Model
         return str_replace('{repo}', $repo, self::SOURCE_PROVIDERS[$provider ?: 'custom']);
     }
 
+    /** @return array{name: string, dir: string, groups: array<string>, shell: string, gid: ?int, uid: ?int}|null */
     public function getSystemUserAttribute(): ?array
     {
         if (!$this->template()->requiresUser()) {

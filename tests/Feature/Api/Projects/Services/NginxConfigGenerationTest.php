@@ -41,6 +41,7 @@ class NginxConfigGenerationTest extends TestCase
         $this->assertFileEquals('tests/Feature/Api/Projects/nginx-configs/' . $conf, $path);
     }
 
+    /** @return array<int, array<int, bool|int|string>> */
     public function configs(): array
     {
         return [

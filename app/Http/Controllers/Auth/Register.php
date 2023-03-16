@@ -10,6 +10,7 @@ use Servidor\User;
 
 class Register extends Controller
 {
+    /** @var array<string, mixed> */
     private array $validationRules = [
         'name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],

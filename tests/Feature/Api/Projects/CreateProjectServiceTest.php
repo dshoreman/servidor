@@ -17,7 +17,7 @@ class CreateProjectServiceTest extends TestCase
     use RefreshDatabase;
     use RequiresAuth;
 
-    protected $endpoint = '/api/projects/{id}/services';
+    protected string $endpoint = '/api/projects/{id}/services';
 
     /** @test */
     public function can_create_project_service(): void

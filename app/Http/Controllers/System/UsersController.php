@@ -35,6 +35,11 @@ class UsersController extends Controller
         return response()->json($user, Response::HTTP_CREATED);
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<string, mixed>
+     */
     private function createUser(CreateUser $request, array $data): array
     {
         $user = new LinuxUser(['name' => $data['name']]);
@@ -60,10 +65,12 @@ class UsersController extends Controller
     public function update(UpdateUser $request, int $uid): JsonResponse
     {
         try {
+            /** @var array<string, mixed> $data */
+            $data = (array) $request->validated();
             $user = SystemUser::find($uid);
 
             return response()->json(
-                $user->update((array) $request->validated()),
+                $user->update($data),
                 Response::HTTP_OK,
             );
         } catch (UserNotFound $_) {

@@ -2,7 +2,6 @@
 
 namespace Servidor\Projects\Actions;
 
-use Servidor\Projects\Project;
 use Servidor\Projects\ProjectService;
 
 class EnableOrDisableProject
@@ -22,7 +21,6 @@ class EnableOrDisableProject
 
     public function execute(): void
     {
-        \assert($this->service->project instanceof Project);
         $target = self::PATH_AVAILABLE . $this->configFile;
         $symlink = self::PATH_ENABLED . $this->configFile;
 

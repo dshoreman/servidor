@@ -7,9 +7,9 @@ use Illuminate\Validation\Validator;
 trait ValidatesFormRequest
 {
     /**
-     * @var array
+     * @var array<int> mixed
      */
-    private $rules;
+    private array $rules;
 
     /**
      * @var \Illuminate\Validation\Factory
@@ -22,12 +22,15 @@ trait ValidatesFormRequest
         $this->validator = $this->app['validator'];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function validateAll(array $data): bool
     {
         return $this->getValidator($data)->passes();
     }
 
-    private function validateField(string $field, $value): bool
+    private function validateField(string $field, mixed $value): bool
     {
         return $this->getValidator(
             [$field => $value],
@@ -35,7 +38,7 @@ trait ValidatesFormRequest
         )->passes();
     }
 
-    private function validateFieldFails(string $field, $value): void
+    private function validateFieldFails(string $field, mixed $value): void
     {
         $this->assertFalse(
             $this->validateField($field, $value),
@@ -43,7 +46,7 @@ trait ValidatesFormRequest
         );
     }
 
-    private function validateFieldPasses(string $field, $value): void
+    private function validateFieldPasses(string $field, mixed $value): void
     {
         $this->assertTrue(
             $this->validateField($field, $value),
@@ -51,7 +54,7 @@ trait ValidatesFormRequest
         );
     }
 
-    private function validateChildField(string $field, string $parent, $value, bool $nested = true): bool
+    private function validateChildField(string $field, string $parent, mixed $value, bool $nested = true): bool
     {
         $glue = $nested ? '.*.' : '.';
         $rule = $parent . $glue . $field;
@@ -63,7 +66,7 @@ trait ValidatesFormRequest
         )->passes();
     }
 
-    private function validateChildFieldFails(string $field, string $parent, $value, bool $nested = true): void
+    private function validateChildFieldFails(string $field, string $parent, mixed $value, bool $nested = true): void
     {
         $glued = $nested ? "{$parent}.*.{$field}" : "{$parent}.{$field}";
 
@@ -73,7 +76,7 @@ trait ValidatesFormRequest
         );
     }
 
-    private function validateChildFieldPasses(string $field, string $parent, $value, bool $nested = true): void
+    private function validateChildFieldPasses(string $field, string $parent, mixed $value, bool $nested = true): void
     {
         $glued = $nested ? "{$parent}.*.{$field}" : "{$parent}.{$field}";
 
@@ -83,7 +86,7 @@ trait ValidatesFormRequest
         );
     }
 
-    private function validateConfigField(string $property, $value): bool
+    private function validateConfigField(string $property, mixed $value): bool
     {
         $data = [$property => $value];
         $rule = 'config.' . $property;
@@ -100,7 +103,7 @@ trait ValidatesFormRequest
         )->passes();
     }
 
-    private function validateConfigFieldFails(string $field, $value): void
+    private function validateConfigFieldFails(string $field, mixed $value): void
     {
         $this->assertFalse(
             $this->validateConfigField($field, $value),
@@ -108,7 +111,7 @@ trait ValidatesFormRequest
         );
     }
 
-    private function validateConfigFieldPasses(string $field, $value): void
+    private function validateConfigFieldPasses(string $field, mixed $value): void
     {
         $this->assertTrue(
             $this->validateConfigField($field, $value),
@@ -116,13 +119,17 @@ trait ValidatesFormRequest
         );
     }
 
-    private function validationMessage(string $field, $value, string $expected, string $actual): string
+    private function validationMessage(string $field, mixed $value, string $expected, string $actual): string
     {
         return "Expected field '{$field}' to {$expected} validation with value '"
             . (\is_array($value) || \is_object($value)
             ? json_encode($value) : $value) . "', but it {$actual}.";
     }
 
+    /**
+     * @param array<mixed> $data
+     * @param array<mixed> $rules
+     */
     private function getValidator(array $data, array $rules = []): Validator
     {
         return $this->validator->make($data, $rules ?: $this->rules);

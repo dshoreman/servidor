@@ -10,7 +10,7 @@ class CreateNodeTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/files';
+    protected string $endpoint = '/api/files';
 
     /** @test */
     public function guest_cannot_create_a_file(): void
