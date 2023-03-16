@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] The presence or absence of the 'www.' can now optionally be forced
 
 ### Changed
+* [chore] Bumped default PHP version for services to 8.1
+* [chore] Upgraded Laravel framework to version 10
 * [chore] PHPStan reporting increased from level 5 to 6
 * [projects] App/redirect creation steps are now added to progress modal together
 * [projects] Project Apps and Project Redirects are now simply Project Services
@@ -24,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] Missing steps when saving project apps are now correctly added
 * [projects] Progress bar no longer jumps around somewhat eratically during creation
 * [projects] Deleting a project is now possible even when it has a service attached
+
+### Removed
+* PHP 8.0 is no longer supported for Servidor itself (but services can still use it)
 
 
 ## [0.15.3] - 2023-01-08
