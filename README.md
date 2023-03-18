@@ -54,7 +54,7 @@ If your server provider supports cloud-init scripts, you can run the installer a
 ```yaml
 #cloud-config
 runcmd:
-  - curl -sSL https://github.com/dshoreman/servidor/releases/download/v0.15.3/setup.sh > /tmp/setup.sh
+  - curl -sSL https://github.com/dshoreman/servidor/releases/download/v0.16.0/setup.sh > /tmp/setup.sh
   - |
     bash /tmp/setup-servidor.sh -v --branch master \
       --pusher 1234567:123abc45d67890e12f34:12345a6b7890c1defa2b

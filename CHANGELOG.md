@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+
+## [0.16.0] - 2023-03-18
 ### Added
 * [accounts] Name, login email and password can now be changed from the User menu
 * [installer] A new systemd unit `servidor.service` is now auto-enabled
@@ -316,7 +319,8 @@ This is the first version with a "true" GitHub Release. For older releases, chec
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.15.3...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.16.0...develop
+[0.16.0]: https://github.com/dshoreman/servidor/compare/v0.15.3...v0.16.0
 [0.15.3]: https://github.com/dshoreman/servidor/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/dshoreman/servidor/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/dshoreman/servidor/compare/v0.15.0...v0.15.1
