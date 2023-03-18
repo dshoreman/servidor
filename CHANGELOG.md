@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [projects] Project Apps and Project Redirects are now simply Project Services
 
 ### Fixed
+* [installer] Curl snippet in README now saves setup.sh to the right place
 * [projects] The logs header is now correctly displayed when there are logs
 * [projects] Values on the Creation form no longer fail to reset when navigating away
 * [projects] Missing steps when saving project apps are now correctly added
