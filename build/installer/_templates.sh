@@ -81,6 +81,24 @@ nginx_default_page() {
 EOF
 }
 
+systemd_unit() {
+    cat << EOF
+[Unit]
+Description=Servidor queue worker
+
+[Service]
+User=servidor
+Group=servidor
+WorkingDirectory=/var/servidor
+ExecStart=/usr/bin/php artisan queue:work -v --max-time=3600
+ExecStop=/usr/bin/php artisan queue:restart
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
 vagrant_zshrc() {
     cat << EOF
 alias as-web="sudo -u www-data"
