@@ -2,9 +2,10 @@
 
 namespace Servidor\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class Domain implements Rule
+class Domain implements ValidationRule
 {
     private string $match = '/^
         (?=^.{1,253}$)                          # Limit to 253 characters
@@ -21,15 +22,11 @@ class Domain implements Rule
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
      * @param string $attribute @unused-param
-     * @param mixed  $value
      */
-    public function passes($attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        return (bool) preg_match($this->match, (string) $value);
-    }
-
-    public function message(): string
-    {
-        return 'The :attribute is not a valid FQDN.';
+        if (!preg_match($this->match, (string) $value)) {
+            $fail('The :attribute is not a valid FQDN.');
+        }
     }
 }

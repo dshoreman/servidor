@@ -43,7 +43,7 @@ return [
     //
     // Note that the **only** effect of choosing `'5.6'` is to infer that functions removed in php 7.0 exist.
     // (See `backward_compatibility_checks` for additional options)
-    'target_php_version' => '8.0',
+    'target_php_version' => '8.1',
 
     // If enabled, missing properties will be created when
     // they are first seen. If false, we'll report an
@@ -346,11 +346,10 @@ return [
         'database/seeders',
         'vendor/doctrine/dbal/src',
         'vendor/fakerphp/faker/src/Faker',
-        'vendor/fruitcake/laravel-cors/src',
         'vendor/laravel/framework/src/Illuminate',
         'vendor/laravel/sanctum/src',
         'vendor/psr/http-message/src',
-        'vendor/spatie/data-transfer-object/src',
+        'vendor/spatie/laravel-data/src',
         'vendor/symfony/finder',
         'vendor/symfony/http-foundation',
         'vendor/symfony/http-kernel/Exception',

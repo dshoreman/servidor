@@ -15,11 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup NodeJS Environment
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.nodejs }}
       - name: Cache node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: npm-node${{ matrix.nodejs }}-${{ hashFiles('**/package-lock.json') }}
@@ -42,13 +42,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04]
-        php: ['8.0']
+        os: [ubuntu-20.04, ubuntu-22.04]
+        php: ['8.1']
         experimental: [false]
         composer-flags: ['--prefer-dist']
         phpstan-args: ['']
         include:
-          - php: '8.1'
+          - php: '8.2'
             os: ubuntu-latest
             experimental: true
             composer-flags: '--prefer-dist --ignore-platform-req=php'
@@ -68,7 +68,7 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
       - name: Validate composer.json and lockfile
         run: composer validate
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: composer-test-cache
         with:
           path: ~/.cache/composer/files
@@ -94,12 +94,12 @@ jobs:
       - name: Check for magic numbers
         run: make phpmnd
       - name: Gather PHP insights
-        if: ${{ '8.0-ubuntu-20.04' == format('{0}-{1}', matrix.php, matrix.os) }}
+        if: ${{ '8.1-ubuntu-22.04' == format('{0}-{1}', matrix.php, matrix.os) }}
         run: make insights INSIGHT_ARGS="--ansi --format=github-action --disable-security-check"
       - name: Run static analysis checks
         run: |
           echo "::group::$ vendor/bin/phpstan analyze"
-          php -v | grep '8.1' || make phpstan STAN_ARGS=${{ matrix.phpstan-args }}
+          php -v | grep '8.2' || make phpstan STAN_ARGS=${{ matrix.phpstan-args }}
           echo -e "::endgroup::\n::group::$ vendor/bin/phan"
           make phan
           echo -e "::endgroup::\n::group::$ vendor/bin/psalm"
@@ -109,11 +109,11 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           command: make test-for-ci
-          timeout_minutes: 2
+          timeout_minutes: 3
           max_attempts: 3
           retry_on: error
       - name: Upload coverage results
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.1.1
       - name: Check Laravel log
         if: failure()
         run: test -f storage/logs/laravel.log && cat storage/logs/laravel.log

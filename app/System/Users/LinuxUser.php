@@ -24,6 +24,7 @@ class LinuxUser extends LinuxCommand
 
     public string $shell;
 
+    /** @param array<string, mixed> $user */
     public function __construct(array $user = [], bool $loadGroups = false)
     {
         $this->gid = isset($user['gid']) ? (int) $user['gid'] : null;
@@ -158,6 +159,7 @@ class LinuxUser extends LinuxCommand
         return \count($this->args) > 0;
     }
 
+    /** @return array{name: string, dir: string, groups: array<string>, shell: string, gid: ?int, uid: ?int} */
     public function toArray(): array
     {
         return [

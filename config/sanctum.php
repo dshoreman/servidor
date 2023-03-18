@@ -1,5 +1,7 @@
 <?php
 
+use Laravel\Sanctum\Sanctum;
+
 return [
     // Don't generate the sanctum/csrf-cookie route
     'routes' => false,
@@ -18,7 +20,7 @@ return [
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
         'servidor.local:8042,127.0.0.1:8042,::1',
-        env('APP_URL') ? ',' . parse_url(env('APP_URL'), PHP_URL_HOST) . ':8042' : '',
+        Sanctum::currentApplicationUrlWithPort(),
     ))),
 
     /*

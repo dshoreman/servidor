@@ -17,7 +17,7 @@ server {
     }
 
     location ~ \.php\$ {
-        fastcgi_pass unix:/run/php/php8.0-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         include fastcgi_params;
@@ -78,6 +78,24 @@ nginx_default_page() {
     </div>
   </body>
 </html>
+EOF
+}
+
+systemd_unit() {
+    cat << EOF
+[Unit]
+Description=Servidor queue worker
+
+[Service]
+User=servidor
+Group=servidor
+WorkingDirectory=/var/servidor
+ExecStart=/usr/bin/php artisan queue:work -v --max-time=3600
+ExecStop=/usr/bin/php artisan queue:restart
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
 EOF
 }
 

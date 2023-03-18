@@ -2,24 +2,21 @@
 
 namespace Servidor\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
-class NoComma implements Rule
+class NoComma implements ValidationRule
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
      * @param string $attribute @unused-param
-     * @param mixed  $value
      */
-    public function passes($attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        return !Str::contains((string) $value, ',');
-    }
-
-    public function message(): string
-    {
-        return 'The :attribute cannot contain a comma.';
+        if (Str::contains((string) $value, ',')) {
+            $fail('The :attribute cannot contain a comma.');
+        }
     }
 }

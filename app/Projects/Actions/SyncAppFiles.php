@@ -2,28 +2,33 @@
 
 namespace Servidor\Projects\Actions;
 
-use Servidor\Projects\Application;
+use Servidor\Projects\ProjectService;
 
 class SyncAppFiles
 {
     private string $sourcePath = '';
 
+    /**
+     * @var array<array-key, mixed>
+     *
+     * @suppress PhanUnextractableAnnotationSuffix
+     */
     private array $output = [];
 
     private int $status = 0;
 
     public function __construct(
-        public Application $app,
+        public ProjectService $service,
     ) {
-        $app->checkNginxData();
+        $service->checkNginxData();
 
-        $this->sourcePath = $app->source_root;
+        $this->sourcePath = $service->source_root;
     }
 
     public function execute(): void
     {
-        $user = $this->app->template()->requiresUser()
-              ? (string) ($this->app->system_user['name'] ?? '')
+        $user = $this->service->template()->requiresUser()
+              ? $this->service->system_user['name'] ?? ''
               : 'www-data';
 
         if (!is_dir($this->sourcePath)) {
@@ -31,7 +36,9 @@ class SyncAppFiles
         }
 
         if (0 === $this->status) {
-            $this->pull($user, $this->app->source_branch ?: '');
+            $sourceConfig = (array) $this->service->config?->get('source');
+
+            $this->pull($user, (string) ($sourceConfig['branch'] ?? ''));
         }
     }
 
@@ -62,7 +69,7 @@ class SyncAppFiles
 
         $this->runCmds(array_merge($cmds, [
             "sudo -u {$user} git " . (
-                $gitExists ? 'pull' : "clone{$branchOpt} '{$this->app->source_uri}' ."
+                $gitExists ? 'pull' : "clone{$branchOpt} '{$this->service->source_uri}' ."
             ),
         ]));
     }

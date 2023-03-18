@@ -11,7 +11,7 @@ class ListFilesTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/files';
+    protected string $endpoint = '/api/files';
 
     /** @test */
     public function authed_user_can_list_web_root(): void
@@ -57,7 +57,7 @@ class ListFilesTest extends TestCase
     public function file_can_still_be_listed_when_owner_no_longer_exists(): void
     {
         exec(implode(' && ', [
-            'sudo useradd -m testghost',
+            'sudo useradd -m testghost && sudo chmod a+rx /home/testghost',
             'sudo -u testghost touch /home/testghost/file.txt',
             'sudo userdel testghost',
         ]));
@@ -81,7 +81,10 @@ class ListFilesTest extends TestCase
         ]);
         $this->assertEquals('???', $data['owner']);
         $this->assertEquals('???', $data['group']);
+    }
 
-        exec('sudo rm -rf /home/testghost');
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel testghost 2>/dev/null; sudo rm -rf /home/testghost');
     }
 }

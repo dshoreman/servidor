@@ -14,19 +14,19 @@ use Servidor\Http\Controllers\Files\DeletePath;
 use Servidor\Http\Controllers\Files\EditFile;
 use Servidor\Http\Controllers\Files\ListOrShowPath;
 use Servidor\Http\Controllers\Files\MovePath;
-use Servidor\Http\Controllers\Projects\Applications\PullCode;
-use Servidor\Http\Controllers\Projects\Applications\ViewLog;
 use Servidor\Http\Controllers\Projects\CreateProject;
-use Servidor\Http\Controllers\Projects\CreateProjectApp;
-use Servidor\Http\Controllers\Projects\CreateProjectRedirect;
+use Servidor\Http\Controllers\Projects\CreateProjectService;
 use Servidor\Http\Controllers\Projects\ListProjects;
 use Servidor\Http\Controllers\Projects\RemoveProject;
+use Servidor\Http\Controllers\Projects\Services\PullCode;
+use Servidor\Http\Controllers\Projects\Services\ViewLog;
 use Servidor\Http\Controllers\Projects\UpdateProject;
 use Servidor\Http\Controllers\System\Git\ListBranches;
 use Servidor\Http\Controllers\System\GroupsController;
 use Servidor\Http\Controllers\System\UsersController;
 use Servidor\Http\Controllers\SystemInformationController;
 use Servidor\Http\Controllers\User\ShowProfile;
+use Servidor\Http\Controllers\User\UpdateAccount;
 
 Route::post('register', Register::class);
 Route::middleware('web')->name('login')->post('session', Login::class);
@@ -39,15 +39,12 @@ Route::middleware('auth:api')->group(static function (): void {
         Route::post('/', CreateProject::class);
         Route::put('{project}', UpdateProject::class);
 
-        Route::prefix('{project}/apps')->group(static function (): void {
-            Route::post('/', CreateProjectApp::class);
-            Route::post('{app}/pull', PullCode::class);
-        });
-        Route::prefix('{project}/redirects')->group(static function (): void {
-            Route::post('/', CreateProjectRedirect::class);
+        Route::prefix('{project}/services')->group(static function (): void {
+            Route::post('/', CreateProjectService::class);
+            Route::post('{service}/pull', PullCode::class);
         });
 
-        Route::get('{project}/logs/{log}.app-{app}.log', ViewLog::class);
+        Route::get('{project}/logs/{log}.service-{service}.log', ViewLog::class);
         Route::delete('{project}', RemoveProject::class);
     });
 
@@ -77,6 +74,7 @@ Route::middleware('auth:api')->group(static function (): void {
 
     Route::get('system-info', SystemInformationController::class);
     Route::get('user', ShowProfile::class);
+    Route::put('user', UpdateAccount::class);
 });
 
 Route::any('/{all?}', [FallbackController::class, 'api'])->where('all', '.*');

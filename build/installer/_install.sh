@@ -10,6 +10,9 @@ install_servidor() {
     log "Patching nginx config..."
     patch_nginx && systemctl reload nginx.service
 
+    log "Installing Systemd unit files..."
+    setup_systemd_units
+
     finalise && print_success
 }
 
@@ -35,8 +38,8 @@ clone_and_install() {
 
     log "Moving Composer keys into place..."
     if [[ -d /tmp/composer ]]; then
-        mkdir /var/servidor/.config
-        mv /tmp/composer /var/servidor/.config/composer
+        mkdir -p /var/servidor/.config
+        mv /tmp/composer /var/servidor/.config/
     fi
 
     log "Installing required Composer packages..."
@@ -122,6 +125,12 @@ patch_nginx() {
 
     log "Setting owner to www-data on main web root..."
     chown www-data:www-data /var/www
+}
+
+setup_systemd_units() {
+    systemd_unit > /lib/systemd/system/servidor.service
+
+    systemctl daemon-reload && systemctl enable servidor.service --now
 }
 
 finalise() {

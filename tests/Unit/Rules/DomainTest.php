@@ -2,13 +2,14 @@
 
 namespace Tests\Unit\Rules;
 
+use Illuminate\Validation\Validator;
 use Servidor\Rules\Domain;
 use Tests\TestCase;
 
 class DomainTest extends TestCase
 {
     /**
-     * @var array
+     * @var array<array-key, mixed>
      */
     private $rules;
 
@@ -138,12 +139,12 @@ class DomainTest extends TestCase
         $this->assertFalse($this->validate('1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.1234567890.12345678.90.example.com'));
     }
 
-    private function validate($value)
+    private function validate(string $value): bool
     {
         return $this->getValidator($value)->passes();
     }
 
-    private function getValidator($value)
+    private function getValidator(string $value): Validator
     {
         return $this->validator->make(
             ['domain' => $value],

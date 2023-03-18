@@ -11,14 +11,20 @@ class RegisterTest extends TestCase
     use RefreshDatabase;
     use RequiresAuth;
 
-    private $jill = [
+    /**
+     * @var array<string, string>
+     */
+    private array $jill = [
         'name' => 'Jill',
         'email' => 'jill@example.com',
         'password' => 'hunter42',
         'password_confirmation' => 'hunter42',
     ];
 
-    private $jillClean = [
+    /**
+     * @var array<string, string>
+     */
+    private array $jillClean = [
         'name' => 'Jill',
         'email' => 'jill@example.com',
     ];

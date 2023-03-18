@@ -2,7 +2,6 @@
 
 namespace Servidor\Projects;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Queue\SerializesModels;
 
 class ProjectSaved
@@ -16,17 +15,18 @@ class ProjectSaved
         $this->project = $project;
     }
 
-    public function getAppOrRedirect(): Application|Redirect|null
+    public function getService(): ?ProjectService
     {
-        /** @var array<Application>|Collection<Application> $apps */
-        $apps = $this->project->applications;
-        \assert($apps instanceof Collection);
+        $services = $this->project->services;
 
-        /** @var array<Redirect>|Collection<Redirect> $redirects */
-        $redirects = $this->project->redirects;
-        \assert($redirects instanceof Collection);
+        if (0 === $services->count()) {
+            return null;
+        }
 
-        return $apps->first() ?? $redirects->first();
+        $service = $services->first();
+        \assert($service instanceof ProjectService);
+
+        return $service;
     }
 
     public function getProject(): Project

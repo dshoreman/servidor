@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.16.0] - 2023-03-18
+### Added
+* [accounts] Name, login email and password can now be changed from the User menu
+* [installer] A new systemd unit `servidor.service` is now auto-enabled
+* [projects] PHP version can now be set when creating a project
+* [projects] Added support for enabling HTTPS and setting SSL certificates
+* [projects] The presence or absence of the 'www.' can now optionally be forced
+
+### Changed
+* [chore] Bumped default PHP version for services to 8.1
+* [chore] Upgraded Laravel framework to version 10
+* [chore] PHPStan reporting increased from level 5 to 6
+* [projects] App/redirect creation steps are now added to progress modal together
+* [projects] Project Apps and Project Redirects are now simply Project Services
+
+### Fixed
+* [installer] Curl snippet in README now saves setup.sh to the right place
+* [projects] The logs header is now correctly displayed when there are logs
+* [projects] Values on the Creation form no longer fail to reset when navigating away
+* [projects] Missing steps when saving project apps are now correctly added
+* [projects] Progress bar no longer jumps around somewhat eratically during creation
+* [projects] Deleting a project is now possible even when it has a service attached
+
+### Removed
+* PHP 8.0 is no longer supported for Servidor itself (but services can still use it)
+
+
 ## [0.15.3] - 2023-01-08
 ### Changed
 * [installer] PHP 7.0-7.4 now get preinstalled, with mcrypt for 7.0-7.1
@@ -293,7 +320,8 @@ This is the first version with a "true" GitHub Release. For older releases, chec
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.15.3...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.16.0...develop
+[0.16.0]: https://github.com/dshoreman/servidor/compare/v0.15.3...v0.16.0
 [0.15.3]: https://github.com/dshoreman/servidor/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/dshoreman/servidor/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/dshoreman/servidor/compare/v0.15.0...v0.15.1

@@ -26,9 +26,9 @@ class Group
     private array $errors;
 
     /**
-     * @param array|LinuxGroup $group
+     * @param array<string, mixed>|LinuxGroup $group
      */
-    public function __construct($group)
+    public function __construct(array|LinuxGroup $group)
     {
         $this->group = $group instanceof LinuxGroup
                      ? $group : new LinuxGroup($group);
@@ -102,6 +102,7 @@ class Group
         }
     }
 
+    /** @return array<string, mixed> */
     public static function create(string $name, bool $system = false, ?int $gid = null): array
     {
         $group = new self(
@@ -131,25 +132,40 @@ class Group
         return new self($group);
     }
 
+    /**
+     * @psalm-return Collection<int<0, max>, array{
+     *   name: string, password: string, gid: string, users: list<string>
+     * }>
+     *
+     * @phpstan-return Collection<int, array{
+     *   name: string, password: string, gid: string, users: list<string>
+     * }>
+     */
     public static function list(): Collection
     {
+        $groups = [];
         exec('cat /etc/group', $lines);
-
-        $keys = ['name', 'password', 'gid', 'users'];
-        $groups = collect();
 
         foreach ($lines as $line) {
             \assert(\is_string($line));
+            $line = explode(':', $line);
 
-            $group = array_combine($keys, explode(':', $line));
-            $group['users'] = '' === $group['users'] ? [] : explode(',', $group['users']);
-
-            $groups->push($group);
+            $groups[] = [
+                'name' => $line[0],
+                'password' => $line[1],
+                'gid' => $line[2],
+                'users' => '' === $line[3] ? [] : explode(',', $line[3]),
+            ];
         }
 
-        return $groups;
+        return collect($groups);
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<string, mixed>
+     */
     public function update(array $data): array
     {
         /** @var array<string>|null $users */
@@ -170,20 +186,21 @@ class Group
         return $this->refresh($this->group->gid ?? $this->group->name)->toArray();
     }
 
-    /**
-     * @param int|string $nameOrGid
-     */
+    /** @param int|string $nameOrGid */
     private function refresh($nameOrGid): self
     {
+        /** @var array<string, mixed>|false $arr */
         $arr = \is_int($nameOrGid)
              ? posix_getgrgid($nameOrGid)
              : posix_getgrnam($nameOrGid);
+        \assert(false !== $arr);
 
-        $this->group = new LinuxGroup((array) $arr);
+        $this->group = new LinuxGroup($arr);
 
         return $this;
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return $this->group->toArray();

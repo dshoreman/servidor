@@ -5,9 +5,8 @@ namespace Tests\Feature\Api\Projects;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
-use Servidor\Projects\Application;
 use Servidor\Projects\Project;
-use Servidor\Projects\Redirect;
+use Servidor\Projects\ProjectService;
 use Tests\RequiresAuth;
 use Tests\TestCase;
 
@@ -17,7 +16,7 @@ class ListProjectsTest extends TestCase
     use RefreshDatabase;
     use RequiresAuth;
 
-    protected $endpoint = '/api/projects';
+    protected string $endpoint = '/api/projects';
 
     /** @test */
     public function guest_cannot_list_projects(): void
@@ -42,17 +41,21 @@ class ListProjectsTest extends TestCase
         $response->assertJson(Project::all()->toArray());
     }
 
-    /** @test */
-    public function listed_projects_include_applications(): array
+    /**
+     * @test
+     *
+     * @return array<string, mixed>
+     */
+    public function listed_projects_include_services(): array
     {
         $project = Project::create(['name' => 'Laratest']);
-        $project->applications()->save(new Application(['template' => 'Laravel']));
+        $project->services()->save(new ProjectService(['template' => 'laravel']));
 
         $response = $this->authed()->getJson('/api/projects');
 
         $response->assertOk();
         $response->assertJsonCount(1);
-        $response->assertJson(Project::with('applications')->get()->toArray());
+        $response->assertJson(Project::with('services')->get()->toArray());
 
         return $response->json()[0];
     }
@@ -60,33 +63,47 @@ class ListProjectsTest extends TestCase
     /**
      * @test
      *
-     * @depends listed_projects_include_applications
+     * @depends listed_projects_include_services
+     *
+     * @param array<string, mixed> $project
      */
-    public function project_applications_include_list_of_logs($project): void
+    public function project_services_include_list_of_logs(array $project): void
     {
-        $app = $project['applications'][0];
+        $service = $project['services'][0];
 
-        $this->assertArrayHasKey('logs', $app);
-        $this->assertArraySubset(['php' => 'PHP Error Log'], $app['logs']);
-        $this->assertArraySubset(['laravel' => 'Laravel Log'], $app['logs']);
+        $this->assertArrayHasKey('logs', $service);
+        $this->assertArraySubset(['php' => 'PHP Error Log'], $service['logs']);
+        $this->assertArraySubset(['laravel' => 'Laravel Log'], $service['logs']);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @return array<string, mixed>
+     */
     public function listed_projects_include_redirects(): array
     {
         $project = Project::create(['name' => 'Redirtest']);
-        $project->redirects()->save(new Redirect([
+        $project->services()->save(new ProjectService([
             'domain_name' => 'a',
-            'target' => 'b',
-            'type' => 301,
+            'template' => 'redirect',
+            'config' => ['redirect' => [
+                'target' => 'b',
+                'type' => 301,
+            ]],
         ]));
 
         $response = $this->authed()->getJson('/api/projects');
 
         $response->assertOk();
         $response->assertJsonCount(1);
-        $response->assertJson(Project::with('redirects')->get()->toArray());
+        $response->assertJson(Project::with('services')->get()->toArray());
 
         return $response->json()[0];
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        exec('sudo userdel laratest; sudo rm -rf /home/laratest');
     }
 }

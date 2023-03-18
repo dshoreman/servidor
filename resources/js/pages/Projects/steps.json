@@ -5,6 +5,12 @@
   "title": "Project Template"
 }, {
   "disabled": true,
+  "errorKeys": ["config.php_version"],
+  "icon": "php",
+  "name": "phpver",
+  "title": "PHP Version"
+}, {
+  "disabled": true,
   "errorKeys": ["repository", "branch"],
   "icon": "code",
   "name": "source",
@@ -21,6 +27,12 @@
   "icon": "exchange",
   "name": "redirect",
   "title": "Redirection"
+}, {
+  "disabled": true,
+  "errorKeys": ["config.ssl", "config.sslCertificate", "config.sslPrivateKey", "config.sslRedirect"],
+  "icon": "shield",
+  "name": "ssl",
+  "title": "SSL / HTTPS"
 }, {
   "disabled": true,
   "errorKey": "name",

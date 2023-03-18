@@ -5,32 +5,37 @@ namespace Servidor\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Servidor\Projects\Applications\ApplyAppNginxConfig;
-use Servidor\Projects\Applications\CreateSystemUser;
-use Servidor\Projects\Applications\DeployApp;
-use Servidor\Projects\Applications\ProjectAppSaved;
+use Servidor\Projects\CalculateSteps;
 use Servidor\Projects\ProjectSaved;
-use Servidor\Projects\Redirects\ApplyRedirectNginxConfig;
-use Servidor\Projects\Redirects\ProjectRedirectSaved;
 use Servidor\Projects\ReloadNginxService;
+use Servidor\Projects\Services\ApplyNginxConfig;
+use Servidor\Projects\Services\CreateSystemUser;
+use Servidor\Projects\Services\DeployApp;
+use Servidor\Projects\Services\PrepareSsl;
+use Servidor\Projects\Services\ProjectServiceSaved;
+use Servidor\Projects\Services\ProjectServiceSaving;
 use Servidor\Projects\ToggleProjectVisibility;
 
 class EventServiceProvider extends ServiceProvider
 {
+    /**
+     * The event to listener mappings for the application.
+     *
+     * @var array<string, array<int, string>>
+     */
     protected $listen = [
         ProjectSaved::class => [
             ToggleProjectVisibility::class,
             ReloadNginxService::class,
         ],
-        ProjectAppSaved::class => [
-            CreateSystemUser::class,
-            ApplyAppNginxConfig::class,
-            DeployApp::class,
-            ToggleProjectVisibility::class,
-            ReloadNginxService::class,
+        ProjectServiceSaving::class => [
+            CalculateSteps::class,
+            PrepareSsl::class,
         ],
-        ProjectRedirectSaved::class => [
-            ApplyRedirectNginxConfig::class,
+        ProjectServiceSaved::class => [
+            CreateSystemUser::class,
+            ApplyNginxConfig::class,
+            DeployApp::class,
             ToggleProjectVisibility::class,
             ReloadNginxService::class,
         ],

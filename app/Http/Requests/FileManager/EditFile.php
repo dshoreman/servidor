@@ -6,6 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class EditFile extends FormRequest
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
@@ -14,6 +17,9 @@ class EditFile extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -22,11 +28,22 @@ class EditFile extends FormRequest
     }
 
     /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter
+     *
+     * @suppress PhanUnextractableAnnotationSuffix
+     * @suppress PhanUnextractableAnnotationElementName
+     * @suppress PhanUnusedPublicMethodParameter
+     *
+     * @param array<array-key, mixed>|int|string|null $key
+     * @param mixed                                   $default
+     *
      * @return array{file: string, contents: string}
      */
-    public function validated(): array
+    public function validated($key = null, $default = null): array
     {
-        $data = parent::validated();
+        $data = (array) parent::validated();
 
         return [
             'file' => (string) $data['file'],

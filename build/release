@@ -28,6 +28,9 @@ bump_version() {
     echo -n "Bumping version to ${newver}... "
     sed -i "s/${oldver}/${newver}/" bootstrap/app.php && echo "Done" || exit 1
 
+    echo -n "Bumping installer version in readme... "
+    sed -i "s/${oldver}/${newver}/" README.md && echo "Done" || exit 1
+
     # 1. Insert header for new version's changes
     # 2. Find the [Unreleased] link and add the new release diff below it
     # 3. Update the previous version number in the Unreleased link
@@ -37,7 +40,7 @@ bump_version() {
         -e "s/${search}/${newver}\1/" CHANGELOG.md && echo "Done" || exit 1
 
     echo
-    git add bootstrap/app.php CHANGELOG.md
+    git add bootstrap/app.php CHANGELOG.md README.md
     git commit -m "Bump version to ${newver}"
 
     echo

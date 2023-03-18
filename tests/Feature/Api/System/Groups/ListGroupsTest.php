@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\System\Groups;
 
 use Illuminate\Http\Response;
+use Illuminate\Testing\TestResponse;
 use Tests\RequiresAuth;
 
 class ListGroupsTest extends TestCase
@@ -20,7 +21,7 @@ class ListGroupsTest extends TestCase
     }
 
     /** @test */
-    public function authed_user_can_list_groups()
+    public function authed_user_can_list_groups(): TestResponse
     {
         $response = $this->authed()->getJson($this->endpoint);
 
@@ -34,7 +35,7 @@ class ListGroupsTest extends TestCase
      *
      * @depends authed_user_can_list_groups
      */
-    public function list_response_contains_expected_data($response): void
+    public function list_response_contains_expected_data(TestResponse $response): void
     {
         $responseJson = json_decode($response->getContent());
 
@@ -48,7 +49,7 @@ class ListGroupsTest extends TestCase
      *
      * @depends authed_user_can_list_groups
      */
-    public function list_results_include_default_groups($response): void
+    public function list_results_include_default_groups(TestResponse $response): void
     {
         $response->assertJsonFragment(['name' => 'root']);
         $response->assertJsonFragment(['name' => 'users']);

@@ -12,7 +12,7 @@ class NewDatabaseTest extends TestCase
 {
     use RequiresAuth;
 
-    protected $endpoint = '/api/databases';
+    protected string $endpoint = '/api/databases';
 
     /** @test */
     public function can_create_a_database(): void

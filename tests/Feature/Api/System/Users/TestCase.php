@@ -6,9 +6,12 @@ use Tests\TestCase as BaseCase;
 
 abstract class TestCase extends BaseCase
 {
-    protected $endpoint = '/api/system/users';
+    protected string $endpoint = '/api/system/users';
 
-    protected $expectedKeys = [
+    /**
+     * @var array<int, string>
+     */
+    protected array $expectedKeys = [
         'name',
         'dir',
         'groups',
