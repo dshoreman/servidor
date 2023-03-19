@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="save()">
+    <sui-form @submit.prevent="save()" :inverted="darkMode">
 
         <sui-form-fields>
             <sui-form-field :width="9">

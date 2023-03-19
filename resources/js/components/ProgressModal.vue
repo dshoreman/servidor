@@ -1,5 +1,5 @@
 <template>
-    <sui-modal size="tiny" v-model="visible">
+    <sui-modal :class="darkMode ? 'inverted' : ''" size="tiny" v-model="visible">
         <sui-modal-header>{{ title }}</sui-modal-header>
         <sui-progress attached top :percent="done" />
         <sui-modal-content>
@@ -14,11 +14,11 @@
         </sui-modal-content>
         <sui-modal-actions v-if="button">
 
-            <sui-button v-if="'action' in button"
+            <sui-button v-if="'action' in button" :inverted="darkMode"
                 :color="button.colour" :content="button.text"
                 @click="$store.dispatch(button.action)" />
 
-            <router-link is="sui-button" :to="button.route" v-else
+            <router-link is="sui-button" :to="button.route" :inverted="darkMode" v-else
                 :color="button.colour" :content="button.text" />
 
         </sui-modal-actions>

@@ -6,6 +6,10 @@
         opacity: 0.8;
     }
 
+    .ui.list {
+        background: none;
+    }
+
     .ui.inverted {
         &.sidebar.menu {
             background: rgba(27, 28, 39, 0.8);
@@ -24,6 +28,20 @@
             padding-bottom: 0.62619048em !important;
         }
 
+        &.steps {
+            .step {
+                background: #1b1c1d;
+                border-color: #555;
+                * {
+                    color: rgba(255, 255, 255, 0.9);
+                }
+            }
+            .step.active, .step.active:after {
+                background: #0b0c0d !important;
+            }
+        }
+
+
         &.card {
             background: #1b1c1d !important;
             box-shadow: 0 1px 3px 0 #555, 0 0 0 1px #555 !important;
@@ -34,14 +52,29 @@
             color: rgba(255, 255, 255, 0.6) !important;
         }
 
+        &.search.input {
+            &> input {
+                background: transparent;
+                color: rgba(255, 255, 255, 0.67);
+                &:focus {
+                    color: rgba(255, 255, 255, 0.95);
+                }
+            }
+            .icon {
+                color: #fff;
+            }
+        }
         &.form {
             input:focus {
+                border-color: #555;
                 color: rgba(255, 255, 255, 0.95);
             }
-            input, .selection.dropdown, .selection.dropdown .menu {
+            input, textarea, .selection.dropdown, .selection.dropdown .menu {
                 background: #1b1c1d;
+                border-color: rgba(255, 255, 255, 0.1);
                 color: rgba(255, 255, 255, 0.67);
             }
+            textarea:focus,
             .selection.dropdown .menu,
             .selection.dropdown.active {
                 border-color: #555;
@@ -60,8 +93,28 @@
                 background: transparent;
             }
 
-            .toggle.checkbox input:checked ~ label {
-                color: rgba(255, 255, 255, 0.95) !important;
+            .toggle.checkbox {
+                label:before {
+                    background-color: rgba(255, 255, 255, 0.05);
+                }
+                input:checked ~ label {
+                    color: rgba(255, 255, 255, 0.95) !important;
+                }
+            }
+        }
+
+        &.dimmer {
+            background-color: rgba(0, 0, 0, 0.85);
+        }
+        &.modals .modal {
+            background: #4e5d6c;
+
+            .header, .content, .actions {
+                background: #0b0c0d;
+                color: #fff;
+            }
+            &> .actions {
+                border-top: 1px solid rgb(229 241 253 / 15%);
             }
         }
     }

@@ -3,13 +3,14 @@
     <div v-if="projects.length">
 
         <sui-input placeholder="Search..." icon="search"
+            :class="darkMode ? 'inverted search' : 'search'"
             v-model="filter" @keyup.enter="viewSelected" />
 
         <router-link :to="{ name: 'projects.new' }"
                      is="sui-button" primary icon="add"
                      content="New Project" />
 
-        <sui-table selectable>
+        <sui-table selectable :inverted="darkMode">
             <sui-table-body>
                 <sui-table-row v-for="p in filteredProjects" :key="p.id">
                     <sui-table-cell selectable :colspan="getColspan(p)">
@@ -26,7 +27,7 @@
                     </sui-table-cell>
                     <sui-table-cell collapsing v-if="p.services.length">
                         <router-link is="sui-button" basic size="tiny" compact
-                            :to="makeBrowseLink(p)" v-if="canBrowse(p)">
+                            :to="makeBrowseLink(p)" v-if="canBrowse(p)" :inverted="darkMode">
                             <sui-icon name="open folder" /> Browse Source
                         </router-link>
                     </sui-table-cell>
@@ -36,13 +37,13 @@
 
     </div>
 
-    <sui-segment class="placeholder" v-else>
+    <sui-segment class="placeholder" :inverted="darkMode" v-else>
 
         <h3 is="sui-header" text-align="center">
             Seems you don't currently have any projects!
         </h3>
 
-        <router-link :to="{ name: 'projects.new' }"
+        <router-link :to="{ name: 'projects.new' }" :inverted="darkMode"
             is="sui-button" primary icon="add"
             content="Create a Project" />
 
