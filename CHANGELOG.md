@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Fixed
+* [projects] SSL certificate/key paths are now set correctly in service configs
 
 
 ## [0.16.0] - 2023-03-18
