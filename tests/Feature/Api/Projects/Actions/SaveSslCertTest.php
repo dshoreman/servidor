@@ -71,7 +71,7 @@ class SaveSslCertTest extends TestCase
      */
     public function certs_are_replaced_with_paths_in_the_database(ProjectService $service): void
     {
-        $this->assertEquals('/var/servidor/storage/certs/ssl-test/ssl.test.crt', $service->config->get('sslCertificate'));
+        $this->assertEquals(storage_path('certs/ssl-test/ssl.test.crt'), $service->config->get('sslCertificate'));
     }
 
     /** @test */
