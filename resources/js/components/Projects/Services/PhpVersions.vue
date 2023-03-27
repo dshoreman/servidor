@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="$emit('next')">
+    <sui-form @submit.prevent="$emit('next')" :inverted="darkMode">
 
         <sui-form-field :error="'php_version' in errors">
             <sui-dropdown required selection :options="versions"

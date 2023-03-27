@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="$emit('next')">
+    <sui-form @submit.prevent="$emit('next')" :inverted="darkMode">
 
         <sui-form-field :error="'config.ssl' in errors">
             <sui-checkbox toggle :checked="value.ssl"

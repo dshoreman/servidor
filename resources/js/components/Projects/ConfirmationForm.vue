@@ -1,5 +1,5 @@
 <template>
-    <sui-form @submit.prevent="$emit('created', true)">
+    <sui-form @submit.prevent="$emit('created', true)" :inverted="darkMode">
 
         <sui-divider />
 
@@ -19,17 +19,23 @@
 
         <sui-divider hidden />
 
-        <sui-button positive size="big" v-if="template == 'Clean Slate'">
+        <sui-button color="green" inverted size="big" v-if="darkMode && template == 'Clean Slate'">
+            Create Project
+        </sui-button>
+        <sui-button positive size="big" v-else-if="template == 'Clean Slate'">
             Create Project
         </sui-button>
         <div v-else>
-            <sui-button positive size="big">
+            <sui-button color="green" inverted size="big" v-if="darkMode">
+                Save and start the {{ template }} application
+            </sui-button>
+            <sui-button positive size="big" v-else>
                 Save and start the {{ template }} application
             </sui-button>
 
-            <sui-divider horizontal>Or</sui-divider>
+            <sui-divider horizontal :inverted="darkMode">Or</sui-divider>
 
-            <sui-button primary type="button"
+            <sui-button primary type="button" :inverted="darkMode"
                         content="Just save the project"
                         @click="$emit('created', false)" />
         </div>
