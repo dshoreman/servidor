@@ -39,7 +39,7 @@ export default {
     },
     actions: {
         activateContinueButton: ({ commit }, route) => {
-            commit('setButton', { route, text: 'Continue' });
+            commit('setButton', { route, colour: 'green', text: 'Continue' });
         },
         hide: ({ commit }) => {
             commit('setVisible', false);

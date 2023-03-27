@@ -9,45 +9,45 @@
 
         <sui-grid-column :width="10">
 
-            <sui-segment v-if="step == 'template'">
+            <sui-segment v-if="step == 'template'" :inverted="darkMode">
                 <h3 is="sui-header">First pick a template to get started</h3>
                 <sui-message negative v-if="'template' in errors"
                     :content="errors['template'][0]" />
                 <template-selector :templates="templates"
-                    @selected="setAppTemplate" />
+                    @selected="setAppTemplate" :inverted="darkMode" />
             </sui-segment>
 
-            <sui-segment v-else-if="step == 'phpver'">
+            <sui-segment v-else-if="step == 'phpver'" :inverted="darkMode">
                 <h3 is="sui-header">If your project requires an older PHP, set it here</h3>
                 <php-versions :errors="errors" v-model="defaultApp.config.phpVersion"
                     @next="nextStep('phpver')" @cancel="cancel" />
             </sui-segment>
 
-            <sui-segment v-else-if="step == 'source'">
+            <sui-segment v-else-if="step == 'source'" :inverted="darkMode">
                 <h3 is="sui-header">Where are the project files stored?</h3>
                 <source-selector :errors="errors" :providers="providers"
                     v-model="defaultApp" @next="nextStep('source')" @cancel="cancel" />
             </sui-segment>
 
-            <sui-segment v-else-if="step == 'domain'">
+            <sui-segment v-else-if="step == 'domain'" :inverted="darkMode">
                 <h3 is="sui-header">Set the main entry point for your app</h3>
                 <domain-form :errors="errors" v-model="defaultApp"
                     @next="nextStep('domain')" @cancel="cancel" />
             </sui-segment>
 
-            <sui-segment v-else-if="step == 'ssl'">
+            <sui-segment v-else-if="step == 'ssl'" :inverted="darkMode">
                 <h3 is="sui-header">Have an SSL Certificate to use?</h3>
                 <ssl-form :errors="errors" v-model="defaultApp.config"
                     @next="nextStep('ssl')" @cancel="cancel" />
             </sui-segment>
 
-            <sui-segment v-else-if="step == 'redirect'">
+            <sui-segment v-else-if="step == 'redirect'" :inverted="darkMode">
                 <h3 is="sui-header">Time to set the target!</h3>
                 <redirect-form :errors="errors" :domain="defaultApp.domain"
                     @next="setRedirect" @cancel="cancel" />
             </sui-segment>
 
-            <sui-segment padded aligned="center" v-else-if="step == 'confirm'">
+            <sui-segment padded aligned="center" v-else-if="step == 'confirm'" :inverted="darkMode">
                 <h3 is="sui-header">Let's get this Project started!</h3>
                 <confirmation-text :service="defaultApp" :providers="providers" />
                 <confirmation-form :errors="errors" v-model="project.name"

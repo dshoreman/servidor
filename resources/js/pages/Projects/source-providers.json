@@ -8,5 +8,6 @@
   "urlFormat": "https://bitbucket.org/%REPO%.git"
 }, {
   "name": "custom",
-  "text": "Custom Git URL"
+  "text": "Custom Git URL",
+  "urlFormat": "%REPO%"
 }]

@@ -39,11 +39,16 @@ class SaveSslCertificate
 
     public function execute(): void
     {
+        \assert($this->service->config instanceof Collection);
+
         $this->createCertsDir($this->service->project);
 
-        \assert($this->service->config instanceof Collection);
-        $this->service->config['sslCertificate'] = $this->saveCert($this->config);
-        $this->service->config['sslPrivateKey'] = $this->saveKey($this->config);
+        $config = $this->service->config;
+        $config['sslCertificate'] = $this->saveCert($this->config);
+        $config['sslPrivateKey'] = $this->saveKey($this->config);
+
+        $this->service->config = $config;
+        $this->service->save();
     }
 
     private function createCertsDir(Project $project): bool

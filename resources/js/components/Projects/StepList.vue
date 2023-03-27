@@ -1,5 +1,5 @@
 <template>
-    <sui-step-group vertical fluid>
+    <sui-step-group vertical fluid :class="darkMode && 'inverted'">
 
         <sui-step v-for="s in steps"
                   :active="selected == s.name"

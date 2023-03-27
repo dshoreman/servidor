@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.16.1] - 2023-03-27
+### Fixed
+* [projects] SSL certificate/key paths are now set correctly in service configs
+* [projects] Creation wizard and project lists finally look better in Dark mode
+* [projects] Custom repositories are now shown correctly on the confirmation screen
+
+
 ## [0.16.0] - 2023-03-18
 ### Added
 * [accounts] Name, login email and password can now be changed from the User menu
@@ -320,7 +327,8 @@ This is the first version with a "true" GitHub Release. For older releases, chec
 * Basic login/logout auth stuff
 
 
-[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.16.0...develop
+[Unreleased]: https://github.com/dshoreman/servidor/compare/v0.16.1...develop
+[0.16.1]: https://github.com/dshoreman/servidor/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/dshoreman/servidor/compare/v0.15.3...v0.16.0
 [0.15.3]: https://github.com/dshoreman/servidor/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/dshoreman/servidor/compare/v0.15.1...v0.15.2
