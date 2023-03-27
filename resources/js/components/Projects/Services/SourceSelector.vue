@@ -12,7 +12,8 @@
 
         <sui-form-field :error="'repository' in errors" v-if="source.provider === 'custom'">
             <label>Repository URL:</label>
-            <sui-input :value="source.url" @input="setValue('url', $event)" required />
+            <sui-input required placeholder="https://git@mydomain.example/repo.git"
+                :value="source.repository" @input="setValue('repository', $event)" />
             <sui-label basic color="red" pointing v-if="'repository' in errors">
                 {{ errors['repository'][0] }}
             </sui-label>

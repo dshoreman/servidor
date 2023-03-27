@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * [projects] SSL certificate/key paths are now set correctly in service configs
 * [projects] Creation wizard and project lists finally look better in Dark mode
+* [projects] Custom repositories are now shown correctly on the confirmation screen
 
 
 ## [0.16.0] - 2023-03-18
