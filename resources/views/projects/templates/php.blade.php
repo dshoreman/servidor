@@ -11,11 +11,11 @@ server {
 @if (1 === $service->config?->get('redirectWww'))
     server_name www.{{ $service->domain_name }};
 
-    return 301 http{{ $service->config?->get('ssl') ? 's' : '' }}://{{ $service->domain_name }};
+    return 301 http{{ $service->config?->get('ssl') ? 's' : '' }}://{{ $service->domain_name }}$request_uri;
 @else
     server_name {{ $service->domain_name }};
 
-    return 301 http{{ $service->config?->get('ssl') ? 's' : '' }}://www.{{ $service->domain_name }};
+    return 301 http{{ $service->config?->get('ssl') ? 's' : '' }}://www.{{ $service->domain_name }}$request_uri;
 @endif
 }
 

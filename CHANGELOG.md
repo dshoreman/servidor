@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Fixed
+* [projects] `$request_uri` wasn't being appended when redirecting [non-]www variants
 
 
 ## [0.16.1] - 2023-03-27
