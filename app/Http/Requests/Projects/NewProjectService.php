@@ -75,10 +75,13 @@ class NewProjectService extends FormRequest
                 'array:provider,repository,branch',
             ],
             'source.branch' => 'nullable|string',
-            'source.provider' => 'required_unless:template,redirect|in:github,bitbucket',
+            'source.provider' => 'required_unless:template,redirect|in:github,bitbucket,custom',
             'source.repository' => [
                 'required_unless:template,redirect',
-                'regex:_^([a-z-]+)/([a-z-]+)$_i',
+                'regex:/(' . implode(')|(', [
+                    '([a-z-]+)\/([a-z-]+)',
+                    '((git|ssh|http(s)?)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:\/\-~]+)(\.git)(\/)?',
+                ]) . ')/i',
                 'nullable',
             ],
         ];
