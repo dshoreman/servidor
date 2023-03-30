@@ -115,8 +115,12 @@ class NewProjectServiceTest extends TestCase
     public function source_repository_must_be_a_valid_url(): void
     {
         $this->validateConfigFieldPasses('source.repository', 'foo/bar');
-        $this->validateConfigFieldFails('source.repository', 'foo/bar.git');
-        $this->validateConfigFieldFails('source.repository', 'https://github.com/foo/bar');
+        $this->validateConfigFieldPasses('source.repository', 'foo/bar.git');
+        $this->validateConfigFieldPasses('source.repository', '/tmp/foo/bar');
+        $this->validateConfigFieldPasses('source.repository', 'git@github.com:foo/bar.git');
+        $this->validateConfigFieldPasses('source.repository', 'http://git@github.com/foo/bar.git');
+        $this->validateConfigFieldPasses('source.repository', 'https://git@github.com/foo/bar.git');
+
         $this->validateConfigFieldFails('source.repository', 'localhost');
         $this->validateConfigFieldFails('source.repository', 42);
         $this->validateConfigFieldFails('source.repository', true);
